@@ -104,10 +104,10 @@ def submit_task(
         return result
 
 
-def complete_task(task_id: str, result_text: str = "completed") -> dict:
+def complete_task(task_id: str, agent_id: str = "jeeves-cli", result_text: str = "completed") -> dict:
     """Mark a task as complete."""
     result = mcp_call(
-        "coord_complete_task", {"task_id": task_id, "result": result_text}
+        "coord_complete_task", {"task_id": task_id, "agent_id": agent_id, "result_summary": result_text}
     )
 
     if "error" not in result:
