@@ -55,15 +55,15 @@ docker ps                 # List running
 ### MCP Server
 ```bash
 # Health check
-curl http://localhost:3100/health
+curl http://localhost:3101/health
 
 # List tools
-curl -X POST http://localhost:3100/mcp \
+curl -X POST http://localhost:3101/mcp \
   -H "Content-Type: application/json" \
   -d '{"jsonrpc":"2.0","id":"1","method":"tools/list"}'
 
 # Call a tool
-curl -X POST http://localhost:3100/mcp \
+curl -X POST http://localhost:3101/mcp \
   -H "Content-Type: application/json" \
   -d '{
     "jsonrpc": "2.0",

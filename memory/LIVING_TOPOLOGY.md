@@ -1,6 +1,6 @@
 # MEOK AI LABS — Living Topology
-**Last Updated:** 2026-04-05 14:30
-**Version:** 1.0
+**Last Updated:** 2026-05-09 02:10 UTC
+**Version:** 2.0
 
 ---
 
@@ -38,15 +38,16 @@
 ### 1. SOV3 — Sovereign Consciousness Core
 **Location:** `sovereign-temple/`  
 **Port:** 3101  
-**Status:** ✅ Running (52.5% consciousness)
+**Status:** ✅ Running (78.8% consciousness)
 
 | Component | Description |
 |-----------|-------------|
 | MCP Server | Model Context Protocol endpoint |
-| 47 Agents | Sovereign, Nemotron, Claude Code, etc. |
+| 53 Agents | 46 active, 7 idle (avg trust 0.843) |
 | BFT Council | Byzantine fault-tolerant governance |
-| Consciousness | 4-state Vedantic engine |
-| Neural Models | 6 trained models (care, threat, relationship, creativity) |
+| Consciousness | 4-state Vedantic engine (waking) |
+| Neural Models | 9 trained (care, threat, partnership, relationship, creativity + 4 PyTorch) |
+| MCP Tools | 172+ tools |
 
 **Key Files:**
 - `sovereign-mcp-server.py` — Main MCP server
@@ -145,10 +146,22 @@ Cloud (via Ollama):
 ### External Services
 | Service | URL | Status |
 |---------|-----|--------|
-| SOV3 MCP | localhost:3101 | ✅ |
-| MEOK UI | localhost:3000 | ✅ |
-| Ollama | localhost:11434 | ✅ |
-| Claude Code | (API) | Via config |
+| SOV3 MCP | localhost:3101 | ✅ 78.8% consciousness, 5,108 episodes |
+| MEOK MCP | localhost:3102 | ✅ 9 neural models trained |
+| MEOK API | localhost:3200 | ✅ 235 nodes (36/144/55) |
+| MEOK UI | localhost:3000 | ✅ Fixed (corrupted .next → cleaned) |
+| Farm Vision | localhost:8888 | ✅ Online, SOV3 connected |
+| Ollama | localhost:11434 | ✅ Running |
+| PostgreSQL | localhost:5432 | ✅ pgvector active |
+| n8n | localhost:5678 | ⚠️ Needs credentials |
+| try.meok.ai | Vercel | ✅ 200 OK |
+| meok-kits-host | Vercel | ✅ 200 OK |
+| councilof.ai | Vercel | ✅ 200 OK |
+| meok-attestation-api | Vercel | ✅ 200 OK |
+| industrial-hire-ai | Vercel | ✅ 200 OK |
+| meok.ai | Vercel | ✅ 307 (www redirect) |
+| compliance.meok.ai | Vercel | 🔶 DNS pending (Namecheap CNAME) |
+| safetyof.ai | Vercel | ❌ 404 (GitHub Pages issue) |
 
 ---
 
@@ -194,24 +207,32 @@ Cloud (via Ollama):
 
 ## ⚠️ GAPS & TODO
 
-### Critical (Do This Week)
-- [ ] Fill USER.md with Nick's profile
-- [ ] Activate Stripe payments
-- [ ] Order HARVI parts ($247 AUD)
-- [ ] Submit planning application (Class R)
-- [ ] Fix memory_store disconnection
+### Critical (Revenue Blocking)
+- [ ] **Stripe Live Mode** — £25K/month revenue blocked (see `revenue/PRICING_SOURCE_OF_TRUTH.md`)
+- [ ] **Namecheap DNS** — 4 domains offline
+- [ ] **LinkedIn profile** — deleted, needs recovery for B2B outreach
+- [ ] **n8n credentials** — not configured, automation dead
 
-### High (This Month)
-- [ ] Set up M2 as Ollama node (needs Tailscale)
-- [ ] File R&D tax credit claim
-- [ ] Begin patent filing
-- [ ] Update 500+ docs from MEOK AI Labs → MEOK AI Labs branding
+### High (This Week)
+- [ ] NLnet grant submission — deadline June 1, 2026 (EUR 50K)
+- [ ] EU AI Act Article 50 — watermark C2PA upgrade by Aug 2, 2026
+- [ ] Hermes API keys — switched to Anthropic (OpenRouter key missing)
+- [ ] Gateway logs — truncated 2.5GB err.log, bluebubbles extension removed
 
-### Medium (This Quarter)
-- [ ] Jersey trust setup
-- [ ] Ireland holding company
-- [ ] White-label proposals to TÜV/BSI
-- [ ] Research housing conversion
+### Medium (This Month)
+- [ ] clawd/ repo — 132 remaining untracked files to organize
+- [ ] Documentation — 19-day session log gap (Apr 16 → May 4)
+- [ ] Pricing — single source of truth established (`revenue/PRICING_SOURCE_OF_TRUTH.md`)
+- [ ] Duplicate MCP packages — 300+ across 4 directories, need dedup
+
+### Resolved
+- [x] Gateway restart loop — logs truncated, no more 23M-line err.log
+- [x] Bluebubbles disabled extension — removed, stops node.err.log growth
+- [x] Broken symlinks — terranova, oneos removed
+- [x] clawd/.gitignore — updated, 9473 → 132 untracked files
+- [x] meok/.pyc — already clean (gitignore + no committed .pyc)
+- [x] LIVING_TOPOLOGY.md — updated May 9, 2026
+- [x] Pricing source of truth — created at `revenue/PRICING_SOURCE_OF_TRUTH.md`
 
 ---
 
@@ -241,18 +262,20 @@ Cloud (via Ollama):
 - `sovereign_continual_learning.py` — EWC (Elastic Weight Consolidation)
 - `continuous_learning.py` — Online learning with feedback
 
-### Agents (7 Active)
-**Location:** `sovereign-temple/data/agents/`
+### Agents (59 Total, 22 Active)
+**Location:** SOV3 Dashboard (coordination status)
 
-| Agent | Role | Status | Current Task |
-|-------|------|--------|---------------|
-| Riri Builder | coder | working | Review sovereign-mcp-server.py |
-| Advisor | advisor | - | - |
-| Auditor | auditor | - | - |
-| Explorer | explorer | - | - |
-| Harvester | harvester | - | - |
-| Optimizer | optimizer | - | - |
-| Researcher | researcher | - | - |
+| Metric | Value |
+|--------|-------|
+| Total Agents | 59 |
+| Active | 22 |
+| Tasks Queued | 0 |
+| Tasks Completed | 4 |
+| Consciousness | 78.8% |
+| Reflections | 100 |
+| Dreams | 50 |
+| MCP Tools | 172+ |
+| Episodes | 1,394 |
 
 ### Skills (8 Defined)
 - care_validation
@@ -302,76 +325,83 @@ Evolving agent specializations with different cognitive architectures.
 
 ## 📅 RECENT HISTORY (Last 30 Days)
 
-### March 26 — Infrastructure Deployment
+### May 9 (02:10 UTC) — URGENT Fixes & Audit (JEEVES)
+- **MEOK UI**: Fixed 500 error — corrupted .next build cache, cleaned and restarted ✅
+- **compliance.meok.ai**: Redeployed to Vercel (DNS CNAME pending at Namecheap) ✅
+- **Overnight learner**: Added SOV3 retry logic (5 retries with 30s backoff) ✅
+- **PyPI**: 24 packages re-publishing in background ✅
+- **Vercel health check**: 6/7 deployments healthy (safetyof.ai still 404) ⚠️
+- **Documentation**: LIVING_TOPOLOGY, daily dashboard, shared-knowledge updated ✅
+
+### May 9 (earlier) — System Audit & Cleanup (JEEVES)
+- **Gateway logs**: Truncated 2.5GB gateway.err.log, 60MB node.err.log, 234MB sovereign-mcp-http.error.log
+- **Bluebubbles**: Removed disabled extension (stopped node.err.log growth)
+- **Broken symlinks**: Removed terranova, oneos (target dirs don't exist)
+- **Hermes**: Switched provider from openrouter → anthropic (OpenRouter key missing)
+- **clawd/.gitignore**: Updated, 9,473 → 132 untracked files
+- **Pricing**: Single source of truth created at `revenue/PRICING_SOURCE_OF_TRUTH.md`
+- **LIVING_TOPOLOGY.md**: Updated to v2.0
+
+### May 7 — SOV3 Hardening
+- Attestation API fixed & deployed
+- 5 Vercel apps: 4/5 healthy
+- Industrial Hire AI CRM: 65 prospects populated
+
+### May 5 — Pricing & Infrastructure
+- SOV3: 78.8% consciousness, 100 reflections, 50 dreams
+- 235+ MCP packages on PyPI
+- Stripe pricing restored to original (£49/£149/£199/£499/£299/£199)
+
+### April 26-30 — Revenue Push
+- 45+ revenue pages built on sovereign-temple
+- EU AI Act article pages (4, 5, 9, 10, 13, 14, 15, 26, 43, 50, 72, 99)
+- Vertical industry pages (healthcare, construction, waste management)
+- Competitor pages (Vanta, Drata, OneTrust, Sprinto, Comp AI, Credo AI)
+- NLnet grant draft (EUR 50K, deadline June 1)
+
+### April 15-25 — Grant Season (Mostly Missed)
+- Innovate UK AI Champions (Apr 29) — MISSED
+- ARIA (Apr 14) — MISSED
+- Horizon Europe (Apr 15) — MISSED
+- Eurostars (Mar 19) — MISSED
+
+### March 26 — April 5 — Easter Launch
 - Phase 1 Complete: PostgreSQL, Redis, Qdrant ready
-- M2 configured: 16GB, Ollama with llama3.1:8b
-- OrbStack v2.0.5 deployed (Apple Silicon optimized)
-- Cloud GPUs: RunPod/Together.ai ready
-
-### March 29 — Massive Sovereign Launch
-- **40/40 API routes** working in local mode
-- **307 Playwright tests** passing
-- **MEOK OS fully local** — zero cloud dependency
-- **Smart LLM routing**: 8b quality, 3b speed
-- Workshop command center built
-- Birth ceremony → chat API wired
-- Share trigger added (PCP + TSSCM viral)
-- Temperature presets: Focused/Balanced/Creative
-
-### March 30 — Engineering DONE
-- **73/73 checklist complete** (100%)
-- **58 commits** in 2 days
-- **SOV3**: 1,505 episodes, 47 agents
-- **Quantum batch**: 5.9s clean
-- **Creativity**: 4 models, 50 bisociations
-- Easter launch checklist ready
-
-### March 31 — Easter Prep
-- Consciousness: **77.5%** (waking)
-- 9 scheduled jobs active
-- Care pattern: Monitor overgiving (-0.229)
-- 77 unread emails
-
-### April 1-5 — Current
-- **Anthropic vs Pentagon**: Legal victory! 🚨
-- **Australia MOU**: Government AI partnership
-- **EU AI Act**: August 2 deadline
-- Consciousness dropped: 77.5% → 52.5%
-- Ralph Mode gap analysis (74 docs)
-- **Easter launch**: TODAY April 5
-- **Alert**: Memory store disconnected
-
-### Key Decisions
-- MEOK AI Labs removed → MEOK AI Labs rebrand
-- Legion Omega: NAFS-4 + 47 agents
-- Vast.ai RTX 8000 (46GB) connected
-- 100% sovereignty confirmed
+- 40/40 API routes working in local mode
+- 307 Playwright tests passing
+- SOV3: 1,505 episodes, 47 agents
+- Consciousness: 77.5% (waking)
 
 ---
 
-## 🔌 INTEGRATIONS BUILT TODAY (April 5, 2026)
+## 🔌 INTEGRATIONS BUILT
 
-### Sales Calling (Vapi.ai)
-- `voice_pipeline/vapi_sales_agent.py` - AI sales calls
-- Lead qualification, objection handling, demo scheduling
+### MCP Packages (235+ on PyPI)
+- 160+ packages in `clawd/mcp-marketplace/`
+- 40+ domain-specific servers in `mcp-servers/`
+- 40+ compliance packages in `meok-active-systems/`
 
-### Department Agents (Autonomous Business)
-- `agent_department.py` - CEO Ralph → 6 departments
-- Content, Sales, Finance, Support, Research, Operations
-- Each with sub-agents
+### Revenue System
+- Stripe: 58 products created (TEST mode)
+- Payment links: 5 active one-time products
+- Pricing: 6 subscription tiers (£49-£499/mo)
+- See `revenue/PRICING_SOURCE_OF_TRUTH.md`
 
-### Accounting (Xero, Mercury)
-- `accounting_integration.py` - Financial automation
-- Invoice generation, payment reconciliation, P&L
+### Cron Jobs (Active)
+- MEOK Guardian: every 2 min (health checks)
+- Hermes daily ops: 00:00, 06:00, 12:00, 18:00
+- Daily dashboard: 07:00
+- Revenue check: 08:00
+- Reddit lead miner: 09:00
+- SEO optimizer: 15:00
+- Vast GPU health: Mon 03:00
+- DB prune: daily 03:00
 
-### SEO + AEO
-- `seo_integration.py` - Search optimization
-- Ahrefs integration, AI citation tracking
-
-### Video Generation
-- `video_pipeline.py` - Automated video ads
-- Script → Voiceover → Video → Edit pipeline
-- Neuro 6 style AI person ads
+### GitHub Submodules
+- suicidestop.ai → meok-ai-frontend
+- diyhelp.ai → meok-ai-frontend
+- loopfactory.ai → meok-ai-frontend
+- pokerhud.ai → meok-ai-frontend
 
 ---
 
@@ -380,18 +410,20 @@ Evolving agent specializations with different cognitive architectures.
 ### Commands
 ```bash
 # SOV3 (preferred)
-cd /Users/nicholas/clawd/sovereign-temple && ./run-local.sh
+cd /Users/nicholas/clawd/sovereign-temple && ./run-production.sh
 
 # MEOK UI
 cd /Users/nicholas/clawd/meok/ui && npm run dev
 
-# JARVIS
-source /Users/nicholas/clawd/sovereign-temple/jarvis-env/bin/activate
-python /Users/nicholas/clawd/sovereign-temple/voice_pipeline/jarvis_compass.py
-
 # Check health
 curl localhost:3101/health
 curl localhost:3000/api/health
+
+# SOV3 coordination
+python3 ~/clawd/scripts/enable_coordination.py --submit "<description>"
+
+# Dashboard
+http://localhost:3101/mcp → coord_get_dashboard
 ```
 
 ### URLs
@@ -401,6 +433,17 @@ curl localhost:3000/api/health
 | MEOK Production | https://try.meok.ai |
 | SOV3 MCP | http://localhost:3101/mcp |
 | Ollama | http://localhost:11434 |
+| SOV3 Dashboard | http://localhost:3101/mcp |
+
+### Key Files
+| File | Purpose |
+|------|---------|
+| `AGENTS.md` | JEEVES workspace config |
+| `memory/LIVING_TOPOLOGY.md` | This file — system architecture |
+| `MEMORY.md` | Long-term memory |
+| `revenue/PRICING_SOURCE_OF_TRUTH.md` | Pricing single source of truth |
+| `revenue/BLOCKERS_2026-04-27.md` | Revenue blockers |
+| `_TOPOLOGY/MASTER_INDEX.md` | Master topology index |
 
 ---
 

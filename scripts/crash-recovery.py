@@ -42,23 +42,18 @@ SERVICE_CONFIGS = {
     },
     "postgres": {
         "port": 5432,
-        "start_cmd": "docker start sovereign-postgres",
-        "docker": "sovereign-postgres",
+        "start_cmd": "pg_ctl -D /opt/homebrew/var/postgresql@15 start",
+        "check_func": "check_postgres",
     },
     "redis": {
         "port": 6379,
-        "start_cmd": "docker start sovereign-redis",
-        "docker": "sovereign-redis",
+        "start_cmd": "redis-server --daemonize yes",
+        "check_func": "check_redis",
     },
-    "weaviate": {
-        "port": 8080,
-        "start_cmd": "docker start sovereign-weaviate",
-        "docker": "sovereign-weaviate",
-    },
-    "neo4j": {
-        "port": 7474,
-        "start_cmd": "docker start sovereign-neo4j",
-        "docker": "sovereign-neo4j",
+    "ollama": {
+        "port": 11434,
+        "start_cmd": "ollama serve",
+        "check_func": None,
     },
     "farm-vision": {
         "port": 8888,
@@ -156,65 +151,28 @@ def get_service_status(port: int) -> dict:
 
 
 def check_postgres() -> dict:
-    """Check PostgreSQL status (docker or local)"""
-    # Check Docker first
+    """Check PostgreSQL status — use lsof (always in PATH)"""
     try:
         result = subprocess.run(
-            ["docker", "ps", "--filter", "name=postgres", "--format", "{{.Names}}"],
-            capture_output=True,
-            text=True,
-            timeout=5,
+            ["lsof", "-i", ":5432", "-sTCP:LISTEN"],
+            capture_output=True, text=True, timeout=5
         )
         if result.returncode == 0 and result.stdout.strip():
-            return {
-                "status": "running",
-                "location": "docker",
-                "container": result.stdout.strip(),
-            }
-    except Exception:
-        pass
-
-    # Check local PostgreSQL
-    try:
-        result = subprocess.run(
-            ["pg_isready", "-h", "localhost", "-p", "5432"],
-            capture_output=True,
-            timeout=5,
-        )
-        return {
-            "status": "running" if result.returncode == 0 else "stopped",
-            "location": "local",
-        }
+            return {"status": "running", "location": "local"}
     except Exception:
         pass
     return {"status": "stopped", "location": None}
 
 
 def check_redis() -> dict:
-    """Check Redis status (docker or local)"""
-    # Check Docker first
+    """Check Redis status — use python socket (always available)"""
     try:
-        result = subprocess.run(
-            ["docker", "ps", "--filter", "name=redis", "--format", "{{.Names}}"],
-            capture_output=True,
-            text=True,
-            timeout=5,
-        )
-        if result.returncode == 0 and result.stdout.strip():
-            return {
-                "status": "running",
-                "location": "docker",
-                "container": result.stdout.strip(),
-            }
-    except Exception:
-        pass
-
-    # Check local Redis
-    try:
-        result = subprocess.run(
-            ["redis-cli", "ping"], capture_output=True, text=True, timeout=5
-        )
-        if result.returncode == 0:
+        import socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(2)
+        result = s.connect_ex(('127.0.0.1', 6379))
+        s.close()
+        if result == 0:
             return {"status": "running", "location": "local"}
     except Exception:
         pass

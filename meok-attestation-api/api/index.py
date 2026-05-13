@@ -15,7 +15,7 @@ The signing key lives ONLY on the server (MEOK_ATTESTATION_KEY env var). Clients
 never see it. Every cert comes with a signature_sha256_hmac that any third party
 can cross-check by POSTing back to /verify with the full cert.
 
-Pricing alignment: Pro tier £199/mo; Enterprise £1499/mo; One-time assessment £5000.
+Pricing alignment: Starter £29/mo; Pro £79/mo; Enterprise £1499/mo; 48h Gap Analysis £5000.
 """
 
 from __future__ import annotations
@@ -168,8 +168,7 @@ def _check_api_key(api_key: str, email: str = "") -> tuple[bool, str, str]:
             "Missing email. Free tier: pass {email: 'you@company.com'} for instant "
             "signed attestation (lead-capture). Pro tier (\u00a379/mo): pass {api_key, email} "
             "for verifiable attestations on a custom domain. "
-            "Pro checkout: https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836 "
-            "Indie tier (\u00a3499/yr): https://buy.stripe.com/4gMeVfbcw3cedMFaqI8k83a"
+            "Pro checkout: https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836"
         ), ""
     if _MASTER_KEY and hmac.compare_digest(api_key, _MASTER_KEY):
         return True, "OK (master)", "enterprise"
@@ -181,7 +180,7 @@ def _check_api_key(api_key: str, email: str = "") -> tuple[bool, str, str]:
         return True, "OK (derived enterprise)", "enterprise"
     if email and derived_key_valid(api_key, email, tier="pro"):
         return True, "OK (derived pro)", "pro"
-    return False, "Invalid or unknown api_key. Contact nicholas@csoai.org or subscribe at https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836", ""
+    return False, "Invalid or unknown api_key. Contact hello@meok.ai or subscribe at https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836", ""
 
 
 # ── Stripe webhook signature verification (stdlib-only) ────────────────
@@ -512,7 +511,7 @@ def _catalogue_html() -> str:
                 "@id": "https://meok.ai/#org",
                 "name": "MEOK AI Labs",
                 "url": "https://meok.ai",
-                "email": "nicholas@csoai.org",
+                "email": "hello@meok.ai",
                 "sameAs": ["https://github.com/CSOAI-ORG", "https://pypi.org/user/MEOK_AI_Labs/"],
             },
             {
@@ -635,7 +634,7 @@ def _catalogue_html() -> str:
 </table>
 
 <h2>For consultancies</h2>
-<p>I'm looking for 3 GRC consultancies to pilot a white-label partnership. Your brand on the deliverable. £5k assessments you price at your own rate. Revenue share on Pro subscriptions. No exclusivity, no minimum. Email <a href="mailto:nicholas@csoai.org">nicholas@csoai.org</a>.</p>
+<p>I'm looking for 3 GRC consultancies to pilot a white-label partnership. Your brand on the deliverable. £5k assessments you price at your own rate. Revenue share on Pro subscriptions. No exclusivity, no minimum. Email <a href="mailto:hello@meok.ai">hello@meok.ai</a>.</p>
 
 <footer>
   <p>© 2026 MEOK AI Labs — <a href="https://meok.ai">meok.ai</a> — <a href="https://github.com/CSOAI-ORG">GitHub</a> — <a href="https://pypi.org/user/MEOK_AI_Labs/">PyPI</a></p>
@@ -658,7 +657,7 @@ def _verify_html(cert_id: str, result: Optional[dict[str, Any]] = None) -> str:
         <p>Or verify locally:</p>
         <pre>pip install meok-attestation-verify
 meok-attestation-verify &lt; cert.json</pre>
-        <p>Questions: <a href="mailto:nicholas@csoai.org">nicholas@csoai.org</a></p>
+        <p>Questions: <a href="mailto:hello@meok.ai">hello@meok.ai</a></p>
         """
     else:
         valid = result.get("valid")
@@ -755,7 +754,7 @@ class handler(BaseHTTPRequestHandler):
                 "- MEOK AI Labs: https://meok.ai\n"
                 "- PyPI packages: https://pypi.org/user/MEOK_AI_Labs/\n"
                 "- GitHub org: https://github.com/CSOAI-ORG\n"
-                "- Contact: nicholas@csoai.org\n"
+                "- Contact: hello@meok.ai\n"
             ).encode())
             return
         if path in ("/catalogue", "/buy", "/pricing"):
@@ -891,7 +890,7 @@ class handler(BaseHTTPRequestHandler):
                     "error": (
                         "session_id required. Pass the cs_live_… or cs_test_… ID from your "
                         "Stripe checkout success URL. If you've lost it, email "
-                        "nicholas@csoai.org from the address on the subscription."
+                        "hello@meok.ai from the address on the subscription."
                     ),
                     "example": {"session_id": "cs_live_a1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"},
                 })
@@ -985,7 +984,7 @@ class handler(BaseHTTPRequestHandler):
                         "Email + Slack support",
                     ],
                     "post_sign_question": (
-                        "Was this useful? Reply to nicholas@csoai.org with one "
+                        "Was this useful? Reply to hello@meok.ai with one "
                         "sentence on what you'd want next — every reply gets read."
                     ),
                 }

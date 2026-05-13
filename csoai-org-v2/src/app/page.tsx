@@ -60,7 +60,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-slate-950 to-slate-950" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <span className="inline-block mb-6 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-sm border border-emerald-500/20">
-            EU AI Act Article 50 — 91 Days Until Enforcement
+            EU AI Act Article 50 — 176 Days Until Enforcement
           </span>
           <h1 className="text-4xl sm:text-6xl font-bold tracking-tight mb-6">
             Hire a Compliance Agent for{" "}
@@ -73,7 +73,7 @@ export default function Home() {
             audit generation, and regulatory tracking — 24/7, at 1/10th the cost of a human compliance officer.
           </p>
           <EmailCapture source="hero" />
-          <p className="text-xs text-slate-500 mt-4">Join 50+ organisations preparing for August 2026</p>
+          <p className="text-xs text-slate-500 mt-4">Join 50+ organisations preparing for November 2026</p>
         </div>
       </section>
 

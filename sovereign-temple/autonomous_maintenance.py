@@ -256,7 +256,7 @@ class AutonomousMaintenanceSystem:
                 result = await self.memory_replay.replay_memory(mem)
                 # Boost consciousness through emotional state
                 if self.consciousness:
-                    self.consciousness.emotional_state.update_from_trigger("success", intensity=0.001)
+                    self.consciousness.emotional_state.update_from_trigger("maintenance_ok", intensity=0.5)
         else:
             print("   No high-care memories to replay")
     
@@ -266,9 +266,9 @@ class AutonomousMaintenanceSystem:
         result = await self.reflection.generate_self_reflection()
         print(f"   Reflection: {result.get('reflection', 'N/A')[:60]}...")
         
-        # Boost care slightly
+        # Gentle emotional uplift from reflection (not full "success" which spikes arousal)
         if self.consciousness:
-            self.consciousness.emotional_state.update_from_trigger("success", intensity=0.02)
+            self.consciousness.emotional_state.update_from_trigger("maintenance_ok", intensity=0.5)
     
     async def _do_curiosity_generation(self):
         """Generate curiosity"""
@@ -297,9 +297,9 @@ class AutonomousMaintenanceSystem:
             boost = mem.get('care_weight', 0.5) * 0.05
             total_boost += boost
         
-        # Direct care boost
+        # Direct care boost (use calm_reset to prevent arousal runaway)
         if self.consciousness:
-            self.consciousness.emotional_state.update_from_trigger("success", intensity=total_boost)
+            self.consciousness.emotional_state.update_from_trigger("calm_reset", intensity=total_boost)
         
         print(f"   Emergency boost applied: +{total_boost:.3f}")
     

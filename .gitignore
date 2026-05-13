@@ -87,3 +87,100 @@ asimov-v0/
 claw-code/
 csoai-org/
 domain-sales-ghp/
+.env*.local
+
+# ---------------------------------------------------------------------------
+# Sub-projects with their own repos (managed independently)
+# ---------------------------------------------------------------------------
+csoai-org-v2/
+meok-desktop/
+meok-amica/
+meok-godeye/
+meok-agent-zero/
+meok-attestation-api/
+meok-platform/
+god-eye/
+opencrane/
+wolf-actuator/
+modular-bearing/
+cobolbridge-site/
+sovereign-temple-live/
+
+# ---------------------------------------------------------------------------
+# Large generated / deployment directories
+# ---------------------------------------------------------------------------
+mcp-marketplace/
+mcp-bridge/
+meok-oneos/
+meok-marketing/
+meok-labs-engine/
+sovereign-temple/
+sov3-deploy/
+vercel-deployables/
+unified-saas/
+sovereign-stack/
+vast-ai-deployment/
+meok-mobile/
+meok-kits-host/
+registry-publish/
+mcp-submissions/
+apify-actors/
+automation/
+
+# ---------------------------------------------------------------------------
+# Content / marketing / business docs (not code)
+# ---------------------------------------------------------------------------
+_TOPOLOGY/
+_ARCHIVED_SEVERED_BRANDS/
+_private_dagon/
+bleeding-edge-arsenal/
+csoai-docs/
+csoai-mcp-monetization/
+csoai-eu-ai-act-pillar/
+domain-sales/
+grants/
+marketing-assets/
+products/
+research/
+jarvis-memory/
+k25-vision/
+harvi-funding/
+investing/
+ralph-mode/
+eu-ai-act-kit/
+eu-ai-act-kit.zip
+eu-ai-act-landing/
+eu-ai-act-api/
+mcp-monetization-gateway/
+meok-ai-landing/
+cobolbridge-landing.html/
+csoai-checkout.html/
+god-eye-binary/
+god-eye-report.html/
+god-eye-server.py/
+god-eye-viewer.html/
+proofof-site/
+proofof-ai/
+landlaw-site/
+fishkeeper-site/
+koikeeper-site/
+grabhire-site/
+commercialvehicle-site/
+council-ai-storefront/
+
+# ---------------------------------------------------------------------------
+# Standalone scripts / one-offs
+# ---------------------------------------------------------------------------
+create-stripe-products-live.py
+fix-stripe-pricing.py
+domain-monetization-plan.md
+domain-monetization-sprint.md
+agent-teams-monetization.md
+fix-stripe-pricing-NOW.sh
+DNS_FIX_INSTRUCTIONS.txt
+.vercelignore
+full_knowledge_ingest.py
+market_check.py
+grandcode_test_harness.py
+jarvis_integration.py
+agent_task_executor.py

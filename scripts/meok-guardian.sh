@@ -30,7 +30,9 @@ reset_fails() { local f="$(fail_file "$1")"; echo 0 > "$f"; }
 # ─── Health Checks ───────────────────────────────────────────────────────────
 
 check_meok_ui() {
-  local code=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 http://localhost:3000/ 2>/dev/null)
+  # Port 3000 is now Hermes WhatsApp bridge, not MEOK UI
+  # Check /health endpoint (Hermes returns JSON even when disconnected)
+  local code=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 http://localhost:3000/health 2>/dev/null)
   [[ "$code" == "200" ]]
 }
 
@@ -66,11 +68,11 @@ check_ollama() {
 # ─── Restart Actions ─────────────────────────────────────────────────────────
 
 restart_meok_ui() {
-  log "[RESTART] MEOK UI (3000)"
-  pkill -f "next dev.*meok/ui" 2>/dev/null || true
-  sleep 2
-  cd /Users/nicholas/clawd/meok/ui && nohup npm run dev >> /tmp/meok_ui.log 2>&1 &
-  sleep 10
+  # Port 3000 is now Hermes WhatsApp bridge
+  log "[RESTART] Hermes WhatsApp (3000)"
+  # Don't restart Hermes — it needs manual QR scan to reconnect
+  # Just log the failure and move on
+  log "[INFO] Hermes is disconnected (needs QR scan). Skipping auto-restart."
 }
 
 restart_sov3() {
@@ -125,7 +127,7 @@ run_guardian_cycle() {
 
   # Format: name check_func restart_func port
   local services=(
-    "MEOK_UI check_meok_ui restart_meok_ui 3000"
+    "HERMES check_meok_ui restart_meok_ui 3000"
     "SOV3 check_sov3 restart_sov3 3101"
     "MEOK_MCP check_meok_mcp restart_meok_mcp 3102"
     "MEOK_API check_meok_api restart_meok_api 3200"

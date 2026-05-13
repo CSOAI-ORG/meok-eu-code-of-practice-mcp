@@ -49,7 +49,7 @@ tail -f /tmp/sov3.log
 cd sovereign-temple && docker-compose up -d
 
 # Check health (old port)
-curl http://localhost:3100/health | jq
+curl http://localhost:3101/health | jq  # (old port — SOV3 now runs on 3101)
 ```
 
 ### Orion-Riri-Hourman Agent (Python)

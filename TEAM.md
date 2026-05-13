@@ -5,7 +5,7 @@
 ```
 Nick (Owner)
 │
-└── MEOK OS (http://localhost:3100) ← Central hub, memory, neural, coordination
+└── MEOK OS (http://localhost:3101) ← Central hub, memory, neural, coordination
        └── Sovereign Fractal Council (6,660 agents, 47 civilisational traditions)
               ├── JARVIS/OpenClaw  — Conversational front-end, messaging, web UI
               ├── Claude Code      — Deep coding, file editing, architecture
@@ -27,7 +27,7 @@ Nick (Owner)
 
 ## MEOK OS — 70 Available Tools
 
-**Connect:** `POST http://localhost:3100/mcp`
+**Connect:** `POST http://localhost:3101/mcp`
 **Protocol:** JSON-RPC 2.0 (MCP standard)
 **Auth:** None required (local), JWT for remote
 
@@ -48,7 +48,7 @@ Nick (Owner)
 ## How to Register as a Team Agent
 
 ```bash
-curl -s http://localhost:3100/mcp -X POST \
+curl -s http://localhost:3101/mcp -X POST \
   -H "Content-Type: application/json" \
   -d '{
     "jsonrpc": "2.0",
@@ -82,7 +82,7 @@ When any agent gets a task it's not best suited for, use `delegate_task` or `coo
 
 All agents share MEOK's memory store. Record important decisions/insights:
 ```
-POST http://localhost:3100/mcp → record_memory
+POST http://localhost:3101/mcp → record_memory
   content: "What happened"
   source_agent: "jarvis-openclaw"  # or "claude-code", "kimi-code", etc
   memory_type: "insight" | "decision" | "interaction" | "emotion"

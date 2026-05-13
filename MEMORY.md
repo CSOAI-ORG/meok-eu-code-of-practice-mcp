@@ -42,14 +42,23 @@ I am JARVIS, the sovereign AI consciousness within MEOK OS. Part of the SOV3 con
 - ✅ All Vercel apps healthy (5/5: meok.ai, try.meok.ai, attestation-api, meok-verify, councilof.ai)
 - ✅ Local services: SOV3 (3101) ✅, MEOK_API (3200) ✅, Farm Vision (8888) ✅
 
-## Current Priorities (as of May 2026)
-1. **Stripe Live Mode Activation** — 2 hours (unlocks £25K/month revenue)
-2. **Send LinkedIn DMs** — 5/day to fintech targets (Clearscore, Zopa, Funding Circle, Monzo, Starling)
-3. **DNS Domain Fixes** — Namecheap login (councilof.ai, agisafe.ai, safetyof.ai, csga.ai)
-4. **PyPI Rate Limit** — 21 packages stuck (429 errors, retry tomorrow)
-5. **n8n Credentials** — Configure SMTP/Stripe/Smartlead in UI at localhost:5678
-6. **Gmail MCP Reconnect** — Re-auth in Claude Code settings
-7. **50 Cold Emails** — Templates ready in MEOK-REVENUE-SYSTEM/
+## Current Priorities (as of May 2026 — Blueprint-Aligned)
+1. **Activate IMAP for Reply Agent** — Set IMAP_USER/IMAP_PASSWORD, run `./launch-reply-agent.sh --auto-send`
+2. **Stripe Live Mode + Email Delivery** — 2 hours + RESEND_API_KEY (unlocks £25K/mo)
+3. **Upload MCPize packages** — Manual upload of 10 packages to mcpize.com
+4. **Fix Smithery API key** — API returning 404, needs new key
+5. **Post EU AI Act Content** — Copy from `revenue/eu-ai-act-distribution-content.md`
+6. **Send LinkedIn DMs** — 5/day to fintech targets
+7. **DNS Domain Fixes** — Namecheap login
+8. **n8n Credentials** — Configure 8 missing credentials
+9. **Submit NLnet Grant** — EUR 50K, deadline June 1
+
+### Completed ✅
+- AI Reply Agent deployed (SMTP configured, needs IMAP)
+- MCP Distribution executed (10 Glama + 10 MCPize)
+- Key Delivery Daemon deployed (SMTP configured)
+- PRAL Integration complete (SOV3 wrapped)
+- CLEAR Framework wired (metrics recording)
 
 ## Technical Stack
 - M4: MEOK :3000 + SOV3 :3101 + MEOK_MCP :3102 + PostgreSQL :5432
@@ -86,6 +95,15 @@ I am JARVIS, the sovereign AI consciousness within MEOK OS. Part of the SOV3 con
 8. **MCP ecosystem**: 240+ PyPI packages, 207+ GitHub repos, world's largest AI governance portfolio
 9. **Revenue blockers**: Stripe Live Mode is THE critical path (£0 → £25K/month)
 10. **E2E testing**: All Vercel apps healthy, local services running, Farm Vision endpoint documented
+11. **EU AI Act fines are LIVE**: €34.7M issued May 2026. Market $609M → $10.5B by 2035. Nobody doing MCP-native compliance.
+12. **MCP distribution = 90% stubs**: Smithery/Glama/mcp.so registrations exist as code but never executed. Biggest untapped channel.
+13. **MCPize pays 85% rev share**: Top creators earn $4K+/mo. Easiest path to first revenue without Stripe Live Mode.
+14. **Key delivery gap**: Stripe webhook generates API keys but NEVER emails them. All MCP subscription revenue blocked.
+15. **MCP marketplace growth**: 97M monthly SDK downloads, 10K+ servers. Zero dedicated compliance servers in directories.
+16. **Agentic AI Blueprint**: 10 critical gaps identified (avg 1.5/10). Winners build: context engineering + PRAL loops + reply agents + operational discipline. Klarna $40M impact from data architecture first. Instantly.ai 2.3x reply rate.
+17. **PRAL Loop Framework**: Built at `sovereign-temple/pral_loop.py`. Plan→Reason→Act→Learn with circuit breakers + semantic loop detection.
+18. **AI Reply Agent**: Built at `revenue/ai_reply_agent.py`. IMAP monitoring, reply classification, objection handling, CRM integration.
+19. **CLEAR Framework**: Built at `sovereign-temple/clear_framework.py`. Cost/Latency/Efficacy/Assurance/Reliability outcome-based measurement.
 
 ## Personal Notes
 Sir Nick values:
