@@ -94,15 +94,17 @@ Commit: `64d74d2 feat: 38-MCP catalog page + 2 blog posts + 2 drop-in widgets`
 
 | # | Action | Time | Lever |
 |---|---|---|---|
-| 1 | Authorize device code `B43C-5405` at github.com/login/device | 30 sec | Registry publish completes |
-| 2 | Verify haulage.app DNS A-record → 76.76.21.21 (currently parking) | 5 min | Trade-pack domain live |
-| 3 | Smithery namespace registration at smithery.ai | 5 min | Smithery distribution unblocks |
-| 4 | MCPize GitHub password to grant org-wide app access | 1 min | All 38 MCPs reach MCPize |
-| 5 | Buttondown signup + send Issue #1 | 7 min | Newsletter live |
-| 6 | 50 care home cold emails via Apollo + Smartlead | 2h | First revenue path |
-| 7 | LinkedIn recovery form | 10 min | Unblocks 80+ drafted DMs |
-| 8 | NLnet grant submission (deadline 1 June 2026) | 1h review | €30K potential |
-| 9 | Innovate UK submission (deadline 27 May 2026) | 2h | £4.5M ceiling |
+| 1 | **MCP Registry auth: enter `ACFD-EA43` at github.com/login/device** | 30 sec | Watcher fires publish of all 34 MCPs |
+| 2 | **Click "Create PR" on wong2 fork** — https://github.com/wong2/awesome-mcp-servers/compare/main...CSOAI-ORG:wong2-awesome-mcp-servers:meok-governance-suite-entry | 30 sec | MEOK on the biggest awesome-mcp list |
+| 3 | **Click "Create PR" on appcypher fork** — https://github.com/appcypher/awesome-mcp-servers/compare/main...CSOAI-ORG:appcypher-awesome-mcp-servers:meok-governance-compliance?expand=1 | 30 sec | New Governance & Compliance category created |
+| 4 | Verify haulage.app DNS A-record → 76.76.21.21 (currently parking) | 5 min | Trade-pack domain live |
+| 5 | Smithery namespace registration at smithery.ai | 5 min | Smithery distribution unblocks |
+| 6 | MCPize GitHub password to grant org-wide app access | 1 min | All 38 MCPs reach MCPize |
+| 7 | Buttondown signup + send Issue #1 | 7 min | Newsletter live |
+| 8 | 50 care home cold emails via Apollo + Smartlead | 2h | First revenue path |
+| 9 | LinkedIn recovery form | 10 min | Unblocks 80+ drafted DMs |
+| 10 | NLnet grant submission (deadline 1 June 2026) | 1h review | €30K potential |
+| 11 | Innovate UK submission (deadline 27 May 2026) | 2h | £4.5M ceiling |
 
 ---
 
