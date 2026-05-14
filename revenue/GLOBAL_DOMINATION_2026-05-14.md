@@ -92,19 +92,36 @@ Commit: `64d74d2 feat: 38-MCP catalog page + 2 blog posts + 2 drop-in widgets`
 
 ## 🚫 Blockers / Nick-only actions
 
+### Tier 0 — one-click actions (90 sec total)
+
+These 9 PRs and 1 device auth are all queued. Click each link → green "Create PR" button.
+
+| # | Action | Stars | URL |
+|---|---|---|---|
+| 1 | **MCP Registry auth: enter `C1AC-46EC` at github.com/login/device** (watcher armed, fires 38 publishes instantly) | — | https://github.com/login/device |
+| 2 | PR to **punkpeye/awesome-mcp-servers** (FLAGSHIP) | 86,853★ | https://github.com/punkpeye/awesome-mcp-servers/compare/main...CSOAI-ORG:awesome-mcp-servers:meok-governance-suite?expand=1 |
+| 3 | PR to **appcypher/awesome-mcp-servers** | 5,538★ | https://github.com/appcypher/awesome-mcp-servers/compare/main...CSOAI-ORG:appcypher-awesome-mcp-servers:meok-governance-compliance?expand=1 |
+| 4 | PR to **wong2/awesome-mcp-servers** | 4,059★ | https://github.com/wong2/awesome-mcp-servers/compare/main...CSOAI-ORG:wong2-awesome-mcp-servers:meok-governance-suite-entry?expand=1 |
+| 5 | PR to **rohitg00/awesome-devops-mcp-servers** | 984★ | https://github.com/rohitg00/awesome-devops-mcp-servers/compare/main...CSOAI-ORG:awesome-devops-mcp-servers:meok-governance-suite?expand=1 |
+| 6 | PR to **MobinX/awesome-mcp-list** | 879★ | https://github.com/MobinX/awesome-mcp-list/compare/main...CSOAI-ORG:awesome-mcp-list:meok-governance-suite?expand=1 |
+| 7 | PR to **Puliczek/awesome-mcp-security** (5 cybersec MCPs) | 692★ | https://github.com/Puliczek/awesome-mcp-security/compare/main...CSOAI-ORG:awesome-mcp-security:meok-security-suite?expand=1 |
+| 8 | PR to **TensorBlock/awesome-mcp-servers** | 677★ | https://github.com/TensorBlock/awesome-mcp-servers/compare/main...CSOAI-ORG:awesome-mcp-servers-1:meok-governance-suite?expand=1 |
+| 9 | PR to **PipedreamHQ/awesome-mcp-servers** | 271★ | https://github.com/PipedreamHQ/awesome-mcp-servers/compare/main...CSOAI-ORG:awesome-mcp-servers-2:meok-governance-suite?expand=1 |
+
+**Combined audience: ~100,000 stars of distribution surface.** Even at 30% PR acceptance rate that's exposure to ~30K developers per merged PR.
+
+### Tier 1 — Nick handler actions (longer)
+
 | # | Action | Time | Lever |
 |---|---|---|---|
-| 1 | **MCP Registry auth: enter `ACFD-EA43` at github.com/login/device** | 30 sec | Watcher fires publish of all 34 MCPs |
-| 2 | **Click "Create PR" on wong2 fork** — https://github.com/wong2/awesome-mcp-servers/compare/main...CSOAI-ORG:wong2-awesome-mcp-servers:meok-governance-suite-entry | 30 sec | MEOK on the biggest awesome-mcp list |
-| 3 | **Click "Create PR" on appcypher fork** — https://github.com/appcypher/awesome-mcp-servers/compare/main...CSOAI-ORG:appcypher-awesome-mcp-servers:meok-governance-compliance?expand=1 | 30 sec | New Governance & Compliance category created |
-| 4 | Verify haulage.app DNS A-record → 76.76.21.21 (currently parking) | 5 min | Trade-pack domain live |
-| 5 | Smithery namespace registration at smithery.ai | 5 min | Smithery distribution unblocks |
-| 6 | MCPize GitHub password to grant org-wide app access | 1 min | All 38 MCPs reach MCPize |
-| 7 | Buttondown signup + send Issue #1 | 7 min | Newsletter live |
-| 8 | 50 care home cold emails via Apollo + Smartlead | 2h | First revenue path |
-| 9 | LinkedIn recovery form | 10 min | Unblocks 80+ drafted DMs |
-| 10 | NLnet grant submission (deadline 1 June 2026) | 1h review | €30K potential |
-| 11 | Innovate UK submission (deadline 27 May 2026) | 2h | £4.5M ceiling |
+| 10 | Verify haulage.app DNS A-record → 76.76.21.21 (currently parking) | 5 min | Trade-pack domain live |
+| 11 | Smithery namespace registration at smithery.ai | 5 min | Smithery distribution unblocks |
+| 12 | MCPize GitHub password to grant org-wide app access | 1 min | All 38 MCPs reach MCPize |
+| 13 | Buttondown signup + send Issue #1 | 7 min | Newsletter live |
+| 14 | 50 care home cold emails via Apollo + Smartlead | 2h | First revenue path |
+| 15 | LinkedIn recovery form | 10 min | Unblocks 80+ drafted DMs |
+| 16 | NLnet grant submission (deadline 1 June 2026) | 1h review | €30K potential |
+| 17 | Innovate UK submission (deadline 27 May 2026) | 2h | £4.5M ceiling |
 
 ---
 
