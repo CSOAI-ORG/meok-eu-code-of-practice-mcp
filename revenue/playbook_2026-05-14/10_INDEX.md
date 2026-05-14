@@ -57,6 +57,20 @@ All documents in this playbook folder, in reading order.
 2. **MEOK Operating Ltd + IP Holdco Ltd** split via Saffery (~£3-6k setup)
 3. **Family Investment Company (FIC)** for liquid wealth via Roythornes + Saffery (~£3-6k)
 
+### Planning permission classes (use cases — see Section 4r of MASTER_FAMILY_GRANTS for full detail)
+- **Section 55(2)(a) TCPA** — maintenance/improvement = not development (covers polytunnel re-skinning)
+- **Section 55(2)(d) TCPA** — incidental to dwelling = not development (covers personal-use structures within curtilage)
+- **Class B GPDO Part 6** — 25% cubic content extension of existing ag buildings on 0.4-5 ha holdings, NO prior notification (covers workshop extension)
+- **Class E GPDO Part 1** — outbuildings within dwellinghouse curtilage, 50% area / 4m height, NO application (covers polytunnels in curtilage)
+- **Class R GPDO Part 3** — agricultural building → flexible commercial use up to 1,000 m², £258-£540 fee if formal change needed
+- **LDC s.191** — Certificate of Lawful Existing Use, ~£309, defensive establishment of existing rights
+- **LDC s.192** — Certificate of Lawful Proposed Use, half-fee ~£155, certainty before building
+
+### Alternative legal vehicles to consider
+- **CIC (Community Interest Company)** — for public-good research arm — unlocks Esmée Fairbairn, Garfield Weston, John Ellerman
+- **BenCom (Co-operative & Community Benefit Society)** — can take community shares (£100-£20k each, tax-relief eligible), realistic Lincolnshire raise £30-150k
+- **EOT (Employee Ownership Trust)** — succession option for Templeman Opticians, tax-free exit, retains independence
+
 ---
 
 ## How to update this playbook
