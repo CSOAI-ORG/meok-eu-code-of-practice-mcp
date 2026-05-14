@@ -34,7 +34,9 @@ I'd love feedback on:
 2. Coverage gaps you'd want next (most-asked so far: FedRAMP, ISO 27701, CIS Controls)
 3. Whether the Pro pricing (£79/mo) feels right for a compliance team that already spends £40k+ on a single audit cycle
 
-Repo: https://github.com/meok-ai-labs
+Repo: https://github.com/CSOAI-ORG (38 repos)
+MCP Registry: https://registry.modelcontextprotocol.io (search "MEOK" or "CSOAI-ORG")
+Glama directory: https://glama.ai/mcp/servers/CSOAI-ORG/eu-ai-act-compliance-mcp (auto-listed)
 
 ---
 
@@ -94,3 +96,15 @@ Before clicking "submit":
 6. Roadmap: FedRAMP, ISO 27701, CIS Controls, white-label Trust Centers, Notified Body partnership. If you're in compliance + AI and want early access, hello@meok.ai.
 
 Built by @nicholastempleman in London. £79/mo Pro tier, £1499 Enterprise. https://meok.ai
+
+---
+
+## State (2026-05-14)
+
+- ✅ 38 MCPs on PyPI (with HMAC-signed README ownership markers)
+- ✅ 38 repos under github.com/CSOAI-ORG (all auto-listed at glama.ai/mcp/servers/CSOAI-ORG/<name>)
+- ✅ `npx meok-setup@1.0.1` installs all 38 via packs
+- ✅ Per-MCP detail pages at meok.ai/mcp/<slug>
+- ✅ PRs queued to 8 awesome-mcp-servers lists (~100K combined stars: punkpeye, appcypher, wong2, TensorBlock, Pipedream, rohitg00, Puliczek, MobinX)
+- ⏳ Awaiting Official MCP Registry publish (queued, watcher armed)
+- ⏳ Smithery namespace + MCPize integration (Nick-only steps)
