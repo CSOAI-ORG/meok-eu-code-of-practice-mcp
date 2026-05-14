@@ -12,13 +12,59 @@
 This is the consolidated master doc covering every grant, fund, planning rule, and structural option found for the Templeman family's 4 active enterprises:
 
 1. **Templeman Opticians** — independent UK optometry practice
-2. **6.5-acre farm** in Lincolnshire (24,000 sq ft polytunnel aquaponics planned)
+2. **6.5-acre farm** in Lincolnshire — **MODERNISING existing polytunnels + EXTENDING existing workshop** for personal food + R&D (NOT a commercial trading site)
 3. **MEOK AI Labs** — AI compliance MCP suite (38 servers, MIT-licensed)
 4. **CSO AI** — AI safety/governance research arm
 
-Plus the **MEOK Research Campus** plan: workshop conversion + caravan accommodation + aquaponics + ag-robotics R&D on the family farm — with the family farm + IP held in a protective trust + Irish holding company structure.
+Plus the **MEOK Research Campus** plan: workshop extension + caravan accommodation (CL certificate) + polytunnel modernisation + ag-robotics R&D on the family farm — with the family farm + IP held in a protective trust.
 
 **Copy-paste-friendly** — open the doc, ctrl-A, paste into Cowork or any other AI for cross-checking.
+
+---
+
+## 🔥 CRITICAL REFRAMING (added 2026-05-14 evening)
+
+The original Section 4 (planning) was written assuming a brand-new 24,000 sq ft commercial polytunnel build. **This was wrong.** Real situation:
+
+- **Existing polytunnels** (120 × 20 ft footprint each) already on site from former strawberry farm — being **MODERNISED on existing footprint**, not built fresh
+- **Existing workshop** already on site — being **EXTENDED** (3m from polytunnel)
+- **PERSONAL food production** — lettuce + basil for personal/family/research-campus consumption. **NO TRADE on site.** No customers visiting. No retail.
+- **R&D for open-source ag-robotics** alongside (research, not commercial product sales)
+
+**This reframe DRAMATICALLY reduces planning friction and cost.** Three deep-research agents are working on:
+1. Modernisation / extension / personal use / "incidental to dwelling" interpretations
+2. Pond + wildlife + biodiversity grants + nutrient/BNG/carbon credits
+3. Self-build cost reduction + hidden grant pockets + co-op buying
+
+Updated planning analysis lands in **Section 4 (revised)** below. The new highest-leverage move is likely **TWO Lawful Development Certificates** (~£300-500 each) instead of a £15k full planning application.
+
+### Preliminary corrections — high-confidence facts before deep research lands
+
+✅ **10-year rule (LURA 2023 s.115)** — existing polytunnels in place 10+ years uncontested have **immune** lawful use. Cannot be enforced against. Replacement on the same footprint is not new development.
+
+✅ **TCPA 1990 s.55** — "development" is operations on land changing its character. Like-for-like replacement / re-skinning of existing polytunnel is **repair/maintenance**, not development. No planning needed.
+
+✅ **GPDO 2015 Part 6 Class B** — agricultural building extension up to **10% cubic content** + max 465 m² ground area is permitted development with prior notification only (~£96 fee). Workshop extension fits here if workshop is agricultural in use.
+
+✅ **TCPA s.55(2)(d) "incidental to dwellinghouse enjoyment"** — buildings within curtilage used incidentally to dwelling (greenhouses, hobby workshops, polytunnels for personal food) are NOT development. **Hancock v Secretary of State [2017]** confirmed substantial uses can qualify.
+
+✅ **No commercial trade on site** changes:
+- No business rates implications (it's domestic / agricultural)
+- No VAT registration
+- No Environment Agency permit for food trade
+- No food safety registration
+- No highways / transport assessment (no customers)
+- Likely no need for commercial planning class at all
+
+✅ **Suggested cheapest path** (subject to deep research confirmation):
+1. **LDC s.191 (existing use)** for the polytunnel footprint — proves 10+ year established use (~£300-500)
+2. **LDC s.192 (proposed use)** for the workshop extension under Class B — confirms PD (~£300-500)
+3. **Class B prior notification only** if any new building component — £96
+4. **Class R prior approval** if workshop being used for R&D office (if needed) — £536
+
+**Total cost target: under £2,000 vs the £15,090 full planning app the original agent recommended.**
+
+Full revised Section 4 follows once the deep-research agents land.
 
 ---
 
