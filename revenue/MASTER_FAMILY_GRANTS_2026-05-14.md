@@ -1192,6 +1192,430 @@ All section sources cited inline. Domain-level for cross-checking:
 
 ---
 
+## Section 4 (revised) — Reframed planning analysis
+
+### Headline finding
+
+Earlier Section 4 treated this as a new 24,000 sq ft commercial polytunnel build requiring full planning. **It almost certainly is not.** Site already has established agricultural use; works are largely (a) replacement/re-skinning of existing structures, (b) extension of an existing building, (c) intensification of personal cultivation.
+
+**Most of this is £0 cost** under permitted development, s.55(2) exclusions, or established lawful use — with at most one defensive **£309 LDC** to remove all doubt.
+
+### 4r.1 Re-skinning existing polytunnels = NOT development
+
+**Section 55(2)(a) TCPA 1990** explicitly carves out:
+> "the carrying out for the maintenance, improvement or other alteration of any building of works which (i) affect only the interior of the building, or (ii) do not materially affect the external appearance of the building, are not to be taken … to involve development of the land."
+
+→ **Re-skinning a polytunnel (replacing polythene on existing steel hoops) is unambiguously NOT development.** No application needed. Repair, maintenance, replacement of damaged hoops — all excluded.
+
+For wholesale frame+cover replacement on same footprint:
+- Hall Hunter Partnership v First Secretary of State [2006] was about FIRST erection, NOT replacement
+- s.55(2)(a) "no material change in external appearance" likely covers like-for-like
+- Stage as repair/replacement of components, not wholesale demolition
+- Belt-and-braces: LDC s.192 = half full fee, ~£120-155
+- (No "Bagshaw" case — misremember)
+
+### 4r.2 🎯 Class B GPDO 2015 Part 6 — workshop extension (post-21 May 2024)
+
+**Class B (updated by SI 2024/579):**
+- Holdings **0.4-5 ha** — your 2.63 ha sits squarely inside
+- Max cubic content increase: **25%** (up from 20%)
+- Max ground area: **1,250 m²** (up from 1,000)
+- Height cannot increase
+- Max 30m from original building
+- 5m min from unit boundary
+- Cumulative: 90m radius / 2-year period
+
+**No prior notification required** unless article 2(4) land (NP, AONB, etc). **South Holland Sutton St James is NOT article 2(4).**
+
+→ Workshop extension under Class B = **£0**, no application.
+
+### 4r.3 ⭐ Schedule 2 Part 1 Class E — outbuildings in dwellinghouse curtilage
+
+**MOST PERMISSIVE ROUTE if structures sit within curtilage of farmhouse.**
+
+Class E permits:
+> "the provision within the curtilage of the dwellinghouse of … any building or enclosure … required for a purpose incidental to the enjoyment of the dwellinghouse as such"
+
+**Limits:**
+- Max overall height **4m** (dual-pitched), **3m** otherwise
+- Max eaves **2.5m**
+- Max **50% of curtilage** covered by all outbuildings combined
+- **2.5m max** if within 2m of any boundary
+- Single storey, not forward of principal elevation
+
+**Polytunnel = "a building or enclosure" for Class E purposes.** 4m height accommodates 120×20 tunnels easily.
+
+**Binding constraint = 50% curtilage area.** If curtilage ~1 acre, 50% = ~2,000 m² ≈ 21,500 sq ft. Your 24,000 sq ft total is slightly over — **split: some in curtilage (Class E) + others on wider holding (Class B).**
+
+→ Curtilage tunnels under Class E = **£0**, no application.
+
+### 4r.4 Section 55(2)(d) — incidental to dwellinghouse
+
+**Most powerful exclusion if structures within curtilage.**
+
+> "the use of any buildings or other land within the curtilage of a dwellinghouse for any purpose incidental to the enjoyment of the dwellinghouse as such" is NOT development.
+
+**Curtilage test** (Sinclair-Lockhart's Trustees v Central Land Board 1950; Dyer v Dorset CC 1989):
+- Physical attachment to dwelling
+- Forms one enclosure with the house
+- Functionally tied to it
+
+For your former strawberry farm: commercial fields likely OUTSIDE curtilage. Area immediately surrounding farmhouse + buildings 3m from workshop likely INSIDE.
+
+⚠️ **Wallington v SS for Wales [1991]** — 40+ dogs as "hobby" held NOT incidental (disproportionate to dwelling). 6 dogs OK. **Objective view of scale.**
+
+**24,000 sq ft scale risk** — mitigate by splitting between curtilage (Class E) + agricultural holding (Class B) + LDC s.191 for established use.
+
+**Class E(g) GPDO confirms** "keeping of poultry, bees, pet animals … for the domestic needs or personal enjoyment of the occupants" is incidental. Growing food = same family by analogy.
+
+### 4r.5 Personal food production — TCPA s.336 still "agriculture"
+
+**TCPA s.336(1):** "agriculture" includes horticulture, fruit growing, etc — does NOT require "trade or business".
+
+Class A/B GPDO adds "trade or business" requirement BUT s.336 itself doesn't.
+
+So you can have:
+- **Agriculture per s.336** (personal horticulture) ✅
+- Not Class A/B GPDO trade/business agriculture
+
+**Either way — NO planning permission needed for cultivation:**
+- If trade-agriculture: established use covers it
+- If hobby/incidental: s.55(2)(d) covers it
+
+### 4r.6 R&D / Class E(g)(ii) angle
+
+Use Classes Order 2020:
+- E(g)(i) offices
+- **E(g)(ii) research and development**
+- E(g)(iii) light industrial
+
+Free movement WITHIN Class E (no application). Can't reach from agricultural without (a) Class R prior approval, (b) full change of use, OR **(c) operating R&D as ancillary to lawful primary use.**
+
+**Best route:** keep R&D ancillary to agriculture + dwellinghouse. Workshop = farm-equipment maintenance + personal food research + open-source robotics tinkering. **No material change of use** = no application needed.
+
+**Class R 2024 amendments** (if formal change needed):
+- Up to **1,000 m²** total floorspace, ag → flexible commercial (E, B2, B8, C1, F2(c))
+- Under 150 m² = notification only
+- Larger = prior approval (56 days, **£540 with ops / £258 without**)
+
+### 4r.7 🎯 "Established use" — the strongest single argument
+
+Continuous strawberry-farm use since 2015 or earlier → site has **lawful established agricultural use**.
+
+**Post-25 April 2024 (LURA 2023 s.115):** 10-year rule for everything.
+
+→ Agricultural use is **fait accompli**. Replacement structures benefit.
+
+**Recommended defensive move: CLEUD (Certificate of Lawful Existing Use or Development) under TCPA s.191**
+- Confirms established agric/horticultural use of 6.5-acre site
+- **Evidence:** pre-2015 aerial photos, Land Registry title, statutory declarations from Wendy/Fred, old strawberry-farm invoices, dated polytunnel photos
+- **Cost: ~£309** (full fee) [VERIFY 2026]
+- Outcome: binding certificate from SHDC — makes future challenges much harder
+
+### 4r.8 ⭐ South Holland DC pre-app advice is FREE
+
+**Free written pre-application advice** (confirmed via SHDC website). ~30 working days response.
+
+**Submit to: planningadvice@sholland.gov.uk**
+
+**Questions to ASK** (maximise PD eligibility):
+1. "Confirm dwellinghouse curtilage at Old Fendyke — does it include existing workshop + adjacent polytunnel area?"
+2. "Confirm re-skinning existing 120×20 polytunnels falls within s.55(2)(a) TCPA and is not development."
+3. "Confirm Class E Schedule 2 Part 1 GPDO 2015 applies to replacement polytunnel within curtilage."
+4. "Confirm existing workshop is agricultural building for Class B Schedule 2 Part 6 — 25% cubic extension permitted without prior notification given non-article 2(4) land?"
+5. "Confirm 6.5-acre site has continuous established agricultural use from at least [year], benefiting from lawful established agric use under TCPA s.191."
+
+**Evidence to bring:**
+- Aerial photos pre-2015 (Google/Bing historical imagery)
+- HM Land Registry title with farm history
+- Statutory declaration from Wendy/Fred — continuous farming use
+- Photos of existing polytunnels with date metadata
+- Workshop photographs + dates
+- Sketch showing 3m distance between workshop+polytunnel + proposed curtilage line
+
+**Framing:**
+- "Modernising existing structures, not creating new"
+- "Personal food production + research-campus consumption, not commercial trade"
+- "Workshop = farm-equipment maintenance + personal R&D, ancillary to dwellinghouse"
+- "Continuous agricultural use back to [year]"
+- "No customers, no employees, no trade visits, no marketing"
+
+### 4r.9 MINIMUM-COST DECISION TABLE
+
+| # | Component | Best path | Alternative | Fee | Timeline |
+|---|---|---|---|---|---|
+| 1 | Modernise/re-skin existing polytunnels | **No app — s.55(2)(a) TCPA** | LDC s.192 belt-and-braces | **£0** (or ~£155) | Immediate |
+| 2 | Extend existing workshop | **Class E if curtilage, OR Class B if agricultural** | LDC s.192 for certainty | **£0** (or ~£155) | Immediate |
+| 3 | Add new polytunnels (personal food + research) | **Class E within curtilage + Class B beyond curtilage** | LDC s.191 then Class B | **£0** (or ~£309 CLEUD) | Immediate |
+| 4 | CL caravan front land | **C&MC CL — 5 vans, para 5 exemption** | C&CC equivalent | **~£600/yr** | Immediate |
+
+**TOTAL MINIMUM COST: £0** under PD + s.55 exclusions.
+**TOTAL DEFENSIVE COST (with CLEUD s.191):** ~£309 + £600/yr CL.
+
+**Recommended sequence:**
+1. £0 free SHDC pre-app advice first — get written confirmations
+2. If uncertainty remains, file CLEUD s.191 (£309) for established use
+3. Proceed under PD + s.55 exclusions
+4. Sign up C&MC CL scheme (£600/yr)
+
+---
+
+## Section 10 — Pond, wildlife, biodiversity grants + hidden revenue
+
+PE12 0HE in Fens National Character Area, lowland peat, South Holland District, Welland & Deepings + South Holland IDB drainage, Anglian Water catchment. NOT in Lincs Wolds → FiPL N/A. Fens are deep peat → **peatland-specific funding opens up**.
+
+### 10.1 🎯 Headline Defra schemes
+
+**Capital Grants 2026** — opens July 2026, £225m national pot
+- Water quality cap: £25k (pond WN12 £1,879/pond, riparian buffers)
+- Boundaries/trees/orchards cap: £35k
+- NFM cap: £25k. Assessments uncapped
+- **24 items require CSF advice first** — CSF letter is the gateway
+- https://defrafarming.blog.gov.uk/2026/03/19/the-2026-capital-grants-offer/
+
+**SFI 2026** — opens June 2026. ⚠️ 3 ha minimum (you're 2.63 — below). Workaround: lease adjoining land OR wait Window 2 (Sep 2026)
+
+**CSHT 2026** — rolling, by invitation. WT4 £103/pond ≤100m²; WT5 £183/pond >100m²; WN12 £1,879/pond
+
+**🎯 Lowland Peat Water Discovery Grant** — £50k-£300k, **deadline 26 June 2026**. Fens explicit target. Best as cluster bid via FEPP (**fepp@lincstrust.co.uk**)
+
+### 10.2 Lincolnshire-specific
+
+- **LCC Community Wildlife Grant** — £50-500, 1 Apr + 1 Sep windows. Needs CIC/parish vehicle
+- **Bicker Wind Farm Trust** — £250-£5,000 if within 10 miles Bicker Fen [VERIFY ~12 miles distance]
+- **South Holland UKSPF GRASSroots** — up to £24,999 community
+- **🎯 Fens East Peat Partnership** (LWT) — fepp@lincstrust.co.uk
+- **Anglian Water Farm Innovation Grant** — up to £7,500
+
+### 10.3 National environmental charities (need CIC vehicle)
+
+- **Esmée Fairbairn — Our Natural World** — £30k-£100k+, 3-5 yr
+- **Garfield Weston** — Regular up to £100k; Major >£100k
+- **John Ellerman** — up to £180k
+- **National Lottery Heritage Fund** — £10k-£10m
+- **Naturesave Trust** — up to £5,000
+- **PTES Conservation Insight** — £3k-£10k/yr, Stage 1 deadline **28 May 2026**
+
+### 10.4 Tree, hedge, orchard
+
+- **Woodland Trust MOREwoods** — free trees + 75% costs, Nov 2026 planting
+- **Woodland Trust MOREhedges** — 75% costs, reopens March 2026
+- **Tree Council Branching Out** — £250-£2,500
+- **LCC free tree/hedge packs** — autumn 2026
+
+### 10.5 🎯 BUS — £9,000 quick win
+
+- £7,500 ASHP/GSHP → **£9,000 OFF-GAS-GRID from July 2026**
+- Apply to EXISTING farmhouse (self-build new workshop EXCLUDED)
+- https://www.ofgem.gov.uk/environmental-and-social-schemes/boiler-upgrade-scheme-bus
+
+### 10.6 SEG 2026: Octopus Flux 32p peak; Good Energy 25p; EDF 24p
+
+### 10.7 🎯 CSF — FREE advice + gateway
+
+Single highest-value FREE service. Free 1-to-1 + gateway to 24 CG2026 items. https://www.gov.uk/guidance/catchment-sensitive-farming-reduce-agricultural-water-pollution
+
+### 10.8 🎯 Country Trust VED1 educational access
+
+**£363/visit × 25 visits/year = £9,075/year recurring** via Capital Grants 2026. Perfect for research-campus angle.
+
+### 10.9 💎 Biodiversity Net Gain (BNG) — the big hidden play
+
+Mandatory Feb 2024 — developers must deliver 10% biodiversity uplift OR buy units. PE12 0HE = high-development-pressure (Spalding, Long Sutton, Boston, Peterborough all building).
+
+**For 2.63 ha (6.5 acres):**
+- ~6.5 biodiversity units potential (2.5 units/ha after 30 yrs mgmt)
+- Other Neutral Grassland £20-25k/unit (Feb 2026)
+- 6.5 × £22,500 ≈ **£146,000 gross lump sum**
+- Less ~£15,800 mgmt over 30 yrs
+- **Net £100-130k over 30 yrs (£3.5-4.5k/yr amortised)**
+- Higher-value habitats (ponds, traditional orchards) get **20-45% more in the East**
+- Statutory credits (developer last resort): £84k/unit — your private price beats this
+
+**Sell via:** Wilder Doddington (LWT commercial), GIGL, national BNG register
+
+### 10.10 Woodland Carbon Code
+
+2 acres new mixed broadleaf → 150-200 tCO2e over 30 yrs → at £30/t = **£4,500-£6,000 lifetime** in tranches. Stackable with BNG.
+
+### 10.11 Peatland Code (Fens-specific)
+
+Sign up as FEPP pilot (fepp@lincstrust.co.uk). Peatland Carbon Units £15-30/tonne. Fens peat emits 20-30 tCO2/ha/yr → re-wetting stops emissions. **~£1,640/yr** potential.
+
+### 10.12 Nutrient credits (optional future)
+
+Wash NOT currently on Nutrient Neutrality list. If designated: £200-£3,000/kg/yr. 2 ha wetland → 5-20 kg/yr → **£1k-£60k/yr**. Track via SHDC.
+
+### 10.13 Realistic blended revenue
+
+| Stream | Year 1 cash | Yrs 2-30 |
+|---|---|---|
+| **BNG units lump (30-yr obligation)** | **£80k-£150k lump** | (paid) |
+| **Educational visits VED1** | **£9,075/yr** | £9,075/yr |
+| Peatland Code (deep peat) | £0 | £500-£1,600/yr |
+| WCC | £0 | £100-£200/yr |
+| Nutrient credits (if Wash designated) | £0 | £0-£60k/yr potential |
+| SFI 2026 (if reach 3 ha) | — | £500-£2,500/yr |
+| **TOTAL BLENDED** | **£10k-£25k Yr 1** | **£12k-£20k/yr** + optional £80-150k one-off |
+
+### 10.14 TOP 10 actions
+
+1. **CSF advice TODAY** (free, gateway to 24 CG2026 items)
+2. **Capital Grants 2026 July** — stack to **~£60k ceiling**
+3. **Country Trust VED1** — £9,075/yr recurring
+4. **BUS** — £9,000 off-grid heat pump on farmhouse
+5. **Woodland Trust MOREwoods + MOREhedges** — 75% covered
+6. **Bicker Wind Farm Trust** (verify distance)
+7. **Form a CIC** — unlocks Esmée Fairbairn/Weston/Ellerman/LCC Wildlife
+8. **LCC Community Wildlife Grant** via CIC — £500 × 2/yr
+9. **Anglian Water Farm Innovation Grant** — £7,500
+10. **FEPP** — pilot site for 2027+ payments
+
+**12-month capture: £35-75k cash + optional £80-150k BNG**
+
+---
+
+## Section 11 — Cost reduction + self-build + hidden grant pockets
+
+### 11.1 Self-build polytunnels — 60-80% off with second-hand
+
+**Second-hand — £8-12k saving:**
+- **Cheffins** (Sutton-near-Ely, monthly auctions + farm clearances)
+- **Perkins George Mawer (Market Rasen)** — Lincolnshire-local
+- Hoops ~£20 each via Gumtree/Preloved/for-sale.co.uk
+- Polythene cover ALWAYS replaced (~£600-900)
+
+**New self-build kits — £14-22k ex-VAT 120×20:**
+- Northern Polytunnels 01282 873120
+- First Tunnels 01282 601253
+- Premier Polytunnels 01282 811250
+- **ASK for end-of-line/cancelled-order discounts = 10-25% off list**
+- +£4-8k professional install OR DIY in 3-5 days
+
+**Reclaimed Lincolnshire:**
+- Lincolnshire Reclamation (Manby, near Louth)
+- Patrick's Reclamation (Wisbech, 25 min)
+- Spencer Architectural (Grantham)
+- 40-60% saving on reclaimed timber
+
+**Workshop kit suppliers Lincolnshire:**
+- Timmins Engineering / PRC Steel Buildings / Integrity Steel Buildings
+- IAE / GA Buildings / Robinsons / Kit Buildings Direct
+- **Get 4 quotes** — prices vary 20-30%
+
+**Workshop extension £/m²:**
+- Bare ag steel-frame + concrete: £250-400/m² turnkey, £150-250/m² self-build
+- Insulated commercial: £450-700/m²
+
+### 11.2 Volunteer + free labour
+
+- **🎯 WWOOF UK** — free room+board for ~4-6 hrs/day organic farm help. Caravan accommodation = ready. **Single highest leverage.** https://wwoof.org.uk/en/join_as_host
+- **HelpX + Workaway** — FREE host registration. Workaway 50k hosts globally
+- **🎯 TCV West Lindsey & Lincoln** — propose as "task day" host. Free teams Tue/Wed/Thu. **Hedge planting day = 200+ trees at zero labour cost.** tcv.org.uk/yorkshire/west-lindsey-lincoln
+- **🎯 LIAT placements** — MSc dissertations free supervised labour + PhD industry partnership + KTP 67% wage subsidy for graduate 1-3 yrs
+
+### 11.3 Tax-advantageous structures
+
+- **🎯 AIA £1m** — permanent 2026. Plant & machinery, 100% deduction year of spend
+- **Full Expensing** — Companies only, 100% NEW P&M, uncapped
+- **🎯 R&D Tax Credits**: 20% RDEC (~15%); **ERIS (≥30% intensity) ~27%**. Save ~£15k per £100k spend. Polytunnel = controlled test environment for robot trials
+- **🎯 R&D ALLOWANCES on buildings (huge gap!):** Workshop "wholly or mainly for R&D" → **100% capital allowance on STRUCTURE itself** (CAA 2001 s437). Document use case at design stage
+- **🎯 VAT-register sole-trader farmer** — voluntary below £90k threshold → **reclaim 20% input VAT on entire build-out**
+
+### 11.4 Cooperative buying
+
+- **AF Group (Anglia Farmers)** — 5-25% off feed/fuel/fertiliser/electricity
+- **NFU Energy** — 10-25% off retail. South Holland NFU branch ~£250/yr
+- **Mole Valley Farmers**
+- **Triodos green loans** — organic/regenerative, min £100k. Just lent £3.3m to Scottish nature recovery farm (Mar 2026)
+
+### 11.5 Hidden grant pockets
+
+- **🎯 CIC formation** — £35 + 6 wks. Asset-locked but tradeable. **Best structural move for public-good campus**
+- **BenCom** — community shares, FCA registration £40-950. Realistic Lincolnshire raise: £30-150k
+- **🎯 Innovate UK BridgeAI** — £25-50k. Agri target sector. **Realistic match for MEOK as lead on agritech crossover.** Competition 2141
+- **🎯 Spacehive — South & East Lincolnshire Crowd** — **£5,000 S&E Lincs Partnership + £3,000 SPF**. South Holland eligible. **Up to £8k matched per campaign.** Community-facing project (visitor area, demo garden)
+- **Lincolnshire Co-op Community Champions** — £500-£1,000, deadline 12 April annually
+
+### 11.6 Insurance
+
+- **🎯 NFU Mutual** — 15-30% cheaper than general insurers. Working on autonomous/robotic farm policy
+- Public liability £5m before Open Farm Sunday / Scout day / WWOOFer — ~£200-600/yr
+- CL Tourer Park PL — ~£300-500/yr separate
+
+### 11.7 ❌ Off-grid biogas digester — uneconomic without livestock, defer
+
+### 11.8 🚀 AI / Cloud credits — $300-500k stackable
+
+| Programme | Credits |
+|---|---|
+| **AWS Activate** | Up to $100k + Bedrock (Anthropic) |
+| **Google Cloud for Startups** | $200k standard; **$350k AI-first** |
+| **Microsoft for Startups Founders Hub** | $1k → $150k, **NO VC required** |
+| **AWS + Anthropic GenAI Scale** | $5-10k + up to $300k |
+| **Agentic AI Accelerator** | $50k AWS + $20k Anthropic |
+
+**🎯 NVIDIA Inception** — FREE, ~30 mins, rolling. **Apply day 1 — single highest leverage.**
+
+**🎯 Anthropic External Researcher Access Program** — up to **$20,000 API credits over 6 months** for AI safety / alignment research. CSO AI is perfect fit. support.claude.com/en/articles/9125743
+
+**GitHub for Startups** — $10,000 Enterprise credits 12 months
+
+**Cohere For AI Catalyst Grants** — AI-for-good / sustainability / ag
+
+### 11.9 Household crossovers
+
+- **🎯 Marriage Allowance £252/yr** for Wendy + Fred. **4 yrs backdatable = £1,260 immediate**
+- **🎯 IHT annual exemption** — each gift £3k/yr (£6k joint) IHT-free. Standing orders NOW. **20 yrs = £120k out of estate**
+- **Council Tax / business rates split:**
+  - Caravan = Band A ~£1,300/yr + 25% Single Person Discount
+  - **Workshop + polytunnels qualify as agricultural buildings (>2 ha) → business rates EXEMPT**
+  - Saving: ~£2,500-£5,000/yr
+
+### 11.10 🎯 Free professional services
+
+- **🎯 Farming Advice Service (FAS)** — Defra-funded FREE. **Phone: 03000 200 301**. Single most-used resource by small-farm builders
+- **Lawworks Pro Bono** — free legal for not-for-profits (post-CIC)
+
+### 11.11 NCFM Holbeach / LIAT (~25 min from PE12)
+
+- Partner-SME desk + lab tariff
+- Free MSc dissertation projects
+- KTP via Innovate UK = 67% wage subsidy
+
+### 11.12 TOP 10 QUICK WINS (<5 hours each)
+
+1. **NVIDIA Inception** — free, ~30 mins
+2. **Microsoft for Startups Founders Hub** — $1k-$150k Azure, ~1 hr
+3. **VAT-register sole-trader** — reclaim 20% input VAT, ~2 hrs
+4. **Phone Northern/First/Premier Polytunnels for end-of-line discounts** — 10-25% saving
+5. **Marriage Allowance + 4-yr backdate** — £1,260 immediate
+6. **IHT £3k/yr standing orders** — £120k+ over 20 yrs
+7. **WWOOF UK + HelpX + Workaway host registration** — free labour pipeline
+8. **Call FAS 03000 200 301** — free Defra advisor
+9. **Lincolnshire Co-op Community Champions** — £500-£1,000
+10. **Email TCV West Lindsey & Lincoln** — free hedge/tree planting team day
+
+### 11.13 TOP 3 STRATEGIC MOVES
+
+1. **R&D Tax Credits + R&D Building Allowances combo for workshop** — Document as "wholly/mainly R&D" at design stage. 100% RDA on structure + 15-27% R&D credits. **Lifetime saving: £25-80k+**
+
+2. **Cheffins / Perkins George Mawer dispersal-sale polytunnel** — **£8-12k saving** vs new
+
+3. **CIC + Spacehive crowdfunding** — Form CIC + Spacehive £8k matched campaign. **Realistic raise £15-30k** + unlocks parallel grant stream
+
+### 11.14 ❌ AVOID
+
+- Self-build VAT zero-rating (doesn't apply to ag buildings)
+- BUS for new workshop (self-build excluded; apply farmhouse only)
+- Foundation for Common Land / Patchwork Foundation (wrong fit)
+- Off-grid biogas (uneconomic without livestock)
+- GitHub Education Pack (student-only; use Startups)
+- CL caravan as PRIMARY revenue (£600/yr vs £3-5k/yr burden)
+- AIC membership (wrong tier; use AF Group)
+
+---
+
 ## Disclaimer
 
 This is **general information**, not legal/tax/financial advice. Before any deed signed, share gifted, or grant application submitted with material commitments, engage:
@@ -1199,4 +1623,4 @@ This is **general information**, not legal/tax/financial advice. Before any deed
 - A UK chartered accountant rural specialist (recommended: **Saffery** or **Forvis Mazars**)
 - An Irish tax adviser IF the Irish leg is ever pursued
 
-**Compilation:** All 6 research agents complete. Master doc finalised 2026-05-14.
+**Compilation:** All 9 research agents complete (6 v1 + 3 v2 reframe). Master doc finalised 2026-05-14.
