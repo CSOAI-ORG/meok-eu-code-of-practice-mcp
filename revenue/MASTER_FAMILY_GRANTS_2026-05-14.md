@@ -66,6 +66,59 @@ Updated planning analysis lands in **Section 4 (revised)** below. The new highes
 
 Full revised Section 4 follows once the deep-research agents land.
 
+### Additional context from Nick's memory + recent revelations
+
+✅ **Existing fish farm on site** — per memory notes, the property already has a fish farm. **Aquaponics is an evolution of established fish farming use**, not a new planning category. Established use rights cover this.
+
+✅ **Nick's caravan** — he's lived there ongoing. If 10+ years of continuous residential use uncontested, LDC s.191 confirms lawful established residential use of the caravan — settles that question permanently.
+
+✅ **8 Alaska Malamutes** — within the "incidental to dwelling" envelope for pet dogs (no business breeding/boarding). If anything is monetised later (dog training events, etc), revisit.
+
+### Practical conversation script for South Holland DC pre-app
+
+Don't go in with "I want to build a 24k sq ft commercial polytunnel". Go in with:
+
+> "We have a 6.5-acre former strawberry farm with established polytunnel use going back [X] years. We have an existing fish farm on site. We want to:
+>
+> 1. **Modernise the existing polytunnels** on their existing footprint — replacement plastic, repaired/refreshed frames. This is repair/maintenance, not new development.
+>
+> 2. **Extend the existing workshop** by [X]% / [Y] m² (under 10% cubic content + under 465 m² ground area) — falls under Class B GPDO permitted development.
+>
+> 3. **Continue growing food for personal/family consumption** + research-campus self-feeding — no commercial trade, no customers on site, no retail. Hobby + research, not commercial.
+>
+> 4. **Run AI research office out of the existing workshop** — Class E(g)(ii) R&D, falls within the workshop's existing commercial use class or under Class R prior approval if originally agricultural.
+>
+> 5. **Apply for Lawful Development Certificate (s.191 existing use)** to confirm the established use of the polytunnels, fish farm, caravan, and workshop is lawful.
+>
+> 6. **Apply for Lawful Development Certificate (s.192 proposed use)** to confirm the modernisation + workshop extension + R&D office are not development requiring planning permission.
+>
+> Can we agree the lowest-cost legitimate path to settle these uses formally? Pre-app fee budget: £500-£1,000."
+
+This conversation costs ~£500 at South Holland DC and likely settles the entire planning question for the campus.
+
+### Important "don't volunteer information" principle
+
+In a planning conversation, only describe what the law actually requires you to describe. Avoid:
+- Speculative future commercial plans (open the door to a commercial-use category)
+- "We might sell some later if it grows" (triggers commercial framework)
+- Calling things "the business" when they're personal
+
+Pre-app conversations are NOT under oath — but consistency matters. Make the framing **personal food + research** consistently throughout all paperwork. Future commercial paths can be re-framed later with separate applications.
+
+### Quick wins ready to action TODAY (before agents land)
+
+1. **Take dated photos** of every existing polytunnel + workshop + fish farm component from multiple angles. Record dates. This is your evidence base for LDC s.191.
+
+2. **Pull Google Earth historic imagery** for PE12 0HE going back 10+ years (Google Earth Pro free download → File → Historical Imagery slider). Take screenshots of every visible polytunnel + workshop. Free evidence of established use.
+
+3. **Find any old documents** that prove the strawberry farm was operational pre-2015: invoices, council tax records, business rates correspondence, photos, neighbour statements, newspaper mentions. Even informal records help.
+
+4. **Email South Holland DC pre-app team** (planningadvice@sholland.gov.uk) NOW with the framing above. Get a meeting booked.
+
+5. **Apply for LDC s.191 (existing use)** for the polytunnels + fish farm + caravan once you have the evidence. Half-fee, ~£300-500, settles 10+ year question forever.
+
+Full revised analysis follows once deep-research agents land.
+
 ---
 
 ## Quick Navigation
