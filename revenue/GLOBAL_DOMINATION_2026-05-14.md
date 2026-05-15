@@ -98,7 +98,7 @@ These 9 PRs and 1 device auth are all queued. Click each link → green "Create 
 
 | # | Action | Stars | URL |
 |---|---|---|---|
-| 1 | **MCP Registry auth: enter `C1AC-46EC` at github.com/login/device** (watcher armed, fires 38 publishes instantly) | — | https://github.com/login/device |
+| 1 | **MCP Registry auth: enter `D247-E0B1` at github.com/login/device** (watcher re-armed, fires 38 publishes instantly. Previous codes C1AC-46EC, ACFD-EA43, B43C-5405 expired) | — | https://github.com/login/device |
 | 2 | PR to **punkpeye/awesome-mcp-servers** (FLAGSHIP) | 86,853★ | https://github.com/punkpeye/awesome-mcp-servers/compare/main...CSOAI-ORG:awesome-mcp-servers:meok-governance-suite?expand=1 |
 | 3 | PR to **appcypher/awesome-mcp-servers** | 5,538★ | https://github.com/appcypher/awesome-mcp-servers/compare/main...CSOAI-ORG:appcypher-awesome-mcp-servers:meok-governance-compliance?expand=1 |
 | 4 | PR to **wong2/awesome-mcp-servers** | 4,059★ | https://github.com/wong2/awesome-mcp-servers/compare/main...CSOAI-ORG:wong2-awesome-mcp-servers:meok-governance-suite-entry?expand=1 |
