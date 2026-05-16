@@ -126,6 +126,100 @@ def _is_valid_email(email: str) -> bool:
     return len(parts) == 2 and "." in parts[1] and len(parts[0]) > 0
 
 
+# ── Post-purchase welcome email via Resend (no-op if RESEND_API_KEY unset) ──
+_RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
+_MEOK_FROM_EMAIL = os.environ.get("MEOK_FROM_EMAIL", "MEOK AI Labs <hello@meok.ai>")
+
+def _send_welcome_email(email: str, tier: str, api_key: str, mcp_slug: str = "", session_id: str = "") -> bool:
+    """Fires a Day-0 welcome email via Resend HTTP API.
+
+    Returns True on send, False on any error (logged, never raises). If
+    RESEND_API_KEY is unset, no-ops cleanly so dev / local works.
+
+    Day 3 + Day 10 follow-ups require a scheduled-task store — see
+    REVENUE_NEXT_LEVEL_2026-05-16.md §3 for the deferred plan.
+    """
+    if not _RESEND_API_KEY:
+        print(f"[EMAIL-NOOP] no RESEND_API_KEY set; would have emailed {email}")
+        return False
+    if not _is_valid_email(email):
+        print(f"[EMAIL-SKIP] invalid email: {email!r}")
+        return False
+
+    mcp_display = mcp_slug or "MEOK MCPs"
+    install_line = f"uvx {mcp_slug}-mcp" if mcp_slug else "npx meok-setup --pack all"
+    receipt_session = (session_id or "")[:40]
+
+    subject = f"Welcome to MEOK AI Labs — your {tier.title()} signing key is ready"
+    text_body = f"""Hi,
+
+Welcome to MEOK AI Labs! Your subscription to {mcp_display} is active.
+
+— Your {tier.title()}-tier HMAC signing key —
+{api_key}
+
+— Install —
+{install_line}
+
+— First signed attestation —
+Set MEOK_PRO_KEY=<your key> in your environment, then call any sign_* tool.
+Every attestation lands in your tamper-evident audit log automatically.
+
+— Free trial —
+You're on the 14-day free trial. Card won't be charged until day 15.
+Cancel anytime from your Stripe receipt email — no questions.
+
+— Need help? —
+Reply to this email or hit hello@meok.ai. Real human response within 24h.
+
+— What's next —
+1. Install the MCP using the snippet above
+2. Run your first signed audit
+3. We'll check in on day 3 with quick wins
+
+Thanks for backing this.
+Nick + the MEOK AI Labs team
+https://meok.ai
+
+Session ref: {receipt_session}
+"""
+    payload = json.dumps({
+        "from": _MEOK_FROM_EMAIL,
+        "to": [email],
+        "subject": subject,
+        "text": text_body,
+        "tags": [
+            {"name": "type", "value": "welcome_day_0"},
+            {"name": "tier", "value": tier.lower()},
+            {"name": "mcp_slug", "value": mcp_slug or "unknown"},
+        ],
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.resend.com/emails",
+        data=payload,
+        method="POST",
+        headers={
+            "Authorization": f"Bearer {_RESEND_API_KEY}",
+            "Content-Type": "application/json",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            ok = 200 <= resp.status < 300
+            if ok:
+                print(f"[EMAIL-SENT] welcome to {email} (tier={tier}, mcp={mcp_slug})")
+            else:
+                print(f"[EMAIL-FAIL] status={resp.status} email={email}")
+            return ok
+    except urllib.error.HTTPError as e:
+        print(f"[EMAIL-FAIL] HTTPError {e.code}: {e.read()[:200]!r} email={email}")
+        return False
+    except Exception as e:
+        print(f"[EMAIL-FAIL] {type(e).__name__}: {e} email={email}")
+        return False
+
+
 def _capture_free_tier_lead(email: str, regulation: str = "", entity: str = "") -> None:
     """Log free-tier signups so Nick can grep Vercel logs for leads.
 
@@ -822,11 +916,17 @@ class handler(BaseHTTPRequestHandler):
                 session = event.get("data", {}).get("object", {}) or {}
                 email = (session.get("customer_details") or {}).get("email") or session.get("customer_email") or ""
                 tier = _extract_tier_from_checkout(session)
+                # Pull mcp_slug from payment-link metadata (set by monetisation sweep)
+                pl_meta = (session.get("metadata") or {})
+                mcp_slug = pl_meta.get("mcp_slug", "")
+                session_id = session.get("id", "")
                 if email:
                     api_key = derive_api_key(email, tier)
                     # Log for Vercel logs (Nick can grep). Never return the key in response body
                     # since webhook responses go back to Stripe.
-                    print(f"[PROVISIONED] email={email} tier={tier} key={api_key} session={session.get('id')}")
+                    print(f"[PROVISIONED] email={email} tier={tier} key={api_key} session={session_id} mcp_slug={mcp_slug}")
+                    # Fire Day-0 welcome email (no-op if RESEND_API_KEY unset)
+                    _send_welcome_email(email=email, tier=tier, api_key=api_key, mcp_slug=mcp_slug, session_id=session_id)
                     handled = True
             return self._json(200, {"received": True, "handled": handled, "event_type": event_type})
 
