@@ -7,7 +7,7 @@
 <title>EU AI Act Compliance in 48 Hours — Signed Attestations Auditors Accept | MEOK AI Labs</title>
 <meta name="description" content="103 days until EU AI Act enforcement. Audit your AI systems against DORA, NIS2, CRA, EU AI Act in minutes. Cryptographically signed compliance attestations with public verify URLs. Pro £199/mo. 48h assessment £5,000.">
 <meta property="og:title" content="EU AI Act Compliance in 48 Hours — Signed Attestations | MEOK AI Labs">
-<meta property="og:description" content="103 days to 2 Aug 2026. Signed HMAC compliance attestations your auditor verifies at a public URL. Free tier + Pro £199/mo + 48h assessment £5,000.">
+<meta property="og:description" content="Live countdown to the 2 Dec 2026 Article 50 watermarking cliff (accelerated by the 7 May 2026 EU Digital Omnibus). Signed HMAC compliance attestations your auditor verifies at a public URL. Free tier + Pro £199/mo + 48h assessment £5,000.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://compliance.meok.ai">
 <meta name="twitter:card" content="summary_large_image">
@@ -63,7 +63,7 @@
       "@type": "FAQPage",
       "mainEntity": [
         {"@type": "Question", "name": "When does the EU AI Act come into force?",
-         "acceptedAnswer": {"@type": "Answer", "text": "Article 50 transparency requirements apply 2 August 2026 (Annex III high-risk delayed to 2 Dec 2027 per Digital Omnibus). Prohibited-practice rules are already in force since 2 February 2025. General-purpose AI (GPAI) obligations started 2 August 2025."}},
+         "acceptedAnswer": {"@type": "Answer", "text": "Article 50 transparency requirements apply 2 August 2026 with the hard watermarking-compliance cliff falling on 2 December 2026 (accelerated by the 7 May 2026 Digital Omnibus political agreement from 6 months to 3 months past application). Annex III high-risk systems delayed to 2 December 2027; Annex I product-safety delayed to 2 August 2028. Prohibited-practice rules have been in force since 2 February 2025; general-purpose AI (GPAI) obligations started 2 August 2025, with the grandfather window for pre-Aug-2025 models closing 2 August 2027."}},
         {"@type": "Question", "name": "What are the penalties for EU AI Act non-compliance?",
          "acceptedAnswer": {"@type": "Answer", "text": "Up to €35 million or 7% of global turnover for prohibited practices. Up to €15M or 3% for high-risk violations."}},
         {"@type": "Question", "name": "What is a signed attestation?",
@@ -387,7 +387,7 @@
 
 <section class="hero">
   <div class="wrap">
-    <div class="countdown-badge" id="countdown">⏰ 103 days until EU AI Act enforcement</div>
+    <div class="countdown-badge" id="countdown">⏰ Calculating days to the 2 Dec 2026 watermarking cliff…</div>
     <h1>Your AI compliance, <span>signed and verified</span>,<br>in 48 hours.</h1>
     <p class="sub">We audit your AI systems against EU AI Act, DORA, NIS2, CRA, CSRD and 10 more regulations — then emit cryptographically signed attestations your auditor validates at a public URL.</p>
     <div class="cta-row">
@@ -412,7 +412,7 @@
       <div class="stat"><div class="big">€35M</div><div class="lbl">or 7% of global turnover — max penalty for prohibited-practice breaches</div></div>
       <div class="stat"><div class="big">14</div><div class="lbl">mandatory Annex IV documentation fields most teams miss</div></div>
       <div class="stat"><div class="big">4h</div><div class="lbl">the tightest reporting clock — DORA major ICT incidents</div></div>
-      <div class="stat"><div class="big">103</div><div class="lbl">days until 2 August 2026 high-risk AI enforcement</div></div>
+      <div class="stat"><div class="big" id="dec-cliff-days">…</div><div class="lbl">days until the 2 Dec 2026 Article 50 watermarking cliff (accelerated by the 7 May 2026 Digital Omnibus)</div></div>
     </div>
   </div>
 </section>
@@ -618,14 +618,16 @@
 </footer>
 
 <script>
-  // Live countdown to 2 Aug 2026
+  // Live countdown to the 2 Dec 2026 Article 50 watermarking cliff
+  // (accelerated by the 7 May 2026 Digital Omnibus political agreement).
   (function () {
-    const target = new Date('2026-08-02T00:00:00Z').getTime();
+    const target = new Date('2026-12-02T00:00:00Z').getTime();
     function update() {
-      const now = Date.now();
-      const days = Math.max(0, Math.ceil((target - now) / 86400000));
-      const el = document.getElementById('countdown');
-      if (el) el.textContent = '⏰ ' + days + ' days until EU AI Act enforcement — 2 Aug 2026';
+      const days = Math.max(0, Math.ceil((target - Date.now()) / 86400000));
+      const badge = document.getElementById('countdown');
+      if (badge) badge.textContent = '⏰ ' + days + ' days until the 2 Dec 2026 Article 50 watermarking cliff';
+      const stat = document.getElementById('dec-cliff-days');
+      if (stat) stat.textContent = days;
     }
     update();
     setInterval(update, 3600000);
