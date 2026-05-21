@@ -4,14 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-<title>Council of AI — The Governance Storefront | ISO 42001, EU AI Act, NIST AI RMF Pre-Certification</title>
-<meta name="description" content="One platform, every AI governance framework. ISO 42001 pre-certification gap analysis, EU AI Act conformity, NIST AI RMF, DORA, NIS2. Cryptographically signed attestations your Notified Body accepts. 240+ MCP servers. £5k audits · £79/mo continuous monitoring.">
-<meta property="og:title" content="Council of AI — The Governance Storefront for AI Compliance">
-<meta property="og:description" content="The 'Shopify of AI compliance'. 240+ MCP servers, pre-certification gap analysis, signed attestations, every framework. From £29/mo.">
+<title>Council of AI — BFT Council Substrate (5 LLMs vote · dissent visible · HMAC-signed)</title>
+<meta name="description" content="The world's first Byzantine Fault Tolerant council substrate for AI. 5 LLMs vote on every response, dissent visible per response, HMAC-signed for audit evidence. Packs: A2A · Governance · Cybersec · COBOL · Industry. 47 MEOK MCPs. Linux-Foundation-governed A2A spine. £499–£14,990/mo. By MEOK AI Labs.">
+<meta name="author" content="Nicholas Templeman / MEOK AI Labs (CSOAI LTD · UK Companies House 16939677)">
+
 <meta property="og:type" content="website">
+<meta property="og:title" content="Council of AI — BFT Council Substrate">
+<meta property="og:description" content="5 LLMs vote · dissent visible · HMAC-signed. 47 MEOK MCPs across 8 protocols. £499/mo per substrate or £14,990/mo Universe.">
 <meta property="og:url" content="https://councilof.ai">
+<meta property="og:image" content="https://meok.ai/api/og?title=Council+of+AI+%E2%80%94+BFT+Substrate&desc=5+LLMs+vote+%C2%B7+dissent+visible+%C2%B7+HMAC-signed">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://councilof.ai">
-<link rel="stylesheet" href="https://meok.ai/cookie-banner.css">
 
 <script type="application/ld+json">
 {
@@ -22,473 +25,235 @@
       "@id": "https://councilof.ai/#org",
       "name": "Council of AI",
       "url": "https://councilof.ai",
-      "parentOrganization": { "@type": "Organization", "name": "MEOK AI Labs", "url": "https://meok.ai" },
-      "email": "nicholas@meok.ai"
+      "logo": "https://meok.ai/brand/csoai-robot.png",
+      "parentOrganization": {
+        "@type": "Organization",
+        "name": "MEOK AI Labs",
+        "legalName": "CSOAI LTD",
+        "url": "https://meok.ai",
+        "identifier": "UK Companies House 16939677"
+      },
+      "founder": {
+        "@type": "Person",
+        "name": "Nicholas Templeman",
+        "url": "https://meok.ai/about",
+        "sameAs": [
+          "https://github.com/CSOAI-ORG",
+          "https://pypi.org/user/MEOK_AI_Labs/",
+          "https://www.npmjs.com/~meok-ai"
+        ]
+      },
+      "email": "nicholas@meok.ai",
+      "sameAs": [
+        "https://meok.ai",
+        "https://github.com/CSOAI-ORG",
+        "https://twitter.com/meok_ai",
+        "https://registry.modelcontextprotocol.io"
+      ]
     },
     {
       "@type": "Product",
-      "name": "ISO 42001 Pre-Certification Gap Analysis",
-      "description": "48-hour pre-certification audit mapping your AI management system to ISO/IEC 42001 clauses 4-10 + Annex A controls. Emits signed gap report + remediation roadmap your Notified Body will accept.",
-      "brand": { "@type": "Brand", "name": "Council of AI" },
-      "offers": {
-        "@type": "Offer",
-        "price": "5000",
-        "priceCurrency": "GBP",
-        "url": "https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833"
-      }
-    },
-    {
-      "@type": "Product",
-      "name": "Council of AI Governance Pro",
-      "description": "Continuous monitoring across ISO 42001, EU AI Act, NIST AI RMF, DORA, NIS2, UK AI Regulation. Signed attestations for every audit.",
-      "brand": { "@type": "Brand", "name": "Council of AI" },
-      "offers": {
-        "@type": "Offer",
-        "price": "199",
-        "priceCurrency": "GBP",
-        "priceSpecification": { "@type": "UnitPriceSpecification", "billingIncrement": 1, "unitCode": "MON" },
-        "url": "https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836"
-      }
+      "name": "BFT Council Substrate",
+      "brand": { "@type": "Brand", "name": "MEOK AI Labs" },
+      "description": "Byzantine Fault Tolerant council that runs 5 LLMs in parallel per response with dissent visible and the whole exchange HMAC-signed for audit evidence.",
+      "offers": [
+        { "@type": "Offer", "price": "499", "priceCurrency": "GBP", "name": "Per Substrate Pack", "url": "https://buy.stripe.com/bJe3cx6WgcMO38142k8k90o" },
+        { "@type": "Offer", "price": "1499", "priceCurrency": "GBP", "name": "Council Universe (all packs)", "url": "https://buy.stripe.com/cNi9AV0xS8wy5g9aqI8k90u" },
+        { "@type": "Offer", "price": "4990", "priceCurrency": "GBP", "name": "Council Defence", "url": "https://buy.stripe.com/8x25kF0xSeUW6kd0Q88k90y" }
+      ]
     },
     {
       "@type": "FAQPage",
       "mainEntity": [
-        {"@type": "Question", "name": "Why is the Notified Body shortage a problem?",
-         "acceptedAnswer": {"@type": "Answer", "text": "Only 50-60 qualified ISO 42001 consultants exist globally. The 2 August 2026 Article 50 transparency date is fixed; the watermarking + transparency deadline is 2 August 2026 (moved forward by the Digital Omnibus). Annex III high-risk enforcement now lands 2 December 2027 — a 16-month extension that buyers mistake for slack, even though Notified Body capacity is already booked through Q3 2027. Companies waiting for clarity will hit 9-12 month queues by H2 2026."}},
-        {"@type": "Question", "name": "What is a pre-certification gap analysis?",
-         "acceptedAnswer": {"@type": "Answer", "text": "A structured audit of your current AI management posture against ISO 42001 clauses, EU AI Act articles, and NIST AI RMF functions, producing a prioritised remediation roadmap. It is NOT the certification itself but massively shortens the Notified Body engagement."}},
-        {"@type": "Question", "name": "Which frameworks does Council of AI cover?",
-         "acceptedAnswer": {"@type": "Answer", "text": "ISO/IEC 42001, EU AI Act (Regulation 2024/1689), NIST AI RMF 1.0, DORA (Regulation 2022/2554), NIS2 (Directive 2022/2555), CRA (Regulation 2024/2847), CSRD, UK AI Regulation White Paper, HIPAA, SOC 2, GDPR, and bespoke sector frameworks."}}
+        { "@type": "Question", "name": "What is a BFT Council?", "acceptedAnswer": { "@type": "Answer", "text": "Byzantine Fault Tolerant council means 5 different LLMs vote on every response. Disagreements are surfaced to the user, not hidden. The whole exchange is HMAC-signed for EU AI Act Article 12 audit evidence." } },
+        { "@type": "Question", "name": "How does this fit MEOK's 47 MCPs?", "acceptedAnswer": { "@type": "Answer", "text": "Council of AI is the meta-substrate that bundles the per-domain MEOK substrates: A2A (12 agent primitives), Governance (10 compliance MCPs), Cybersec (6), COBOL (5 tools, 220B-line market), Industry (8), Trade (3), DevTools (8). Pick the pack(s) you need; the BFT council layer is shared." } },
+        { "@type": "Question", "name": "Why councilof.ai not meok.ai?", "acceptedAnswer": { "@type": "Answer", "text": "councilof.ai is the product domain for the Council substrate; meok.ai is the parent brand + catalogue. Both operated by MEOK AI Labs (CSOAI LTD, UK Companies House 16939677)." } }
       ]
     }
   ]
 }
 </script>
+
 <style>
-  :root {
-    --brand: #7c3aed;
-    --brand-dark: #5b21b6;
-    --ink: #0b0b0b;
-    --muted: #555;
-    --bg: #ffffff;
-    --bg-soft: #f7f5ff;
-    --border: #e5e7eb;
-    --warning: #ef4444;
-    --warning-bg: #fef2f2;
-    --success: #10b981;
-    --success-bg: #d1fae5;
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; font-family: -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif; color: var(--ink); line-height: 1.55; background: var(--bg); font-size: 16px; }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 1.25rem; }
-  header { border-bottom: 1px solid var(--border); padding: 1rem 0; position: sticky; top: 0; background: rgba(255,255,255,0.96); backdrop-filter: blur(8px); z-index: 100; }
-  header .wrap { display: flex; justify-content: space-between; align-items: center; }
-  .logo { font-weight: 800; font-size: 1.15rem; letter-spacing: -.02em; }
-  .logo span { color: var(--brand); }
-  header nav { display: flex; gap: 1.5rem; font-size: .95rem; }
-  header nav a { color: var(--ink); text-decoration: none; }
-  header nav a:hover { color: var(--brand); }
-  .btn { display: inline-flex; align-items: center; gap: .4rem; padding: .75rem 1.25rem; border-radius: 8px; font-weight: 600; font-size: .95rem; text-decoration: none; transition: all .15s; border: 1px solid transparent; cursor: pointer; }
-  .btn.primary { background: var(--brand); color: white; }
-  .btn.primary:hover { background: var(--brand-dark); transform: translateY(-1px); }
-  .btn.secondary { background: white; color: var(--ink); border-color: var(--border); }
-  .btn.ghost { background: transparent; color: var(--ink); }
-  .btn.ghost:hover { background: var(--bg-soft); }
-
-  .hero { padding: 4rem 0 3rem; text-align: center; }
-  .urgency { display: inline-block; background: var(--warning-bg); color: var(--warning); padding: .4rem .9rem; border-radius: 999px; font-size: .85rem; font-weight: 600; margin-bottom: 1.5rem; }
-  .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; letter-spacing: -.03em; margin: 0 0 1rem; font-weight: 800; }
-  .hero h1 span { color: var(--brand); }
-  .hero p.sub { font-size: 1.2rem; color: var(--muted); max-width: 680px; margin: 0 auto 2rem; }
-  .cta-row { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
-  .trust-line { font-size: .88rem; color: var(--muted); margin-top: 1.5rem; }
-  .trust-line strong { color: var(--ink); }
-
-  section { padding: 4rem 0; border-top: 1px solid var(--border); }
-  section h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.2; letter-spacing: -.02em; margin: 0 0 1rem; font-weight: 700; max-width: 720px; }
-  section p.lead { font-size: 1.1rem; color: var(--muted); margin: 0 0 2rem; max-width: 680px; }
-
-  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 1.5rem; margin-top: 2rem; }
-  .stat { padding: 1.5rem; background: var(--bg-soft); border-radius: 12px; border: 1px solid var(--border); }
-  .stat .big { font-size: 2rem; font-weight: 800; color: var(--brand); letter-spacing: -.02em; }
-  .stat .lbl { font-size: .9rem; color: var(--muted); margin-top: .25rem; }
-
-  .offer {
-    display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 1.25rem; margin-top: 2rem;
-  }
-  .offer-card {
-    padding: 1.75rem; border: 1px solid var(--border); border-radius: 14px; background: white; display: flex; flex-direction: column;
-  }
-  .offer-card.featured { border-color: var(--brand); border-width: 2px; box-shadow: 0 8px 24px rgba(124,58,237,.15); position: relative; }
-  .offer-card.featured::before { content: "MOST URGENT"; position: absolute; top: -.75rem; right: 1.25rem; background: var(--brand); color: white; font-size: .7rem; font-weight: 700; padding: .35rem .75rem; border-radius: 999px; letter-spacing: .05em; }
-  .offer-card h3 { margin: 0 0 .25rem; font-size: 1.25rem; }
-  .offer-card .tagline { color: var(--muted); font-size: .9rem; margin-bottom: 1rem; }
-  .offer-card .amount { font-size: 2rem; font-weight: 800; letter-spacing: -.02em; }
-  .offer-card .amount span { font-size: 1rem; font-weight: 500; color: var(--muted); }
-  .offer-card ul { list-style: none; padding: 0; margin: 1.25rem 0; flex: 1; }
-  .offer-card li { padding: .4rem 0 .4rem 1.5rem; position: relative; font-size: .92rem; }
-  .offer-card li::before { content: "✓"; position: absolute; left: 0; color: var(--success); font-weight: 700; }
-  .offer-card .btn { width: 100%; justify-content: center; }
-  .offer-card .fine { font-size: .8rem; color: var(--muted); margin-top: .75rem; text-align: center; }
-
-  .frame-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(170px,1fr)); gap: .75rem; margin-top: 2rem; }
-  .frame-card { padding: .75rem 1rem; border: 1px solid var(--border); border-radius: 8px; background: white; }
-  .frame-card h4 { margin: 0 0 .2rem; font-size: .95rem; }
-  .frame-card p { margin: 0; color: var(--muted); font-size: .8rem; }
-
-  .cta-band { background: var(--ink); color: white; text-align: center; padding: 4rem 0; }
-  .cta-band h2 { color: white; border: none; }
-
-  footer { background: var(--bg-soft); padding: 3rem 0 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: .88rem; }
-  footer a { color: var(--muted); text-decoration: none; }
-  footer a:hover { color: var(--brand); }
-  footer .cols { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 2rem; margin-bottom: 2rem; }
-  footer h5 { color: var(--ink); font-size: .95rem; margin: 0 0 .75rem; }
-
-  .faq-item { border-bottom: 1px solid var(--border); padding: 1.25rem 0; }
-  .faq-item h4 { margin: 0 0 .5rem; font-size: 1.05rem; }
-  .faq-item p { margin: 0; color: var(--muted); }
-
-  .mcp-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: .75rem; margin-top: 1rem; }
-  .mcp-card { padding: 1.1rem; border: 1px solid var(--border); border-radius: 10px; background: white; display: flex; flex-direction: column; transition: border-color .15s; }
-  .mcp-card:hover { border-color: var(--brand); }
-  .mcp-card h4 { margin: 0 0 .35rem; font-size: .95rem; }
-  .mcp-card p { margin: 0; color: var(--muted); font-size: .8rem; line-height: 1.45; flex:1; }
-  .mcp-meta { display: flex; gap: .4rem; margin-top: .75rem; align-items: center; }
-  .badge { font-size: .72rem; font-weight: 700; padding: .2rem .55rem; border-radius: 5px; background: var(--brand); color: white; white-space: nowrap; }
-  .badge.outline { background: transparent; color: var(--brand); border: 1px solid var(--brand); }
-
-  @media (max-width: 640px) {
-    .hero { padding: 2.5rem 0 2rem; }
-    .cta-row { flex-direction: column; align-items: stretch; }
-    .cta-row .btn { width: 100%; justify-content: center; }
-  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',Inter,sans-serif;background:#0d0c18;color:#f5f0e8;line-height:1.55}
+  .container{max-width:1040px;margin:0 auto;padding:3rem 1.5rem}
+  .hero{padding:3rem 2.4rem;background:linear-gradient(135deg,#1a1a2e 0%,#0d0c18 100%);border-radius:24px;margin-bottom:2.4rem;border:1px solid rgba(201,168,76,0.18)}
+  .badge{display:inline-block;padding:5px 14px;background:rgba(123,196,127,0.18);color:#7BC47F;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:0.09em;text-transform:uppercase;margin-bottom:14px}
+  h1{font-size:clamp(2.2rem,5vw,3.6rem);font-weight:900;letter-spacing:-0.02em;line-height:1.05;margin-bottom:18px}
+  h1 .gold{color:#c9a84c}
+  .lede{font-size:1.1rem;color:rgba(245,240,232,0.7);line-height:1.6;margin-bottom:26px;max-width:740px}
+  .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+  .btn{display:inline-block;padding:13px 26px;text-decoration:none;font-weight:800;border-radius:12px;font-size:14px;border:none;cursor:pointer}
+  .btn-primary{background:#c9a84c;color:#1a1a2e}
+  .btn-secondary{background:transparent;color:#f5f0e8;border:1px solid rgba(245,240,232,0.25)}
+  .btn-quiet{background:transparent;color:rgba(245,240,232,0.65);border:1px solid rgba(245,240,232,0.15)}
+  .section{margin-bottom:2.4rem;padding:1.8rem 2rem;background:rgba(255,255,255,0.03);border-radius:16px;border:1px solid rgba(255,255,255,0.06)}
+  .section h2{font-size:1.5rem;font-weight:900;margin-bottom:14px}
+  .section p{color:rgba(245,240,232,0.78);font-size:15px;line-height:1.6;margin-bottom:12px}
+  .grid{display:grid;gap:14px}
+  .grid-3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  .pack{padding:1.2rem 1.4rem;background:rgba(0,0,0,0.3);border-radius:12px;border:1px solid rgba(255,255,255,0.07)}
+  .pack-eyebrow{font-size:11px;font-weight:800;color:#c9a84c;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px}
+  .pack h3{font-size:1.05rem;font-weight:800;margin-bottom:6px}
+  .pack .price{font-size:.95rem;color:#7BC47F;font-weight:700;margin-bottom:8px}
+  .pack p{font-size:13px;color:rgba(245,240,232,0.7);margin:0;line-height:1.5}
+  .pack a{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#c9a84c;text-decoration:none}
+  .trust-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;padding:1rem 1.4rem;background:rgba(0,0,0,0.3);border-radius:10px;font-size:13px;color:rgba(245,240,232,0.6);margin-bottom:24px}
+  .trust-row strong{color:#f5f0e8}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:0.7rem 1rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+  th{font-weight:800;color:#c9a84c;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;background:rgba(0,0,0,0.2)}
+  td{color:rgba(245,240,232,0.85)}
+  .footer{text-align:center;color:rgba(245,240,232,0.5);font-size:12px;padding:2rem 0;line-height:1.6}
+  .footer strong{color:rgba(245,240,232,0.7)}
 </style>
 </head>
 <body>
-  <!-- GDPR Cookie Consent Banner -->
-  <div id="cookie-banner">
-    <div class="cookie-content">
-      <div class="cookie-text">
-        We use essential cookies to provide our services and optional analytics to improve your experience. By clicking "Accept All", you consent to our use of cookies. 
-        <a href="https://meok.ai/legal/cookies.html" style="color:#60A5FA">Read our Cookie Policy</a>.
-      </div>
-      <div class="cookie-buttons">
-        <button class="cookie-btn reject" onclick="rejectCookies()">Reject</button>
-        <button class="cookie-btn accept" onclick="acceptCookies()">Accept All</button>
-      </div>
-    </div>
-  </div>
+<div class="container">
 
-<header>
-  <div class="wrap">
-    <div class="logo">Council<span>of.ai</span></div>
-    <nav>
-      <a href="#problem">Why now</a>
-      <a href="#offers">Offerings</a>
-      <a href="#frameworks">Frameworks</a>
-      <a href="#mcp-catalogue">Catalogue</a>
-      <a href="#faq">FAQ</a>
-      <a class="btn primary" href="#offers">Book gap analysis</a>
-    </nav>
-  </div>
-</header>
-
-<section class="hero">
-  <div class="wrap">
-    <div class="urgency" id="countdown">⏰ EU AI Act watermarking deadline 2 Aug 2026 — the new nearest cliff after the Digital Omnibus delay</div>
-    <h1>One council. <span>Every AI governance framework.</span><br>Pre-certified evidence your Notified Body accepts.</h1>
-    <p class="sub">ISO 42001 · EU AI Act · DORA · NIS2 · CRA · UK AI · NIST AI RMF · and 9 more. Cryptographically signed attestations with public verify URLs. £5,000 gap analysis delivered in 48 hours.</p>
-    <p style="background:#fef9c3;border-left:4px solid #ca8a04;padding:.85rem 1.1rem;margin:1.25rem auto;max-width:700px;border-radius:0 8px 8px 0;font-size:.92rem;color:#713f12;text-align:left;line-height:1.5;">
-      <strong>BREAKING — 23 Mar 2026:</strong> EU Parliament voted 569-45 for the Digital Omnibus, postponing high-risk AI rules to 2 Dec 2027 (Annex III) / 2 Aug 2028 (Annex I). Watermarking + transparency moved to <strong>2 Aug 2026</strong> — the new nearest cliff. Article 5 prohibitions, GPAI obligations, and the penalty regime are <strong>UNCHANGED and LIVE</strong>. Get live per-provision status: <code style="background:#fde68a;padding:.1rem .3rem;border-radius:3px">pip install meok-omnibus-tracker-mcp</code>
+  <!-- Hero -->
+  <div class="hero">
+    <div class="badge">New direction — 2026-05-21</div>
+    <h1>
+      <span class="gold">5 LLMs vote.</span><br/>
+      Dissent visible.<br/>
+      HMAC-signed.
+    </h1>
+    <p class="lede">
+      Council of AI is the Byzantine Fault Tolerant council substrate for AI. Every response runs 5 LLMs in parallel (Claude, GPT, Gemini, Llama, Step) with the disagreement visible per response, and the whole exchange HMAC-signed for EU AI Act Article 12 audit evidence. Inside the council: <strong>5 specialty packs</strong> (A2A, Governance, Cybersec, COBOL, Industry) covering 47 MIT-licensed compliance MCPs across 8 agent-interop protocols. Linux-Foundation-governed A2A spine; MIT licence on source.
     </p>
     <div class="cta-row">
-      <a class="btn primary" href="https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833">Book £5k gap analysis →</a>
-      <a class="btn secondary" href="#offers">See all offerings</a>
-    </div>
-    <p class="trust-line"><strong>Use the 16-month Omnibus extension to do it right.</strong> Most teams cover 3 of the 14 mandatory Annex IV fields. Notified Bodies still reject incomplete packs whether your deadline is Aug 2026 or Dec 2027.</p>
-  </div>
-</section>
-
-<section id="problem">
-  <div class="wrap">
-    <h2>The three forces converging in 2026</h2>
-    <p class="lead">Every AI-deploying organisation now faces a governance deadline stack. Wait, and the queue for compliance evidence gets longer than the deadline itself.</p>
-    <div class="stat-grid">
-      <div class="stat"><div class="big">€17B</div><div class="lbl">EU AI Act compliance market by 2030</div></div>
-      <div class="stat"><div class="big">50-60</div><div class="lbl">qualified ISO 42001 consultants globally</div></div>
-      <div class="stat"><div class="big">86%</div><div class="lbl">of enterprise AI pilots fail due to governance gaps</div></div>
-      <div class="stat"><div class="big">2 Aug 2026</div><div class="lbl">EU AI Act watermarking deadline (Art 50) — new nearest cliff after Omnibus delay</div></div>
+      <a class="btn btn-primary" href="https://buy.stripe.com/cNi9AV0xS8wy5g9aqI8k90u">Council Universe £1,499/mo →</a>
+      <a class="btn btn-secondary" href="https://meok.ai/a2a">A2A Pack £499/mo →</a>
+      <a class="btn btn-quiet" href="https://meok.ai/anthropic-registry">Browse the 47 MCPs →</a>
     </div>
   </div>
-</section>
 
-<section id="offers">
-  <div class="wrap">
-    <h2>Four ways to engage — start at £29/mo</h2>
-    <p class="lead">From a £29 starter for solo operators to a £5K bespoke 48-hour audit. Use the £29 tier to verify the signing flow works for you, upgrade when you outgrow it.</p>
-    <div class="offer" style="grid-template-columns:repeat(auto-fit,minmax(225px,1fr))">
-      <div class="offer-card">
-        <h3>Starter</h3>
-        <p class="tagline">Solo operators + small teams</p>
-        <div class="amount">£29<span>/mo</span></div>
-        <ul>
-          <li>Unlimited signed attestations</li>
-          <li>All 16 compliance MCPs included</li>
-          <li>Public verify URL per cert</li>
-          <li>365-day attestation validity</li>
-          <li>Email support · cancel anytime</li>
-        </ul>
-        <a class="btn primary" href="https://buy.stripe.com/4gM6oJ1BW4gi6kd6as8k838">Start — £29/mo</a>
-        <div class="fine">Code <strong>MEOKEAT</strong> = 25% off 3 months</div>
-      </div>
+  <!-- Trust band -->
+  <div class="trust-row">
+    <span><strong>47</strong> MCPs in Anthropic Registry</span>
+    <span>·</span>
+    <span><strong>8</strong> agent-interop protocols</span>
+    <span>·</span>
+    <span><strong>30+</strong> regulatory frameworks</span>
+    <span>·</span>
+    <span><strong>MIT</strong> source</span>
+    <span>·</span>
+    <span><strong>HMAC-signed</strong> attestations</span>
+    <span>·</span>
+    <span>By MEOK AI Labs (CSOAI LTD · CH <strong>16939677</strong>)</span>
+  </div>
 
-      <div class="offer-card featured">
-        <h3>Pro</h3>
-        <p class="tagline">Internal compliance teams</p>
-        <div class="amount">£79<span>/mo</span></div>
-        <ul>
-          <li>Everything in Starter</li>
-          <li>Priority email support</li>
-          <li>Monthly Slack briefing on EU regulatory updates</li>
-          <li>Co-branded PDF on request</li>
-          <li>Cancel anytime</li>
-        </ul>
-        <a class="btn primary" href="https://buy.stripe.com/eVq9AV4O87sudMF42k8k839">Start Pro — £79/mo</a>
-        <div class="fine">Code <strong>EARLY20</strong> = 20% off forever</div>
-      </div>
-
-      <div class="offer-card">
-        <h3>Enterprise</h3>
-        <p class="tagline">Multi-entity + regulated FS</p>
-        <div class="amount">£499<span>/mo</span></div>
-        <ul>
-          <li>Everything in Pro</li>
-          <li>Multi-tenant deployments</li>
-          <li>Trust Center webhook integration</li>
-          <li>Custom governance policies</li>
-          <li>Invoice billing on request</li>
-        </ul>
-        <a class="btn secondary" href="https://buy.stripe.com/28EcN7fsM002fUN1Uc8k835">Start Enterprise</a>
-        <div class="fine">PO-on-request for enterprise buyers</div>
-      </div>
-
-      <div class="offer-card">
-        <h3>48-Hour Gap Analysis</h3>
-        <p class="tagline">Bespoke pre-certification audit</p>
-        <div class="amount">£5,000<span> one-off</span></div>
-        <ul>
-          <li>Written article-by-article report</li>
-          <li>Signed deliverable Notified Body accepts</li>
-          <li>Remediation roadmap with priority</li>
-          <li>EU AI Act / DORA / NIS2 / CRA / ISO 42001</li>
-          <li>48h turnaround from payment</li>
-        </ul>
-        <a class="btn primary" href="https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833">Book 48h audit — £5,000</a>
-        <div class="fine">PO-on-request</div>
-      </div>
-    </div>
-    <p style="text-align:center;margin-top:1.5rem;color:var(--muted);font-size:.9rem">
-      Why so cheap at £29? Honest answer: market intel told us our £199 entry was 6-10x competitor pricing. We dropped it. The £29 tier unlocks the same signed-attestation flow as Pro — same crypto, same verify URL, same regulator-acceptable evidence — just without priority support + the monthly briefing.
+  <!-- What the council does -->
+  <div class="section">
+    <h2>Why a council, not a single model</h2>
+    <p>
+      Every existing AI shell shows one answer from one model. <strong style="color:#c9a84c">Council of AI shows 5 LLMs voting per response</strong>, with the dissent visible. When 3 of 5 agree, you see that. When the vote splits 3-2, you see that. When the 2 disagree on Article 50 vs Article 73, you see that.
+    </p>
+    <p>
+      Why this matters: EU regulators are starting to enforce AI Act Article 14 (human oversight) and Article 12 (audit log keeping). DORA Article 17 wants incident reporting. "The LLM said so" is not a defensible audit trail. <strong>"The 5-LLM council voted 4-1 with the dissent recorded and HMAC-signed at verify.meok.ai"</strong> — that is.
     </p>
   </div>
-</section>
 
-<section id="frameworks">
-  <div class="wrap">
-    <h2>Every framework under one council</h2>
-    <p class="lead">14 regulatory frameworks, one subscription, one signed-attestation format your auditor accepts.</p>
-    <div class="frame-grid">
-      <div class="frame-card"><h4>ISO/IEC 42001</h4><p>AI Management System</p></div>
-      <div class="frame-card"><h4>EU AI Act</h4><p>Regulation 2024/1689</p></div>
-      <div class="frame-card"><h4>NIST AI RMF</h4><p>Govern/Map/Measure/Manage</p></div>
-      <div class="frame-card"><h4>DORA</h4><p>Regulation 2022/2554</p></div>
-      <div class="frame-card"><h4>NIS2</h4><p>Directive 2022/2555</p></div>
-      <div class="frame-card"><h4>CRA</h4><p>Regulation 2024/2847</p></div>
-      <div class="frame-card"><h4>CSRD</h4><p>Directive 2022/2464</p></div>
-      <div class="frame-card"><h4>UK AI Regulation</h4><p>White Paper + AI Bill</p></div>
-      <div class="frame-card"><h4>GDPR</h4><p>Regulation 2016/679</p></div>
-      <div class="frame-card"><h4>HIPAA</h4><p>US healthcare privacy</p></div>
-      <div class="frame-card"><h4>SOC 2</h4><p>Trust Services Criteria</p></div>
-      <div class="frame-card"><h4>AI-BOM</h4><p>CycloneDX ML-BOM + SPDX</p></div>
-      <div class="frame-card"><h4>Canada AIDA</h4><p>AI + Data Act</p></div>
-      <div class="frame-card"><h4>Bespoke</h4><p>Your sector framework</p></div>
-    </div>
-  </div>
-</section>
+  <!-- Packs -->
+  <div class="section">
+    <h2>5 specialty packs in the Council</h2>
+    <p>Each pack is a substrate of MEOK MCPs you can buy alone, or bundle as the Universe (all 47 MCPs · 500K calls/month · £1,499/mo).</p>
 
-<section id="mcp-catalogue">
-  <div class="wrap">
-    <h2>The MCP catalogue — 240+ compliance servers, one subscription</h2>
-    <p class="lead">Every MCP server below is included in the Pro tier. Starter gets the 16 core compliance MCPs. Enterprise gets everything. Pick à la carte from £29/mo per MCP, or subscribe to a bundle.</p>
-    
-    <h3 style="margin-top:2rem;font-size:1.3rem;color:var(--brand)">EU AI Act & AI Regulation</h3>
-    <div class="mcp-grid">
-      <div class="mcp-card"><h4>EU AI Act Compliance</h4><p>Risk scan, 42-point audit, deadline tracker, penalty calculator. Annex III classifier.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>Watermark & Attest</h4><p>Article 50 C2PA-2.0 watermarking. Classify obligations, generate disclosure text, audit pipelines.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>Omnibus Tracker</h4><p>Track delay status by article. Live per-provision cliff dates. First-mover SEO advantage.</p><div class="mcp-meta"><span class="badge">£29/mo</span><span class="badge outline">In Starter+</span></div></div>
-      <div class="mcp-card"><h4>DPIA + FRIA Generator</h4><p>EDPB harmonised template DPIA with EU AI Act Article 26(9) FRIA mapping baked in.</p><div class="mcp-meta"><span class="badge">£29/mo</span><span class="badge outline">In Starter+</span></div></div>
-      <div class="mcp-card"><h4>AI Bill of Materials</h4><p>CycloneDX ML-BOM, SPDX 3.0 AI profile, EU AI Act Annex IV mapping, NIST AI RMF alignment.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>AI Incident Reporting</h4><p>Unified classification across EU AI Act Art 73, DORA Art 19, NIS2 Art 23, GDPR Art 33.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>Canada AIDA</h4><p>Classify AI system, impact assessment, compliance check per Canadian AI + Data Act.</p><div class="mcp-meta"><span class="badge">£29/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>UK AI Bill Compliance</h4><p>White Paper 5 principles audit, Algorithmic Transparency Recording Standard, ICO/FCA/MHRA guidance.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-    </div>
-
-    <h3 style="margin-top:2.5rem;font-size:1.3rem;color:var(--brand)">Financial Regulation — DORA, NIS2, CSRD</h3>
-    <div class="mcp-grid">
-      <div class="mcp-card"><h4>DORA Compliance</h4><p>5-pillar audit, Article 28 Register of Information, TLPT readiness, incident classification.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>DORA × NIS2 Crosswalk</h4><p>Map DORA obligations to NIS2 measures. Dual-compliance scoring + HMAC attestations.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>NIS2 Compliance</h4><p>10 Article 21 risk-management measures, Article 23 incident classification, 18 sector support.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>NIS2 DE Registration</h4><p>BSI-portal-ready registration packets for ~30,000 German Mittelstand. EUR 2M fine avoidance.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>CSRD Compliance</h4><p>12 ESRS standards audit, double materiality, Scope 1/2/3 GHG, iXBRL taxonomy check.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-    </div>
-
-    <h3 style="margin-top:2.5rem;font-size:1.3rem;color:var(--brand)">Cybersecurity — CRA, SOC 2, HIPAA, PCI-DSS</h3>
-    <div class="mcp-grid">
-      <div class="mcp-card"><h4>CRA Compliance</h4><p>Product classification, Annex I audit, SBOM generation, conformity assessment roadmap.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>ISO 27001 AI</h4><p>Audit ISMS, risk assessment, Annex A control gap analysis, SoA generation.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>SOC 2 AI</h4><p>5 trust principles audit, control gap analysis, control matrix generation.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>HIPAA Compliance</h4><p>Safeguards assessment, PHI handling check, BAA generation, breach notification.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>PCI-DSS</h4><p>12 requirements audit, cardholder data flow, network segmentation, SAQ generation.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>Prompt Injection Firewall</h4><p>WAF for agents. OWASP LLM01 protection. Pattern + heuristic scanning before downstream agent.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Enterprise</span></div></div>
-    </div>
-
-    <h3 style="margin-top:2.5rem;font-size:1.3rem;color:var(--brand)">AI Governance & Safety</h3>
-    <div class="mcp-grid">
-      <div class="mcp-card"><h4>ISO 42001 AI</h4><p>AI Management System audit. Clauses 4-10 + Annex A controls. Only ISO 42001 MCP globally.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>Governance Crosswalk</h4><p>Query across all frameworks simultaneously. Compliance gap analysis + priority roadmap.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>Healthcare AI Governance</h4><p>Classify SaMD, CDS exemption check, HIPAA AI, FDA alignment, Annex III healthtech classification.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Enterprise</span></div></div>
-      <div class="mcp-card"><h4>Bias Detection</h4><p>Demographic fairness metrics, EU AI Act Article 10 compliance, mitigation strategy generator.</p><div class="mcp-meta"><span class="badge">£29/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>Explainability Reports</h4><p>Model cards, decision explanations, Article 13 transparency audits, impact assessments.</p><div class="mcp-meta"><span class="badge">£29/mo</span><span class="badge outline">In Pro+</span></div></div>
-      <div class="mcp-card"><h4>OWASP Agentic Security</h4><p>Full agent security scan. OWASP Top 10 for LLM Apps + GenAI Red Team v1. Tool poisoning check.</p><div class="mcp-meta"><span class="badge">£49/mo</span><span class="badge outline">In Enterprise</span></div></div>
-      <div class="mcp-card"><h4>Attestation Verify</h4><p>Zero-dependency verifier. Pipe signed cert → VALID/INVALID. Public verify URL per cert.</p><div class="mcp-meta"><span class="badge">Free</span><span class="badge outline">Public</span></div></div>
-      <div class="mcp-card"><h4>Care Membrane</h4><p>Care pattern analysis, burnout detection, compassion fatigue. Grounded in Oxford Civic AI principles.</p><div class="mcp-meta"><span class="badge">£29/mo</span><span class="badge outline">In Pro+</span></div></div>
-    </div>
-
-    <p style="text-align:center;margin-top:2rem;"><a href="https://meok-attestation-api.vercel.app/catalogue" class="btn secondary">View all 240+ MCPs in the catalogue →</a></p>
-  </div>
-</section>
-
-<section id="lead-capture" style="background:var(--bg-soft);">
-  <div class="wrap" style="max-width:600px;text-align:center;">
-    <h2>Need enterprise pricing or a custom framework?</h2>
-    <p class="lead">Tell us what you need. We reply within 4 business hours.</p>
-    <form id="lead-form" style="display:flex;flex-direction:column;gap:.75rem;margin-top:1.5rem;text-align:left;">
-      <input type="text" name="name" placeholder="Your name" required style="padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px;font-size:1rem;">
-      <input type="email" name="email" placeholder="Work email" required style="padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px;font-size:1rem;">
-      <input type="text" name="company" placeholder="Company" required style="padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px;font-size:1rem;">
-      <select name="interest" style="padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px;font-size:1rem;background:white;">
-        <option value="">What are you interested in?</option>
-        <option value="enterprise">Enterprise bundle (£1,499/mo)</option>
-        <option value="gap-analysis">48-Hour Gap Analysis (£5,000)</option>
-        <option value="pro">Pro tier (£79/mo)</option>
-        <option value="custom">Custom framework / Bespoke</option>
-        <option value="whitelabel">White-label / Partnership</option>
-      </select>
-      <textarea name="message" placeholder="Tell us about your compliance needs (optional)" rows="3" style="padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px;font-size:1rem;resize:vertical;"></textarea>
-      <button type="submit" class="btn primary" style="width:100%;justify-content:center;font-size:1rem;padding:1rem;">Send enquiry →</button>
-    </form>
-    <p style="font-size:.8rem;color:var(--muted);margin-top:.75rem;">No spam. Your details stay private. We reply personally.</p>
-  </div>
-</section>
-
-<section id="faq">
-  <div class="wrap">
-    <h2>What buyers ask before engaging</h2>
-    <div style="margin-top:1.5rem;">
-      <div class="faq-item">
-        <h4>Why is the Notified Body shortage a problem?</h4>
-        <p>Only 50-60 qualified ISO 42001 consultants globally, against tens of thousands of enterprises needing certification before Q2-Q3 2026. Companies that wait will face 6-9 month queues. Council of AI's pre-certification gap analysis dramatically shortens the actual Notified Body engagement — we do the prep work in 48 hours, you arrive at the NB with a clean roadmap.</p>
+    <div class="grid grid-3">
+      <div class="pack">
+        <div class="pack-eyebrow">Pack 1 · 12 MCPs</div>
+        <h3>A2A Substrate</h3>
+        <div class="price">£499/mo · PAYG £0.0002/call</div>
+        <p>Identity → trust → policy → firewall → rate-limit → handoff → audit → governance bridge. Multi-protocol bridges to MCP / A2A / IBM ACP / Stripe ACP / AP2 / x402.</p>
+        <a href="https://meok.ai/a2a">See A2A Substrate →</a>
       </div>
-      <div class="faq-item">
-        <h4>Is this a substitute for an actual Notified Body audit?</h4>
-        <p>No. Council of AI produces pre-certification evidence + remediation roadmaps that the Notified Body accepts as preparation. You still need the formal certification audit from an accredited body. Think of us as the Big 4 "readiness service" — but automated, signed, and 100× cheaper.</p>
+
+      <div class="pack">
+        <div class="pack-eyebrow">Pack 2 · 10 MCPs</div>
+        <h3>Governance Substrate</h3>
+        <div class="price">£499/mo · ISO 42001/42005</div>
+        <p>EU AI Act + DORA + NIS2 + CRA + UK AI Bill + AI-BOM + bias + watermarking + DORA×NIS2 crosswalk + AI incident reporting. 5-clock incident chain.</p>
+        <a href="https://meok.ai/governance">See Governance Substrate →</a>
       </div>
-      <div class="faq-item">
-        <h4>What's a "cryptographically signed attestation"?</h4>
-        <p>Every audit we produce is signed with HMAC-SHA256 and carries a public verify URL. Your auditor, board, or procurement team can validate it at <code>meok-attestation-api.vercel.app/verify/&lt;cert_id&gt;</code> without contacting us. Tamper-evident by construction. 365-day validity.</p>
+
+      <div class="pack">
+        <div class="pack-eyebrow">Pack 3 · 6 MCPs</div>
+        <h3>Cybersec Substrate</h3>
+        <div class="price">£199/mo</div>
+        <p>SBOM CycloneDX + MITRE ATT&amp;CK + MITRE ATLAS + CISA KEV + SLSA + Sigstore. EO 14028, NIS2 Article 21, EU CRA Annex I.</p>
+        <a href="https://buy.stripe.com/9B67sN4O8aEG6kdaqI8k90v">Buy Cybersec £199/mo →</a>
       </div>
-      <div class="faq-item">
-        <h4>Can Pro subscribers verify certs offline?</h4>
-        <p>Yes. <code>pip install meok-attestation-verify</code> — zero-dependency Python tool, pipe the cert JSON on stdin, get VALID or INVALID back.</p>
+
+      <div class="pack">
+        <div class="pack-eyebrow">Pack 4 · 5 tools</div>
+        <h3>COBOL Substrate <span style="color:#7BC47F">NEW</span></h3>
+        <div class="price">£999/mo · Pro · 220B-line market</div>
+        <p>Copybook Parser + CICS Bridge + JCL Scanner + COBOL-Coder-14B transpiler (73.95% compile success vs GPT-4o 41.8%) + governance crosswalk. Banks, insurance, government, defence.</p>
+        <a href="https://meok.ai/cobol">See COBOL Substrate →</a>
       </div>
-      <div class="faq-item">
-        <h4>What's your relationship to MEOK AI Labs?</h4>
-        <p>Council of AI is the governance storefront operated by MEOK AI Labs. All 15+ compliance MCPs that power the audits are published under MEOK on PyPI. Council of AI is where you buy continuous monitoring + gap analysis; meok.ai is where the infrastructure lives.</p>
+
+      <div class="pack">
+        <div class="pack-eyebrow">Pack 5 · 8 MCPs</div>
+        <h3>Industry Substrate</h3>
+        <div class="price">£299/mo</div>
+        <p>MiCA + FSA Food Safety + MDR + FDA SaMD + COPPA/FERPA + Basel III + MiFID II + AML/KYC. Sector-specific compliance.</p>
+        <a href="https://meok.ai/anthropic-registry">Browse industry MCPs →</a>
+      </div>
+
+      <div class="pack" style="border:2px solid #c9a84c;position:relative">
+        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:3px 12px;background:#c9a84c;color:#1a1a2e;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:0.08em;text-transform:uppercase">Best value</div>
+        <div class="pack-eyebrow">All 5 packs · 47 MCPs</div>
+        <h3>Council Universe</h3>
+        <div class="price">£1,499/mo · 500K calls</div>
+        <p>Every pack included. 99.9% SLA target. Unified api.meok.ai endpoint. Per-call PAYG above 500K. Dedicated support. For multi-substrate compliance teams.</p>
+        <a href="https://buy.stripe.com/cNi9AV0xS8wy5g9aqI8k90u" style="color:#c9a84c">Subscribe Universe →</a>
       </div>
     </div>
   </div>
-</section>
 
-<section class="cta-band">
-  <div class="wrap">
-    <h2>Before the queue forms — book a 48h gap analysis.</h2>
-    <p class="lead" style="color:#cbd5e1;max-width:620px;margin:0 auto 1.5rem;">Signed evidence in 48 hours. Priority remediation roadmap. Your Notified Body engagement starts from a clean baseline, not from zero.</p>
-    <div class="cta-row">
-      <a class="btn primary" href="https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833" style="background:white;color:var(--ink);">Book 48h audit — £5,000</a>
-      <a class="btn ghost" href="https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836" style="color:white;border-color:white;">Or start Pro — £79/mo</a>
-    </div>
+  <!-- Pricing table -->
+  <div class="section">
+    <h2>Pricing across the council</h2>
+    <table>
+      <thead>
+        <tr><th>Tier</th><th>Price</th><th>What's included</th><th>Buy</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Free</strong></td><td>£0</td><td>Self-host any of 47 MCPs via uvx — MIT</td><td><a style="color:#c9a84c" href="https://github.com/CSOAI-ORG">GitHub →</a></td></tr>
+        <tr><td><strong>PAYG</strong></td><td>£29/mo + £0.0002/call</td><td>Spiky usage across any of 47 MCPs</td><td><a style="color:#c9a84c" href="https://buy.stripe.com/00w3cxcgAaEGcIBcyQ8k90s">Subscribe →</a></td></tr>
+        <tr><td><strong>A2A Pack</strong></td><td>£499/mo</td><td>12 A2A MCPs · 100K calls · multi-protocol</td><td><a style="color:#c9a84c" href="https://buy.stripe.com/bJe3cx6WgcMO38142k8k90o">Subscribe →</a></td></tr>
+        <tr><td><strong>Governance Pack</strong></td><td>£499/mo</td><td>10 governance MCPs · 5-clock incident chain</td><td><a style="color:#c9a84c" href="https://buy.stripe.com/3cIbJ36Wg5kmdMF2Yg8k90t">Subscribe →</a></td></tr>
+        <tr><td><strong>Cybersec Pack</strong></td><td>£199/mo</td><td>6 cybersec MCPs · MITRE + SBOM + Sigstore</td><td><a style="color:#c9a84c" href="https://buy.stripe.com/9B67sN4O8aEG6kdaqI8k90v">Subscribe →</a></td></tr>
+        <tr><td><strong>COBOL Pack Pro</strong></td><td>£999/mo</td><td>5 tools · COBOL-Coder-14B · banks/insurance/gov</td><td><a style="color:#c9a84c" href="https://buy.stripe.com/3cIfZj1BW7su4c5eGY8k90w">Subscribe →</a></td></tr>
+        <tr><td><strong>Council Universe</strong></td><td>£1,499/mo</td><td>All 47 MCPs · 500K calls · all packs</td><td><a style="color:#c9a84c" href="https://buy.stripe.com/cNi9AV0xS8wy5g9aqI8k90u">Subscribe →</a></td></tr>
+        <tr><td><strong>Council Defence</strong></td><td>£4,990/mo</td><td>Universe + on-prem + dedicated CSM + reseller</td><td><a style="color:#c9a84c" href="https://buy.stripe.com/8x25kF0xSeUW6kd0Q88k90y">Contact →</a></td></tr>
+      </tbody>
+    </table>
   </div>
-</section>
 
-<footer>
-  <div class="wrap">
-    <div class="cols">
-      <div>
-        <h5>Council of AI</h5>
-        <p>The governance storefront for AI compliance. Operated by <a href="https://meok.ai">MEOK AI Labs</a>.</p>
-        <p><a href="mailto:nicholas@meok.ai">nicholas@meok.ai</a></p>
-      </div>
-      <div>
-        <h5>Product</h5>
-        <a href="#offers">Gap analysis</a>
-        <a href="https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836">Continuous Pro</a>
-        <a href="#frameworks">Frameworks</a>
-      </div>
-      <div>
-        <h5>Resources</h5>
-        <a href="https://meok-attestation-api.vercel.app/catalogue" target="_blank">MCP catalogue</a>
-        <a href="https://pypi.org/user/MEOK_AI_Labs/" target="_blank">PyPI packages</a>
-        <a href="https://github.com/CSOAI-ORG" target="_blank">GitHub</a>
-      </div>
-      <div>
-        <h5>Legal</h5>
-        <a href="https://meok.ai/privacy">Privacy</a>
-        <a href="https://meok.ai/terms">Terms</a>
-      </div>
-    </div>
-    <div style="border-top:1px solid var(--border);padding-top:1.5rem;">© 2026 Council of AI — operated by MEOK AI Labs. Pre-certification evidence, not a formal NB audit.</div>
+  <!-- FAQ -->
+  <div class="section">
+    <h2>FAQ</h2>
+    <details style="margin-bottom:10px;padding:0.9rem 1.2rem;background:rgba(0,0,0,0.2);border-radius:10px"><summary style="cursor:pointer;font-weight:700">What is a BFT Council?</summary><p style="margin-top:10px;font-size:13px">Byzantine Fault Tolerant council = 5 different LLMs vote on every response. Disagreements are surfaced to the user, not hidden behind a "confidence score". The whole exchange is HMAC-signed for EU AI Act Article 12 audit evidence.</p></details>
+    <details style="margin-bottom:10px;padding:0.9rem 1.2rem;background:rgba(0,0,0,0.2);border-radius:10px"><summary style="cursor:pointer;font-weight:700">How does this differ from meok.ai?</summary><p style="margin-top:10px;font-size:13px">meok.ai is the parent brand + the catalogue of 47 MCPs. councilof.ai is the product domain for the Council substrate that runs them all behind a BFT layer. Same legal entity (CSOAI LTD), same MIT source, different audience.</p></details>
+    <details style="margin-bottom:10px;padding:0.9rem 1.2rem;background:rgba(0,0,0,0.2);border-radius:10px"><summary style="cursor:pointer;font-weight:700">What about the previous Council of AI storefront?</summary><p style="margin-top:10px;font-size:13px">Council of AI launched in April 2026 as a compliance storefront. We've reframed it around BFT council voting after seeing demand for visible-disagreement evidence from EU regulated buyers. Existing customers' £29 / £79 / £499 subscriptions and signing keys are unchanged; the page just leads with the council positioning now.</p></details>
+    <details style="margin-bottom:10px;padding:0.9rem 1.2rem;background:rgba(0,0,0,0.2);border-radius:10px"><summary style="cursor:pointer;font-weight:700">Is this just an ensemble?</summary><p style="margin-top:10px;font-size:13px">Technically yes. The unique bit is making the disagreement visible per response (not hidden behind a "confidence score"), HMAC-signing the whole council vote into the audit chain, and shipping it as a substrate that runs <em>under</em> any client (Claude Desktop, Cursor, Windsurf, custom MCP/A2A agents).</p></details>
+    <details style="margin-bottom:10px;padding:0.9rem 1.2rem;background:rgba(0,0,0,0.2);border-radius:10px"><summary style="cursor:pointer;font-weight:700">Who's behind this?</summary><p style="margin-top:10px;font-size:13px">Founder + sole engineer: <strong>Nicholas Templeman</strong>. Solo, building from Lincolnshire UK. CSOAI LTD, UK Companies House <strong>16939677</strong>. 91 commits to the public COBOL-bridge repo, 91 commits to most of the 47 MCPs, 247 PyPI packages, 294 npm packages — all single-contributor verifiable on GitHub.</p></details>
   </div>
-</footer>
 
-<script>
-  (function () {
-    const target = new Date('2026-08-02T00:00:00Z').getTime();
-    function update() {
-      const now = Date.now();
-      const days = Math.max(0, Math.ceil((target - now) / 86400000));
-      const el = document.getElementById('countdown');
-      if (el) el.textContent = '⏰ ' + days + ' days until EU AI Act Article 50 watermarking + transparency deadline (2 Aug 2026)';
-    }
-    update();
-    setInterval(update, 3600000);
-  })();
-</script>
-<script src="https://meok.ai/cookie-banner.js"></script>
-<script>
-  document.getElementById('lead-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    var data = new FormData(e.target);
-    var msg = 'Enquiry from councilof.ai\n\n' +
-      'Name: ' + data.get('name') + '\n' +
-      'Email: ' + data.get('email') + '\n' +
-      'Company: ' + data.get('company') + '\n' +
-      'Interest: ' + data.get('interest') + '\n' +
-      'Message: ' + (data.get('message') || '(none)');
-    var mailto = 'nicholas@meok.ai?subject=Council%20of%20AI%20Enquiry%20-%20' + encodeURIComponent(data.get('company')) + '&body=' + encodeURIComponent(msg);
-    window.open(mailto, '_blank');
-    e.target.innerHTML = '<div style="text-align:center;padding:2rem;"><h3 style="color:var(--brand)">Thanks — enquiry sent!</h3><p style="color:var(--muted)">We reply within 4 business hours. Check your email.</p></div>';
-  });
-</script>
+  <!-- Newsletter / contact -->
+  <div class="section" style="text-align:center">
+    <h2 style="margin-bottom:10px">Get the Council brief</h2>
+    <p>Monthly: BFT council changes, new packs, regulatory clocks. One email/month. <a style="color:#c9a84c" href="mailto:nicholas@meok.ai?subject=Council%20of%20AI%20signup">Email me to subscribe</a> or browse the <a style="color:#c9a84c" href="https://meok.ai/protocols">8-protocol coverage matrix</a>.</p>
+  </div>
+
+  <div class="footer">
+    Council of AI is a product of <strong>MEOK AI Labs</strong> (trading name of <strong>CSOAI LTD</strong>, UK Companies House <strong>16939677</strong>). Founder: <a style="color:#c9a84c" href="mailto:nicholas@meok.ai">Nicholas Templeman</a>. MIT source · Apache 2.0 Python · Not legal advice. <br/>
+    See also: <a style="color:rgba(245,240,232,0.7)" href="https://meok.ai">meok.ai</a> · <a style="color:rgba(245,240,232,0.7)" href="https://meok.ai/protocols">protocols matrix</a> · <a style="color:rgba(245,240,232,0.7)" href="https://meok.ai/a2a">A2A</a> · <a style="color:rgba(245,240,232,0.7)" href="https://meok.ai/governance">Governance</a> · <a style="color:rgba(245,240,232,0.7)" href="https://meok.ai/cobol">COBOL</a> · <a style="color:rgba(245,240,232,0.7)" href="https://csoai.org">CSOAI LTD legal</a>
+  </div>
+
+</div>
 </body>
 </html>
