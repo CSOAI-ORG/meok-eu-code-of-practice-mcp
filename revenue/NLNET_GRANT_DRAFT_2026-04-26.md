@@ -1,7 +1,8 @@
-# NLnet NGI Zero Commons Fund — MEOK AI Labs Application Draft
+# NLnet NGI Zero Commons Fund — MEOK AI Labs Application
+# UPDATED: 2026-05-14 — v1.4.0 with 38 governance MCPs, 7,505 downloads/mo
 
 **Apply at:** https://nlnet.nl/propose
-**Deadline:** Round 2026-Jun-01 (apply by 1 June 2026)
+**Deadline:** Round 2026-Jun-01 (apply by 1 June 2026 — 18 DAYS LEFT)
 **Funding range:** €5,000 — €50,000 (with optional scale-up)
 **Fit:** NGI Zero Commons priorities — open-source compliance tooling, EU AI Act ecosystem, digital sovereignty
 
@@ -25,7 +26,7 @@ MEOK AI Labs is building the open-source alternative: a fleet of [Model Context 
 2. **Generate** the regulatory artifact (DPIA, FRIA, CRA Annex IV declaration, NIS2 BSI register entry, etc.)
 3. **Sign** the artifact with HMAC-SHA256 against a public attestation API, producing a verification URL anyone can hit to confirm the document hasn't been tampered with
 
-The signed-attestation infrastructure is already running at https://meok-attestation-api.vercel.app and is verifiable end-to-end. The MCP-server fleet has 234 packages on PyPI and 217 public repos. All are MIT-licensed.
+The signed-attestation infrastructure is already running at https://meok-attestation-api.vercel.app and is verifiable end-to-end. The MCP-server fleet has 240+ packages on PyPI (7,505 monthly downloads), 38 governance-specific MCP servers, and 251+ public repos. All are MIT-licensed.
 
 ## What NLnet funding would unlock
 
@@ -45,7 +46,7 @@ This grant would fund the **digital-commons productisation** of the toolkit: ext
 
 ## Why MEOK is the right grantee
 - **Working software in production today** — not a slideware proposal
-- **234 PyPI packages, 251+ repos with FUNDING.yml**, all MIT-licensed and downloadable today
+- **240+ PyPI packages, 7,505 monthly downloads, 38 governance MCP servers**, all MIT-licensed and downloadable today
 - **Public attestation API live** at meok-attestation-api.vercel.app — anyone can verify a MEOK-signed document right now
 - **Solo founder, UK-incorporated** (CSOAI LTD, UK Companies House 16939677, London EC2A 4NE) — no big-tech corporate dependency
 - **EU-focused** — every MCP targets a specific EU regulation, with cliff dates pinned to the EU regulatory calendar

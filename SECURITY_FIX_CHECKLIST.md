@@ -3,13 +3,13 @@
 ## 1. ROTATE STRIPE KEY (15 minutes)
 
 ### Step 1: Find the hardcoded key
-File: `~/CSOAI-CORP/stripe-setup/create-stripe-catalog.js` line 23
+File: `~/clawd/create-stripe-products-live.py` line 13 (uses `os.environ.get` — already secure)
 
 ### Step 2: Check if key was committed to git
 ```bash
-cd ~/CSOAI-CORP
-git log --all --full-history -- stripe-setup/create-stripe-catalog.js
-git log --all -p -- stripe-setup/create-stripe-catalog.js | grep "sk_live"
+cd ~/clawd
+git log --all --full-history -- create-stripe-products-live.py
+git log --all -p -- create-stripe-products-live.py | grep "sk_live"
 ```
 
 If output shows anything, the key is in git history.
@@ -29,7 +29,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 ### Step 5: Add to .gitignore
 ```
-echo "stripe-setup/create-stripe-catalog.js" >> ~/CSOAI-CORP/.gitignore
+echo "create-stripe-products-live.py" >> ~/clawd/.gitignore
 ```
 
 ---

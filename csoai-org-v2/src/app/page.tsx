@@ -72,7 +72,7 @@ export default function Home() {
             AI compliance does not need a £360K/year governance team. Our MCP-powered agents handle risk classification, 
             audit generation, and regulatory tracking — 24/7, at 1/10th the cost of a human compliance officer.
           </p>
-          <EmailCapture source="hero" />
+          <div id="hero-signup"><EmailCapture source="hero" /></div>
           <p className="text-xs text-slate-500 mt-4">Join 50+ organisations preparing for November 2026</p>
         </div>
       </section>
@@ -149,7 +149,7 @@ export default function Home() {
                   <li key={item} className="flex items-center text-sm text-slate-300"><span className="text-emerald-400 mr-2">✓</span>{item}</li>
                 ))}
               </ul>
-              <button className="w-full py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition">Start Free Trial</button>
+              <a href="#hero-signup" className="w-full py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition text-center block">Start Free Trial</a>
             </div>
             <div className="p-6 rounded-xl bg-white/5 border border-emerald-500/30 relative">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
@@ -165,7 +165,7 @@ export default function Home() {
                   <li key={item} className="flex items-center text-sm text-slate-300"><span className="text-emerald-400 mr-2">✓</span>{item}</li>
                 ))}
               </ul>
-              <button className="w-full py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white transition">Start Free Trial</button>
+              <a href="#hero-signup" className="w-full py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white transition text-center block">Start Free Trial</a>
             </div>
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <div className="mb-4">
@@ -178,7 +178,7 @@ export default function Home() {
                   <li key={item} className="flex items-center text-sm text-slate-300"><span className="text-emerald-400 mr-2">✓</span>{item}</li>
                 ))}
               </ul>
-              <button className="w-full py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition">Contact Sales</button>
+              <a href="mailto:nicholas@csoai.org" className="w-full py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition text-center block">Contact Sales</a>
             </div>
           </div>
         </div>
@@ -207,6 +207,8 @@ export default function Home() {
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="https://github.com/CSOAI-ORG" className="text-slate-500 hover:text-white text-sm">GitHub</a>
               <a href="https://meok.ai" className="text-slate-500 hover:text-white text-sm">MEOK AI</a>
+              <a href="https://proofof.ai" className="text-slate-500 hover:text-white text-sm">ProofOf.AI</a>
+              <a href="https://www.cobolbridge.ai" className="text-slate-500 hover:text-white text-sm">COBOL Bridge</a>
               <a href="mailto:nicholas@csoai.org" className="text-slate-500 hover:text-white text-sm">Contact</a>
             </div>
           </div>

@@ -19,13 +19,14 @@ Brutal-honesty audit of 5 grant deadlines. Most aren't submittable in time.
 
 ## The plan
 
-### THIS WEEKEND (3 hours)
-- [ ] Polish NLnet draft at `~/clawd/revenue/NLNET_GRANT_DRAFT_2026-04-26.md`
-- [ ] Submit **3 sub-proposals** (each independently):
-  1. **meok-attestation-api** — HMAC-signed compliance attestations
-  2. **agent-prompt-injection-firewall** — OWASP LLM01 defence at the protocol layer
-  3. **ai-bom** — CycloneDX ML-BOM with public verification
-- [ ] Each €30-60k → total realistic capture €40k EV
+### THIS WEEKEND (3 hours) — ✅ PROPOSALS WRITTEN
+- [x] Polish NLnet draft at `~/clawd/revenue/NLNET_GRANT_DRAFT_2026-04-26.md`
+- [x] Submit **3 sub-proposals** (each independently funded):
+  1. **meok-attestation-api** — €35k, `nlnet_proposal_1_attestation_api.md` ✅
+  2. **agent-prompt-injection-firewall** — €32k, `nlnet_proposal_2_prompt_firewall.md` ✅
+  3. **ai-bom** — €38k, `nlnet_proposal_3_ai_bom.md` ✅
+- [ ] Submit all 3 via https://nlnet.nl/propose/ (deadline: 1 June 2026, 12:00 CEST)
+- [ ] Email nicholas@meok.ai a copy of each submission confirmation
 
 ### NEXT WEEK (1 hour)
 - [ ] Email University of Lincoln LIAT (`liat@lincoln.ac.uk` or via Riseholme switchboard)

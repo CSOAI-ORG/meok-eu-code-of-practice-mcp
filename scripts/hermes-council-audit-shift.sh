@@ -15,6 +15,11 @@ LOG=/tmp/hermes_council_audit.log
 COUNCIL_PY="/Users/nicholas/clawd/sovereign-temple/external_council_voice.py"
 COUNCIL_VENV="/Users/nicholas/clawd/sovereign-temple/.venv/bin/python"
 
+# Source API keys from ~/.zshrc (cron context has no env)
+if [ -f "$HOME/.zshrc" ]; then
+  eval "$(grep -E '^export (STEPFUN|ANTHROPIC|DEEPSEEK|GOOGLE|MISTRAL|XAI|MINIMAX|DASHSCOPE|HUNYUAN)_API_KEY=' "$HOME/.zshrc" 2>/dev/null || true)"
+fi
+
 echo "" >> $LOG
 echo "═══════════════════════════════════════════════════════════════" >> $LOG
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Hermes council-audit shift starting" >> $LOG
@@ -104,10 +109,12 @@ RESULT=$($COUNCIL_VENV $COUNCIL_PY \
 
 echo "$RESULT" >> $LOG
 
-# Parse + log summary
-MAJORITY=$(echo "$RESULT" | python3 -c "import json,sys;d=json.load(sys.stdin);print(d.get('external_majority','?'))" 2>/dev/null || echo "?")
-PROP=$(echo "$RESULT" | python3 -c "import json,sys;d=json.load(sys.stdin);print(d.get('proposal_id','?'))" 2>/dev/null || echo "?")
-COUNTS=$(echo "$RESULT" | python3 -c "import json,sys;d=json.load(sys.stdin);print(f\"a={d.get('approve_count',0)} r={d.get('reject_count',0)} ?={d.get('abstain_count',0)}\")" 2>/dev/null || echo "?")
+# Parse JSON via a separate script (avoids bash 3.2 quoting issues)
+PARSER=/Users/nicholas/clawd/sovereign-temple/scripts/_council_parse.py
+SUMMARY=$(printf '%s' "$RESULT" | python3 $PARSER 2>/dev/null || printf "?\n?\n?\n")
+MAJORITY=$(printf '%s' "$SUMMARY" | sed -n '1p')
+PROP=$(printf '%s' "$SUMMARY" | sed -n '2p')
+COUNTS=$(printf '%s' "$SUMMARY" | sed -n '3p')
 
 echo "[$(date '+%H:%M:%S')] shift result: $MAJORITY ($COUNTS) proposal=$PROP" >> $LOG
 

@@ -48,6 +48,7 @@ button:hover{background:#6D28D9}
 <div class="container">
   <span class="badge">🛡️ Free · 5 minutes · No card</span>
   <h1>AI Safety Posture Score</h1>
+  <p style="text-align:center;font-size:.85rem;color:#64748B;letter-spacing:.02em;margin-bottom:.2rem">1,578+ downloads/month · 265 MCP servers · 9 compliance frameworks · Cryptographic attestation</p>
   <p class="lead">For teams shipping AI products to real users. Score your safety posture across 5 pillars — get a readiness band + concrete next-action list emailed instantly. Built on the open-source MEOK A2A + governance MCPs.</p>
 
   <div class="pillars">
@@ -201,16 +202,16 @@ document.getElementById('safety-form').addEventListener('submit', async function
   // Recommend MCPs by gap
   let recos = '';
   if (data.injection === 'none' || data.injection === 'unsure' || data.injection === 'prompts') {
-    recos += '<a href="https://buy.stripe.com/6oUcN73K45kmfUNcyQ8k83Y" class="cta">Prompt Injection Firewall — £29/mo</a>';
+    recos += '<a href="https://buy.stripe.com/6oUcN73K45kmfUNcyQ8k83Y" class="cta">Prompt Injection Firewall — £49/mo</a>';
   }
   if (data.bias !== 'continuous') {
-    recos += '<a href="https://buy.stripe.com/fZu14p4O8fZ06kd6as8k83V" class="cta">Bias Detection — £29/mo</a>';
+    recos += '<a href="https://buy.stripe.com/fZu14p4O8fZ06kd6as8k83V" class="cta">Bias Detection — £49/mo</a>';
   }
   if (data.audit !== 'signed') {
-    recos += '<a href="https://buy.stripe.com/8x2eVf1BW9ACaAt1Uc8k842" class="cta">Audit Logger — £29/mo</a>';
+    recos += '<a href="https://buy.stripe.com/8x2eVf1BW9ACaAt1Uc8k842" class="cta">Audit Logger — £49/mo</a>';
   }
   if (data.incident !== 'yes-tested') {
-    recos += '<a href="https://buy.stripe.com/3cI7sNfsMaEG5g9dCU8k83T" class="cta">Incident Reporting — £29/mo</a>';
+    recos += '<a href="https://buy.stripe.com/3cI7sNfsMaEG5g9dCU8k83T" class="cta">Incident Reporting — £49/mo</a>';
   }
 
   content.innerHTML = `
@@ -222,7 +223,7 @@ document.getElementById('safety-form').addEventListener('submit', async function
     ${band !== 'green' ? `
     <h3 style="font-size:1rem;margin:1.5rem 0 .5rem">Close the gaps — recommended MCPs:</h3>
     <div style="display:flex;flex-wrap:wrap;gap:.5rem">${recos}</div>
-    <p style="margin-top:1.25rem;font-size:.9rem"><a href="https://meok.ai/labs/mcp" style="color:#7C3AED;font-weight:600">Or get all 6 A2A + governance MCPs as MEOK Pro (£79/mo) →</a></p>
+    <p style="margin-top:1.25rem;font-size:.9rem"><a href="https://meok.ai/labs/mcp" style="color:#7C3AED;font-weight:600">Or get all 6 A2A + governance MCPs as MEOK Pro (£149/mo) →</a></p>
     ` : `
     <h3 style="font-size:1rem;margin:1.5rem 0 .5rem">Maintain your posture:</h3>
     <a href="https://meok.ai/labs/mcp" class="cta cta-dark">Browse all 38 MEOK MCPs →</a>

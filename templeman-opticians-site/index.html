@@ -3,10 +3,43 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Templeman Opticians — By Appointment</title>
-<meta name="description" content="Templeman Opticians — Lincolnshire family eyecare. By appointment only — please call to book.">
-<meta name="robots" content="noindex, nofollow">
+<title>Templeman Opticians — Family Eyecare in Essex · Call 01268 777729</title>
+<meta name="description" content="Independent family opticians serving Rayleigh, Southend, Basildon and South Essex. NHS &amp; private sight tests, glasses, repairs, contact lenses, home eye tests, care-home visits. Call 01268 777729.">
 <link rel="canonical" href="https://templeman-opticians.com">
+
+<!-- Open Graph / social -->
+<meta property="og:title" content="Templeman Opticians — Family Eyecare in Essex">
+<meta property="og:description" content="Independent family opticians. NHS &amp; private sight tests, glasses, repairs, contact lenses, home eye tests, care-home visits. Call 01268 777729.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://templeman-opticians.com">
+
+<!-- Local business schema for Google -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Optician",
+  "name": "Templeman Opticians",
+  "description": "Independent family opticians offering NHS & private sight tests, glasses, glasses repairs, contact lenses, home eye tests, and care-home domiciliary visits across South Essex.",
+  "telephone": "+44-1268-777729",
+  "url": "https://templeman-opticians.com",
+  "areaServed": [
+    "Rayleigh","Hockley","Rochford","Hadleigh","Benfleet","Wickford","Basildon","Southend-on-Sea","South Essex"
+  ],
+  "openingHours": "By appointment",
+  "priceRange": "££",
+  "makesOffer": [
+    { "@type": "Offer", "name": "NHS sight test" },
+    { "@type": "Offer", "name": "Private sight test" },
+    { "@type": "Offer", "name": "Children's eye examination" },
+    { "@type": "Offer", "name": "Prescription glasses" },
+    { "@type": "Offer", "name": "Glasses repairs and adjustments" },
+    { "@type": "Offer", "name": "Contact lens fitting and supply" },
+    { "@type": "Offer", "name": "Home eye test (domiciliary)" },
+    { "@type": "Offer", "name": "Care-home domiciliary visits" }
+  ]
+}
+</script>
+
 <style>
 :root {
   --ink:#1a1a2e;
@@ -14,119 +47,225 @@
   --bg:#f8f4ee;
   --paper:#fff;
   --muted:#64748B;
+  --green:#0f766e;
 }
 *{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{
-  font-family:'Fraunces', Georgia, serif;
+  font-family:'Fraunces','Georgia',serif;
   color:var(--ink);
   line-height:1.6;
   background:var(--bg);
   min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:2rem 1rem;
+  padding:1.5rem 1rem 6rem; /* extra bottom for sticky bar */
 }
-.container{
-  max-width:600px;
-  width:100%;
-  background:var(--paper);
-  border-radius:18px;
-  padding:3rem 2.5rem;
-  box-shadow:0 20px 60px rgba(26,26,46,.12);
-  text-align:center;
-  border-top:6px solid var(--gold);
-}
+.wrap{max-width:760px;margin:0 auto}
+header{text-align:center;padding:1.5rem 0 1rem}
 .brand{
-  font-family:'Fraunces', Georgia, serif;
-  font-size:1.05rem;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  color:var(--gold);
-  font-weight:600;
-  margin-bottom:.5rem;
+  font-size:1rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--gold);font-weight:600;margin-bottom:.75rem;
 }
 h1{
-  font-size:clamp(1.8rem, 4vw, 2.5rem);
-  font-weight:700;
-  letter-spacing:-.01em;
-  margin-bottom:1rem;
-  line-height:1.2;
+  font-size:clamp(1.85rem,5vw,2.8rem);font-weight:700;letter-spacing:-.015em;
+  line-height:1.15;margin-bottom:.85rem;
 }
-.divider{
-  width:60px;
-  height:2px;
-  background:var(--gold);
-  margin:1.5rem auto;
-}
-.lead{
-  font-size:1.1rem;
-  color:var(--ink);
-  margin-bottom:1.5rem;
+.tagline{
+  font-size:1.1rem;color:var(--muted);
   font-family:'Helvetica Neue',-apple-system,sans-serif;
+  font-weight:400;max-width:560px;margin:0 auto 1.5rem;
 }
-.muted{
-  color:var(--muted);
-  font-size:.95rem;
+.trust-row{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem .9rem;
+  font-size:.85rem;color:var(--muted);font-family:'Helvetica Neue',sans-serif;
+  margin-top:.5rem;
+}
+.trust-row span{display:inline-flex;align-items:center;gap:.3rem}
+.trust-row strong{color:var(--ink);font-family:'Fraunces',serif}
+
+.divider{width:60px;height:2px;background:var(--gold);margin:1.5rem auto}
+
+.card{
+  background:var(--paper);border-radius:18px;
+  padding:2rem 1.75rem;
+  box-shadow:0 10px 32px rgba(26,26,46,.08);
+  border-top:5px solid var(--gold);margin-bottom:1.25rem;
+}
+.card h2{font-size:1.3rem;font-weight:700;margin-bottom:.85rem;letter-spacing:-.005em}
+.card p{
   font-family:'Helvetica Neue',-apple-system,sans-serif;
-  line-height:1.7;
-  margin-bottom:2rem;
+  font-size:1rem;color:var(--ink);margin-bottom:.6rem;
 }
-.contact-card{
-  background:var(--bg);
-  border-radius:12px;
-  padding:1.5rem;
-  margin:1.5rem 0;
+
+.cta-card{background:var(--ink);color:var(--bg);text-align:center;border-top:none}
+.cta-card h2{color:var(--gold)}
+.cta-card p{color:var(--bg);opacity:.85}
+.cta-buttons{
+  display:grid;grid-template-columns:1fr;gap:.75rem;margin-top:1.25rem;
+  max-width:380px;margin-left:auto;margin-right:auto;
+}
+@media (min-width:480px){.cta-buttons{grid-template-columns:1fr 1fr}}
+.btn{
+  display:inline-block;padding:1rem 1.5rem;border-radius:12px;
+  text-decoration:none;font-weight:700;font-size:1.05rem;
   font-family:'Helvetica Neue',-apple-system,sans-serif;
+  text-align:center;transition:transform .1s;
 }
-.contact-label{
-  font-size:.78rem;
-  text-transform:uppercase;
-  letter-spacing:.1em;
-  color:var(--muted);
-  margin-bottom:.5rem;
-  font-weight:600;
+.btn:hover{transform:translateY(-1px)}
+.btn-call{background:var(--gold);color:var(--ink)}
+.btn-form{background:var(--paper);color:var(--ink);border:2px solid var(--gold)}
+.phone-big{
+  display:block;margin-top:1.25rem;font-size:2rem;font-weight:700;
+  color:var(--gold);text-decoration:none;letter-spacing:.02em;
+  font-family:'Fraunces',serif;
 }
-.contact-value{
-  font-size:1.2rem;
-  font-weight:600;
-  color:var(--ink);
+
+.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:.85rem;margin-top:1rem}
+.svc{
+  background:var(--bg);border-radius:12px;padding:1rem 1.15rem;
+  font-family:'Helvetica Neue',sans-serif;font-size:.95rem;line-height:1.5;
 }
-.contact-value a{
-  color:var(--ink);
-  text-decoration:none;
-  border-bottom:1.5px solid var(--gold);
+.svc strong{color:var(--gold);display:block;margin-bottom:.25rem;font-family:'Fraunces',serif;font-size:1rem}
+
+.areas{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.85rem}
+.area-chip{
+  background:var(--bg);border:1px solid #e5e7eb;
+  padding:.4rem .85rem;border-radius:999px;font-size:.85rem;
+  color:var(--ink);font-family:'Helvetica Neue',sans-serif;
 }
-.contact-value a:hover{
-  color:var(--gold);
+
+/* Form */
+.form-row{display:grid;gap:.75rem;margin-top:1rem}
+.form-row input,.form-row select,.form-row textarea{
+  width:100%;padding:.85rem 1rem;border:1.5px solid #e5e7eb;
+  border-radius:10px;font-size:1rem;font-family:'Helvetica Neue',sans-serif;
+  background:#fff;color:var(--ink);
 }
-.note{
-  font-size:.85rem;
-  color:var(--muted);
-  margin-top:2rem;
-  padding-top:1.5rem;
-  border-top:1px solid #e5e7eb;
-  font-family:'Helvetica Neue',-apple-system,sans-serif;
-  font-style:italic;
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{
+  outline:none;border-color:var(--gold);
+}
+.form-row textarea{min-height:80px;resize:vertical;font-family:inherit}
+.form-row .submit{
+  background:var(--gold);color:var(--ink);font-weight:700;font-size:1.05rem;
+  border:none;cursor:pointer;padding:1rem 1.5rem;
+}
+.form-row .submit:hover{opacity:.92}
+.form-note{font-size:.82rem;color:var(--muted);margin-top:.6rem;font-family:'Helvetica Neue',sans-serif}
+
+/* Sticky mobile call bar */
+.sticky-call{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--ink);color:#fff;
+  padding:.85rem 1rem;text-align:center;
+  font-family:'Helvetica Neue',sans-serif;
+  box-shadow:0 -4px 20px rgba(0,0,0,.15);
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  z-index:50;
+}
+.sticky-call a{
+  color:var(--gold);font-weight:700;text-decoration:none;
+  font-size:1.1rem;font-family:'Fraunces',serif;
+}
+@media (min-width:760px){.sticky-call{display:none}}
+
+footer{
+  text-align:center;margin-top:2rem;padding-top:1.5rem;
+  font-size:.85rem;color:var(--muted);
+  font-family:'Helvetica Neue',sans-serif;font-style:italic;
 }
 </style>
 </head>
 <body>
-<main class="container">
-  <div class="brand">Templeman Opticians</div>
-  <h1>By appointment only</h1>
+<div class="wrap">
+
+  <header>
+    <div class="brand">Templeman Opticians</div>
+    <h1>Family eyecare,<br>by appointment</h1>
+    <p class="tagline">Independent family opticians across South Essex. NHS &amp; private sight tests, glasses, repairs, contact lenses, home eye tests, and care-home visits.</p>
+    <div class="trust-row">
+      <span>★ <strong>Independent family practice</strong></span>
+      <span>✓ <strong>NHS sight tests</strong></span>
+      <span>✓ <strong>GOC-registered optometrists</strong></span>
+    </div>
+  </header>
+
   <div class="divider"></div>
 
-  <p class="lead">A small Lincolnshire family eyecare practice.</p>
+  <section class="card cta-card">
+    <h2>Book an appointment</h2>
+    <p>Call to book — new and existing patients welcome.</p>
+    <a class="phone-big" href="tel:+441268777729">01268 777729</a>
+    <div class="cta-buttons">
+      <a class="btn btn-call" href="tel:+441268777729">Call now</a>
+      <a class="btn btn-form" href="#enquire">Request a callback</a>
+    </div>
+  </section>
 
-  <p class="muted">We are currently updating our website. To book an appointment, request a prescription, or order glasses, please get in touch directly.</p>
+  <section class="card">
+    <h2>What we do</h2>
+    <div class="services">
+      <div class="svc"><strong>NHS &amp; private sight tests</strong>Full eye examinations for all ages, by appointment.</div>
+      <div class="svc"><strong>Children&rsquo;s eye care</strong>NHS-funded sight tests and glasses for under-16s and students.</div>
+      <div class="svc"><strong>Glasses</strong>Frames + lenses — single vision, varifocals, reading, prescription sunglasses.</div>
+      <div class="svc"><strong>Glasses repairs &amp; adjustments</strong>Frame repairs, screws, nose pads, refits — including glasses bought elsewhere.</div>
+      <div class="svc"><strong>Contact lenses</strong>Fittings, aftercare, and supply — daily, monthly, toric.</div>
+      <div class="svc"><strong>Home eye tests</strong>Domiciliary sight tests at home for patients unable to travel.</div>
+      <div class="svc"><strong>Care-home visits</strong>Scheduled domiciliary visits to residential and nursing homes.</div>
+      <div class="svc"><strong>Prescription advice</strong>Second opinions, prescription queries, and dispensing advice.</div>
+    </div>
+  </section>
 
-  <div class="contact-card">
-    <div class="contact-label">Bookings &amp; enquiries</div>
-    <div class="contact-value"><a href="tel:+44">Please call to book</a></div>
-  </div>
+  <section class="card">
+    <h2>Where we cover</h2>
+    <p>We see patients at the practice and provide home and care-home visits across South Essex:</p>
+    <div class="areas">
+      <span class="area-chip">Rayleigh</span>
+      <span class="area-chip">Hockley</span>
+      <span class="area-chip">Rochford</span>
+      <span class="area-chip">Hadleigh</span>
+      <span class="area-chip">Benfleet</span>
+      <span class="area-chip">Wickford</span>
+      <span class="area-chip">Basildon</span>
+      <span class="area-chip">Southend-on-Sea</span>
+      <span class="area-chip">Care homes &amp; nursing homes</span>
+    </div>
+  </section>
 
-  <p class="note">Thank you for your patience while we refresh our online presence. All eye examinations are carried out by GOC-registered optometrists.</p>
-</main>
+  <section class="card" id="enquire">
+    <h2>Request a callback</h2>
+    <p>Prefer not to call? Fill this in and we&rsquo;ll ring you back.</p>
+    <form class="form-row"
+          action="mailto:nicholastempleman@gmail.com"
+          method="post"
+          enctype="text/plain">
+      <input type="text" name="Name" placeholder="Your name" required>
+      <input type="tel" name="Phone" placeholder="Phone number to call you back" required>
+      <select name="Service" required>
+        <option value="">What do you need? (choose one)</option>
+        <option>Book a sight test</option>
+        <option>Book a children&apos;s eye test</option>
+        <option>Order or repair glasses</option>
+        <option>Contact lens fitting / aftercare</option>
+        <option>Home eye test (for someone who can&apos;t travel)</option>
+        <option>Care-home domiciliary visit (manager / family)</option>
+        <option>Other / not sure</option>
+      </select>
+      <textarea name="Message" placeholder="Anything else we should know? (optional)"></textarea>
+      <button type="submit" class="submit">Send enquiry</button>
+      <p class="form-note">Submitting opens your email app with the details ready to send. We&rsquo;ll ring you back as soon as we can.</p>
+    </form>
+  </section>
+
+  <footer>
+    All eye examinations are carried out by GOC-registered optometrists.<br>
+    Templeman Opticians — independent family practice serving South Essex.
+  </footer>
+
+</div>
+
+<div class="sticky-call">
+  <span>Book a sight test</span>
+  <a href="tel:+441268777729">📞 01268 777729</a>
+</div>
+
 </body>
 </html>

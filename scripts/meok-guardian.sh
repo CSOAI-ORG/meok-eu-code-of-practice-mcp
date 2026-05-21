@@ -8,7 +8,7 @@ set -uo pipefail
 LOG="/tmp/meok_guardian.log"
 STATUS_DIR="/Users/nicholas/.clawdbot/shared-knowledge/status"
 MEMORY_DIR="/Users/nicholas/clawd/memory"
-PYTHON="/Library/Developer/CommandLineTools/usr/bin/python3"
+PYTHON="$(command -v python3 || echo /Library/Developer/CommandLineTools/usr/bin/python3)"
 CHECK_INTERVAL=30
 MAX_FAILS=3
 
@@ -115,7 +115,7 @@ restart_farm_vision() {
   log "[RESTART] Farm Vision (8888)"
   pkill -f "farm-vision/server.py" 2>/dev/null || true
   sleep 2
-  cd /Users/nicholas/clawd/meok/farm-vision && nohup /Library/Developer/CommandLineTools/usr/bin/python3 server.py >> /tmp/farm-vision.log 2>&1 &
+  cd /Users/nicholas/clawd/meok/farm-vision && nohup $PYTHON server.py >> /tmp/farm-vision.log 2>&1 &
   sleep 5
 }
 

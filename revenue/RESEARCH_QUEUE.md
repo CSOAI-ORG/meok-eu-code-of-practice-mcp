@@ -11,19 +11,19 @@ Each item: `## <question>` then optional `Context: ...` lines.
 
 Context: Need named groups (e.g. Care UK, HC-One, Barchester) + the role title to email (procurement / IG lead / quality director). Output must include sources I can verify.
 
-## Which 3 cheapest-to-reach UK trade press outlets actually cover EU AI Act compliance for SMBs, and what's their tip-line email + recent compliance article URL?
+## ✅ Which 3 cheapest-to-reach UK trade press outlets actually cover EU AI Act compliance for SMBs, and what's their tip-line email + recent compliance article URL?
 
 Context: For pitching meok.ai — need outlets with proven track record covering 39-MCP / open-source compliance tooling angle.
 
-## What's the legally lowest-friction way for a sole-director UK Ltd to accept payments from US enterprise buyers (Stripe vs Wise vs Mercury vs Revolut Business) — full breakdown of fees, KYC requirements, settlement times?
+## ✅ What's the legally lowest-friction way for a sole-director UK Ltd to accept payments from US enterprise buyers (Stripe vs Wise vs Mercury vs Revolut Business) — full breakdown of fees, KYC requirements, settlement times?
 
 Context: First paying customers may be US-based teams using the MCPs; need lowest-friction US receivables.
 
-## What are the 5 highest-traffic Hacker News / Lobsters / Reddit posts about EU AI Act compliance in the last 6 months, and what made them spike? (titles + URLs + score + thread mood)
+## ✅ What are the 5 highest-traffic Hacker News / Lobsters / Reddit posts about EU AI Act compliance in the last 6 months, and what made them spike? (titles + URLs + score + thread mood)
 
 Context: Need pattern-matching for the Show HN post on Tuesday 14:00 UTC.
 
-## Which NHS / ICB procurement frameworks specifically REQUIRE AI compliance attestations as of May 2026, with framework names, value caps, and onboarding requirements?
+## ✅ Which NHS / ICB procurement frameworks specifically REQUIRE AI compliance attestations as of May 2026, with framework names, value caps, and onboarding requirements?
 
 Context: NHS is the biggest UK healthcare buyer; if any framework requires AI compliance evidence, MEOK MCPs could be the lowest-cost path.
 

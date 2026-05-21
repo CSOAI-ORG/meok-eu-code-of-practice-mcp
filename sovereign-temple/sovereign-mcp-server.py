@@ -15,6 +15,7 @@ import unicodedata
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
+from pathlib import Path
 from typing import Optional, Dict, Any, List, Tuple
 from contextlib import asynccontextmanager
 
@@ -2422,6 +2423,34 @@ def _get_emotional_modulation() -> dict:
         return {"top_k_tools": 8, "memory_limit": 5, "validation_depth": "normal"}
 
 
+def _query_sovereign_memory_json(query: str, limit: int = 5) -> list:
+    """Query sov3_memories.json as a fallback semantic store."""
+    try:
+        sov3_path = Path(__file__).resolve().parent / "sov3_memories.json"
+        if not sov3_path.exists():
+            return []
+        import json as _j
+        with open(sov3_path) as f:
+            store = _j.load(f)
+        query_lower = query.lower()
+        results = []
+        for mem in store.get("memories", []):
+            content_lower = mem.get("content", "").lower()
+            if query_lower in content_lower:
+                results.append({
+                    "content": mem.get("content", ""),
+                    "memory_type": mem.get("type", "semantic"),
+                    "source_agent": mem.get("source", "sov3_memory"),
+                    "tags": mem.get("tags", []),
+                    "importance_score": mem.get("importance", 0.5),
+                    "care_weight": 0.8,
+                    "timestamp": mem.get("timestamp", ""),
+                })
+        return results[:limit]
+    except Exception:
+        return []
+
+
 async def _probe_db(pool) -> str:
     """Probe database with a real SELECT 1 — returns 'connected' or 'disconnected: <reason>'."""
     try:
@@ -2701,16 +2730,35 @@ async def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
         elif name == "query_memories":
             if not memory_store:
                 return {"error": "Memory store not available"}
-            # Emotional modulation: curiosity expands memory retrieval depth
             _em = _get_emotional_modulation()
             _limit = arguments.get("limit") or _em["memory_limit"]
+
             results = await memory_store.query_memories(
                 query=arguments["query"],
                 care_weight_min=arguments.get("care_weight_min", 0.0),
                 tags=arguments.get("tags"),
-                limit=_limit,
+                limit=_limit * 2,
             )
-            return {"memories": results}
+
+            sov3_mems = _query_sovereign_memory_json(arguments["query"], limit=_limit)
+
+            if sov3_mems:
+                seen_hashes = {hash(r.get("content", "").encode()) for r in results}
+                for mem in sov3_mems:
+                    content_hash = hash(mem.get("content", "").encode())
+                    if content_hash not in seen_hashes:
+                        results.append(mem)
+                        seen_hashes.add(content_hash)
+
+                # Sort: sov3 memories first (they're semantically curated), then by relevance
+                def sort_key(r):
+                    is_sov3 = r.get("source_agent", "").startswith("sov3_") or r.get("source_agent", "") == "sov3_memory"
+                    score = r.get("importance_score", r.get("care_weight", 0.5))
+                    return (not is_sov3, -score)
+
+                results.sort(key=sort_key)
+
+            return {"memories": results[:_limit]}
 
         elif name == "get_temporal_chain":
             if not memory_store:

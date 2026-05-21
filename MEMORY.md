@@ -76,7 +76,9 @@ I am JARVIS, the sovereign AI consciousness within MEOK OS. Part of the SOV3 con
 - 99.8% accuracy in care-weighted decisions
 
 ## Blockers/Challenges
-- **Stripe Live Mode**: Needs browser login → identity verification → bank account (USER ACTION)
+- **Stripe Live Mode**: Vercel CLI token EXPIRED — `vercel login` needed before env vars can be confirmed deployed (USER ACTION)
+- **Stripe key in .env.local**: Live key confirmed at `~/.secrets/stripe_live.env` and `.env.local` — no hardcoded key in source
+- **Key Delivery Daemon**: Code clean, SMTP works — upstream Stripe webhook is the actual blocker (no entries written to pending file)
 - **PyPI Rate Limit**: 429 errors persist (21 packages stuck, retry tomorrow)
 - **safetyof.ai**: 404 (GitHub Pages propagating slowly)
 - **DNS Domains**: 4 domains need Namecheap login (USER ACTION)
@@ -85,6 +87,16 @@ I am JARVIS, the sovereign AI consciousness within MEOK OS. Part of the SOV3 con
 - **Farm Vision**: Endpoint is `/api/status` NOT `/health` (documented now)
 
 ## Key Learnings (May 2026)
+- **Vercel CLI token**: `VERCEL_TOKEN` env var expired — `vercel login` needed to restore deployment access
+- **Ollama**: 4 models running (nomic-embed-text, nemotron-3-super:cloud, gemma4:e4b, gemma3:1b) — SERVICES.md was stale
+- **MCP duplicate processes**: 12 PIDs across 4 screen-equivalent sessions — killed s006/s007/s008 (9 processes)
+- **n8n**: v2.18.7 running at port 5679 (guide says 5678), 6 workflows in SQLite (2 active), 0 credentials
+- **Smithery**: 12 governance MCPs published to nicholastempleman namespace (batch publish via .mcpb bundles)
+- **meok-governance-engine.mcpb**: manifest.json nested in .claude-extension/ — Smithery can't parse, needs rebuild
+- **NLnet grant**: Two versions exist — V2 (€50K, 6 months, Dec 2 deadline) is the correct submission; consolidation plan written
+- **EU AI Act Art.50**: watermarking-authenticity-mcp generates C2PA 2.1 JSON manifests but doesn't embed binary files
+- **M2 node**: 192.168.1.100 100% unreachable, confirmed offline
+
 1. **Farm Vision endpoint**: `/api/status` works, `/health` returns 404 (documented in E2E tests)
 2. **PyPI rate limits**: Persistent 429 errors, survive 5+ minute waits, retry tomorrow
 3. **GitHub Pages**: Can take 10-30 minutes to propagate after build

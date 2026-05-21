@@ -57,7 +57,12 @@ export async function POST(request: NextRequest) {
 // GET endpoint to retrieve captured leads (protected, for admin use)
 export async function GET(request: NextRequest) {
   const auth = request.headers.get("authorization");
-  if (auth !== `Bearer ${process.env.ADMIN_TOKEN || "csoai-admin-2026"}`) {
+  const adminToken = process.env.ADMIN_TOKEN;
+  if (!adminToken) {
+    console.error("ADMIN_TOKEN not configured");
+    return NextResponse.json({ error: "Admin not configured" }, { status: 500 });
+  }
+  if (auth !== `Bearer ${adminToken}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   return NextResponse.json({ leads, count: leads.length });

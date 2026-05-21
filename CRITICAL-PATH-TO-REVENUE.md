@@ -35,7 +35,7 @@
 | | Details |
 |---|---|
 | **Problem** | Live secret key in `create-stripe-catalog.js:23` |
-| **Location** | `~/CSOAI-CORP/stripe-setup/create-stripe-catalog.js` |
+| **Location** | `~/clawd/create-stripe-products-live.py` (uses `os.environ.get` — already secure) |
 | **Risk** | Full account compromise if file ever committed |
 | **Fix** | Rotate key immediately |
 | **Time** | 30 minutes |

@@ -36,7 +36,7 @@
 **Target:** CTO or Compliance Director
 **Search:** https://www.linkedin.com/search/results/people/?keywords=funding%20circle%20compliance
 
-> Hi {first_name} — SME lending + AI underwriting = Annex III high-risk classification under the EU AI Act. 86 days to deadline. We automate the 42-point audit + generate signed attestation evidence. Worth 15 min?
+> Hi {first_name} — SME lending + AI underwriting = Annex III high-risk classification under the EU AI Act. August 2, 2026 to deadline. We automate the 42-point audit + generate signed attestation evidence. Worth 15 min?
 
 **Day 3:**
 > {first_name}, quick context — Funding Circle processes EU borrower data so falls under both EU AI Act AND DORA. Our crosswalk tool maps both regimes simultaneously. GBP 149/mo Pro tier covers it.
@@ -113,7 +113,7 @@
 **Target:** CTO or Head of Compliance
 **Search:** https://www.linkedin.com/search/results/people/?keywords=lemonade%20cto%20compliance
 
-> Hi {first_name} — AI-powered insurance underwriting is Annex III high-risk. 86 days to EU AI Act enforcement. Plus Solvency II overlaps. Our tool maps all three regulatory regimes in a single scan. GBP 5K assessment, 48 hours. Chat?
+> Hi {first_name} — AI-powered insurance underwriting is Annex III high-risk. August 2, 2026 to EU AI Act enforcement. Plus Solvency II overlaps. Our tool maps all three regulatory regimes in a single scan. GBP 5K assessment, 48 hours. Chat?
 
 ---
 

@@ -517,7 +517,7 @@ Description: Free EU AI Act risk scan in 5 minutes. Cryptographically signed att
 **What needs to happen:**
 
 1. **Optimise compliance.meok.ai for conversion:**
-   - Hero section: "EU AI Act Compliance in 48 Hours" + countdown timer to August 2 (86 days)
+   - Hero section: "EU AI Act Compliance in 48 Hours" + countdown timer to August 2 (August 2, 2026)
    - Below hero: Three-column pricing with "Start Free" → "Pro £79/mo" → "Rapid FRIA £1,499"
    - Social proof section: GitHub stars count, PyPI download count, "MIT licensed" badge
    - "Trusted by auditors" section explaining cryptographic attestation

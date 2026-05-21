@@ -58,7 +58,7 @@ Step 4: First pound lands in the bank account
    - `~/clawd/unified-saas/dashboard/.env.local`
    - `~/clawd/mcp-monetization-gateway/.env`
    - `~/clawd/meok-labs-engine/.env`
-6. Rotate any hardcoded keys in `~/CSOAI-CORP/stripe-setup/create-stripe-catalog.js` — IMMEDIATE security risk
+6. Rotate any hardcoded keys in `~/clawd/create-stripe-products-live.py` — ensure `os.environ.get("STRIPE_SECRET_KEY")` is used (already fixed)
 7. Test with a £1 charge on your own card
 
 #### Step 1 — CREATE NEW LINKEDIN PROFILE (Day 1)
@@ -770,7 +770,7 @@ Deloitte UK AI & Data, PwC UK Responsible AI, KPMG AI in Control, Grant Thornton
 ### LinkedIn Content Posts (1-2x/week)
 
 **Post 1 (Authority — EU AI Act):**
-> 86 days until the EU AI Act Article 27 FRIA deadline.
+> August 2, 2026 until the EU AI Act Article 27 FRIA deadline.
 >
 > Public-sector AI deployers and their vendors need a Fundamental Rights Impact Assessment by August 2, 2026. The EU AI Office hasn't even published their official template yet.
 >

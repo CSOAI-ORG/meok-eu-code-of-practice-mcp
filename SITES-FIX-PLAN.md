@@ -107,7 +107,7 @@ git push origin main
 <body>
   <h1>COBOL Bridge</h1>
   <p>Modernize 60 years of COBOL. Gain cloud speed.</p>
-  <a href="https://buy.stripe.com/[PAYMENT_LINK]">Get Started - £199/mo</a>
+  <a href="https://buy.stripe.com/00g3dKa1B7Y5dXi7ss">Get Started - £199/mo</a>
 </body>
 </html>
 ```

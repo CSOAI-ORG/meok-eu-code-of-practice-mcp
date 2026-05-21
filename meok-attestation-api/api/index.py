@@ -87,8 +87,9 @@ _STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
 _STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
 
 # V-03 FIX: gate self-serve /provision on real Stripe session verification.
-# Default ON (= secure). Set to "0" only for break-glass testing — never in prod.
-_PROVISION_REQUIRE_SESSION = os.environ.get("MEOK_PROVISION_REQUIRE_SESSION_ID", "1") != "0"
+# ALWAYS REQUIRED. The legacy email-only fallback (Path 2) has been removed.
+# _PROVISION_REQUIRE_SESSION is always True; env var MEOK_PROVISION_REQUIRE_SESSION_ID ignored.
+_PROVISION_REQUIRE_SESSION = True  # Force-secure — legacy bypass removed.
 
 
 # ── Deterministic API key derivation ───────────────────────────────────
@@ -967,22 +968,9 @@ class handler(BaseHTTPRequestHandler):
                     "note": "Provisioned via master-key recovery path. Store this api_key securely.",
                 })
 
-            # Path 2: legacy email-only mode (insecure — only if explicitly disabled)
-            if not _PROVISION_REQUIRE_SESSION:
-                email = (body.get("email") or "").strip().lower()
-                tier = (body.get("tier") or "pro").strip().lower()
-                if not email or "@" not in email:
-                    return self._json(400, {"error": "email required"})
-                if tier not in ("pro", "enterprise"):
-                    return self._json(400, {"error": "tier must be 'pro' or 'enterprise'"})
-                key = derive_api_key(email, tier)
-                return self._json(200, {
-                    "email": email,
-                    "tier": tier,
-                    "api_key": key,
-                    "via": "legacy_email_only",
-                    "warning": "INSECURE legacy mode. Set MEOK_PROVISION_REQUIRE_SESSION_ID=1.",
-                })
+            # Path 2: legacy email-only mode — REMOVED (security: allowed key claims without payment)
+            # This path was always gated on _PROVISION_REQUIRE_SESSION=False (env var MEOK_PROVISION_REQUIRE_SESSION_ID=0).
+            # It is now unconditionally rejected. All provisioning requires Stripe session verification.
 
             # Path 3 (default + secure): require real Stripe session_id verification
             if not session_id:

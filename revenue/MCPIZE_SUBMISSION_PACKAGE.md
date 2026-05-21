@@ -13,7 +13,7 @@
 
 MEOK AI Labs has built 240+ MCP servers — the world's largest compliance and AI governance portfolio. 235+ published on PyPI. We need MCPize distribution to monetize the portfolio via their 85% revenue share model.
 
-**Market timing:** EU AI Act enforcement August 2, 2026 (86 days). DORA live since Jan 2025. NIS2 transposition ongoing. CRA enforcement Dec 2027. £609M EU AI Act market in 2026 growing at 37.3% CAGR to £10.5B by 2035.
+**Market timing:** EU AI Act enforcement August 2, 2026 (August 2, 2026). DORA live since Jan 2025. NIS2 transposition ongoing. CRA enforcement Dec 2027. £609M EU AI Act market in 2026 growing at 37.3% CAGR to £10.5B by 2035.
 
 ---
 

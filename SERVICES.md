@@ -14,7 +14,7 @@
 | Farm Vision | 8888 | http://localhost:8888 | ✅ |
 | Episodic MCP | 3103 | http://localhost:3103 | ✅ |
 | PostgreSQL | 5432 | localhost | ✅ |
-| Ollama | 11434 | http://localhost:11434 | ⚠️ No models |
+| Ollama | 11434 | http://localhost:11434 | ✅ 4 models loaded (nomic-embed-text, nemotron-3-super, gemma4, gemma3) |
 
 ---
 
