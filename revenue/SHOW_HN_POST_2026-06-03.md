@@ -8,7 +8,7 @@
 
 ## Title (≤80 chars for HN, optimised for click-through)
 
-> Show HN: Multi-LLM agent OS with visible BFT council disagreement + 38 compliance MCPs
+> Show HN: 47 MCPs + the only A2A substrate that bridges MCP, A2A, Stripe ACP, AP2 + x402
 
 Backup titles to A/B if first doesn't catch:
 
@@ -48,6 +48,9 @@ How is this different from the others?
 | Multi-model vote | ✗ | ✗ | ✗ | **BFT council, dissent visible** |
 | Signed audit log | ✗ | ✗ | ✗ | **HMAC-attested receipts** |
 | EU AI Act / DORA / NIS2 | ✗ | ✗ | ✗ | **purpose-built** |
+
+
+- **6 live agent-interop protocols bridged.** MCP (native — all 47 MCPs). A2A (native — 12 A2A primitives). IBM ACP (covered via A2A merge Sept 2025). Stripe ACP / AP2 / x402 (Q3 bridge or partial today). Linux Foundation governance on A2A means EU regulated buyers can deploy without vendor-lock-in objections.
 
 License: Apache 2.0 for the Python compliance MCPs (patent grant matters for enterprises), MIT for the JS shell + SDK + CLI. **Not AGPL** — kills enterprise adoption.
 
