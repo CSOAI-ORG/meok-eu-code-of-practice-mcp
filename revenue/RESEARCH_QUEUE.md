@@ -27,7 +27,7 @@ Context: Need pattern-matching for the Show HN post on Tuesday 14:00 UTC.
 
 Context: NHS is the biggest UK healthcare buyer; if any framework requires AI compliance evidence, MEOK MCPs could be the lowest-cost path.
 
-## What are the actual fines / enforcement actions taken under DORA between Jan 2025 and now? (entity name, regulator, fine amount, what they failed)
+## ✅ What are the actual fines / enforcement actions taken under DORA between Jan 2025 and now? (entity name, regulator, fine amount, what they failed)
 
 Context: Pricing pressure for DORA MCP — if there are real fines, the value-prop hardens.
 
