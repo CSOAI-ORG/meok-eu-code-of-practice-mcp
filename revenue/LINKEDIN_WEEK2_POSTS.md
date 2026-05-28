@@ -34,7 +34,7 @@ Pro tier now emits an HMAC-signed attestation your auditor can validate at a pub
 Link in first comment.
 ```
 
-**Comment:** `pip install cra-compliance-mcp — free 10/day, Pro £79/mo includes signed attestations: https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836`
+**Comment:** `pip install cra-compliance-mcp — free 10/day, Pro £79/mo includes signed attestations: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K`
 
 ---
 
@@ -62,7 +62,7 @@ Pro tier generates a cryptographically signed readiness attestation that limited
 Link in first comment.
 ```
 
-**Comment:** `pip install csrd-compliance-mcp — Free tier, Pro £79/mo signs: https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836`
+**Comment:** `pip install csrd-compliance-mcp — Free tier, Pro £79/mo signs: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K`
 
 ---
 
@@ -97,7 +97,7 @@ I built an MCP that generates the full 10-category AI-BOM in either format, audi
 Link in first comment.
 ```
 
-**Comment:** `pip install ai-bom-mcp — Free tier, Pro £79/mo signs: https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836`
+**Comment:** `pip install ai-bom-mcp — Free tier, Pro £79/mo signs: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K`
 
 ---
 
@@ -126,7 +126,7 @@ Pro tier signs the post-incident response cert so your auditor can validate it v
 Link in first comment.
 ```
 
-**Comment:** `pip install ai-incident-reporting-mcp — Free 10/day, Pro £79/mo signs: https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836`
+**Comment:** `pip install ai-incident-reporting-mcp — Free 10/day, Pro £79/mo signs: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K`
 
 ---
 

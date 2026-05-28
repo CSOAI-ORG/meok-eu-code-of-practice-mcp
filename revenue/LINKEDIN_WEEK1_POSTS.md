@@ -29,7 +29,7 @@ I spent 6 months building 212 MCP servers to automate all of this for AI agents.
 Link in first comment.
 ```
 
-**Comment:** `pip install eu-ai-act-compliance-mcp — free risk classifier. Or book the 48-hour written assessment: https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833`
+**Comment:** `pip install eu-ai-act-compliance-mcp — free risk classifier. Or book the 48-hour written assessment: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K`
 
 ---
 
@@ -62,7 +62,7 @@ Built for Claude, Cursor, Cline — agents that actually act on this.
 Link in first comment.
 ```
 
-**Comment:** `pip install dora-compliance-mcp. Or the 48h DORA gap assessment: https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833`
+**Comment:** `pip install dora-compliance-mcp. Or the 48h DORA gap assessment: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K`
 
 ---
 
@@ -133,7 +133,7 @@ I built an MCP that maps your current controls to the 10 Article 21 measures and
 Link in first comment.
 ```
 
-**Comment:** `pip install nis2-compliance-mcp. Free tier 10/day. For a 48h NIS2 management-body readiness audit: https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833`
+**Comment:** `pip install nis2-compliance-mcp. Free tier 10/day. For a 48h NIS2 management-body readiness audit: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K`
 
 ---
 

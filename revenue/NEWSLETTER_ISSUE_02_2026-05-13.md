@@ -81,7 +81,7 @@ This is why we built the whole stack — compliance trust delivered through cryp
 
 If you've been considering MEOK Pro (£79/mo) for your compliance workflow, this is a good week — we just removed the biggest blocker (verbatim regulation text) and the next 30 days will compound on that foundation.
 
-→ Subscribe: https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836
+→ Subscribe: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 Reply with **what's missing** for your compliance need. Every reply gets read; most ideas ship within 14 days.
 

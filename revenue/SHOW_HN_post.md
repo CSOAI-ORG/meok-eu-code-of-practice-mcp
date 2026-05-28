@@ -80,6 +80,6 @@ If you're at a GRC consultancy doing EU AI Act work or an AI company racing the 
 Repo / docs: https://meok.ai  
 PyPI: https://pypi.org/user/MEOK_AI_Labs/  
 Free checker: https://meok.ai/check (no signup)  
-Paid 48-h assessment: https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833
+Paid 48-h assessment: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 — Nicholas, MEOK AI Labs (UK, solo)

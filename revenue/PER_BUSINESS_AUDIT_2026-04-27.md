@@ -69,9 +69,9 @@ These all return 200 with marketing content but are on Cloudflare and not deploy
 
 | Product | Price | Live link |
 |---|---|---|
-| MEOK Bias Detection | £299/mo | https://buy.stripe.com/eVq00lcgAbIK5g9dCU8k83f |
-| ProofOf.ai Pro | £99/mo | https://buy.stripe.com/aFa6oJfsMdQSfUNcyQ8k83g |
-| ProofOf.ai Enterprise | £499/mo | https://buy.stripe.com/4gM6oJ1BWcMO8slgP68k83h |
+| MEOK Bias Detection | £299/mo | https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K |
+| ProofOf.ai Pro | £99/mo | https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K |
+| ProofOf.ai Enterprise | £499/mo | https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K |
 
 ## What I fixed in code today (per-business)
 

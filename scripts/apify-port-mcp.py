@@ -293,7 +293,7 @@ This Apify Actor wraps the [`{mcp}`](https://pypi.org/project/{mcp}/) MCP server
 
 Pay-per-event: **${ppe_price_usd:.2f} USD per call**. First 5 GB of compute / month free for new accounts (Apify free tier).
 
-For unlimited use + signed reports: subscribe to MEOK Pro at https://buy.stripe.com/eVq9AV4O87sudMF42k8k839 (£79/mo) and pass your `api_key` in the input — the Actor will skip Apify PPE charges.
+For unlimited use + signed reports: subscribe to MEOK Pro at https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K (£79/mo) and pass your `api_key` in the input — the Actor will skip Apify PPE charges.
 
 ## Input
 

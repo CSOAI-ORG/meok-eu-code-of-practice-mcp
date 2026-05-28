@@ -12,7 +12,7 @@
 
 ## ✅ Stripe product created
 - Bias Detection: `prod_UPZLiBLGjHRxF8` · `price_1TQkCZQvIueK5Xpb9L7MlJKE` · £299/mo
-- Payment link: https://buy.stripe.com/eVq00lcgAbIK5g9dCU8k83f
+- Payment link: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 ## 📨 Drafts ready for Nick to send (paste-and-go)
 

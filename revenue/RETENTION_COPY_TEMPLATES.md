@@ -214,7 +214,7 @@ You cancelled MEOK Pro about a month ago. I'm curious — what changed?
 Three sentences max. I read every reply and your feedback shapes what I build next.
 
 If MEOK Pro would be useful again, the door's open:
-https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836
+https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 And if you're done — that's fine too.
 

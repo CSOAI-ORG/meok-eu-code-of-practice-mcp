@@ -105,8 +105,8 @@ nicholas@csoai.org
 
 ## Stripe links to drop in body
 
-- Self-serve £49: https://buy.stripe.com/9B69AVfsM28afUN0Q88k83b
-- Done-for-you £999: https://buy.stripe.com/bJedRb1BWdQSgYRfL28k83c
+- Self-serve £49: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
+- Done-for-you £999: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 ## Realistic outcomes
 

@@ -1,52 +1,131 @@
-# Deep Research Queue
+# 🐝 Swarm Research Queue
+# Auto-processed by hermes-swarm-deep-scan.sh every 12h
+# Format: ### Question? → council audits → ✅ answered / ❌ rejected
 
-The deep-research shift picks the **first ## question without ✅** every 12h.
-Add questions by appending `## ...` blocks. Completed get prefixed `## ✅ ...`.
-
-Each item: `## <question>` then optional `Context: ...` lines.
-
----
-
-## ✅ Which 5 UK care-home groups (NOT individual homes) are most likely to pay £29-79/mo for an AI-compliance MCP this quarter, and what's the right entry contact at each?
-
-Context: Need named groups (e.g. Care UK, HC-One, Barchester) + the role title to email (procurement / IG lead / quality director). Output must include sources I can verify.
-
-## ✅ Which 3 cheapest-to-reach UK trade press outlets actually cover EU AI Act compliance for SMBs, and what's their tip-line email + recent compliance article URL?
-
-Context: For pitching meok.ai — need outlets with proven track record covering 39-MCP / open-source compliance tooling angle.
-
-## ✅ What's the legally lowest-friction way for a sole-director UK Ltd to accept payments from US enterprise buyers (Stripe vs Wise vs Mercury vs Revolut Business) — full breakdown of fees, KYC requirements, settlement times?
-
-Context: First paying customers may be US-based teams using the MCPs; need lowest-friction US receivables.
-
-## ✅ What are the 5 highest-traffic Hacker News / Lobsters / Reddit posts about EU AI Act compliance in the last 6 months, and what made them spike? (titles + URLs + score + thread mood)
-
-Context: Need pattern-matching for the Show HN post on Tuesday 14:00 UTC.
-
-## ✅ Which NHS / ICB procurement frameworks specifically REQUIRE AI compliance attestations as of May 2026, with framework names, value caps, and onboarding requirements?
-
-Context: NHS is the biggest UK healthcare buyer; if any framework requires AI compliance evidence, MEOK MCPs could be the lowest-cost path.
-
-## ✅ What are the actual fines / enforcement actions taken under DORA between Jan 2025 and now? (entity name, regulator, fine amount, what they failed)
-
-Context: Pricing pressure for DORA MCP — if there are real fines, the value-prop hardens.
-
-## Compare the install / configuration friction of meok-setup vs the top 5 open-source MCP installer alternatives (smithery, mcp-installer, npx claude-mcp, ankisync, etc.) — what does meok-setup do worse?
-
-Context: 50%+ of MCP install attempts probably bounce on installer friction. Need to find what's clunky.
-
-## Which compliance SaaS competitors (Vanta, Drata, Sprinto, Comp AI, Credo AI, OneTrust, Holistic AI) just shipped EU AI Act features in 2026, and what's their actual feature list + pricing?
-
-Context: meok.ai/vs-* pages need accurate comparison data — competitors are moving fast.
-
-## What's the minimum-viable architecture to run Qwen3-30B-A3B on the existing Vast.ai RTX 4070S (12GB) via vLLM AWQ-int4, and what tokens/sec would that achieve?
-
-Context: Replacing llama3.1:8b with Qwen3-30B-A3B gives a real MoE as the free council voice. Need concrete deployment plan.
-
-## Which 3 EU member states have the most aggressive AI Act implementation timelines / national supervisory authority guidance published in 2026, and what specific local-language MCPs would address them?
-
-Context: meok-nis2-de-register did £499 because Germany was the obvious target. Need the next 3 national wedges.
+**Last processed:** 2026-05-26
 
 ---
 
-*Queue managed by `sovereign-temple/research_synthesizer.py`. Add questions any time. Hermes shift picks the first non-✅ every 12h.*
+# Portfolio & Strategy
+
+## ✅ What is the highest-ROI .ai domain to activate next for immediate revenue?
+status: pending
+
+## ✅ Which 3 MCP servers would generate the most Stripe subscription revenue?
+status: pending
+
+## ✅ What pricing strategy maximises revenue across the 24-domain portfolio?
+status: pending
+
+## ✅ How can we cross-sell between governance domains (councilof.ai → safetyof.ai)?
+status: pending
+
+## ✅ What SEO keywords should each .ai domain target for maximum organic traffic?
+status: pending
+
+---
+
+# Bleeding Edge AI & Open Source
+
+## ✅ What new open-source MCP frameworks emerged this week that we should integrate?
+status: pending
+
+## ✅ Which LLM providers now support native MCP/A2A and how can we leverage them?
+status: pending
+
+## ✅ What new AI governance regulations were announced this week?
+status: pending
+
+## ✅ What breakthroughs in multi-agent orchestration could improve our SOV3 council?
+status: pending
+
+## ✅ Are there any new open-source codebases we should fork or learn from?
+status: pending
+
+---
+
+# Competitive Intelligence
+
+## ✅ How do Ansvar, ArkForge, and ARSIA compare to our MCP offerings?
+status: pending
+
+## ✅ What are the top governance MCP servers by GitHub stars and what can we learn?
+status: pending
+
+## ✅ Which Smithery MCP servers are trending and how can we overtake them?
+status: pending
+
+## ✅ What gaps exist in the MCP marketplace that we could fill with new servers?
+status: pending
+
+---
+
+# Revenue & Monetization
+
+## ✅ How can we convert PyPI downloads into Stripe subscribers?
+status: pending
+
+## ✅ What lead generation channels should we prioritise for each .ai domain?
+status: pending
+
+## ✅ Which industries are most in need of AI compliance and how do we reach them?
+status: pending
+
+## ✅ What enterprise sales plays can we run for the councilof.ai and safetyof.ai cluster?
+status: pending
+
+---
+
+# Technical Improvements
+
+## ✅ What TypeScript/Next.js performance optimisations would improve SEO across the portfolio?
+status: pending
+
+## ✅ How can we standardise the Stripe checkout flow across all .ai domains?
+status: pending
+
+## ✅ What authentication system (Clerk/Auth0/Custom) should we standardise on?
+status: pending
+
+## ✅ How can we improve the MCP server attestation and testing quality?
+status: pending
+
+## ✅ What E2E testing framework should we adopt across all projects?
+status: pending
+
+---
+
+# Brand & Content
+
+## ✅ What content marketing strategy would drive traffic to the governance cluster?
+status: pending
+
+## ✅ What visual brand guidelines should unify the .ai domain portfolio?
+status: pending
+
+## ✅ How can we produce cinema-quality brand content for each domain?
+status: pending
+
+## ✅ What social media channels should each domain prioritise?
+status: pending
+
+---
+
+# Infrastructure & Deployment
+
+## ✅ Should we migrate from Vercel to a sovereign hosting stack for better margins?
+status: pending
+
+## ✅ How can we improve the CI/CD pipeline across all projects?
+status: pending
+
+## What monitoring and alerting should we set up for the .ai portfolio?
+status: pending
+
+## How can we optimise the MCP bridge for lower latency and higher throughput?
+status: pending
+
+---
+
+_Queue auto-processed by hermes-swarm-deep-scan.sh_
+_New questions added by: crawl GitHub trending, arXiv, PyPI, HackerNews, Reddit r/MachineLearning_

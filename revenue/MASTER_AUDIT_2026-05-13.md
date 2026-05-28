@@ -55,8 +55,8 @@
 | POST /provision | ✅ 400 (correctly rejects without session_id) | Properly secured |
 | POST /webhook | ✅ 400 (correctly rejects invalid signatures) | HMAC verification working |
 | POST /verify | ✅ 200 (returns valid:false correctly) | Verification endpoint live |
-| Pro £79 Stripe link | ✅ 200 | https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836 |
-| Enterprise £1,499 Stripe link | ✅ 200 | https://buy.stripe.com/4gM9AV80kaEG0ZT42k8k837 |
+| Pro £79 Stripe link | ✅ 200 | https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K |
+| Enterprise £1,499 Stripe link | ✅ 200 | https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K |
 
 ### Vercel env vars confirmed
 - ✅ STRIPE_SECRET_KEY (Production)

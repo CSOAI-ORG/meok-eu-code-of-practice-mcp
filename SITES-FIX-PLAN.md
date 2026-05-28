@@ -31,15 +31,15 @@
 ### CSOAI Governance Suite
 ```html
 <!-- Add to csoai.org/pricing or /certification -->
-<a href="https://buy.stripe.com/6oU8wR0xS6oq7oh42k8k82M" class="btn-primary">
+<a href="https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K" class="btn-primary">
   Subscribe SMB - £49/mo
 </a>
 
-<a href="https://buy.stripe.com/14AeVf3K46oq4c5aqI8k82L" class="btn-primary">
+<a href="https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K" class="btn-primary">
   Subscribe Professional - £149/mo
 </a>
 
-<a href="https://buy.stripe.com/eVq28t4O8dQS5g9fL28k82K" class="btn-enterprise">
+<a href="https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K" class="btn-enterprise">
   Subscribe Enterprise - £499/mo
 </a>
 ```
@@ -47,11 +47,11 @@
 ### MEOK Bundles
 ```html
 <!-- Add to meok.ai/pricing -->
-<a href="https://buy.stripe.com/6oU8wR0xS6oq7oh42k8k82M" class="btn">
+<a href="https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K" class="btn">
   MEOK Core Pack - £49/mo
 </a>
 
-<a href="https://buy.stripe.com/14AeVf3K46oq4c5aqI8k82L" class="btn">
+<a href="https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K" class="btn">
   MEOK Pro Bundle - £99/mo
 </a>
 ```
@@ -107,7 +107,7 @@ git push origin main
 <body>
   <h1>COBOL Bridge</h1>
   <p>Modernize 60 years of COBOL. Gain cloud speed.</p>
-  <a href="https://buy.stripe.com/00g3dKa1B7Y5dXi7ss">Get Started - £199/mo</a>
+  <a href="https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K">Get Started - £199/mo</a>
 </body>
 </html>
 ```

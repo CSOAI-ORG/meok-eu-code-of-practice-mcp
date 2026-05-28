@@ -83,11 +83,11 @@ cd meok-ai
 Add to your pricing page or create `pages/pricing.tsx`:
 
 ```tsx
-<a href="https://buy.stripe.com/6oU8wR0xS6oq7oh42k8k82M">
+<a href="https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K">
   Subscribe SMB - £49/mo
 </a>
 
-<a href="https://buy.stripe.com/14AeVf3K46oq4c5aqI8k82L">
+<a href="https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K">
   Subscribe Pro - £149/mo
 </a>
 ```
@@ -107,9 +107,9 @@ git push origin main
 
 ### CSOAI Governance
 ```
-SMB (£49/mo): https://buy.stripe.com/6oU8wR0xS6oq7oh42k8k82M
-Pro (£149/mo): https://buy.stripe.com/14AeVf3K46oq4c5aqI8k82L
-Ent (£499/mo): https://buy.stripe.com/eVq28t4O8dQS5g9fL28k82K
+SMB (£49/mo): https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
+Pro (£149/mo): https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
+Ent (£499/mo): https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 ```
 
 ### MEOK Bundles  

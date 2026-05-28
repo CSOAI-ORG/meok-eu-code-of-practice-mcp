@@ -56,8 +56,8 @@ After today: every MCP has its own Stripe product, recurring price (£29/mo GBP)
 |---|---|
 | mica-crypto | https://buy.stripe.com/00wdRbcgAaEG9wpfL28k903 |
 | fsa-food-safety | https://buy.stripe.com/7sYbJ3gwQeUW5g91Uc8k904 |
-| mdr-medical-device | https://buy.stripe.com/eVq9AV6Wg8wy8slbuM8k905 |
-| fda-samd | https://buy.stripe.com/5kQcN7dkE8wy8slbuM8k906 |
+| mdr-medical-device | https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K |
+| fda-samd | https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K |
 | coppa-ferpa | https://buy.stripe.com/28EfZj6WgfZ03818iA8k907 |
 | basel-ai-overlay | https://buy.stripe.com/eVqbJ36Wg5km9wpfL28k908 |
 | mifid-ii-ai | https://buy.stripe.com/14A3cxfsM28a5g90Q88k909 |
@@ -68,12 +68,12 @@ After today: every MCP has its own Stripe product, recurring price (£29/mo GBP)
 
 | MCP | Buy URL |
 |---|---|
-| cisa-kev | https://buy.stripe.com/4gM00lgwQ00223X42k8k90c |
+| cisa-kev | https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K |
 | sbom-cyclonedx | https://buy.stripe.com/00w9AV4O828a6kd56o8k90d |
-| mitre-attack | https://buy.stripe.com/eVqdRbdkE9ACfUN6as8k90e |
-| mitre-atlas | https://buy.stripe.com/28E8wRbcw0024c5fL28k90f |
+| mitre-attack | https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K |
+| mitre-atlas | https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K |
 | slsa-supply-chain | https://buy.stripe.com/28E00lbcw28a8sl0Q88k90g |
-| sigstore-cosign | https://buy.stripe.com/9B6aEZgwQ7su3810Q88k90h |
+| sigstore-cosign | https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K |
 
 ## Stripe object IDs (for reference)
 

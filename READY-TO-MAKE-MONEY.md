@@ -12,11 +12,11 @@
 
 | Product | Price | Payment Link |
 |---------|-------|--------------|
-| **MEOK Governance SMB** | £49/mo | https://buy.stripe.com/6oU8wR0xS6oq7oh42k8k82M |
-| **MEOK Governance Pro** | £149/mo | https://buy.stripe.com/14AeVf3K46oq4c5aqI8k82L |
-| **MEOK Governance Ent** | £499/mo | https://buy.stripe.com/eVq28t4O8dQS5g9fL28k82K |
-| **Bundle 4** | Variable | https://buy.stripe.com/6oU7sN4O86oq6kd2Yg8k82J |
-| **Bundle 5** | Variable | https://buy.stripe.com/8x28wRa8sfZ00ZTcyQ8k82I |
+| **MEOK Governance SMB** | £49/mo | https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K |
+| **MEOK Governance Pro** | £149/mo | https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K |
+| **MEOK Governance Ent** | £499/mo | https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K |
+| **Bundle 4** | Variable | https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K |
+| **Bundle 5** | Variable | https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K |
 | **More Bundles** | Various | [20+ more links in Stripe] |
 
 **Total Payment Links:** 20+ live and ready
@@ -32,15 +32,15 @@
 <h2>CSOAI Governance Suite</h2>
 <p>Complete AI compliance for your organization</p>
 
-<a href="https://buy.stripe.com/6oU8wR0xS6oq7oh42k8k82M" class="button primary">
+<a href="https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K" class="button primary">
   Subscribe SMB - £49/mo
 </a>
 
-<a href="https://buy.stripe.com/14AeVf3K46oq4c5aqI8k82L" class="button">
+<a href="https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K" class="button">
   Subscribe Pro - £149/mo
 </a>
 
-<a href="https://buy.stripe.com/eVq28t4O8dQS5g9fL28k82K" class="button enterprise">
+<a href="https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K" class="button enterprise">
   Subscribe Enterprise - £499/mo
 </a>
 ```

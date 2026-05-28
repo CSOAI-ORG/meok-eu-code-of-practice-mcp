@@ -91,11 +91,11 @@ Subject: Zopa's AI credit scoring + EU AI Act Annex III = Dec 2027
 
 MINIMUM (1 sale):
 - 1x £49/mo subscription = £49 MRR
-- Payment link: https://buy.stripe.com/7sY7sN2G01466kdaqI8k834
+- Payment link: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 TARGET (consulting):
 - 1x £5,000 assessment = £5,000 cash
-- Payment link: https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833
+- Payment link: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 STRETCH:
 - 1x £499/mo enterprise = £499 MRR

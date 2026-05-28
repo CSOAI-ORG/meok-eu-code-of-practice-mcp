@@ -24,8 +24,8 @@ Most Article-11 docs I see cover 3-4 of the 14 mandatory fields. Auditors reject
 
 I've built `eu-ai-act-compliance-mcp` + `ai-bom-mcp` — they run the article-by-article audit and emit a **cryptographically signed HMAC-SHA256 attestation with a public verify URL** your EU regulator-facing counsel can validate directly (no MEOK backend access needed).
 
-- **48h assessment** — £5,000 flat. Written report + signed attestation. https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833
-- **Pro tier** — £79/mo. Your team runs audits on-demand, every cert signed + verifiable. https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836
+- **48h assessment** — £5,000 flat. Written report + signed attestation. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
+- **Pro tier** — £79/mo. Your team runs audits on-demand, every cert signed + verifiable. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 15 minutes this week for an article-by-article walkthrough?
 
@@ -47,8 +47,8 @@ Articles that hit hardest for insurance: **Art 9 (risk management, live monitori
 
 The difference between your EU counsel's word and a signed artefact your regulator accepts: a HMAC-SHA256 attestation with a **public verify URL** your buyer / market-surveillance authority can cross-check without touching MEOK's backend. That's what we ship.
 
-- **48h audit + signed attestation** — £5,000. https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833
-- **Continuous tier** — £79/mo. https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836
+- **48h audit + signed attestation** — £5,000. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
+- **Continuous tier** — £79/mo. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 The tool also chains into `ai-incident-reporting-mcp` so your Article 73 serious-incident clocks start correctly if anything goes sideways post-launch.
 
@@ -75,8 +75,8 @@ Double Annex III means doubled documentation burden: Article 10 bias testing aga
 
 I've built MCP servers that run the audit + emit **signed attestations with public verify URLs** — the artefact your ISO certifier + DSIT-aligned procurement partners accept as evidence.
 
-- **48h assessment** — £5,000. https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833
-- **Pro** — £79/mo. https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836
+- **48h assessment** — £5,000. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
+- **Pro** — £79/mo. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 15 mins this week to map the articles?
 
@@ -100,8 +100,8 @@ And if an incident hits a protected class in lending: GDPR Art 33 (72h) + EU AI 
 
 I've built `eu-ai-act-compliance-mcp` + `dora-compliance-mcp` + `dora-nis2-crosswalk-mcp` + `ai-incident-reporting-mcp` — each emits **cryptographically signed HMAC-SHA256 attestations** your FCA/PRA-facing team can attach to the governance pack.
 
-- **48h dual-regime assessment** — £5,000. https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833
-- **Pro** — £79/mo. https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836
+- **48h dual-regime assessment** — £5,000. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
+- **Pro** — £79/mo. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 15 mins this week?
 
@@ -122,8 +122,8 @@ Articles you need covered: 10 (bias across protected classes), 11 (technical doc
 
 I've built MCPs that audit all of it + emit a **HMAC-SHA256 signed attestation** — your buyer + market-surveillance authority can validate it at a public verify URL without touching MEOK.
 
-- **48h article-by-article audit** — £5,000. https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833
-- **Pro continuous tier** — £79/mo. https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836
+- **48h article-by-article audit** — £5,000. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
+- **Pro continuous tier** — £79/mo. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 Worth a 15 min call before Q2 deadlines kick in?
 
@@ -144,8 +144,8 @@ Additional layers on top of Art 9/10/11/14/43: **Art 5** (prohibited practices c
 
 I run `eu-ai-act-compliance-mcp` + `ai-bom-mcp` + a signed-attestation surface that maps each of those articles to an auditable control.
 
-- **48h biometric-specific assessment** — £5,000. https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833
-- **Pro** — £79/mo. https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836
+- **48h biometric-specific assessment** — £5,000. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
+- **Pro** — £79/mo. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 15 mins for a walkthrough?
 
@@ -168,8 +168,8 @@ I've built `dora-compliance-mcp` + `nis2-compliance-mcp` + `dora-nis2-crosswalk-
 
 Every Pro-tier output is an **HMAC-SHA256 signed attestation** with a public verify URL your FCA-facing team can attach to the governance pack.
 
-- **48h dual-regime gap review** — £5,000. https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833
-- **Pro** — £79/mo. https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836
+- **48h dual-regime gap review** — £5,000. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
+- **Pro** — £79/mo. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 15 mins this week?
 
@@ -190,8 +190,8 @@ Most financial entities I speak to haven't yet mapped their vendor contracts to 
 
 I've built `dora-compliance-mcp` (Art 28 compliant Register generator) + `dora-nis2-crosswalk-mcp` (dual-satisfies tests) — both emit **HMAC-signed attestations**.
 
-- **Pro** — £79/mo, you run unlimited audits. https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836
-- **48h Register gap review** — £5,000. https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833
+- **Pro** — £79/mo, you run unlimited audits. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
+- **48h Register gap review** — £5,000. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 15 mins to walk through what your Register needs before 30 April?
 
@@ -255,10 +255,10 @@ Nicholas
 
 > Hi [Name] — bumping this up in case it got lost. The EU AI Act Article 50 deadline (2 Nov 2026, 177 days) makes the 48h assessment the fastest path to a shipped compliance artefact. £5k, signed attestation with public verify URL, your auditor validates without touching our backend. Worth 15 minutes?
 >
-> Stripe link: https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833
+> Stripe link: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 ## Follow-up template (second bump, ~10 days, pricing-anchored)
 
-> Hi [Name] — last ping. I'll park this but wanted to flag a Pro tier tweak that might matter: £79/mo now includes **unlimited signed attestations** across every regime your entity touches (EU AI Act + DORA + NIS2 + CRA + CSRD + GDPR + UK AI Bill + ISO 42001). One subscription, all audits, all signed evidence. Pro: https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836.
+> Hi [Name] — last ping. I'll park this but wanted to flag a Pro tier tweak that might matter: £79/mo now includes **unlimited signed attestations** across every regime your entity touches (EU AI Act + DORA + NIS2 + CRA + CSRD + GDPR + UK AI Bill + ISO 42001). One subscription, all audits, all signed evidence. Pro: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K.
 >
 > If the answer's still "not yet" — totally fine, I'll park. Ping me when it comes up the queue.
