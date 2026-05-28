@@ -2188,6 +2188,18 @@ app.add_middleware(
 app.include_router(create_safety_router(SafetyClassifier()))
 app.include_router(create_sycophancy_router(SycophancyDetector()))
 
+# Attestation router — Ed25519-signed audit-grade attestations + JWKS discovery
+# (see sovereign-temple/attestation/). Routes:
+#   POST /attestation/sign
+#   POST /attestation/verify
+#   GET  /attestation/.well-known/jwks.json
+try:
+    from attestation.router import create_attestation_router
+    app.include_router(create_attestation_router())
+    print("    Attestation router mounted (Ed25519 + Sigstore-ready)")
+except Exception as _attestation_mount_err:  # pragma: no cover
+    print(f"⚠️  Attestation router not mounted: {_attestation_mount_err}")
+
 # Prometheus metrics — exposes /metrics endpoint for monitoring
 if PROMETHEUS_AVAILABLE:
     Instrumentator(
@@ -5006,6 +5018,7 @@ MODEL_ALIASES = {
     "trust_prediction_nn": "trust_prediction",
     "burnout_detection_nn": "care_pattern_analyzer",
     "partnership_detection_nn": "partnership_detection_ml",
+    "partnership_detection": "partnership_detection_ml",
     "relationship_evolution_nn": "relationship_evolution",
     "creativity_assessment_nn": "creativity_assessment",
 }
