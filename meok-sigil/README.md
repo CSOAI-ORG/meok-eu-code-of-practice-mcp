@@ -8,7 +8,7 @@ V|jarvis|ad6d|+|0.82
    └─ digest() → 8cc4a6002bb8201a   (sign this → auditable agent log)
 ```
 
-- ⚡ **~1.9× denser / ~48% fewer tokens** than verbose English on a real SOV3 council corpus (measured with tiktoken, not a proxy).
+- ⚡ **Verified compression (real tiktoken BPE):** ~27% fewer tokens on already-trimmed dicts → **81% fewer (5.25×) on raw live SOV3 `get_system_status` output** (the fat JSON agents actually pass). The bigger/messier the payload, the bigger the win. `python3 -m sigil.sov3_adapter --live` reproduces it against the running MCP.
 - 🔁 **Lossless & deterministic** — one line, exactly one parse; `encode(parse(x)) == x`.
 - 👁 **Human-readable on demand** — `gloss()` turns any line back into English.
 - 🔏 **Auditable** — `digest()` gives a stable hash to sign with the MEOK attestation engine → EU AI Act Art 12/14 "verifiable agent communication."
