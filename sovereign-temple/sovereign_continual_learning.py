@@ -356,7 +356,7 @@ class ContinualLearningTrainer:
 
         # --- 5. Retrain ---
         try:
-            post_metrics = model.train_model()
+            post_metrics = model.train_model(all_samples)
         except Exception as exc:
             logger.error("Training failed for %s: %s", model_name, exc)
             # Attempt rollback

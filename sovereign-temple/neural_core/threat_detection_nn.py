@@ -9,7 +9,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from typing import Dict, Any, List, Optional, Tuple
 import re
-import base_model
+from . import base_model
 import pickle
 import os
 
@@ -206,6 +206,16 @@ class ThreatDetectionNN(base_model.BaseNeuralModel):
         """Train the threat detection model with accuracy guard (rejects model if accuracy < 0.85)"""
 
         texts, labels = self._generate_training_data()
+        
+        # Ingest new samples from continual learning pipeline
+        if training_data:
+            new_texts = [t for t in training_data if isinstance(t, str) and len(t.strip()) > 10]
+            if new_texts:
+                # Conservative default: label as benign [0,0,0,0]
+                # Models trained on mostly benign data; new memory text is assumed safe
+                benign_label = np.array([[0, 0, 0, 0]]).repeat(len(new_texts), axis=0)
+                texts = list(texts) + new_texts
+                labels = np.vstack([labels, benign_label])
 
         # Fit vectorizer
         X_tfidf = self.vectorizer.fit_transform(texts).toarray()
