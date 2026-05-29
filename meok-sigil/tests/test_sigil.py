@@ -103,6 +103,47 @@ def test_duplicate_opcode_rejected():
         pass
 
 
+def test_ed25519_sign_verify_roundtrip():
+    """Sign with private key, verify with public key only (no shared secret)."""
+    from sigil import sign as s
+    if not s._CRYPTO:
+        return  # skip if crypto unavailable
+    priv, pub = s.generate_keypair()
+    att = s.sign("V|jarvis|ad6d|+|0.82", priv_b64=priv, kid="v1")
+    assert att["alg"] == "ed25519" and att["sig"]
+    assert s.verify(att, pub_b64=pub) is True
+
+
+def test_ed25519_tamper_detected():
+    """Flipping the vote must invalidate the signature."""
+    from sigil import sign as s
+    if not s._CRYPTO:
+        return
+    priv, pub = s.generate_keypair()
+    att = s.sign("V|jarvis|ad6d|+|0.82", priv_b64=priv)
+    att["sigil"] = "V|jarvis|ad6d|-|0.82"   # APPROVE -> REJECT
+    assert s.verify(att, pub_b64=pub) is False
+
+
+def test_ed25519_wrong_key_rejected():
+    """A different public key must not verify the signature (forgery block)."""
+    from sigil import sign as s
+    if not s._CRYPTO:
+        return
+    priv, _ = s.generate_keypair()
+    _, other_pub = s.generate_keypair()
+    att = s.sign("V|jarvis|ad6d|+|0.82", priv_b64=priv)
+    assert s.verify(att, pub_b64=other_pub) is False
+
+
+def test_sign_degrades_honestly_without_key():
+    """No key present -> unsigned, never a fabricated signature."""
+    from sigil import sign as s
+    att = s.sign("V|jarvis|ad6d|+|0.82")   # no key passed, none in env
+    assert att["sig"] is None and att["alg"] == "unsigned-sha256"
+    assert s.verify(att) is False
+
+
 def _run_all():
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     passed = 0

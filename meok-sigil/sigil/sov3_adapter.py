@@ -22,6 +22,7 @@ import urllib.error
 
 from . import encode, gloss, digest
 from .thought import Thought
+from . import sign as _signmod
 
 try:
     import tiktoken
@@ -111,9 +112,11 @@ ENCODERS = {
 def _measure(name, raw_obj, sigil_line):
     raw_json = json.dumps(raw_obj, separators=(",", ":"))
     jt, st = ntok(raw_json), ntok(sigil_line)
+    att = _signmod.sign(sigil_line)   # signs if SIGIL_SIGNING_KEY set, else honest unsigned
     return {"surface": name, "json_tokens": jt, "sigil_tokens": st,
             "ratio": round(jt / st, 2), "pct_saved": round((1 - st / jt) * 100, 1),
             "sigil": sigil_line, "gloss": gloss(sigil_line), "digest": digest(sigil_line),
+            "alg": att["alg"], "verifiable": att["verifiable"],
             "lossless": encode(Thought.from_sigil(sigil_line).intent) == sigil_line}
 
 
@@ -183,7 +186,7 @@ def _report(rows, live=False):
               f"({r['ratio']}x, {r['pct_saved']}% fewer)  lossless={r['lossless']}")
         print(f"    {r['sigil'][:92]}")
         print(f"    gloss: {r['gloss'][:92]}")
-        print(f"    sign:  {r['digest']}")
+        print(f"    sign:  {r['digest']}  [{r['alg']} · {r['verifiable']}]")
     print("\n" + "=" * 74)
     src = "LIVE" if live else "captured"
     print(f"  {src}: {len(rows)} surfaces | JSON {jt}t vs SIGIL {st}t "
