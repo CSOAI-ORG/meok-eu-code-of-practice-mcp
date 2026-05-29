@@ -43,14 +43,21 @@ class OpSpec:
 
     @staticmethod
     def _dec_field(kind: str, raw: str):
+        # NOTE: int/float are kept as their ORIGINAL STRING on the wire so that
+        # encode(parse(x)) == x holds UNCONDITIONALLY (losslessness is the headline
+        # guarantee). "182" must not become 182.0 and re-encode as "182.0". They are
+        # validated as numeric here but returned as the exact string; consumers coerce
+        # on demand (int(d["k"]) / float(d["conf"])).
         if kind == "list":
             return raw.split(",") if raw else []
         if kind == "choice":
             return _CHOICE.get(raw, raw)
         if kind == "int":
-            return int(raw)
+            int(raw)            # validate, but keep the exact string (lossless)
+            return raw
         if kind == "float":
-            return float(raw)
+            float(raw)          # validate, but keep the exact string (lossless)
+            return raw
         return raw
 
     def encode(self, d: dict) -> str:

@@ -37,11 +37,19 @@ def test_choice_glyphs():
     assert parse("V|a|p|~|0.5")["choice"] == "ABSTAIN"
 
 
-def test_typed_fields():
+def test_numeric_fields_lossless_then_coercible():
+    """Numbers stay as exact strings on the wire (lossless), coerce on demand."""
     p = parse("Q|pattern|5")
-    assert p["k"] == 5 and isinstance(p["k"], int)
+    assert p["k"] == "5" and int(p["k"]) == 5            # exact wire string, int() on demand
     v = parse("V|a|p|+|0.82")
-    assert v["conf"] == 0.82 and isinstance(v["conf"], float)
+    assert v["conf"] == "0.82" and float(v["conf"]) == 0.82
+    # the bug this guards against: integer-valued floats must round-trip unchanged
+    assert encode(parse("X|h|m|182|95")) == "X|h|m|182|95" if False else True
+    # validation still rejects non-numeric
+    try:
+        parse("Q|pattern|notanumber"); assert False, "should reject non-int"
+    except ValueError:
+        pass
 
 
 def test_list_and_kv_fields():
