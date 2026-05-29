@@ -24,6 +24,8 @@
 - Article 50 transparency / watermarking: nearest cliff **early November 2026** (~5 months)
 - DORA Register of Information (Art 28 / Reg (EU) 2024/2956): **30 April 2026** (first annual submission)
 
+> 🚨 **HARD BLOCKER BEFORE SENDING (verified 2026-05-29):** the public attestation **verify endpoint is currently down** — `proofof.ai` has no SSL cert, and `meok-attestation-api.vercel.app` returns 401 on every path (Vercel Deployment Protection). Every email below promises "your auditor verifies at a public URL." If a prospect clicks to verify and hits a dead page, it destroys the exact credibility the pitch is built on. **Do not send until a real verify URL resolves (200).** Fix = Vercel project → Deployment Protection → Preview-only (one toggle), then re-test.
+
 > ⚠️ **One Stripe link for both offers is a conversion leak** — the £79/mo and the £5k currently land on the same checkout. Flag for Nick: split into two payment links before a real send wave. Not blocking; the link is live and works.
 
 ---
