@@ -271,3 +271,20 @@ if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 3400))
     uvicorn.run(app, host="0.0.0.0", port=port)
+
+# Health check proxies for bridge routers
+@app.get("/payments/health")
+async def proxy_payments_health():
+    return await _proxy_request("sov3", "GET", "/payments/health")
+
+@app.get("/chronicle/health")
+async def proxy_chronicle_health():
+    return await _proxy_request("sov3", "GET", "/chronicle/health")
+
+@app.get("/storage/health")
+async def proxy_storage_health():
+    return await _proxy_request("sov3", "GET", "/storage/health")
+
+@app.get("/a2a/health")
+async def proxy_a2a_health():
+    return await _proxy_request("sov3", "GET", "/a2a/health")
