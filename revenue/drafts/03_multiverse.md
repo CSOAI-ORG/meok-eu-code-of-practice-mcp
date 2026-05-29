@@ -24,8 +24,8 @@ I run MEOK AI Labs. We've built MCP-based automated compliance tooling — the o
 
 Two offers:
 
-1. **48-hour compliance assessment** — £5,000. Written report. https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833
-2. **Monthly enterprise tier** — £499/mo continuous audits. https://buy.stripe.com/28EcN7fsM002fUN1Uc8k835
+1. **48-hour compliance assessment** — £5,000. Written report. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
+2. **Monthly enterprise tier** — £499/mo continuous audits. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 15 minutes this week? Happy to walk through the specific articles that apply to Multiverse's product.
 

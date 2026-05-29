@@ -43,15 +43,20 @@ class QuantumCouncil:
     3. Feature mapping (quantum kernel methods)
     """
     
-    def __init__(self, n_qubits: int = 8, device: str = "default.qubit"):
+    def __init__(self, n_qubits: int = 8, device: str = "lightning.qubit"):
         self.n_qubits = n_qubits
         self.n_nodes = 33  # Match CouncilOf
         
         if PENNYLANE_AVAILABLE:
-            # Initialize quantum device
-            self.dev = qml.device(device, wires=n_qubits)
+            # Initialize optimized quantum device
+            try:
+                self.dev = qml.device(device, wires=n_qubits)
+                logger.info(f"Quantum Council initialized with {device} on {n_qubits} qubits")
+            except Exception as e:
+                logger.warning(f"Could not initialize {device}, falling back to default.qubit: {e}")
+                self.dev = qml.device("default.qubit", wires=n_qubits)
+            
             self._setup_circuits()
-            logger.info(f"Quantum Council initialized with {n_qubits} qubits")
         else:
             self.dev = None
             logger.info("Quantum Council running in classical simulation mode")

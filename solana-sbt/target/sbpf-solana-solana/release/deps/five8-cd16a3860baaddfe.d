@@ -1,0 +1,11 @@
+/Users/nicholas/clawd/solana-sbt/target/sbpf-solana-solana/release/deps/five8-cd16a3860baaddfe.d: /Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/lib.rs /Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/decode.rs /Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/encode.rs /Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/unlikely.rs /Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/../README.md
+
+/Users/nicholas/clawd/solana-sbt/target/sbpf-solana-solana/release/deps/libfive8-cd16a3860baaddfe.rlib: /Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/lib.rs /Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/decode.rs /Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/encode.rs /Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/unlikely.rs /Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/../README.md
+
+/Users/nicholas/clawd/solana-sbt/target/sbpf-solana-solana/release/deps/libfive8-cd16a3860baaddfe.rmeta: /Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/lib.rs /Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/decode.rs /Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/encode.rs /Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/unlikely.rs /Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/../README.md
+
+/Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/lib.rs:
+/Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/decode.rs:
+/Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/encode.rs:
+/Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/unlikely.rs:
+/Users/nicholas/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/five8-0.2.1/src/../README.md:

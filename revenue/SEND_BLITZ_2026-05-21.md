@@ -2,6 +2,13 @@
 
 **One-click Gmail compose URLs.** Click any link, review the pre-filled compose window in Gmail, hit **Send**. ~25 emails in 10-12 minutes.
 
+> 💸 **NEW 2026-05-28 — REVENUE LADDER LIVE.** Three Stripe payment links you can paste in any tweet / DM / email — fully independent of the meok.ai build:
+> - £1 smoke test → <https://buy.stripe.com/dRmcN75ScdQS7oh1Uc8k90U>
+> - £9 Article 50 Quick Kit → <https://buy.stripe.com/cNi00la8s1460ZT0Q88k90V>
+> - £29 Founder Office Hour (30 min) → <https://buy.stripe.com/8x228ta8s6oqbExaqI8k90W>
+>
+> Three ready-to-paste tweets in `REVENUE_LADDER_2026-05-28.md`. Lowest-friction conversion ladder we've ever had.
+
 > ⚡ **CLICK FIRST — Anthropic applications:** see `ANTHROPIC_PROGRAMS_2026-05-21.md` — 5 program applications (Claude for Open Source, Connectors Directory, Partner Network, AAIF, Economic Futures) with pre-filled compose links. Apply Claude for Open Source by **30 June 2026** before the 10,000-maintainer cap fills.
 
 > All links open Gmail's web compose with the recipient + subject + body pre-filled. If you're not signed into Gmail in the same browser session, you'll be prompted first.

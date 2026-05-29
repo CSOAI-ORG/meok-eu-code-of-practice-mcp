@@ -19,11 +19,11 @@ I run MEOK AI Labs. We've built the only ISO 42001 MCP server stack in existence
 
 Three ways I can help:
 
-1. **48-hour compliance assessment** — £5,000. You get a written report on where Beamery stands against each EU AI Act article and exactly what needs fixing. Payment link: https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833
+1. **48-hour compliance assessment** — £5,000. You get a written report on where Beamery stands against each EU AI Act article and exactly what needs fixing. Payment link: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
-2. **Monthly compliance tooling** — £499/mo enterprise tier. Your team runs automated audits continuously. https://buy.stripe.com/28EcN7fsM002fUN1Uc8k835
+2. **Monthly compliance tooling** — £499/mo enterprise tier. Your team runs automated audits continuously. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
-3. **£199 toolkit** — self-serve if you want to run the assessment internally. https://buy.stripe.com/6oUfZja8s002cIB56o8k831
+3. **£199 toolkit** — self-serve if you want to run the assessment internally. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 Happy to do a 15-minute call this week. Even if you already have compliance counsel, a second-opinion technical audit against the actual article text is worth it before August.
 

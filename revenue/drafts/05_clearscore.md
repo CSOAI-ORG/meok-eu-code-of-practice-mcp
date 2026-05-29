@@ -20,9 +20,9 @@ I run MEOK AI Labs — we've built automated compliance MCP servers that audit A
 
 Two concrete offers:
 
-1. **48-hour compliance audit** — £5,000. Written article-by-article report with remediation steps. Payment: https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833
+1. **48-hour compliance audit** — £5,000. Written article-by-article report with remediation steps. Payment: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
-2. **Monthly enterprise tier** — £499/mo for continuous automated audits. https://buy.stripe.com/28EcN7fsM002fUN1Uc8k835
+2. **Monthly enterprise tier** — £499/mo for continuous automated audits. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 15 minutes this week? Happy to walk through which specific AI Act articles hit Clearscore's product hardest.
 

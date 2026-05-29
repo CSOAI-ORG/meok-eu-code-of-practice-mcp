@@ -19,9 +19,9 @@ I run MEOK AI Labs — we've built automated compliance MCP servers that plug in
 
 Two concrete offers:
 
-1. **48-hour audit** — £5,000 flat. Written report: which articles apply, where Tractable's AI stands today, what needs to be in place by August. Payment: https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833
+1. **48-hour audit** — £5,000 flat. Written report: which articles apply, where Tractable's AI stands today, what needs to be in place by August. Payment: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
-2. **Enterprise continuous tier** — £499/mo. Your team runs automated compliance audits on every model deployment. https://buy.stripe.com/28EcN7fsM002fUN1Uc8k835
+2. **Enterprise continuous tier** — £499/mo. Your team runs automated compliance audits on every model deployment. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 15-minute call this week? Even a preliminary classification conversation helps you scope the internal work.
 

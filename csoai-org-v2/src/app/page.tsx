@@ -60,7 +60,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-slate-950 to-slate-950" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <span className="inline-block mb-6 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-sm border border-emerald-500/20">
-            EU AI Act Article 50 — 176 Days Until Enforcement
+            EU AI Act Article 50 — Enforcement November 2026
           </span>
           <h1 className="text-4xl sm:text-6xl font-bold tracking-tight mb-6">
             Hire a Compliance Agent for{" "}
@@ -69,11 +69,11 @@ export default function Home() {
             </span>
           </h1>
           <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10">
-            AI compliance does not need a £360K/year governance team. Our MCP-powered agents handle risk classification, 
-            audit generation, and regulatory tracking — 24/7, at 1/10th the cost of a human compliance officer.
+            AI compliance does not need a six-figure governance team. Our MCP-powered agents handle risk classification, 
+            audit generation, and regulatory tracking — 24/7, at a fraction of the cost of a human compliance officer.
           </p>
           <div id="hero-signup"><EmailCapture source="hero" /></div>
-          <p className="text-xs text-slate-500 mt-4">Join 50+ organisations preparing for November 2026</p>
+          <p className="text-xs text-slate-500 mt-4">Join organisations preparing for November 2026</p>
         </div>
       </section>
 
@@ -82,16 +82,16 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
-              <div className="text-3xl font-bold text-emerald-400">234+</div>
-              <div className="text-sm text-slate-400 mt-1">MCP Servers</div>
+              <div className="text-3xl font-bold text-emerald-400">Open</div>
+              <div className="text-sm text-slate-400 mt-1">MCP Ecosystem</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-emerald-400">£40K</div>
-              <div className="text-sm text-slate-400 mt-1">Avg. Savings</div>
+              <div className="text-3xl font-bold text-emerald-400">Significant</div>
+              <div className="text-sm text-slate-400 mt-1">Cost Reduction</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-emerald-400">14hrs</div>
-              <div className="text-sm text-slate-400 mt-1">vs 4-5 Weeks</div>
+              <div className="text-3xl font-bold text-emerald-400">Hours</div>
+              <div className="text-sm text-slate-400 mt-1">vs Weeks</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-emerald-400">MIT</div>
@@ -110,7 +110,7 @@ export default function Home() {
           </p>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { title: "EU AI Act", desc: "Article 6 risk classification, FRIA generation, Article 50 transparency", badge: "91 days" },
+              { title: "EU AI Act", desc: "Article 6 risk classification, FRIA generation, Article 50 transparency", badge: "Coming soon" },
               { title: "NIST AI RMF", desc: "All 19 functions mapped to automated MCP tools", badge: "US/UK" },
               { title: "DORA", desc: "Article 26 TLPT planning, ICT risk management", badge: "Financial" },
               { title: "ISO 42001", desc: "AI management system conformity assessment", badge: "Global" },
@@ -134,7 +134,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center mb-4">Agent-as-Employee Pricing</h2>
           <p className="text-slate-400 text-center max-w-2xl mx-auto mb-12">
-            A junior compliance officer costs £3,000/month. Our agents cost £499/month and work 24/7 
+            A junior compliance officer costs thousands per month. Our agents cost £499/month and work 24/7
             without sick days, holidays, or LinkedIn scrolling.
           </p>
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -142,7 +142,7 @@ export default function Home() {
               <div className="mb-4">
                 <h3 className="text-lg text-slate-300 mb-1">Starter Agent</h3>
                 <div className="text-3xl font-bold text-white">£499<span className="text-sm font-normal text-slate-400">/mo</span></div>
-                <p className="text-xs text-slate-500">vs £3,000/mo junior officer</p>
+                <p className="text-xs text-slate-500">vs typical junior salary</p>
               </div>
               <ul className="space-y-2 mb-6">
                 {["EU AI Act Article 6 classification", "Basic FRIA generation", "1 framework", "Email support", "100 checks/mo"].map((item) => (
@@ -158,7 +158,7 @@ export default function Home() {
               <div className="mb-4">
                 <h3 className="text-lg text-emerald-400 mb-1">Professional Agent</h3>
                 <div className="text-3xl font-bold text-white">£1,999<span className="text-sm font-normal text-slate-400">/mo</span></div>
-                <p className="text-xs text-slate-500">vs £6,500/mo senior officer</p>
+                <p className="text-xs text-slate-500">vs typical senior salary</p>
               </div>
               <ul className="space-y-2 mb-6">
                 {["Everything in Starter", "Multi-framework (EU + NIST + DORA)", "HMAC-signed attestations", "Priority support", "Unlimited checks", "SME portal"].map((item) => (
@@ -174,7 +174,7 @@ export default function Home() {
                 <p className="text-xs text-slate-500">Replace an entire team</p>
               </div>
               <ul className="space-y-2 mb-6">
-                {["Everything in Professional", "Custom framework development", "BSI/UKAS certification prep", "Dedicated manager", "On-premise option", "99.9% SLA"].map((item) => (
+                {["Everything in Professional", "Custom framework development", "BSI/UKAS certification prep", "Dedicated manager", "On-premise option", "Enterprise SLA"].map((item) => (
                   <li key={item} className="flex items-center text-sm text-slate-300"><span className="text-emerald-400 mr-2">✓</span>{item}</li>
                 ))}
               </ul>
@@ -189,9 +189,9 @@ export default function Home() {
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h3 className="text-2xl font-bold mb-4">Calculate Your Compliance Cost</h3>
           <p className="text-slate-400 mb-8">
-            A typical 50-person fintech spends £360K/year on AI governance. 
-            Our Professional Agent Fleet delivers the same coverage for £24K/year — 
-            a 93% reduction with 10x faster turnaround.
+            A typical fintech spends heavily on AI governance. 
+            Our Professional Agent Fleet delivers comparable coverage at a fraction of the cost — 
+            with faster turnaround.
           </p>
           <EmailCapture source="roi-teaser" />
         </div>

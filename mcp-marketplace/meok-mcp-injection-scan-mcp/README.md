@@ -57,9 +57,9 @@ Coverage maps to: OWASP LLM Top 10, GenAI Red Team v1, the April 2026 Anthropic 
 | Tier | Price | What you get |
 |---|---|---|
 | Free | £0 | 5 scans / day, no signed reports |
-| Starter | [£29/mo](https://buy.stripe.com/4gM6oJ1BW4gi6kd6as8k838) | Unlimited scans + signed reports |
-| Pro | [£79/mo](https://buy.stripe.com/eVq9AV4O87sudMF42k8k839) | + scheduled rescans + 48h support |
-| Enterprise | [£1,499/mo](https://buy.stripe.com/4gM9AV80kaEG0ZT42k8k837) | + custom rule packs + 4h SLA |
+| Starter | [£29/mo](https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K) | Unlimited scans + signed reports |
+| Pro | [£79/mo](https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K) | + scheduled rescans + 48h support |
+| Enterprise | [£1,499/mo](https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K) | + custom rule packs + 4h SLA |
 
 Every signed cert lives at `https://meok-attestation-api.vercel.app/verify/<cert_id>` — auditors and procurement teams confirm without an account.
 
@@ -100,4 +100,19 @@ Free tier: 10 calls/day per MCP. Pro tier (£79/mo): unlimited + cryptographical
 
 → Full catalogue: [councilof.ai/catalogue](https://councilof.ai/catalogue)
 → MEOK AI Labs: [meok.ai](https://meok.ai)
+
+<!-- BUY-LADDER:START -->
+
+## 💸 Try MEOK in 30 seconds — instant buy ladder
+
+| Tier | Price | What you get | Stripe |
+|---|---|---|---|
+| Smoke test | **£1** | Signed sample MCP-Hardening report + Article 50 PDF | <https://buy.stripe.com/dRmcN75ScdQS7oh1Uc8k90U> |
+| Quick Kit | **£9** | EU AI Act Article 50 implementation guide (C2PA + EU-Icon) | <https://buy.stripe.com/cNi00la8s1460ZT0Q88k90V> |
+| Founder Call | **£29** | 30-min 1-on-1 with the founder | <https://buy.stripe.com/8x228ta8s6oqbExaqI8k90W> |
+
+> Refundable. UK Stripe — VAT-clean. Builds on the 81-MCP MEOK fleet.
+> Verify any signed report at <https://meok.ai/verify>.
+
+<!-- BUY-LADDER:END -->
 

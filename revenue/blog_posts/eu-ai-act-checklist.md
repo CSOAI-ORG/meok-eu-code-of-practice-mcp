@@ -56,8 +56,8 @@ pip install eu-ai-act-compliance-mcp
 | Tool | What It Does | Price |
 |------|-------------|-------|
 | [EU AI Act Compliance MCP](https://pypi.org/project/eu-ai-act-compliance-mcp/) | Automated risk classification | Free |
-| [MEOK Compliance Pack](https://buy.stripe.com/7sY7sN2G01466kdaqI8k834) | 5 MCP servers, full coverage | £49/mo |
-| [48-Hour Assessment](https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833) | Expert audit + remediation plan | £5,000 |
+| [MEOK Compliance Pack](https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K) | 5 MCP servers, full coverage | £49/mo |
+| [48-Hour Assessment](https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K) | Expert audit + remediation plan | £5,000 |
 
 ## Need Help?
 

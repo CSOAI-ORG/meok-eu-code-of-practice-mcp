@@ -97,7 +97,7 @@
       <div class="meok-tb-text">
         Built by <strong>MEOK AI Labs</strong> — 38 governance MCPs for EU AI Act, DORA, NIS2, CRA, GDPR. Free tier: 10 calls/day · <a href="https://meok.ai" target="_blank" rel="noopener">meok.ai</a>
       </div>
-      <a class="meok-tb-cta" href="https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836" target="_blank" rel="noopener">Pro £79/mo →</a>
+      <a class="meok-tb-cta" href="https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K" target="_blank" rel="noopener">Pro £79/mo →</a>
       <button class="meok-tb-close" aria-label="Dismiss bar" title="Dismiss">×</button>
     </div>
   `;

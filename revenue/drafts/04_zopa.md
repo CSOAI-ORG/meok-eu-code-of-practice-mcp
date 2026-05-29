@@ -19,9 +19,9 @@ I run MEOK AI Labs. We've built automated compliance infrastructure — MCP serv
 
 Two concrete offers:
 
-1. **48-hour audit** — £5,000 flat. Written report covering every applicable EU AI Act article against Zopa's current AI stack, with specific remediation steps. Payment: https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833
+1. **48-hour audit** — £5,000 flat. Written report covering every applicable EU AI Act article against Zopa's current AI stack, with specific remediation steps. Payment: https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
-2. **Enterprise continuous monitoring** — £499/mo. Automated audits on every model update. https://buy.stripe.com/28EcN7fsM002fUN1Uc8k835
+2. **Enterprise continuous monitoring** — £499/mo. Automated audits on every model update. https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K
 
 Worth a 15-minute call this week? Even if compliance is already scoped, a parallel technical audit is cheap insurance before August.
 
