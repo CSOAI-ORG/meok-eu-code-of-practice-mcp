@@ -93,7 +93,12 @@ Not "60 days before EU enforcement" (false deadline). Sequenced by what unblocks
 2. **Make proofof.ai/api/verify actually return 200** — deploy the real attestation API (currently 404s). Without it, every "cryptographic proof" claim is undemonstrable. *Needs a deploy — Nick's call.*
 3. **Connect MEOK ONE's `connect.py` safety_policy to the EXISTING killswitch** (`meok/mcp/tools/killswitch.py`) — it's already built (THROTTLE/PAUSE/SHUTDOWN across API+MCP+ElizaOS+SDK); the gap is wiring the consumer character rail to it + adding a test/smoke pass. Smaller job than I first thought — it's integration, not greenfield.
 4. **Build the RegGeoInt map MVP** — one framework (EU AI Act) × jurisdictions, as a real lookup over the existing MCP corpus. The viral free tool the Rundown describes — but actually shipped.
-5. **Decide the 5 open business-model questions** (from prior session note): pricing model, GDPR-vs-NFT, hosted-vs-self-host, first partner, open-standard-vs-proprietary.
+5. ~~Decide the 5 open business-model questions~~ ✅ **RESOLVED by Nick 2026-05-30, now encoded in `tiers.py` (14 tests):**
+   1. **Pricing** = the full "everyone eats" ladder: LOCAL (free, self-host, OSS) · FREE (hosted on-ramp) · PRO (£9/mo) · USAGE (£0.002/interaction, for platforms) · ENTERPRISE (£1,499/mo + RegGeoInt). Build product ecosystems on top.
+   2. **Ownership** = **GDPR + attestation FUSED** (not NFTs): user owns data (GDPR export/delete) + MEOK cryptographically proves it honoured the request (signed receipts → proofof.ai). The thing Character.AI can't say.
+   3. **Hosting** = both — big AI cos eat on paid (USAGE/ENTERPRISE); the wary self-host LOCAL free. Nobody locked out.
+   4. **Partners** = chase all at once (AI cos + games + enterprise + gov).
+   5. **Open vs proprietary** = both — LOCAL/basic is open-source; hosted paid tiers + RegGeoInt map are the proprietary revenue. Learn from top models' + top businesses' playbooks.
 
 ---
 

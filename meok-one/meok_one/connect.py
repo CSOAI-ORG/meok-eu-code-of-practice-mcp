@@ -25,6 +25,7 @@ import json
 
 from .registry import default as _registry_default
 from .memory import bridge as _memory_bridge
+from .tiers import entitlements as _entitlements
 
 
 # Safety profiles by integration surface. Games get age-gated; enterprise gets audited.
@@ -50,7 +51,7 @@ _AGE_GATES = {
 
 def connect(character_id: str, user_id: str, message: str,
             platform: str = "consumer", age_rating: str = None,
-            with_memory: bool = True) -> dict:
+            with_memory: bool = True, tier: str = "free") -> dict:
     """The connection envelope. A partner platform calls this BEFORE generating.
 
     Returns the ingredients to run the character on the partner's own model:
@@ -58,15 +59,20 @@ def connect(character_id: str, user_id: str, message: str,
       memory_context — what MEOK remembers about this user, across all platforms
       safety_policy  — moderation level + age gate + audit flag
       meta           — character identity; model_agnostic flag (we don't run the LLM)
+      billing        — the tier's entitlements (what this caller actually gets)
+
+    `tier` gates entitlements (local/free/pro/usage/enterprise — see tiers.py):
+    cross-platform memory, attestation, audit trail are unlocked per tier.
     """
     reg = _registry_default()
     char = reg.get(character_id)  # raises KeyError on unknown — fail loud
+    ent = _entitlements(tier)     # raises KeyError on unknown tier — fail loud
 
     surface = _SAFETY.get(platform, _SAFETY["consumer"])
 
-    # cross-platform memory context (the moat in action)
+    # cross-platform memory: the moat — but only if the tier includes it
     mem_ctx = ""
-    if with_memory:
+    if with_memory and ent["memory_cross_platform"]:
         mem_ctx = _memory_bridge().context_for(user_id, message)
 
     # assemble the safety directive (+ age gate for games)
@@ -92,8 +98,18 @@ def connect(character_id: str, user_id: str, message: str,
             "moderation": surface["moderation"],
             "age_rating": age_rating,
             "age_gate": age_note or None,
-            "audit": surface["audit"],
+            "audit": surface["audit"] or ent["audit_trail"],  # platform OR tier can require it
             "runtime_enforcement": ["guardian_moderate_chat", "guardian_check_game_content"],
+        },
+        "billing": {
+            "tier": ent["tier"],
+            "hosting": ent["hosting"],                 # "self" (local OSS) or "meok"
+            "memory_cross_platform": ent["memory_cross_platform"],
+            "attestation": ent["attestation"],         # signed receipt -> proofof.ai (GDPR-proof)
+            "audit_trail": ent["audit_trail"],
+            "reggeoint": ent["reggeoint"],
+            "daily_cap": ent["daily_cap"],
+            "open_source": ent["open_source"],
         },
         "meta": {
             "character_id": char["id"],
