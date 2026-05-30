@@ -2,171 +2,196 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#0a0a0f">
 <title>MEOK ONE — hatch your care-director</title>
 <style>
-  :root{ --bg:#0a0a0f; --panel:#15151f; --line:#262633; --txt:#e8e8f0; --dim:#8a8a9a; --accent:#7C3AED; }
-  *{ box-sizing:border-box; margin:0; padding:0; }
-  body{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--bg);
-        color:var(--txt); min-height:100vh; display:flex; flex-direction:column; align-items:center; }
-  .wrap{ width:100%; max-width:760px; padding:1.2rem; flex:1; display:flex; flex-direction:column; }
-  header{ text-align:center; padding:1.2rem 0 .6rem; }
-  header h1{ font-size:1.5rem; letter-spacing:-.02em; font-weight:800; }
-  header .sub{ color:var(--dim); font-size:.85rem; margin-top:.2rem; }
+  :root{
+    --bg:#0a0a0f; --bg2:#0e0e16; --panel:#16161f; --panel2:#1c1c28; --line:#26263a;
+    --txt:#edeef5; --dim:#8b8ba0; --accent:#7C3AED; --accent2:#a855f7; --ok:#34d399;
+    --r:16px; --r-sm:11px; --ease:cubic-bezier(.22,1,.36,1);
+    --shadow:0 10px 40px rgba(0,0,0,.45);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  html,body{ height:100%; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;
+    background:radial-gradient(1200px 600px at 50% -10%, #18122b 0%, var(--bg) 55%);
+    color:var(--txt); min-height:100dvh; display:flex; justify-content:center; overflow-x:hidden; }
+  .app{ width:100%; max-width:520px; min-height:100dvh; display:flex; flex-direction:column; position:relative; }
+  .topbar{ display:flex; align-items:center; justify-content:center; gap:.5rem; padding:1.1rem 1rem .4rem; }
+  .logo{ font-weight:800; letter-spacing:.14em; font-size:.82rem; color:var(--dim); }
+  .logo b{ color:var(--txt); }
+  .scene{ flex:1; display:flex; flex-direction:column; padding:0 1.1rem 1.1rem; }
   .hidden{ display:none !important; }
+  .fade{ animation:fade .5s var(--ease); } @keyframes fade{ from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
 
-  /* HATCH screen */
-  .egg{ font-size:4rem; text-align:center; margin:1rem 0 .4rem; animation:bob 3s ease-in-out infinite; }
-  @keyframes bob{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-10px) } }
-  .step-label{ color:var(--dim); font-size:.8rem; text-transform:uppercase; letter-spacing:.08em; margin:1.2rem 0 .5rem; }
-  .grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:.6rem; }
-  .card{ background:var(--panel); border:1px solid var(--line); border-radius:.8rem; padding:.85rem;
-         cursor:pointer; transition:.15s; }
-  .card:hover{ border-color:var(--accent); transform:translateY(-2px); }
-  .card.sel{ border-color:#fff; box-shadow:0 0 0 2px rgba(255,255,255,.15); }
-  .card .em{ font-size:1.5rem; }
-  .card .lbl{ font-weight:700; margin:.25rem 0; }
-  .card .desc{ color:var(--dim); font-size:.78rem; line-height:1.35; }
-  .styles{ display:flex; flex-wrap:wrap; gap:.5rem; }
-  .chip{ background:var(--panel); border:1px solid var(--line); border-radius:2rem; padding:.45rem .9rem;
-         cursor:pointer; font-size:.85rem; transition:.15s; }
-  .chip:hover{ border-color:var(--accent); }
-  .chip.sel{ background:var(--accent); border-color:var(--accent); color:#fff; }
-  input[type=text]{ width:100%; background:var(--panel); border:1px solid var(--line); border-radius:.7rem;
-         padding:.8rem 1rem; color:var(--txt); font-size:1rem; margin-top:.5rem; }
-  input[type=text]:focus{ outline:none; border-color:var(--accent); }
-  .btn{ background:var(--accent); color:#fff; border:none; border-radius:.7rem; padding:.85rem 1.5rem;
-        font-size:1rem; font-weight:700; cursor:pointer; width:100%; margin-top:1.2rem; transition:.15s; }
-  .btn:hover{ filter:brightness(1.1); } .btn:disabled{ opacity:.5; cursor:not-allowed; }
+  /* ---------- HATCH ---------- */
+  .hero{ text-align:center; padding:1.4rem 0 .6rem; }
+  .hero h1{ font-size:1.65rem; font-weight:800; letter-spacing:-.025em; line-height:1.1;
+    background:linear-gradient(90deg,#fff,#c4b5fd); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .hero p{ color:var(--dim); font-size:.9rem; margin-top:.45rem; }
+  .egg-wrap{ display:flex; justify-content:center; margin:1rem 0 .4rem; }
+  .egg{ font-size:4.6rem; filter:drop-shadow(0 8px 24px rgba(124,58,237,.4)); animation:bob 3.4s var(--ease) infinite; }
+  @keyframes bob{ 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-12px) rotate(2deg)} }
+  @keyframes crack{ 0%{transform:scale(1)} 30%{transform:scale(1.15) rotate(8deg)} 45%{transform:scale(.92) rotate(-8deg)} 60%{transform:scale(1.1) rotate(6deg)} 100%{transform:scale(1)} }
+  .egg.cracking{ animation:crack .9s var(--ease); }
+  .label{ color:var(--dim); font-size:.72rem; text-transform:uppercase; letter-spacing:.12em; margin:1.5rem 0 .6rem; font-weight:600; }
+  .arch-grid{ display:grid; grid-template-columns:1fr 1fr; gap:.55rem; }
+  .arch{ background:var(--panel); border:1px solid var(--line); border-radius:var(--r-sm); padding:.85rem .9rem; cursor:pointer; transition:.22s var(--ease); position:relative; overflow:hidden; }
+  .arch::before{ content:""; position:absolute; inset:0; opacity:0; transition:.22s; background:linear-gradient(135deg,transparent,rgba(124,58,237,.12)); }
+  .arch:hover{ transform:translateY(-3px); border-color:#3a3a55; }
+  .arch:hover::before{ opacity:1; }
+  .arch.sel{ border-color:var(--accent); box-shadow:0 0 0 1px var(--accent), 0 8px 24px rgba(124,58,237,.25); }
+  .arch .em{ font-size:1.55rem; } .arch .nm{ font-weight:700; font-size:.92rem; margin:.3rem 0 .15rem; }
+  .arch .ds{ color:var(--dim); font-size:.74rem; line-height:1.4; }
+  .chips{ display:flex; flex-wrap:wrap; gap:.45rem; }
+  .chip{ background:var(--panel); border:1px solid var(--line); border-radius:99px; padding:.5rem 1rem; cursor:pointer; font-size:.85rem; transition:.18s var(--ease); }
+  .chip:hover{ border-color:#3a3a55; transform:translateY(-2px); }
+  .chip.sel{ background:linear-gradient(135deg,var(--accent),var(--accent2)); border-color:transparent; font-weight:600; box-shadow:0 6px 18px rgba(124,58,237,.35); }
+  .field{ width:100%; background:var(--panel); border:1px solid var(--line); border-radius:var(--r-sm); padding:.9rem 1.05rem; color:var(--txt); font-size:1rem; margin-top:.6rem; transition:.18s; }
+  .field:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(124,58,237,.18); }
+  .cta{ background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border:none; border-radius:var(--r-sm); padding:.95rem 1.5rem; font-size:1rem; font-weight:700; cursor:pointer; width:100%; margin-top:1.4rem; transition:.2s var(--ease); box-shadow:0 8px 24px rgba(124,58,237,.35); }
+  .cta:hover:not(:disabled){ transform:translateY(-2px); box-shadow:0 12px 30px rgba(124,58,237,.5); }
+  .cta:active:not(:disabled){ transform:translateY(0) scale(.98); }
+  .cta:disabled{ opacity:.4; cursor:not-allowed; box-shadow:none; }
 
-  /* CHAT screen */
-  .chead{ display:flex; align-items:center; gap:.8rem; padding:.9rem 1rem; border-radius:.9rem; margin-bottom:.8rem; }
-  .chead .av{ font-size:2rem; } .chead h2{ font-size:1.15rem; } .chead .tag{ font-size:.78rem; opacity:.85; }
+  /* ---------- CHAT ---------- */
+  .chat{ flex:1; display:flex; flex-direction:column; min-height:0; }
+  .chero{ display:flex; align-items:center; gap:.85rem; padding:.9rem 1.05rem; border-radius:var(--r); margin:.2rem 0 .7rem; box-shadow:var(--shadow); position:relative; overflow:hidden; }
+  .chero::after{ content:""; position:absolute; inset:0; background:rgba(0,0,0,.25); }
+  .chero > *{ position:relative; z-index:1; }
+  .chero .av{ font-size:2.1rem; filter:drop-shadow(0 2px 8px rgba(0,0,0,.4)); animation:bob 4s var(--ease) infinite; }
+  .chero h2{ font-size:1.15rem; font-weight:700; }
+  .chero .tag{ font-size:.74rem; opacity:.92; margin-top:.1rem; }
+  .stagebar{ height:4px; background:rgba(255,255,255,.18); border-radius:99px; margin-top:.4rem; overflow:hidden; width:120px; }
+  .stagebar i{ display:block; height:100%; background:#fff; width:0; transition:width .6s var(--ease); }
   .toggle{ display:flex; gap:.4rem; margin-bottom:.7rem; }
-  .toggle button{ flex:1; background:var(--panel); border:1px solid var(--line); color:var(--dim);
-        border-radius:.6rem; padding:.5rem; font-size:.8rem; cursor:pointer; transition:.15s; }
-  .toggle button.on{ background:var(--accent); border-color:var(--accent); color:#fff; }
-  .toggle button .h{ display:block; font-weight:700; color:inherit; }
-  .msgs{ flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:.6rem; padding:.4rem 0; min-height:240px; }
-  .msg{ max-width:82%; padding:.7rem .95rem; border-radius:1rem; font-size:.95rem; line-height:1.45; white-space:pre-wrap; }
-  .msg.you{ align-self:flex-end; background:var(--accent); color:#fff; border-bottom-right-radius:.3rem; }
-  .msg.them{ align-self:flex-start; background:var(--panel); border:1px solid var(--line); border-bottom-left-radius:.3rem; }
-  .msg .meta{ font-size:.68rem; color:var(--dim); margin-top:.3rem; }
-  .typing{ align-self:flex-start; color:var(--dim); font-size:.85rem; padding:.4rem .9rem; }
-  .composer{ display:flex; gap:.5rem; padding-top:.6rem; }
-  .composer input{ margin:0; flex:1; }
-  .composer button{ width:auto; margin:0; padding:.8rem 1.2rem; }
-  .back{ background:none; border:none; color:var(--dim); cursor:pointer; font-size:.8rem; margin-bottom:.5rem; }
-  footer{ color:var(--dim); font-size:.72rem; text-align:center; padding:1rem 0; }
+  .toggle button{ flex:1; background:var(--panel); border:1px solid var(--line); color:var(--dim); border-radius:var(--r-sm); padding:.55rem .4rem; cursor:pointer; transition:.18s var(--ease); text-align:center; }
+  .toggle button .h{ display:block; font-weight:700; font-size:.82rem; color:var(--txt); margin-bottom:.1rem; }
+  .toggle button .s{ font-size:.66rem; }
+  .toggle button.on{ background:linear-gradient(135deg,var(--accent),var(--accent2)); border-color:transparent; }
+  .toggle button.on .s{ color:rgba(255,255,255,.85); }
+  .msgs{ flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:.55rem; padding:.3rem 0 .6rem; scroll-behavior:smooth; }
+  .msgs::-webkit-scrollbar{ width:0; }
+  .msg{ max-width:84%; padding:.72rem 1rem; border-radius:18px; font-size:.95rem; line-height:1.5; white-space:pre-wrap; word-wrap:break-word; animation:pop .3s var(--ease); }
+  @keyframes pop{ from{opacity:0;transform:translateY(6px) scale(.98)} to{opacity:1;transform:none} }
+  .msg.you{ align-self:flex-end; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border-bottom-right-radius:5px; }
+  .msg.them{ align-self:flex-start; background:var(--panel2); border:1px solid var(--line); border-bottom-left-radius:5px; }
+  .msg .meta{ font-size:.65rem; color:var(--dim); margin-top:.35rem; letter-spacing:.02em; }
+  .typing{ align-self:flex-start; background:var(--panel2); border:1px solid var(--line); border-radius:18px; border-bottom-left-radius:5px; padding:.8rem 1rem; display:flex; gap:5px; }
+  .typing span{ width:7px; height:7px; border-radius:50%; background:var(--dim); animation:blink 1.4s infinite both; }
+  .typing span:nth-child(2){ animation-delay:.2s } .typing span:nth-child(3){ animation-delay:.4s }
+  @keyframes blink{ 0%,80%,100%{opacity:.25;transform:translateY(0)} 40%{opacity:1;transform:translateY(-4px)} }
+  .composer{ display:flex; gap:.5rem; padding-top:.5rem; padding-bottom:env(safe-area-inset-bottom); }
+  .composer .field{ margin:0; flex:1; }
+  .composer button{ width:52px; height:52px; flex:none; border:none; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:1.2rem; cursor:pointer; transition:.18s var(--ease); }
+  .composer button:hover{ transform:scale(1.08); } .composer button:active{ transform:scale(.92); }
+  .back{ background:none; border:none; color:var(--dim); cursor:pointer; font-size:.82rem; padding:.3rem 0; align-self:flex-start; }
+  .back:hover{ color:var(--txt); }
+  footer{ color:#55556a; font-size:.68rem; text-align:center; padding:.6rem 0 1rem; }
+  .shield{ color:var(--ok); }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>MEOK ONE</h1>
-    <div class="sub">hatch your care-director — one character, the whole OS behind it</div>
-  </header>
+<div class="app">
+  <div class="topbar"><span class="logo">MEOK&nbsp;<b>ONE</b></span></div>
 
   <!-- HATCH -->
-  <section id="hatch">
-    <div class="egg" id="egg">🥚</div>
-    <div class="step-label">1 · choose a nature</div>
-    <div class="grid" id="archGrid"></div>
-    <div class="step-label">2 · choose a care style</div>
-    <div class="styles" id="styleChips"></div>
-    <div class="step-label">3 · name them</div>
-    <input type="text" id="nameInput" placeholder="give your care-director a name…" autocomplete="off">
-    <button class="btn" id="hatchBtn" disabled>🥚 Hatch</button>
-  </section>
+  <div class="scene" id="hatch">
+    <div class="hero">
+      <h1>Hatch your<br>care-director</h1>
+      <p>One character. The whole sovereign OS behind it.</p>
+    </div>
+    <div class="egg-wrap"><div class="egg" id="egg">🥚</div></div>
+    <div class="label">① choose their nature</div>
+    <div class="arch-grid" id="archGrid"></div>
+    <div class="label">② choose a care style</div>
+    <div class="chips" id="styleChips"></div>
+    <div class="label">③ give them a name</div>
+    <input class="field" type="text" id="nameInput" placeholder="e.g. Bramble, Atlas, Vega…" autocomplete="off" maxlength="24">
+    <button class="cta" id="hatchBtn" disabled>Choose a nature & style to hatch</button>
+    <footer>Free · runs on your machine · <span class="shield">Sovereign-safe</span></footer>
+  </div>
 
   <!-- CHAT -->
-  <section id="chat" class="hidden">
+  <div class="scene chat hidden" id="chat">
     <button class="back" id="backBtn">← hatch another</button>
-    <div class="chead" id="chead"><div class="av" id="cav">🌸</div>
-      <div><h2 id="cname">…</h2><div class="tag" id="ctag"></div></div></div>
+    <div class="chero" id="chero">
+      <div class="av" id="cav">🌸</div>
+      <div style="flex:1">
+        <h2 id="cname">…</h2>
+        <div class="tag" id="ctag"></div>
+        <div class="stagebar"><i id="stagebar"></i></div>
+      </div>
+    </div>
     <div class="toggle" id="brainToggle">
-      <button data-brain="left" class="on"><span class="h">🧠 Left Brain</span>local · private · free</button>
-      <button data-brain="right"><span class="h">☁️ Right Brain</span>API · powerful</button>
-      <button data-brain="both"><span class="h">⚖️ Council</span>both · safest</button>
+      <button data-brain="left" class="on"><span class="h">🧠 Left</span><span class="s">local·private</span></button>
+      <button data-brain="right"><span class="h">☁️ Right</span><span class="s">API·power</span></button>
+      <button data-brain="both"><span class="h">⚖️ Council</span><span class="s">both·safest</span></button>
     </div>
     <div class="msgs" id="msgs"></div>
     <div class="composer">
-      <input type="text" id="msgInput" placeholder="say something…" autocomplete="off">
-      <button class="btn" id="sendBtn">Send</button>
+      <input class="field" type="text" id="msgInput" placeholder="talk to your sovereign…" autocomplete="off">
+      <button id="sendBtn">↑</button>
     </div>
-  </section>
-
-  <footer>Sovereign keeps every brain safe · © CSOAI LTD (MEOK AI Labs)</footer>
+  </div>
 </div>
 
 <script>
-const $ = s => document.querySelector(s);
-let sel = { archetype:null, care_style:null }, current=null, brain="left";
+const $=s=>document.querySelector(s);
+let sel={archetype:null,care_style:null}, current=null, brain="left", xp=0;
+const STAGES=[["egg",0,"🥚"],["cracking",10,"🐣"],["hatching",25,"✨"],["growing",50,"🌱"],["mature",100,"🌟"],["full",200,"👑"]];
+async function api(p,o){ const r=await fetch(p,o); return r.json(); }
 
-async function api(path, opts){ const r = await fetch(path, opts); return r.json(); }
-
-// ---- build hatch screen ----
 (async function init(){
-  const data = await api("/api/archetypes");
-  const grid = $("#archGrid");
-  data.archetypes.forEach(a=>{
-    const d = document.createElement("div"); d.className="card";
-    d.innerHTML = `<div class="em">${a.emoji}</div><div class="lbl">${a.label}</div><div class="desc">${a.description}</div>`;
-    d.onclick = ()=>{ sel.archetype=a.id; document.querySelectorAll("#archGrid .card").forEach(c=>c.classList.remove("sel")); d.classList.add("sel"); checkReady(); };
-    grid.appendChild(d);
+  const d=await api("/api/archetypes");
+  d.archetypes.forEach(a=>{
+    const el=document.createElement("div"); el.className="arch";
+    el.innerHTML=`<div class="em">${a.emoji}</div><div class="nm">${a.label.replace('The ','')}</div><div class="ds">${a.description.split('—')[0]}</div>`;
+    el.onclick=()=>{ sel.archetype=a.id; document.querySelectorAll(".arch").forEach(x=>x.classList.remove("sel")); el.classList.add("sel"); ready(); };
+    $("#archGrid").appendChild(el);
   });
-  const chips = $("#styleChips");
-  Object.keys(data.care_styles).forEach(s=>{
-    const c = document.createElement("div"); c.className="chip"; c.textContent=s;
-    c.onclick = ()=>{ sel.care_style=s; document.querySelectorAll("#styleChips .chip").forEach(x=>x.classList.remove("sel")); c.classList.add("sel"); checkReady(); };
-    chips.appendChild(c);
+  Object.keys(d.care_styles).forEach(s=>{
+    const c=document.createElement("div"); c.className="chip"; c.textContent=s;
+    c.onclick=()=>{ sel.care_style=s; document.querySelectorAll(".chip").forEach(x=>x.classList.remove("sel")); c.classList.add("sel"); ready(); };
+    $("#styleChips").appendChild(c);
   });
 })();
-$("#nameInput").oninput = checkReady;
-function checkReady(){ $("#hatchBtn").disabled = !(sel.archetype && sel.care_style); }
+$("#nameInput").oninput=ready;
+function ready(){ const ok=sel.archetype&&sel.care_style; const b=$("#hatchBtn"); b.disabled=!ok; b.textContent=ok?"🥚 Hatch "+( $("#nameInput").value.trim()||"my sovereign"):"Choose a nature & style to hatch"; }
 
-// ---- hatch ----
-$("#hatchBtn").onclick = async ()=>{
-  $("#egg").textContent="🐣"; $("#hatchBtn").disabled=true; $("#hatchBtn").textContent="✨ hatching…";
-  const res = await api("/api/hatch", { method:"POST", headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ archetype:sel.archetype, care_style:sel.care_style, name:$("#nameInput").value.trim() }) });
-  current = res;
-  const g = res.visual.gradient || `linear-gradient(135deg, ${res.visual.color_primary}, ${res.visual.color_secondary||'#333'})`;
-  $("#chead").style.background = g;
-  $("#cav").textContent = res.visual.emoji;
-  $("#cname").textContent = res.name;
-  $("#ctag").textContent = `${res.archetype} · ${res.care_style} · ${res.stage_emoji} ${res.stage}`;
-  $("#hatch").classList.add("hidden"); $("#chat").classList.remove("hidden");
-  addMsg("them", `${res.stage_emoji} ${res.name} has hatched. "${res.tagline}"`, "just now");
+$("#hatchBtn").onclick=async()=>{
+  const egg=$("#egg"); egg.classList.add("cracking"); egg.textContent="🐣"; $("#hatchBtn").disabled=true; $("#hatchBtn").textContent="✨ hatching…";
+  const res=await api("/api/hatch",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({archetype:sel.archetype,care_style:sel.care_style,name:$("#nameInput").value.trim()})});
+  current=res; xp=0;
+  await new Promise(r=>setTimeout(r,650));
+  const g=res.visual.gradient||`linear-gradient(135deg,${res.visual.color_primary},${res.visual.color_secondary||'#333'})`;
+  $("#chero").style.background=g; $("#cav").textContent=res.visual.emoji; $("#cname").textContent=res.name;
+  $("#ctag").textContent=`${res.archetype} · ${res.care_style}`; updateStage();
+  $("#hatch").classList.add("hidden"); $("#chat").classList.remove("hidden"); $("#chat").classList.add("fade");
+  await stream("them",`${res.stage_emoji} ${res.name} has hatched. "${res.tagline}"`,"just now");
+  $("#msgInput").focus();
 };
+function updateStage(){ let cur=STAGES[0]; for(const s of STAGES){ if(xp>=s[1]) cur=s; } const next=STAGES[STAGES.indexOf(cur)+1]; const pct=next?Math.min(100,Math.round((xp-cur[1])/(next[1]-cur[1])*100)):100; $("#stagebar").style.width=pct+"%"; if(current) $("#ctag").textContent=`${current.archetype} · ${current.care_style} · ${cur[2]} ${cur[0]}`; }
 
-// ---- brain toggle ----
-$("#brainToggle").onclick = e=>{ const b=e.target.closest("button"); if(!b)return;
-  brain=b.dataset.brain; document.querySelectorAll("#brainToggle button").forEach(x=>x.classList.remove("on")); b.classList.add("on"); };
+$("#brainToggle").onclick=e=>{ const b=e.target.closest("button"); if(!b)return; brain=b.dataset.brain; document.querySelectorAll("#brainToggle button").forEach(x=>x.classList.remove("on")); b.classList.add("on"); };
 
-// ---- chat ----
-function addMsg(who, text, meta){ const m=document.createElement("div"); m.className="msg "+who;
-  m.innerHTML = text.replace(/</g,"&lt;") + (meta?`<div class="meta">${meta}</div>`:""); $("#msgs").appendChild(m);
-  $("#msgs").scrollTop = $("#msgs").scrollHeight; return m; }
+function bubble(who){ const m=document.createElement("div"); m.className="msg "+who; $("#msgs").appendChild(m); $("#msgs").scrollTop=$("#msgs").scrollHeight; return m; }
+async function stream(who,text,meta){ const m=bubble(who); const words=text.split(" "); for(let i=0;i<words.length;i++){ m.textContent=words.slice(0,i+1).join(" "); $("#msgs").scrollTop=$("#msgs").scrollHeight; await new Promise(r=>setTimeout(r,28)); } if(meta){ const e=document.createElement("div"); e.className="meta"; e.textContent=meta; m.appendChild(e);} return m; }
 
 async function send(){
-  const t = $("#msgInput").value.trim(); if(!t || !current) return;
-  $("#msgInput").value=""; addMsg("you", t);
-  const typing = document.createElement("div"); typing.className="typing"; typing.textContent=`${current.name} is thinking…`;
-  $("#msgs").appendChild(typing); $("#msgs").scrollTop=$("#msgs").scrollHeight;
-  let res;
-  try{ res = await api("/api/think", { method:"POST", headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ character:current.character_id, message:t, brain, tier:"pro" }) }); }
-  catch(e){ res = { reply:"[connection error]", backend:"none" }; }
+  const t=$("#msgInput").value.trim(); if(!t||!current)return; $("#msgInput").value="";
+  const u=bubble("you"); u.textContent=t; $("#msgs").scrollTop=$("#msgs").scrollHeight;
+  const typing=document.createElement("div"); typing.className="typing"; typing.innerHTML="<span></span><span></span><span></span>"; $("#msgs").appendChild(typing); $("#msgs").scrollTop=$("#msgs").scrollHeight;
+  let res; try{ res=await api("/api/think",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({character:current.character_id,message:t,brain,tier:"pro"})}); }catch(e){ res={reply:"[connection lost]",backend:"none"}; }
   typing.remove();
-  const meta = `${res.brain||brain} brain · ${res.engine||res.backend||"?"}${res.safe===false?" · ⚠ held":""}`;
-  addMsg("them", res.reply || "[no reply]", meta);
+  const meta=`${res.brain||brain} brain · ${res.engine||res.backend||"?"}${res.safe===false?" · ⚠ held for safety":""}`;
+  await stream("them",res.reply||"[no reply]",meta);
+  xp+=5; updateStage();
 }
-$("#sendBtn").onclick = send;
-$("#msgInput").addEventListener("keydown", e=>{ if(e.key==="Enter") send(); });
-$("#backBtn").onclick = ()=>{ $("#chat").classList.add("hidden"); $("#hatch").classList.remove("hidden");
-  $("#egg").textContent="🥚"; $("#hatchBtn").textContent="🥚 Hatch"; $("#msgs").innerHTML=""; sel={archetype:null,care_style:null};
-  document.querySelectorAll(".sel").forEach(x=>x.classList.remove("sel")); $("#nameInput").value=""; checkReady(); };
+$("#sendBtn").onclick=send;
+$("#msgInput").addEventListener("keydown",e=>{ if(e.key==="Enter")send(); });
+$("#backBtn").onclick=()=>{ $("#chat").classList.add("hidden"); $("#hatch").classList.remove("hidden"); const egg=$("#egg"); egg.textContent="🥚"; egg.classList.remove("cracking"); $("#msgs").innerHTML=""; sel={archetype:null,care_style:null}; xp=0; document.querySelectorAll(".sel").forEach(x=>x.classList.remove("sel")); $("#nameInput").value=""; ready(); };
 </script>
 </body>
 </html>
