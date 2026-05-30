@@ -53,7 +53,7 @@
 | **Free** | £0 hosted | consumer on-ramp | sign up (free) |
 | **Pro** | £9/mo | engaged consumers | [buy.stripe.com/8x2dRb…](https://buy.stripe.com/8x2dRb94obIK8sl1Uc8k916) |
 | **Usage** | £0.002 / interaction | AI cos + games embedding at scale | contract (metered) |
-| **Enterprise** | £1,499/mo + RegGeoInt | regulated / government | [buy.stripe.com/3cI3cx…](https://buy.stripe.com/3cI3cx0vCeUW7oh56o8k919) |
+| **Enterprise** | £1,499/mo + RegGeoInt | regulated / government | [buy.stripe.com/3cI3cx…](https://buy.stripe.com/7sY5kF3K4cMObEx2Yg8k917) |
 
 > Live Stripe links (MEOK AI LTD) — full IDs in [`STRIPE_LINKS.md`](STRIPE_LINKS.md). Local + Free are genuinely £0 (no product). Usage is sub-penny → metered price set in the Stripe dashboard, not self-serve.
 
