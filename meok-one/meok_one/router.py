@@ -1,0 +1,182 @@
+"""
+MEOK ONE — Model Router.
+
+"Switch between LLMs / modes with ease" — for end users (opencode-style) AND the
+monetisation answer to OpenRouter arbitrage.
+
+The thesis (do NOT resell tokens): MEOK is not a cheaper token broker — that just
+makes us the bank we're trying not to be (Character.AI's compute-cost death). Instead
+the router is a GOVERNANCE WRAPPER: one ask() over any model, with the character
+persona + memory + safety already attached, billed on the user's MEOK tier. The
+model call is a COST line, not a profit line. Users on Local run free local models;
+paid tiers may bring their own cloud key (BYOK) or use MEOK's at cost-plus-tier.
+
+Backends, in tier-appropriate order:
+  local   — Ollama (qwen3:8b/4b/0.6b) on :11434. FREE. The Local-tier engine.
+  sov3    — SOV3 MCP tools (hermes_ask live; nemotron_chat when NVIDIA key works).
+  cloud   — OpenAI/Anthropic/Gemini/OpenRouter via BYOK env keys (paid tiers only).
+
+ask(prompt, model="auto", tier="free") returns {reply, model, backend, source}.
+Honest: never fabricates a reply; if no backend answers, says so plainly.
+"""
+
+import json
+import os
+import re
+import urllib.request
+import urllib.error
+
+OLLAMA = os.environ.get("OLLAMA_URL", "http://localhost:11434")
+SOV3_MCP = os.environ.get("SOV3_MCP", "http://localhost:3101/mcp")
+
+# model alias -> (backend, concrete-id). "auto" resolves per tier.
+MODELS = {
+    # local (free, Ollama)
+    "qwen3":      ("local", "qwen3:8b"),
+    "qwen3:8b":   ("local", "qwen3:8b"),
+    "qwen3:4b":   ("local", "qwen3:4b"),
+    "qwen3:0.6b": ("local", "qwen3:0.6b"),
+    # sov3 tools
+    "hermes":     ("sov3", "hermes_ask"),
+    "nemotron":   ("sov3", "nemotron_chat"),
+    # cloud (BYOK — paid tiers)
+    "gpt-4o":         ("cloud", "openai/gpt-4o"),
+    "claude":         ("cloud", "anthropic/claude-3.5-sonnet"),
+    "gemini-2.5-pro": ("cloud", "google/gemini-2.5-pro"),
+    "deepseek-r1":    ("cloud", "deepseek/deepseek-r1"),
+}
+
+# Which backends a billing tier may use. Local tier = local only (free, self-host).
+_TIER_BACKENDS = {
+    "local": {"local"},                    # self-host, free, their machine
+    "free":  {"local", "sov3"},            # hosted free — cheap backends only
+    "pro":   {"local", "sov3", "cloud"},   # all, BYOK or cost-plus
+    "usage": {"local", "sov3", "cloud"},
+    "enterprise": {"local", "sov3", "cloud"},
+}
+
+
+def _strip_thinking(text: str) -> str:
+    if not text:
+        return text
+    cleaned = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
+    if "<think>" in cleaned:
+        cleaned = cleaned.split("</think>")[-1] if "</think>" in cleaned else cleaned.split("<think>")[-1]
+    return cleaned.strip() or text.strip()
+
+
+def list_models(tier: str = "pro") -> list:
+    """Models a tier can switch between — for the UI model picker."""
+    allowed = _TIER_BACKENDS.get(tier, {"local"})
+    return [{"id": alias, "backend": b, "concrete": c}
+            for alias, (b, c) in MODELS.items() if b in allowed]
+
+
+def _ask_local(model_id: str, prompt: str) -> "str | None":
+    body = json.dumps({"model": model_id, "prompt": prompt, "stream": False}).encode()
+    req = urllib.request.Request(f"{OLLAMA}/api/generate", data=body,
+                                 headers={"Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            return json.loads(r.read().decode()).get("response")
+    except (urllib.error.URLError, TimeoutError, OSError, json.JSONDecodeError):
+        return None
+
+
+def _ask_sov3(tool: str, prompt: str) -> "str | None":
+    args = {"prompt": prompt} if tool == "hermes_ask" else {"message": prompt, "system_prompt": ""}
+    payload = {"jsonrpc": "2.0", "id": 1, "method": "tools/call",
+               "params": {"name": tool, "arguments": args}}
+    req = urllib.request.Request(SOV3_MCP, method="POST", data=json.dumps(payload).encode(),
+                                 headers={"Content-Type": "application/json",
+                                          "Accept": "application/json, text/event-stream"})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            body = r.read().decode()
+    except (urllib.error.URLError, TimeoutError, OSError):
+        return None
+    if "data:" in body:
+        lines = [l[5:].strip() for l in body.splitlines() if l.startswith("data:")]
+        body = lines[-1] if lines else body
+    try:
+        env = json.loads(body)
+        content = env.get("result", {}).get("content", [])
+        if content and content[0].get("type") == "text":
+            return json.loads(content[0]["text"]).get("response")
+    except (json.JSONDecodeError, KeyError, IndexError):
+        return None
+    return None
+
+
+def _ask_cloud(model_id: str, prompt: str) -> "tuple":
+    """Cloud via OpenRouter (one key → all models). Returns (reply, note).
+    BYOK: needs OPENROUTER_API_KEY. If unset, returns an honest 'not configured'
+    rather than pretending. This is the governance-wrapper path, NOT token resale."""
+    key = os.environ.get("OPENROUTER_API_KEY", "")
+    if not key:
+        return None, "cloud not configured (set OPENROUTER_API_KEY; BYOK on paid tiers)"
+    body = json.dumps({"model": model_id,
+                       "messages": [{"role": "user", "content": prompt}]}).encode()
+    req = urllib.request.Request("https://openrouter.ai/api/v1/chat/completions",
+                                 data=body, headers={"Authorization": f"Bearer {key}",
+                                                     "Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            data = json.loads(r.read().decode())
+            return data["choices"][0]["message"]["content"], "openrouter"
+    except Exception as e:
+        return None, f"cloud error: {type(e).__name__}"
+
+
+def ask(prompt: str, model: str = "auto", tier: str = "free") -> dict:
+    """Route a prompt to a model the tier is allowed to use. Returns
+    {reply, model, backend, source}. model='auto' picks the best allowed backend
+    (local→sov3→cloud). Honest: no fabrication; says when nothing answered."""
+    allowed = _TIER_BACKENDS.get(tier, {"local"})
+
+    # resolve which (backend, id) to try
+    if model == "auto":
+        order = []
+        if "local" in allowed: order.append(("local", "qwen3:8b"))
+        if "sov3" in allowed:  order.append(("sov3", "hermes_ask"))
+        if "cloud" in allowed: order.append(("cloud", "openai/gpt-4o"))
+    else:
+        if model not in MODELS:
+            return {"reply": None, "model": model, "backend": None,
+                    "source": "error", "note": f"unknown model {model!r}; see list_models()"}
+        backend, mid = MODELS[model]
+        if backend not in allowed:
+            return {"reply": None, "model": model, "backend": backend, "source": "tier-blocked",
+                    "note": f"tier {tier!r} can't use {backend} models; upgrade or pick a local model"}
+        order = [(backend, mid)]
+
+    for backend, mid in order:
+        if backend == "local":
+            reply = _ask_local(mid, prompt)
+            if reply:
+                return {"reply": _strip_thinking(reply), "model": mid,
+                        "backend": "local", "source": "ollama"}
+        elif backend == "sov3":
+            reply = _ask_sov3(mid, prompt)
+            if reply:
+                return {"reply": _strip_thinking(reply), "model": mid,
+                        "backend": "sov3", "source": f"sov3:{mid}"}
+        elif backend == "cloud":
+            reply, note = _ask_cloud(mid, prompt)
+            if reply:
+                return {"reply": _strip_thinking(reply), "model": mid,
+                        "backend": "cloud", "source": note}
+
+    return {"reply": None, "model": model, "backend": None, "source": "no-backend",
+            "note": f"no allowed backend answered for tier {tier!r}. "
+                    f"Local needs Ollama on :11434; cloud needs OPENROUTER_API_KEY."}
+
+
+if __name__ == "__main__":
+    import sys
+    m = sys.argv[1] if len(sys.argv) > 1 else "auto"
+    q = sys.argv[2] if len(sys.argv) > 2 else "Say hello in 5 words."
+    print(f"=== MEOK ONE router: model={m} ===")
+    out = ask(q, model=m, tier="pro")
+    print(f"  backend={out['backend']} source={out['source']}")
+    print(f"  reply: {out['reply'] or out.get('note')}")
