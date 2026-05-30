@@ -34,8 +34,9 @@ from .tiers import TIERS, get_tier, quote, ladder, entitlements, can_hatch
 from .router import ask, list_models
 from .capabilities import discover, awareness_brief
 from .voice import tts_spec, voice_reply, stt_hint
+from .act import act, Sovereign, list_skills
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __all__ = [
     "Registry", "default",
     "Character", "talk",
@@ -46,4 +47,5 @@ __all__ = [
     "ask", "list_models",
     "discover", "awareness_brief",
     "tts_spec", "voice_reply", "stt_hint",
+    "act", "Sovereign", "list_skills",
 ]
