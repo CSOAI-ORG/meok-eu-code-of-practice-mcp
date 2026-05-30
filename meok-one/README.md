@@ -4,7 +4,16 @@
 
 > Think Step-3.5-with-a-character: the whole OS, but you talk to *your* character, not a chatbot.
 
-## The 6 modules (all built + tested — 54/54 passing)
+## v1.0.0 — 10 modules, 90/90 tests passing, `pip install` + `meok-one` CLI
+
+**registry** (canonical 27 chars) · **capabilities** (live tool-awareness — emerges knowing what it can do) · **router** (switch any LLM: local Ollama / SOV3 / cloud, tier-gated) · **brain** (character → live LLM) · **act** (Sovereign actually CALLS SOV3's 110 tools to help users) · **voice** (voice-first: per-character ElevenLabs TTS + browser STT) · **memory** (cross-platform, GDPR — the moat) · **hatch** (egg→grow) · **tiers** (the everyone-eats ladder) · **connect** (the neutral rail) · **x402** (pay-per-call USDC machine economy).
+
+```
+  one CLI:  meok-one hatch nurturer gentle Bramble  ·  meok-one say aria "I'm tired"
+            meok-one ask "..." --model qwen3 --tier pro  ·  meok-one capabilities
+```
+
+### (legacy 6-module diagram below — superseded by the roster above)
 
 ```
   ┌─ FACE ────────────────────────────────────────────────┐
