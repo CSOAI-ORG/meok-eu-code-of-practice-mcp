@@ -37,8 +37,9 @@ from .voice import tts_spec, voice_reply, stt_hint
 from .act import act, Sovereign, list_skills
 from .x402 import price_for, challenge, verify_payment, paywall
 from .factory import mint, generate, space_size
+from .bench import bench, run_config
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 __all__ = [
     "Registry", "default",
     "Character", "talk",
@@ -52,4 +53,5 @@ __all__ = [
     "act", "Sovereign", "list_skills",
     "price_for", "challenge", "verify_payment", "paywall",
     "mint", "generate", "space_size",
+    "bench", "run_config",
 ]
