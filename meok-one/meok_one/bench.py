@@ -90,9 +90,14 @@ def run_config(model: str, sc: dict, tier: str = "pro") -> dict:
             "reply_preview": reply[:120].replace("\n", " ")}
 
 
-def bench(models=None, tier: str = "pro", scenarios=None) -> dict:
-    """Full sweep. Returns {leaderboard, runs}. leaderboard is configs ranked by
-    weighted score then latency — the 'cleanest config' falls out the top."""
+def bench(models=None, tier: str = "pro", scenarios=None, rounds: int = 1) -> dict:
+    """Full sweep. Returns {leaderboard, runs, rounds}. leaderboard is configs ranked
+    by weighted score then latency — the 'cleanest config' falls out the top.
+
+    rounds > 1 runs each (model, scenario) N times and AVERAGES. This matters because
+    LLM replies are non-deterministic + keyword scoring is brittle: a single round is
+    NOISE (we observed hermes swing 14%->100% between runs). 3 rounds is the floor for
+    a claim you can trust; the leaderboard then reports mean score + a stability note."""
     if models is None:
         # only models whose backend can actually answer (local + sov3); cloud needs a key
         models = [m["id"] for m in list_models(tier)
@@ -101,12 +106,13 @@ def bench(models=None, tier: str = "pro", scenarios=None) -> dict:
     runs = []
     for model in models:
         for sc in scen:
-            try:
-                runs.append(run_config(model, sc, tier))
-            except Exception as e:
-                runs.append({"model": model, "scenario": sc["id"], "error": str(e),
-                             "score": {"raw": 0, "max": 3.5}, "weight": sc["weight"],
-                             "latency_ms": None})
+            for _ in range(max(1, rounds)):
+                try:
+                    runs.append(run_config(model, sc, tier))
+                except Exception as e:
+                    runs.append({"model": model, "scenario": sc["id"], "error": str(e),
+                                 "score": {"raw": 0, "max": 3.5}, "weight": sc["weight"],
+                                 "latency_ms": None})
     # aggregate per model
     agg = {}
     for r in runs:
@@ -125,24 +131,28 @@ def bench(models=None, tier: str = "pro", scenarios=None) -> dict:
         pct = round(100 * a["weighted"] / a["max_weighted"], 1) if a["max_weighted"] else 0
         avg_lat = round(sum(a["latencies"]) / len(a["latencies"])) if a["latencies"] else None
         leaderboard.append({"model": m, "score_pct": pct,
-                            "passes": f"{a['passes']}/{a['n']}", "avg_latency_ms": avg_lat})
+                            "passes": f"{a['passes']}/{a['n']}", "avg_latency_ms": avg_lat,
+                            "samples": a["n"]})
     # rank: score desc, then latency asc (cleanest = best score, fastest)
     leaderboard.sort(key=lambda x: (-x["score_pct"], x["avg_latency_ms"] or 9e9))
-    return {"leaderboard": leaderboard, "runs": runs}
+    return {"leaderboard": leaderboard, "runs": runs, "rounds": max(1, rounds),
+            "trustworthy": max(1, rounds) >= 3}
 
 
-def main():
-    print("=== MEOK ONE bench — finding the cleanest config (live) ===")
-    result = bench()
-    print("\nLEADERBOARD (score% / passes / avg latency):")
+def main(rounds: int = 3):
+    print(f"=== MEOK ONE bench — finding the cleanest config (live, {rounds} rounds) ===")
+    result = bench(rounds=rounds)
+    print(f"\nLEADERBOARD (score% / passes / avg latency)  [{'TRUSTWORTHY' if result['trustworthy'] else 'NOISY — single round'}]:")
     for i, row in enumerate(result["leaderboard"], 1):
         print(f"  {i}. {row['model']:14} {row['score_pct']:5}%  "
-              f"{row['passes']:>5}  {str(row['avg_latency_ms'])+'ms' if row['avg_latency_ms'] else 'n/a':>9}")
+              f"{row['passes']:>6}  {str(row['avg_latency_ms'])+'ms' if row['avg_latency_ms'] else 'n/a':>9}")
     if result["leaderboard"]:
         best = result["leaderboard"][0]
-        print(f"\nCLEANEST CONFIG: {best['model']} ({best['score_pct']}%, {best['avg_latency_ms']}ms avg)")
+        print(f"\nCLEANEST CONFIG: {best['model']} ({best['score_pct']}%, {best['avg_latency_ms']}ms avg "
+              f"over {best['samples']} samples)")
     return result
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    main(rounds=int(sys.argv[1]) if len(sys.argv) > 1 else 3)
