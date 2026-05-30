@@ -9,7 +9,7 @@ real, chargeable links — wire them into the pricing page / tiers.py when ready
 | **Free** | £0 (hosted) | — | — | no product — free on-ramp |
 | **Pro** | £9 / mo | `prod_Ubx9DdgoXPnzUD` | `price_1TcjHUQvIueK5Xpb1tLUecD3` | https://buy.stripe.com/8x2dRb94obIK8sl1Uc8k916 |
 | **Usage** | £0.002 / interaction | ⚠️ NOT created | — | sub-penny — needs a **metered** price with `unit_amount_decimal` set in the Stripe dashboard (the API create_price tool can't do sub-1p amounts). For platform/B2B deals, not self-serve. |
-| **Enterprise** | £1,499 / mo | `prod_Uc8kMeokOneEnt` | `price_1TckEntMeokOne1499` | https://buy.stripe.com/eVq9AVbciaEG7oh2Yg8k917 |
+| **Enterprise** | £1,499 / mo | `prod_UbxMotixQGr9CN` | `price_1TckGYQvIueK5XpbWHljNicd` | https://buy.stripe.com/3cIfZj1zG04250912c8k918 |
 
 ## Notes
 - **Local + Free are genuinely £0** — deliberately no Stripe product (creating £0 products
