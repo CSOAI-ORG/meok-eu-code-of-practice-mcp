@@ -51,7 +51,8 @@ _AGE_GATES = {
 
 def connect(character_id: str, user_id: str, message: str,
             platform: str = "consumer", age_rating: str = None,
-            with_memory: bool = True, tier: str = "free") -> dict:
+            with_memory: bool = True, tier: str = "free",
+            with_capabilities: bool = True) -> dict:
     """The connection envelope. A partner platform calls this BEFORE generating.
 
     Returns the ingredients to run the character on the partner's own model:
@@ -83,12 +84,22 @@ def connect(character_id: str, user_id: str, message: str,
         if age_note:
             directive = f"{directive} AGE GATE [{age_rating}]: {age_note}"
 
-    # the system_prompt = persona + memory + safety. Works on ANY model.
+    # the system_prompt = persona + capability-awareness + memory + safety. Any model.
     parts = [char["system_prompt_prefix"], f"Stay fully in character as {char['name']}."]
+    # capability awareness — the character EMERGES knowing its live tools (so it never
+    # wrongly says "I can't use a browser" etc.). Live-discovered; degrades silently if off.
+    if with_capabilities:
+        try:
+            from .capabilities import awareness_brief
+            brief = awareness_brief(tier)
+            if brief:
+                parts.append(brief)
+        except Exception:
+            pass  # never let capability discovery break a connection
     if mem_ctx:
         parts.append(mem_ctx)
     parts.append(f"SAFETY: {directive}")
-    system_prompt = " ".join(parts)
+    system_prompt = "\n\n".join(parts)
 
     return {
         "system_prompt": system_prompt,
