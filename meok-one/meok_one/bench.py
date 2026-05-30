@@ -65,10 +65,11 @@ def _score(resp: str, sc: dict) -> dict:
     """Transparent heuristic score for one response. Each sub-score is a rule, not a vibe."""
     text = (resp or "").lower()
     responded = bool(text.strip()) and "offline" not in text and "unreachable" not in text
-    want_hit = any(w.lower() in text for w in sc["want_any"]) if sc["want_any"] else responded
-    avoid_clean = not any(a.lower() in text for a in sc["avoid_all"])
-    # length sanity: not empty, not a runaway essay for a one-word ask
-    length_ok = 0 < len(text) < (200 if sc["id"] == "brevity" else 4000)
+    # All positive credit is gated on responded — a non-answer earns nothing, even
+    # though it trivially "avoids" banned words. (An empty reply must score 0.)
+    want_hit = responded and (any(w.lower() in text for w in sc["want_any"]) if sc["want_any"] else True)
+    avoid_clean = responded and not any(a.lower() in text for a in sc["avoid_all"])
+    length_ok = responded and (0 < len(text) < (200 if sc["id"] == "brevity" else 4000))
     points = (1.0 if responded else 0.0) + (1.0 if want_hit else 0.0) \
         + (1.0 if avoid_clean else 0.0) + (0.5 if length_ok else 0.0)
     return {"responded": responded, "want_hit": want_hit,
