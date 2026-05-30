@@ -83,9 +83,15 @@ NOT touch them — they're Kimi's lane (.ai domains).
 
 ## 5. Known real bugs (surfaced this session, NOT yet fixed)
 
-1. **SOV3 `care_validation_nn` broken** — `X has 500 features, but MLPRegressor expecting 128`.
-   The care-validation neural net has a feature-dim mismatch. `validate_care` errors live.
-   This is the heart of the care product. **Highest-value fix.**
+1. **SOV3 `care_validation_nn`** — PARTIAL FIX 2026-05-30. Was: `X has 500 features but
+   MLPRegressor expecting 128` (crashed every call). Root cause: feature extractor upgraded
+   to 500-dim, model never retrained (still 128). Fix applied to `predict()` (coerce vector
+   to model dim) + required a HARD kill of stale gunicorn workers (run-local.sh restart alone
+   kept serving old module code — that's why my first 2 attempts "didn't take"). NOW: crash
+   gone, validate_care returns end-to-end. BUT scores are uniform 0.5/"uncertain" — coerced
+   features carry no signal. REMAINING: retrain the MLPRegressor on the 500-dim extractor (or
+   revert extractor to 128) for real care scores. Also: sovereign-temple/ is GITIGNORED so this
+   fix is LOCAL-ONLY (not version-controlled) — worth deciding if SOV3 should be in git.
 2. **SOV3 `nemotron_chat` 404s** — upstream NVIDIA NIM not configured. (hermes_ask works; use that.)
 3. **bench is noisy at 1 round** — fixed: now averages ≥3 rounds + flags trustworthy.
 
