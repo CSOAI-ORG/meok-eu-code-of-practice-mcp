@@ -2,7 +2,8 @@
 Run: python3 tests/test_act.py — logic offline-safe; live SOV3 checked as bonus."""
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import meok_one.act as A  # noqa: E402
+import importlib  # noqa: E402
+A = importlib.import_module("meok_one.act")  # real submodule (meok_one.act attr is shadowed by the act() fn)
 from meok_one.act import act, Sovereign, list_skills, SKILLS  # noqa: E402
 
 

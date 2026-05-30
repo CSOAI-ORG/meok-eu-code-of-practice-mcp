@@ -60,10 +60,17 @@ def _call(tool: str, args: dict, timeout: int = 30):
         env = json.loads(body)
         content = env.get("result", {}).get("content", [])
         if content and content[0].get("type") == "text":
-            return {"ok": True, "data": json.loads(content[0]["text"])}
-        return {"ok": True, "data": env.get("result")}
+            data = json.loads(content[0]["text"])
+        else:
+            data = env.get("result")
     except (json.JSONDecodeError, KeyError, IndexError):
         return {"ok": False, "error": "unparseable tool response"}
+    # A successful transport can still carry a TOOL error payload (e.g. a broken
+    # SOV3 neural net). Treat an {"error": ...} body as NOT ok — never report a
+    # failed tool as a success.
+    if isinstance(data, dict) and data.get("error"):
+        return {"ok": False, "error": data["error"], "tool_errored": True}
+    return {"ok": True, "data": data}
 
 
 def list_skills() -> list:
