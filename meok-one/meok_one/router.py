@@ -62,7 +62,13 @@ def _strip_thinking(text: str) -> str:
     cleaned = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
     if "<think>" in cleaned:
         cleaned = cleaned.split("</think>")[-1] if "</think>" in cleaned else cleaned.split("<think>")[-1]
-    return cleaned.strip() or text.strip()
+    cleaned = cleaned.strip()
+    # Strip a wrapping markdown code fence (qwen3 et al. sometimes wrap the whole
+    # reply in ```text ... ``` — the consumer should see prose, not a code block).
+    fence = re.match(r"^```[a-zA-Z]*\s*\n?(.*?)\n?```$", cleaned, flags=re.DOTALL)
+    if fence:
+        cleaned = fence.group(1).strip()
+    return cleaned or text.strip()
 
 
 def list_models(tier: str = "pro") -> list:
