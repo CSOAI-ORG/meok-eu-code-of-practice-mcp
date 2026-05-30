@@ -93,9 +93,11 @@ class Character:
           2. nemotron_chat  — supports a system_prompt but upstream NVIDIA 404s often
         The persona is folded into the question for hermes_ask (it takes `question`,
         not a separate system_prompt), so the character still shapes the reply."""
-        # 1) hermes_ask — the tool verified working 2026-05-30
+        # 1) hermes_ask — verified working. Its ONLY param is `prompt` (NOT question/
+        # context) — passing the wrong name made it return a canned greeting. Persona +
+        # message both go into prompt, framed so the model answers in character.
         personaed = f"{self.system_prompt()}\n\nUser: {message}\n\n{self.name}:"
-        result = _call_sov3("hermes_ask", {"question": personaed})
+        result = _call_sov3("hermes_ask", {"prompt": personaed})
         if result and result.get("response"):
             return {"character": self.name, "id": self.id,
                     "reply": _strip_thinking(result["response"]), "source": "sov3:hermes",
