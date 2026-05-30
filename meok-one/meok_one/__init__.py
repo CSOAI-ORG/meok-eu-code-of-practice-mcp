@@ -38,8 +38,9 @@ from .act import act, Sovereign, list_skills
 from .x402 import price_for, challenge, verify_payment, paywall
 from .factory import mint, generate, space_size
 from .bench import bench, run_config
+from .brains import think, brains
 
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 __all__ = [
     "Registry", "default",
     "Character", "talk",
@@ -54,4 +55,5 @@ __all__ = [
     "price_for", "challenge", "verify_payment", "paywall",
     "mint", "generate", "space_size",
     "bench", "run_config",
+    "think", "brains",
 ]
