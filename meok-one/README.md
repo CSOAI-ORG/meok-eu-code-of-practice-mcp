@@ -53,7 +53,7 @@
 | **Free** | £0 hosted | consumer on-ramp | sign up (free) |
 | **Pro** | £9/mo | engaged consumers | [buy.stripe.com/8x2dRb…](https://buy.stripe.com/8x2dRb94obIK8sl1Uc8k916) |
 | **Usage** | £0.002 / interaction | AI cos + games embedding at scale | contract (metered) |
-| **Enterprise** | £1,499/mo + RegGeoInt | regulated / government | [buy.stripe.com/3cI3cx…](https://buy.stripe.com/7sY5kF3K4cMObEx2Yg8k917) |
+| **Enterprise** | £1,499/mo + RegGeoInt | regulated / government | [buy.stripe.com/7sY5kF…](https://buy.stripe.com/7sY5kF3K4cMObEx2Yg8k917) |
 
 > Live Stripe links (MEOK AI LTD) — full IDs in [`STRIPE_LINKS.md`](STRIPE_LINKS.md). Local + Free are genuinely £0 (no product). Usage is sub-penny → metered price set in the Stripe dashboard, not self-serve.
 
@@ -82,8 +82,9 @@ for t in registry brain hatch connect_memory tiers; do python3 tests/test_$t.py;
 
 ## Status (honest)
 - **Architecture: built + tested.** All 6 modules, 54/54 tests pass. The persona→system_prompt→SOV3 path is wired correctly and degrades honestly when SOV3 is unreachable (returns a marked offline stub — never fabricates a reply).
-- **Live character replies: blocked on SOV3's LLM endpoint.** `nemotron_chat` currently returns a 404 from the upstream NVIDIA API, so live replies hit the offline fallback. The bridge is correct; the model behind it needs configuring (or pointing `brain.py` at a working SOV3 LLM tool such as `hermes_ask`).
-- **Attestation (Pro/Usage/Enterprise promise): coded, not yet demonstrable** — `proofof.ai/api/verify` serves a static page and 404s on the API. Needs the attestation API deployed before the "signed receipt" claim is live.
+- **Live character replies:** `brain.py` can use any working SOV3 LLM tool. `nemotron_chat` hits an upstream NVIDIA 404; point `brain.py` at `hermes_ask` or local Ollama (`qwen3:8b`, live on :11434) for working replies.
+- **Attestation (Pro/Usage/Enterprise promise): LIVE.** The verifier is up at `proofof.ai/verify/<cert_id>` (NOT `/api/verify`). `POST proofof.ai/verify` does a real HMAC check. The "signed receipt" claim is demonstrable.
+- **Stripe: Pro £9 + Enterprise £1,499 live + chargeable** (links above; full IDs in STRIPE_LINKS.md).
 
 ## Deprecation note
 This package replaces the scattered `character_factory.py` copies (`meok/core/`, `meok/meok/core/`, `meok/meok/mcp/tools/`) + duplicate `characters.json`. **Point all surfaces at `meok_one.Registry`.** Delete the old copies once consumers migrate.
