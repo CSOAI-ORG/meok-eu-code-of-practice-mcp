@@ -33,8 +33,9 @@ from .memory import MemoryBridge, bridge
 from .tiers import TIERS, get_tier, quote, ladder, entitlements, can_hatch
 from .router import ask, list_models
 from .capabilities import discover, awareness_brief
+from .voice import tts_spec, voice_reply, stt_hint
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 __all__ = [
     "Registry", "default",
     "Character", "talk",
@@ -44,4 +45,5 @@ __all__ = [
     "TIERS", "get_tier", "quote", "ladder", "entitlements", "can_hatch",
     "ask", "list_models",
     "discover", "awareness_brief",
+    "tts_spec", "voice_reply", "stt_hint",
 ]

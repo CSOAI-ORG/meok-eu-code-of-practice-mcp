@@ -19,7 +19,7 @@ import json
 import sys
 
 from . import (default, talk, HatchSession, ask, list_models, ladder,
-               awareness_brief, __version__)
+               awareness_brief, voice_reply, __version__)
 
 
 def _p(obj):
@@ -65,6 +65,14 @@ def cmd_capabilities(a):
     print(awareness_brief(a.tier))
 
 
+def cmd_say(a):
+    out = voice_reply(a.character, a.message)
+    tts = out["tts"]
+    print(f"{out['character']} {out['emoji']} [{out['reply_source']}] (voice: "
+          f"{tts['elevenlabs']['recommended_voice']}, rate {tts['browser_fallback']['rate']}):")
+    print(f"  🔊 {out['reply_text']}")
+
+
 def cmd_version(a):
     print(f"meok-one {__version__} — CSOAI LTD (trading as MEOK AI Labs)")
 
@@ -81,6 +89,9 @@ def build_parser():
 
     t = sub.add_parser("talk", help="talk to a character (live)")
     t.add_argument("character"); t.add_argument("message"); t.set_defaults(func=cmd_talk)
+
+    sy = sub.add_parser("say", help="voice reply (text + TTS voice spec)")
+    sy.add_argument("character"); sy.add_argument("message"); sy.set_defaults(func=cmd_say)
 
     k = sub.add_parser("ask", help="route a prompt to any model")
     k.add_argument("prompt"); k.add_argument("--model", default="auto"); k.add_argument("--tier", default="pro")
