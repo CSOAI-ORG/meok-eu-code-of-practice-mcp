@@ -35,8 +35,9 @@ from .router import ask, list_models
 from .capabilities import discover, awareness_brief
 from .voice import tts_spec, voice_reply, stt_hint
 from .act import act, Sovereign, list_skills
+from .x402 import price_for, challenge, verify_payment, paywall
 
-__version__ = "0.4.0"
+__version__ = "1.0.0"
 __all__ = [
     "Registry", "default",
     "Character", "talk",
@@ -48,4 +49,5 @@ __all__ = [
     "discover", "awareness_brief",
     "tts_spec", "voice_reply", "stt_hint",
     "act", "Sovereign", "list_skills",
+    "price_for", "challenge", "verify_payment", "paywall",
 ]
