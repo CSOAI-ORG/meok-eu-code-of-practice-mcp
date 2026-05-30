@@ -19,7 +19,7 @@ import urllib.request
 import urllib.error
 import urllib.parse
 
-VERIFY_URL = os.environ.get("MEOK_VERIFY_URL", "https://proofof.ai/api/verify")
+VERIFY_URL = os.environ.get("MEOK_VERIFY_URL", "https://www.proofof.ai/api/verify")
 __version__ = "0.1.0"
 
 # Representative slice of the published catalogue (full ~264 on PyPI).

@@ -24,7 +24,7 @@
 - Article 50 transparency / watermarking: nearest cliff **early November 2026** (~5 months)
 - DORA Register of Information (Art 28 / Reg (EU) 2024/2956): **30 April 2026** (first annual submission)
 
-> ✅ **VERIFIER LIVE — SAFE TO SEND (fixed 2026-05-30):** `https://proofof.ai/api/verify` returns 200 — real attestation API v1.2.0 (endpoints: /api/sign, /api/verify, /api/provision). proofof.ai was attached to the meok-attestation-api Vercel project + SSL cert issued. The "your auditor verifies at a public URL" claim is now TRUE. **Use the exact path `https://proofof.ai/api/verify` — NOT bare `/verify`.** Send away.
+> ✅ **VERIFIER LIVE — SAFE TO SEND (fixed + verified 2026-05-30):** `https://www.proofof.ai/api/verify` returns 200 — real attestation API: `{"service":"meok-attestation-api","endpoints":["/api/sign","/api/verify","/api/provision"],"status":"operational"}`. proofof.ai attached to meok-attestation-api Vercel project, SSL issued. The "your auditor verifies at a public URL" claim is now TRUE. **Use the canonical URL `https://www.proofof.ai/api/verify` (with www — the apex 307-redirects there but strict clients may not follow).** Send away.
 
 > ⚠️ **One Stripe link for both offers is a conversion leak** — the £79/mo and the £5k currently land on the same checkout. Flag for Nick: split into two payment links before a real send wave. Not blocking; the link is live and works.
 
