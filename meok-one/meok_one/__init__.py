@@ -5,13 +5,25 @@ character that fronts the whole MEOK/SOV3 substrate.
 This package is THE canonical character layer. Every surface (SaaS, TUI, voice,
 Amica 3D avatar, inner-LLMs) reads characters from here.
 
+The 8 modules, in dependency order:
+    registry      — canonical 27 characters / 8 archetypes / 5 care-styles / 6 hatch stages
+    capabilities  — live tool-awareness so a character emerges KNOWING what it can do
+    router        — switch LLMs (local Ollama / SOV3 / cloud), tier-gated
+    brain         — a character as a live talking endpoint (persona -> LLM)
+    memory        — cross-platform per-user memory (the moat) + GDPR export/forget
+    hatch         — the egg -> choose -> hatch -> grow onboarding flow
+    tiers         — the "everyone eats" pricing ladder
+    connect       — the neutral rail platforms plug into (ingredients, not replies)
+
 Public API:
-    Registry, default          — the 27-character canonical registry (registry.py)
-    Character, talk            — a character as a live talking endpoint (brain.py)
-    HatchSession, hatch_session — the hatch onboarding flow (hatch.py)
-    connect, remember          — the neutral rail platforms plug into (connect.py)
-    MemoryBridge, bridge       — cross-platform per-user memory (memory.py)
-    TIERS, get_tier, quote, ladder, entitlements — the pricing ladder (tiers.py)
+    Registry, default                          — registry.py
+    Character, talk                            — brain.py
+    HatchSession, hatch_session                — hatch.py
+    connect, remember, integration_spec        — connect.py
+    MemoryBridge, bridge                       — memory.py
+    TIERS, get_tier, quote, ladder, entitlements, can_hatch — tiers.py
+    ask, list_models                           — router.py
+    discover, awareness_brief                  — capabilities.py
 """
 from .registry import Registry, default
 from .brain import Character, talk
@@ -19,8 +31,10 @@ from .hatch import HatchSession, hatch_session
 from .connect import connect, remember, integration_spec
 from .memory import MemoryBridge, bridge
 from .tiers import TIERS, get_tier, quote, ladder, entitlements, can_hatch
+from .router import ask, list_models
+from .capabilities import discover, awareness_brief
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __all__ = [
     "Registry", "default",
     "Character", "talk",
@@ -28,4 +42,6 @@ __all__ = [
     "connect", "remember", "integration_spec",
     "MemoryBridge", "bridge",
     "TIERS", "get_tier", "quote", "ladder", "entitlements", "can_hatch",
+    "ask", "list_models",
+    "discover", "awareness_brief",
 ]
