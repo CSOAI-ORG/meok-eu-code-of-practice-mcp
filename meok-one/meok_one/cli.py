@@ -73,6 +73,11 @@ def cmd_say(a):
     print(f"  🔊 {out['reply_text']}")
 
 
+def cmd_serve(a):
+    from .server import main as serve_main
+    serve_main(a.port)
+
+
 def cmd_version(a):
     print(f"meok-one {__version__} — CSOAI LTD (trading as MEOK AI Labs)")
 
@@ -80,6 +85,9 @@ def cmd_version(a):
 def build_parser():
     p = argparse.ArgumentParser(prog="meok-one", description="MEOK ONE — the unified character OS")
     sub = p.add_subparsers(dest="cmd")
+
+    sv = sub.add_parser("serve", help="launch the web UX (hatch + talk in a browser)")
+    sv.add_argument("--port", type=int, default=4173); sv.set_defaults(func=cmd_serve)
 
     sub.add_parser("characters", help="list the 27 characters").set_defaults(func=cmd_characters)
 

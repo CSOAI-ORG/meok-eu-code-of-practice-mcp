@@ -25,3 +25,4 @@ packages = ["meok_one"]
 
 [tool.hatchling.build.targets.wheel.force-include]
 "meok_one/characters.json" = "meok_one/characters.json"
+"meok_one/web/index.html" = "meok_one/web/index.html"
