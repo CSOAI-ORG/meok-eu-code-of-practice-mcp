@@ -57,14 +57,43 @@
 
   /* ---------- CHAT ---------- */
   .chat{ flex:1; display:flex; flex-direction:column; min-height:0; }
-  .chero{ display:flex; align-items:center; gap:.85rem; padding:.9rem 1.05rem; border-radius:var(--r); margin:.2rem 0 .7rem; box-shadow:var(--shadow); position:relative; overflow:hidden; }
-  .chero::after{ content:""; position:absolute; inset:0; background:rgba(0,0,0,.25); }
-  .chero > *{ position:relative; z-index:1; }
-  .chero .av{ font-size:2.1rem; filter:drop-shadow(0 2px 8px rgba(0,0,0,.4)); animation:bob 4s var(--ease) infinite; }
-  .chero h2{ font-size:1.15rem; font-weight:700; }
-  .chero .tag{ font-size:.74rem; opacity:.92; margin-top:.1rem; }
-  .stagebar{ height:4px; background:rgba(255,255,255,.18); border-radius:99px; margin-top:.4rem; overflow:hidden; width:120px; }
-  .stagebar i{ display:block; height:100%; background:#fff; width:0; transition:width .6s var(--ease); }
+  /* AVATAR PRESENCE — the character is always visible: breathing, blinking, mood-reactive.
+     (Paradigm principle #1: presence over pages. Emotion engine: colour+motion by mood.) */
+  .presence{ display:flex; flex-direction:column; align-items:center; padding:.6rem 0 .5rem; }
+  .avatar{ position:relative; width:108px; height:108px; border-radius:50%; display:flex;
+    align-items:center; justify-content:center; --glow:var(--accent);
+    transition:transform .5s var(--ease), filter .6s ease; }
+  .avatar .face{ font-size:3rem; line-height:1; z-index:2; filter:drop-shadow(0 3px 10px rgba(0,0,0,.5));
+    animation:breathe 4.5s var(--ease) infinite; }
+  /* the aura ring — colour = mood, pulse = state */
+  .avatar .aura{ position:absolute; inset:-6px; border-radius:50%;
+    background:radial-gradient(circle, var(--glow) 0%, transparent 70%); opacity:.55;
+    animation:auraPulse 4.5s var(--ease) infinite; z-index:0; }
+  .avatar .ring{ position:absolute; inset:0; border-radius:50%; border:2px solid var(--glow);
+    opacity:.6; z-index:1; }
+  /* eyelid blink — a sweep that closes briefly */
+  .avatar .lid{ position:absolute; inset:0; border-radius:50%; background:var(--bg);
+    transform:scaleY(0); transform-origin:center; opacity:.0; z-index:3;
+    animation:blink 6s steps(1) infinite; }
+  @keyframes breathe{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+  @keyframes auraPulse{ 0%,100%{opacity:.4;transform:scale(1)} 50%{opacity:.7;transform:scale(1.12)} }
+  @keyframes blink{ 0%,96%,100%{opacity:0;transform:scaleY(0)} 98%{opacity:.85;transform:scaleY(1)} }
+  /* MOODS — colour shift + motion (from the Emotion Engine spec) */
+  .avatar.calm  { --glow:#8b7cf6; } /* soft blue-violet, default rest */
+  .avatar.care  { --glow:#f472b6; transform:translateY(2px); } /* rose-pink, gentle lean-in */
+  .avatar.care .face{ animation-duration:5.5s; }
+  .avatar.think { --glow:#2dd4bf; } /* cool teal, focus */
+  .avatar.think .ring{ animation:spin 1.1s linear infinite; border-top-color:transparent; opacity:.9; }
+  .avatar.speak { --glow:#fbbf24; } /* warm gold, speaking */
+  .avatar.speak .aura{ animation-duration:.9s; }
+  .avatar.speak .face{ animation:talk .35s var(--ease) infinite; }
+  @keyframes spin{ to{transform:rotate(360deg)} }
+  @keyframes talk{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.06) translateY(-1px)} }
+  .presence h2{ font-size:1.2rem; font-weight:700; margin-top:.55rem; }
+  .presence .tag{ font-size:.74rem; color:var(--dim); margin-top:.12rem; }
+  .presence .moodword{ font-size:.66rem; color:var(--glow,var(--dim)); margin-top:.1rem; letter-spacing:.06em; text-transform:uppercase; opacity:.8; }
+  .stagebar{ height:4px; background:var(--line); border-radius:99px; margin-top:.5rem; overflow:hidden; width:140px; }
+  .stagebar i{ display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); width:0; transition:width .6s var(--ease); }
   /* brain selector — ONE segmented pill with a sliding indicator (not 3 buttons) */
   .brainpill{ position:relative; display:flex; background:var(--panel); border:1px solid var(--line);
     border-radius:99px; padding:4px; margin:0 auto .65rem; width:max-content; gap:0; user-select:none; }
@@ -123,13 +152,17 @@
   <!-- CHAT -->
   <div class="scene chat hidden" id="chat">
     <button class="back" id="backBtn">← hatch another</button>
-    <div class="chero" id="chero">
-      <div class="av" id="cav">🌸</div>
-      <div style="flex:1">
-        <h2 id="cname">…</h2>
-        <div class="tag" id="ctag"></div>
-        <div class="stagebar"><i id="stagebar"></i></div>
+    <div class="presence">
+      <div class="avatar calm" id="avatar">
+        <div class="aura"></div>
+        <div class="ring"></div>
+        <div class="face" id="cav">🌸</div>
+        <div class="lid"></div>
       </div>
+      <h2 id="cname">…</h2>
+      <div class="tag" id="ctag"></div>
+      <div class="moodword" id="moodword">calm</div>
+      <div class="stagebar"><i id="stagebar"></i></div>
     </div>
     <div class="brainpill" id="brainToggle">
       <span class="glider" id="glider"></span>
@@ -174,9 +207,10 @@ $("#hatchBtn").onclick=async()=>{
   const res=await api("/api/hatch",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({archetype:sel.archetype,care_style:sel.care_style,name:$("#nameInput").value.trim()})});
   current=res; xp=0;
   await new Promise(r=>setTimeout(r,650));
-  const g=res.visual.gradient||`linear-gradient(135deg,${res.visual.color_primary},${res.visual.color_secondary||'#333'})`;
-  $("#chero").style.background=g; $("#cav").textContent=res.visual.emoji; $("#cname").textContent=res.name;
-  $("#ctag").textContent=`${res.archetype} · ${res.care_style}`; updateStage();
+  $("#cav").textContent=res.visual.emoji; $("#cname").textContent=res.name;
+  // the character's own colour becomes its CALM aura (emotion engine baseline)
+  charColor=res.visual.color_primary||"#8b7cf6";
+  $("#ctag").textContent=`${res.archetype} · ${res.care_style}`; setMood("calm"); updateStage();
   $("#hatch").classList.add("hidden"); $("#chat").classList.remove("hidden"); $("#chat").classList.add("fade");
   await stream("them",`${res.stage_emoji} ${res.name} has hatched. "${res.tagline}"`,"just now");
   $("#msgInput").focus();
@@ -192,18 +226,29 @@ $("#brainToggle").onclick=e=>{ const b=e.target.closest("button"); if(!b)return;
   $("#glider").style.transform=`translateX(${i*100}%)`;
   const h=$("#brainhint"); h.style.opacity=0; setTimeout(()=>{ h.textContent=BRAIN_HINT[brain]; h.style.opacity=1; },130); };
 
+// ---- emotion engine: drive the avatar's mood (colour + motion) ----
+let charColor="#8b7cf6";
+const MOODWORD={calm:"calm",care:"caring",think:"thinking",speak:"speaking"};
+function setMood(m){ const a=$("#avatar"); a.className="avatar "+m;
+  if(m==="calm") a.style.setProperty("--glow",charColor); else a.style.removeProperty("--glow");
+  const w=$("#moodword"); if(w){ w.textContent=MOODWORD[m]||m; } }
+const DOWN=/\b(sad|tired|exhausted|down|hopeless|anxious|stressed|lonely|hurt|cry|awful|rough|overwhelm|depress|scared|worried|struggl)/i;
 function bubble(who){ const m=document.createElement("div"); m.className="msg "+who; $("#msgs").appendChild(m); $("#msgs").scrollTop=$("#msgs").scrollHeight; return m; }
 async function stream(who,text,meta){ const m=bubble(who); const words=text.split(" "); for(let i=0;i<words.length;i++){ m.textContent=words.slice(0,i+1).join(" "); $("#msgs").scrollTop=$("#msgs").scrollHeight; await new Promise(r=>setTimeout(r,28)); } if(meta){ const e=document.createElement("div"); e.className="meta"; e.textContent=meta; m.appendChild(e);} return m; }
 
 async function send(){
   const t=$("#msgInput").value.trim(); if(!t||!current)return; $("#msgInput").value="";
   const u=bubble("you"); u.textContent=t; $("#msgs").scrollTop=$("#msgs").scrollHeight;
+  const down=DOWN.test(t);             // emotion engine: does the user sound down?
+  setMood("think");                    // Sovereign thinking (teal, ring spins)
   const typing=document.createElement("div"); typing.className="typing"; typing.innerHTML="<span></span><span></span><span></span>"; $("#msgs").appendChild(typing); $("#msgs").scrollTop=$("#msgs").scrollHeight;
   let res; try{ res=await api("/api/think",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({character:current.character_id,message:t,brain,tier:"pro"})}); }catch(e){ res={reply:"[connection lost]",backend:"none"}; }
   typing.remove();
+  setMood(down?"care":"speak");        // speaking (gold) — or caring lean-in (rose) if down
   const meta=`${res.brain||brain} brain · ${res.engine||res.backend||"?"}${res.safe===false?" · ⚠ held for safety":""}`;
   await stream("them",res.reply||"[no reply]",meta);
   xp+=5; updateStage();
+  setMood(down?"care":"calm");         // settle; stay caring if you were down
 }
 $("#sendBtn").onclick=send;
 $("#msgInput").addEventListener("keydown",e=>{ if(e.key==="Enter")send(); });
