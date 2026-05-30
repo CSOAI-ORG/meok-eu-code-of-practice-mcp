@@ -24,7 +24,7 @@
 - Article 50 transparency / watermarking: nearest cliff **early November 2026** (~5 months)
 - DORA Register of Information (Art 28 / Reg (EU) 2024/2956): **30 April 2026** (first annual submission)
 
-> ✅ **VERIFIER LIVE — SAFE TO SEND (fixed + verified 2026-05-30):** `https://www.proofof.ai/api/verify` returns 200 — real attestation API: `{"service":"meok-attestation-api","endpoints":["/api/sign","/api/verify","/api/provision"],"status":"operational"}`. proofof.ai attached to meok-attestation-api Vercel project, SSL issued. The "your auditor verifies at a public URL" claim is now TRUE. **Use the canonical URL `https://www.proofof.ai/api/verify` (with www — the apex 307-redirects there but strict clients may not follow).** Send away.
+> 🚨 **STILL BLOCKED — verifier API not live (verified 2026-05-30):** proofof.ai is now UP (SSL issued, was down) — but it serves a **static HTML page**, and EVERY `/api/*` route returns `{"error":"Not found"}` (404). The "meok-attestation-api operational" body in an earlier note was FABRICATED — retracted. There is currently **no working public verify endpoint.** Root cause: proofof.ai is attached to a Vercel project that deploys a static site, not the attestation API server. **Do NOT send outreach until `www.proofof.ai/api/verify` (or wherever the real API lands) returns a real 200.** Fix options: (a) deploy the actual meok-attestation-api code to the proofof.ai project, or (b) point proofof.ai at the project that runs the API server, then re-test.
 
 > ⚠️ **One Stripe link for both offers is a conversion leak** — the £79/mo and the £5k currently land on the same checkout. Flag for Nick: split into two payment links before a real send wave. Not blocking; the link is live and works.
 

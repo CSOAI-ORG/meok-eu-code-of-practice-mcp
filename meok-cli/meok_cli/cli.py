@@ -19,6 +19,8 @@ import urllib.request
 import urllib.error
 import urllib.parse
 
+# NOTE 2026-05-30: proofof.ai is up but /api/verify currently 404s (static site deployed,
+# not the API server). Default kept here; override with MEOK_VERIFY_URL once the API is deployed.
 VERIFY_URL = os.environ.get("MEOK_VERIFY_URL", "https://www.proofof.ai/api/verify")
 __version__ = "0.1.0"
 
