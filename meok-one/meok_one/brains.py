@@ -24,6 +24,7 @@ This is the user-facing answer to "can the end user pick left/right brain (local
 with the sovereign keeping them safe, and the character as the endpoint?" — YES, here.
 """
 
+import os
 from .connect import connect
 from .router import ask, list_models
 
@@ -108,7 +109,8 @@ def think(character_id: str, message: str, brain: str = "left",
     # BOTH = council: the two brains actually DELIBERATE, then the Sovereign synthesizes.
     # Right brain = cloud (frontier) when a key is set; if not, we run a SECOND local pass
     # so the council still genuinely debates on the free/local tier (no cloud required).
-    cloud_ok = "cloud" in _TIER_BACKENDS.get(tier, set()) and bool(__import__("os").environ.get("OPENROUTER_API_KEY"))
+    cloud_avail = any(m["backend"] == "cloud" for m in list_models(tier))
+    cloud_ok = cloud_avail and bool(os.environ.get("OPENROUTER_API_KEY"))
 
     # 1) Left brain drafts.
     draft = _run_brain("left", prompt, tier).get("reply") or ""
