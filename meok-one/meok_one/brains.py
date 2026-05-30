@@ -105,23 +105,35 @@ def think(character_id: str, message: str, brain: str = "left",
                 "reply": reply or f"[{brain} brain unavailable: {r.get('note')}]",
                 "safe": safe, "sovereign_safe_wrapped": True}
 
-    # BOTH = council: ask each brain, Sovereign reconciles (safer reply wins; if one
-    # brain is down, use the other; flag disagreement).
-    left = _run_brain("left", prompt, tier)
-    right = _run_brain("right", prompt, tier)
-    cands = [("left", left), ("right", right)]
-    answered = [(b, r) for b, r in cands if r["reply"]]
-    if not answered:
-        return {"character": char, "emoji": emoji, "brain": "both",
-                "reply": "[both brains unavailable]", "safe": True,
-                "sovereign_safe_wrapped": True}
-    # prefer a SAFE answer; among safe ones, prefer the one that exists (left default)
-    safe_ans = [(b, r) for b, r in answered if _safe(r["reply"])]
-    chosen_b, chosen = (safe_ans or answered)[0]
+    # BOTH = council: the two brains actually DELIBERATE, then the Sovereign synthesizes.
+    # Right brain = cloud (frontier) when a key is set; if not, we run a SECOND local pass
+    # so the council still genuinely debates on the free/local tier (no cloud required).
+    cloud_ok = "cloud" in _TIER_BACKENDS.get(tier, set()) and bool(__import__("os").environ.get("OPENROUTER_API_KEY"))
+
+    # 1) Left brain drafts.
+    draft = _run_brain("left", prompt, tier).get("reply") or ""
+
+    # 2) The other voice CRITIQUES + improves the draft (right=cloud if available, else a
+    #    second local pass with a critic instruction). This is the "brains talk to each other".
+    critic_prompt = (f"{prompt}\n\n[A first draft reply was: \"{draft}\"]\n"
+                     f"As {char}, improve it: keep what's warm and true, cut anything generic "
+                     f"or repetitive, and reply directly to the person in 2-4 sentences. "
+                     f"Do NOT mention drafts, tools, or your own capabilities — just speak.")
+    if cloud_ok:
+        improved = _run_brain("right", critic_prompt, tier).get("reply") or draft
+        voices = "left(local)+right(cloud)"
+    else:
+        improved = _run_brain("left", critic_prompt, tier).get("reply") or draft
+        voices = "two local passes (no cloud key)"
+
+    # 3) Sovereign picks the safer/better of {draft, improved}; improved wins unless unsafe.
+    final = improved if (improved and _safe(improved)) else (draft if _safe(draft) else "")
+    if not final:
+        final = f"[{char} held that back to keep you safe.]"
     return {"character": char, "emoji": emoji, "brain": "both",
-            "chosen_brain": chosen_b, "engine": chosen["engine"],
-            "reply": chosen["reply"], "safe": _safe(chosen["reply"]),
-            "council": {b: (r["reply"][:80] if r["reply"] else None) for b, r in cands},
+            "engine": f"council · {voices}", "backend": "council",
+            "reply": final, "safe": _safe(final),
+            "council": {"draft": draft[:120], "synthesized": improved[:120]},
             "sovereign_safe_wrapped": True}
 
 
