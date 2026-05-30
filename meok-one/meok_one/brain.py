@@ -90,9 +90,9 @@ class Character:
 
         Tries SOV3 LLM tools in order of what actually works:
           1. hermes_ask     — live + reliable (local Ollama qwen3 behind it)
-          2. nemotron_chat  — supports a system_prompt but upstream NVIDIA 404s often
-        The persona is folded into the question for hermes_ask (it takes `question`,
-        not a separate system_prompt), so the character still shapes the reply."""
+          2. nemotron_chat  — has a system_prompt slot but upstream NVIDIA 404s often
+        hermes_ask's only param is `prompt`, so the persona + message are framed into
+        one prompt. Verified in-character live: Aria replied warmly + supportively."""
         # 1) hermes_ask — verified working. Its ONLY param is `prompt` (NOT question/
         # context) — passing the wrong name made it return a canned greeting. Persona +
         # message both go into prompt, framed so the model answers in character.
