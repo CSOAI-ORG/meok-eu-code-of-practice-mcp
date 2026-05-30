@@ -73,6 +73,24 @@ class Registry:
             raise KeyError(f"unknown character: {char_id!r} (have {len(self._by_id)})")
         return c
 
+    def register(self, char: dict) -> str:
+        """Add a character (e.g. factory-minted) so get()/brain/voice/act load it by id.
+        Validates required fields so a broken character can't enter the runtime.
+        In-memory only — the canonical JSON stays the 27 hand-crafted seeds."""
+        required = {"id", "name", "archetype", "care_style", "system_prompt_prefix",
+                    "voice", "visual", "tier"}
+        missing = required - set(char)
+        if missing:
+            raise ValueError(f"cannot register character: missing fields {sorted(missing)}")
+        self._by_id[char["id"].lower()] = char
+        return char["id"]
+
+    def register_many(self, chars: list) -> int:
+        """Register a batch; returns how many were added."""
+        for c in chars:
+            self.register(c)
+        return len(chars)
+
     def persona(self, char_id: str) -> str:
         """The system prompt prefix an LLM adopts to BE this character."""
         return self.get(char_id)["system_prompt_prefix"]
