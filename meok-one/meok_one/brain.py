@@ -19,12 +19,26 @@ never fabricates a model response.
 """
 
 import json
+import re
 import urllib.request
 import urllib.error
 
 from .registry import Registry, default
 
 SOV3_MCP = "http://localhost:3101/mcp"
+
+
+def _strip_thinking(text: str) -> str:
+    """Remove <think>...</think> reasoning blocks that qwen3-class models emit
+    before their answer, so the consumer sees only the reply. Falls back to the
+    raw (stripped) text if that would leave nothing."""
+    if not text:
+        return text
+    cleaned = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
+    if "<think>" in cleaned:  # unclosed/truncated think block
+        cleaned = (cleaned.split("</think>")[-1] if "</think>" in cleaned
+                   else cleaned.split("<think>")[-1])
+    return cleaned.strip() or text.strip()
 
 
 def _call_sov3(tool: str, args: dict, timeout: int = 30):
@@ -72,7 +86,21 @@ class Character:
 
     def say(self, message: str, temperature: float = 0.7) -> dict:
         """Consumer says `message` -> character replies via SOV3. Returns
-        {character, reply, source}. Honest offline fallback if SOV3 is down."""
+        {character, reply, source}. Honest offline fallback if SOV3 is down.
+
+        Tries SOV3 LLM tools in order of what actually works:
+          1. hermes_ask     — live + reliable (local Ollama qwen3 behind it)
+          2. nemotron_chat  — supports a system_prompt but upstream NVIDIA 404s often
+        The persona is folded into the question for hermes_ask (it takes `question`,
+        not a separate system_prompt), so the character still shapes the reply."""
+        # 1) hermes_ask — the tool verified working 2026-05-30
+        personaed = f"{self.system_prompt()}\n\nUser: {message}\n\n{self.name}:"
+        result = _call_sov3("hermes_ask", {"question": personaed})
+        if result and result.get("response"):
+            return {"character": self.name, "id": self.id,
+                    "reply": _strip_thinking(result["response"]), "source": "sov3:hermes",
+                    "emoji": self.c["visual"]["emoji"]}
+        # 2) nemotron_chat — has a real system_prompt slot; use if hermes is down
         result = _call_sov3("nemotron_chat", {
             "message": message,
             "system_prompt": self.system_prompt(),
