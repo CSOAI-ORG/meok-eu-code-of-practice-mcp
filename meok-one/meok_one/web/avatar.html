@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#0a0a0f">
+<title>MEOK ONE — your sovereign (3D)</title>
+<style>
+  :root{ --bg:#0a0a0f; --panel:#16161f; --panel2:#1c1c28; --line:#26263a; --txt:#edeef5;
+    --dim:#8b8ba0; --accent:#7C3AED; --accent2:#a855f7; --ok:#34d399; --ease:cubic-bezier(.22,1,.36,1); }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  html,body{ height:100%; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif; background:var(--bg);
+    color:var(--txt); height:100dvh; display:flex; justify-content:center; overflow:hidden; }
+  .app{ width:100%; max-width:560px; height:100dvh; display:flex; flex-direction:column; position:relative; }
+  /* ── 3D STAGE (the character window) ── */
+  #stage{ flex:0 0 46%; position:relative; background:
+      radial-gradient(120% 90% at 50% 0%, #241a44 0%, #0e0b1c 60%, var(--bg) 100%); overflow:hidden; }
+  #vrmCanvas{ width:100%; height:100%; display:block; }
+  .nameplate{ position:absolute; left:0; right:0; bottom:10px; text-align:center; pointer-events:none; }
+  .nameplate h2{ font-size:1.15rem; font-weight:800; text-shadow:0 2px 12px #000; }
+  .nameplate .tag{ font-size:.72rem; color:var(--dim); }
+  .moodchip{ position:absolute; top:12px; left:12px; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase;
+    background:rgba(0,0,0,.4); border:1px solid var(--line); border-radius:99px; padding:.25rem .7rem; color:var(--accent2); }
+  .loading{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column;
+    gap:.6rem; color:var(--dim); font-size:.85rem; }
+  .loading .egg{ font-size:3rem; animation:bob 2.5s var(--ease) infinite; }
+  @keyframes bob{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  /* ── CHAT BELOW ── */
+  .below{ flex:1; display:flex; flex-direction:column; min-height:0; padding:.7rem .9rem 0; }
+  .brainpill{ position:relative; display:flex; background:var(--panel); border:1px solid var(--line);
+    border-radius:99px; padding:4px; margin:0 auto .55rem; width:max-content; }
+  .brainpill .glider{ position:absolute; top:4px; bottom:4px; left:4px; width:calc((100% - 8px)/3);
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); border-radius:99px; transition:transform .3s var(--ease); }
+  .brainpill button{ position:relative; z-index:1; background:none; border:none; color:var(--dim);
+    padding:.4rem .85rem; font-size:.78rem; font-weight:600; cursor:pointer; }
+  .brainpill button.on{ color:#fff; }
+  .msgs{ flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:.5rem; padding:.3rem 0; }
+  .msgs::-webkit-scrollbar{ width:0; }
+  .msg{ max-width:85%; padding:.65rem .9rem; border-radius:16px; font-size:.92rem; line-height:1.45; white-space:pre-wrap; }
+  .msg.you{ align-self:flex-end; background:linear-gradient(135deg,var(--accent),var(--accent2)); border-bottom-right-radius:4px; }
+  .msg.them{ align-self:flex-start; background:var(--panel2); border:1px solid var(--line); border-bottom-left-radius:4px; }
+  .composer{ display:flex; gap:.5rem; padding:.5rem 0 calc(.6rem + env(safe-area-inset-bottom)); }
+  .composer input{ flex:1; background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:.8rem 1rem; color:var(--txt); font-size:1rem; }
+  .composer input:focus{ outline:none; border-color:var(--accent); }
+  .composer button{ width:48px; height:48px; border:none; border-radius:50%; cursor:pointer;
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:1.1rem; }
+  .twoD{ position:absolute; top:12px; right:12px; font-size:.62rem; color:var(--dim); text-decoration:none;
+    background:rgba(0,0,0,.4); border:1px solid var(--line); border-radius:99px; padding:.25rem .7rem; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="stage">
+    <canvas id="vrmCanvas"></canvas>
+    <div class="moodchip" id="moodchip">calm</div>
+    <a class="twoD" href="/">2D ›</a>
+    <div class="loading" id="loading"><div class="egg">🥚</div><div id="loadtxt">summoning your sovereign…</div></div>
+    <div class="nameplate"><h2 id="cname">Aria</h2><div class="tag" id="ctag">nurturer · gentle</div></div>
+  </div>
+  <div class="below">
+    <div class="brainpill" id="brainToggle">
+      <span class="glider" id="glider"></span>
+      <button data-brain="left" class="on">🧠 Left</button>
+      <button data-brain="right">☁️ Right</button>
+      <button data-brain="both">⚖️ Council</button>
+    </div>
+    <div class="msgs" id="msgs"></div>
+    <div class="composer">
+      <input id="msgInput" placeholder="talk to your sovereign…" autocomplete="off">
+      <button id="sendBtn">↑</button>
+    </div>
+  </div>
+</div>
+
+<!-- three.js + three-vrm via ESM importmap (no bundler / no npm) -->
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+  "@pixiv/three-vrm": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@2.1.1/lib/three-vrm.module.js"
+}}
+</script>
+
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { VRMLoaderPlugin, VRMUtils } from "@pixiv/three-vrm";
+
+const $ = s => document.querySelector(s);
+let brain = "left", current = null, vrm = null, clock = new THREE.Clock();
+let mood = "calm", blinkT = 0, talkUntil = 0;
+
+// ---- three.js scene ----
+const canvas = $("#vrmCanvas");
+const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 20);
+camera.position.set(0, 1.32, 1.6);
+const light = new THREE.DirectionalLight(0xffffff, 2.2); light.position.set(1, 2, 2); scene.add(light);
+scene.add(new THREE.AmbientLight(0xa78bfa, 1.0));
+
+function resize(){ const w=canvas.clientWidth, h=canvas.clientHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+window.addEventListener("resize", resize);
+
+// ---- load the VRM ----
+const loader = new GLTFLoader();
+loader.register(p => new VRMLoaderPlugin(p));
+loader.load("/avatar.vrm",
+  (gltf) => {
+    vrm = gltf.userData.vrm;
+    VRMUtils.removeUnnecessaryVertices(gltf.scene);
+    VRMUtils.removeUnnecessaryJoints(gltf.scene);
+    vrm.scene.rotation.y = Math.PI;          // face the camera
+    scene.add(vrm.scene);
+    resize();
+    $("#loading").style.display = "none";
+    hatchDefault();
+  },
+  (p) => { $("#loadtxt").textContent = "loading avatar… " + Math.round((p.loaded/(p.total||1))*100) + "%"; },
+  (err) => { $("#loadtxt").textContent = "3D avatar failed to load — chat still works below."; console.error(err); }
+);
+
+const MOOD_LIGHT = { calm:0xa78bfa, think:0x2dd4bf, speak:0xfbbf24, care:0xf472b6 };
+function setMood(m){ mood=m; $("#moodchip").textContent=m; const c=MOOD_LIGHT[m]||0xa78bfa;
+  scene.children.forEach(o=>{ if(o.isAmbientLight) o.color.setHex(c); }); if(m==="speak") talkUntil=performance.now()+4000; }
+
+// ---- animation loop: breathe, blink, look, lip-flap ----
+function animate(){
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta(), t = clock.elapsedTime;
+  if(vrm){
+    // breathe (subtle chest/whole bob)
+    vrm.scene.position.y = Math.sin(t*1.6)*0.012;
+    // blink every ~4s
+    blinkT += dt;
+    if(vrm.expressionManager){
+      let blink = 0;
+      if(blinkT > 4){ const p=(blinkT-4)/0.18; blink = p<1 ? Math.sin(p*Math.PI) : (blinkT>4.18 ? (blinkT=0,0) : 0); }
+      vrm.expressionManager.setValue("blink", blink);
+      // lip-flap while speaking
+      const talking = performance.now() < talkUntil;
+      vrm.expressionManager.setValue("aa", talking ? (Math.sin(t*16)*0.5+0.5)*0.7 : 0);
+      // mood expression
+      vrm.expressionManager.setValue("happy", mood==="care"?0.5: mood==="speak"?0.3:0.15);
+      vrm.expressionManager.update();
+    }
+    // gentle head sway toward camera
+    const head = vrm.humanoid?.getNormalizedBoneNode("head");
+    if(head){ head.rotation.y = Math.sin(t*0.6)*0.06; head.rotation.x = Math.sin(t*0.4)*0.03; }
+    vrm.update(dt);
+  }
+  renderer.render(scene, camera);
+}
+animate();
+
+// ---- backend wiring (same API as the 2D UX) ----
+async function api(p,o){ const r=await fetch(p,o); return r.json(); }
+async function hatchDefault(){
+  // default sovereign = Aria; (a fuller build would carry the hatch choice over)
+  const res = await api("/api/hatch", { method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ archetype:"nurturer", care_style:"gentle", name:"Aria" }) });
+  current = res; $("#cname").textContent = res.name; $("#ctag").textContent = `${res.archetype} · ${res.care_style}`;
+  bubble("them", `${res.stage_emoji||"🌸"} ${res.name} is here. "${res.tagline||""}"`);
+}
+const DOWN=/\b(sad|tired|exhausted|down|hopeless|anxious|stressed|lonely|hurt|cry|awful|rough|overwhelm|depress|scared|worried|struggl)/i;
+function bubble(who,text){ const m=document.createElement("div"); m.className="msg "+who; m.textContent=text; $("#msgs").appendChild(m); $("#msgs").scrollTop=$("#msgs").scrollHeight; return m; }
+
+$("#brainToggle").onclick=e=>{ const b=e.target.closest("button"); if(!b)return; brain=b.dataset.brain;
+  const btns=[...document.querySelectorAll("#brainToggle button")], i=btns.indexOf(b);
+  btns.forEach(x=>x.classList.remove("on")); b.classList.add("on"); $("#glider").style.transform=`translateX(${i*100}%)`; };
+
+async function send(){
+  const t=$("#msgInput").value.trim(); if(!t||!current)return; $("#msgInput").value=""; bubble("you",t);
+  const down=DOWN.test(t); setMood("think");
+  const typing=bubble("them","…");
+  let res; try{ res=await api("/api/think",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({character:current.character_id,message:t,brain,tier:"pro"})}); }
+  catch(e){ res={reply:"[connection lost]"}; }
+  setMood(down?"care":"speak");
+  typing.textContent = res.reply || "[no reply]";
+  $("#msgs").scrollTop=$("#msgs").scrollHeight;
+  setTimeout(()=>setMood(down?"care":"calm"), 4200);
+}
+$("#sendBtn").onclick=send;
+$("#msgInput").addEventListener("keydown",e=>{ if(e.key==="Enter")send(); });
+</script>
+</body>
+</html>
