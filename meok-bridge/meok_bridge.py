@@ -56,6 +56,7 @@ class MeokBridge:
         awareness_context = ""
         async with httpx.AsyncClient() as client:
             try:
+                # Get alerts
                 alert_res = await client.post(
                     "http://localhost:3102/mcp",
                     json={"jsonrpc":"2.0", "id":1, "method":"tools/call", "params":{"name":"get_active_alerts", "arguments":{}}}
@@ -64,6 +65,18 @@ class MeokBridge:
                     alerts = alert_res.json().get("result", {}).get("content", [{}])[0].get("text", "[]")
                     if len(alerts) > 10:
                         awareness_context += f"\n[SYSTEM ALERTS: {alerts}]"
+                
+                # Get last 5 audit logs for real-time perception
+                log_res = await client.post(
+                    "http://localhost:3102/mcp",
+                    json={"jsonrpc":"2.0", "id":1, "method":"tools/call", "params":{"name":"get_audit_logs", "arguments":{"limit": 5}}}
+                )
+                if log_res.status_code == 200:
+                    logs = log_res.json().get("result", {}).get("content", [{}])[0].get("text", "{\"logs\":[]}")
+                    parsed_logs = json.loads(logs).get("logs", [])
+                    if parsed_logs:
+                        log_lines = "\n".join([f"- {l.get('event_type')}: {l.get('message')}" for l in parsed_logs])
+                        awareness_context += f"\n[SYSTEM PERCEPTION - LAST 5 EVENTS]:\n{log_lines}"
             except: pass
 
         # Step 1: Route to expert
