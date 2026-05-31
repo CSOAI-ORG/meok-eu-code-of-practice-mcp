@@ -37,14 +37,14 @@
     background:rgba(0,0,0,.4); border:1px solid var(--line); border-radius:99px; padding:.22rem .65rem; z-index:5; }
 
   /* speech bubble over the avatar (Amica-style assistantText) */
-  .bubble{ position:absolute; left:14px; right:14px; bottom:74px; background:rgba(20,16,34,.86);
-    border:1px solid var(--accent); border-radius:16px; padding:.7rem .9rem; font-size:.92rem; line-height:1.45;
-    box-shadow:0 8px 30px rgba(0,0,0,.5); backdrop-filter:blur(8px); z-index:5; opacity:0; transform:translateY(8px);
-    transition:.28s var(--ease); pointer-events:none; max-height:38%; overflow:hidden; }
+  .bubble{ position:absolute; left:14px; right:14px; bottom:6px; background:rgba(20,16,34,.92);
+    border:1px solid var(--accent); border-radius:14px; padding:.55rem .8rem; font-size:.85rem; line-height:1.35;
+    box-shadow:0 8px 30px rgba(0,0,0,.6); backdrop-filter:blur(8px); z-index:6; opacity:0; transform:translateY(8px);
+    transition:.28s var(--ease); pointer-events:none; max-height:30%; overflow:hidden; }
   .bubble.show{ opacity:1; transform:translateY(0); }
   .bubble b{ color:var(--accent2); }
 
-  .nameplate{ position:absolute; left:0; right:0; bottom:12px; text-align:center; pointer-events:none; z-index:4; }
+  .nameplate{ position:absolute; left:0; right:0; top:46px; text-align:center; pointer-events:none; z-index:4; }
   .nameplate h2{ font-size:1.1rem; font-weight:800; text-shadow:0 2px 12px #000; }
   .nameplate .tag{ font-size:.7rem; color:var(--dim); }
 
@@ -134,7 +134,16 @@ import { VRMAnimationLoaderPlugin, createVRMAnimationClip } from "@pixiv/three-v
 const $ = s => document.querySelector(s);
 let brain = "left", current = null, characters = [];
 let vrm = null, mixer = null, clock = new THREE.Clock();
-let mood = "calm", speaking = false, voiceOn = true, recog = null, mouthBoost = 0;
+let mood = "calm", speaking = false, voiceOn = true, recog = null, mouthAA = 0;
+// real audio-stream lip-sync (Amica's AnalyserNode method)
+let audioCtx = null, analyser = null, timeData = null, curAudio = null;
+function lipVolume(){
+  if(!analyser) return 0;
+  analyser.getFloatTimeDomainData(timeData);
+  let v = 0; for(let i=0;i<timeData.length;i++){ const a=Math.abs(timeData[i]); if(a>v) v=a; }
+  v = 1/(1+Math.exp(-45*v+5));            // sigmoid normalise (Amica)
+  return v < 0.1 ? 0 : v;
+}
 
 // ---- scene (Amica's framing: FOV 20, cam (0,1.3,1.5), target (0,1.3,0)) ----
 const canvas = $("#vrmCanvas");
@@ -227,11 +236,16 @@ function animate(){
   if(vrm){
     mixer?.update(dt);             // idle body animation
     blink.update(dt);             // eyes
-    if(vrm.expressionManager){     // mouth: TTS-gated flap + per-word boost
+    if(vrm.expressionManager){     // mouth: driven by REAL TTS audio volume (Amica's method)
       let aa = 0;
-      if(speaking){ aa = Math.min(1, (Math.sin(clock.elapsedTime*16)*0.5+0.5)*0.55 + mouthBoost); }
-      mouthBoost = Math.max(0, mouthBoost - dt*3);
-      vrm.expressionManager.setValue("aa", aa);
+      if(speaking){
+        const v = lipVolume();                 // 0..1 from the live audio analyser
+        aa = v > 0 ? Math.min(1, v * 1.7)       // real audio → real mouth shape
+                   : (Math.sin(clock.elapsedTime*14)*0.5+0.5)*0.45;  // fallback flap
+      }
+      // smooth toward target so the jaw doesn't jitter
+      mouthAA += (aa - mouthAA) * Math.min(1, dt * 18);
+      vrm.expressionManager.setValue("aa", mouthAA);
     }
     vrm.update(dt);               // drives lookAt + spring bones
   }
@@ -302,28 +316,70 @@ async function send(){
 $("#sendBtn").onclick=send;
 $("#msgInput").addEventListener("keydown",e=>{ if(e.key==="Enter")send(); });
 
-// ---- VOICE: speak aloud (TTS) — mouth flaps while speaking, pulses per word boundary ----
-function speak(text, caring){
-  if(!voiceOn || !text || !window.speechSynthesis) return;
+// ---- VOICE: speak aloud with REAL audio-stream TTS (/api/tts -> WAV -> AnalyserNode) ----
+// The mouth lip-syncs to the ACTUAL audio volume, not a timer. Falls back to the
+// browser's speechSynthesis if the server TTS is unavailable.
+const SAY_VOICE = { // map a character's voice descriptor -> a macOS `say` voice
+  rachel:"Samantha", bella:"Samantha", grace:"Samantha", serena:"Samantha", elli:"Samantha",
+  dorothy:"Samantha", sarah:"Samantha", adam:"Daniel", josh:"Daniel", arnold:"Daniel",
+  daniel:"Daniel", antoni:"Daniel", sam:"Daniel" };
+function sayVoiceFor(c){
+  const v = (c && (c.voice||"")).toLowerCase();
+  for(const k in SAY_VOICE){ if(v.includes(k)) return SAY_VOICE[k]; }
+  // fall back by archetype gender-feel
+  return /challenger|strategist|guardian|sage/.test((c&&c.archetype||"").toLowerCase()) ? "Daniel" : "Samantha";
+}
+async function speak(text, caring){
+  if(!voiceOn || !text) return;
+  stopSpeaking();
+  const clean = text.replace(/[*_`#>]/g,"").slice(0,600);
+  try{
+    const voice = sayVoiceFor(current);
+    const rate = caring ? 165 : 185;
+    const r = await fetch("/api/tts", {method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({text:clean, voice, rate})});
+    if(!r.ok) throw new Error("tts "+r.status);
+    const buf = await r.arrayBuffer();
+    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state === "suspended") await audioCtx.resume();
+    const audioBuf = await audioCtx.decodeAudioData(buf);
+    analyser = audioCtx.createAnalyser(); analyser.fftSize = 2048;
+    timeData = new Float32Array(analyser.fftSize);
+    const src = audioCtx.createBufferSource(); src.buffer = audioBuf;
+    src.connect(analyser); analyser.connect(audioCtx.destination);
+    curAudio = src;
+    speaking = true; setMood(caring?"care":"speak");
+    src.onended = ()=>{ if(curAudio===src){ speaking=false; analyser=null; curAudio=null; setMood(caring?"care":"calm"); } };
+    src.start();
+  }catch(e){
+    console.warn("server TTS failed, falling back to speechSynthesis:", e);
+    speakFallback(clean, caring);
+  }
+}
+function speakFallback(text, caring){
+  if(!window.speechSynthesis) return;
   try{ window.speechSynthesis.cancel(); }catch(e){}
-  const u = new SpeechSynthesisUtterance(text.replace(/[*_`#>]/g,""));
+  const u = new SpeechSynthesisUtterance(text);
   u.rate = caring ? 0.92 : 1.0; u.pitch = caring ? 1.05 : 1.12; u.lang = "en-GB";
   const vs = window.speechSynthesis.getVoices();
-  const pick = vs.find(v=>/female|samantha|aria|libby|sonia|martha/i.test(v.name)) || vs.find(v=>/en-GB/.test(v.lang)) || vs[0];
-  if(pick) u.voice = pick;
+  u.voice = vs.find(v=>/samantha|female|en-GB/i.test(v.name+v.lang)) || vs[0];
   u.onstart = ()=>{ speaking=true; setMood(caring?"care":"speak"); };
-  u.onboundary = ()=>{ mouthBoost = 0.5; };   // pulse the mouth at each word (real speech timing)
   u.onend = ()=>{ speaking=false; setMood(caring?"care":"calm"); };
   window.speechSynthesis.speak(u);
 }
-if(window.speechSynthesis) window.speechSynthesis.onvoiceschanged = ()=>window.speechSynthesis.getVoices();
+function stopSpeaking(){
+  try{ if(curAudio){ curAudio.onended=null; curAudio.stop(); } }catch(e){}
+  curAudio=null; analyser=null;
+  try{ window.speechSynthesis && window.speechSynthesis.cancel(); }catch(e){}
+  speaking=false;
+}
 
 // ---- VOICE: listen (STT) ----
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 function startListen(){
   if(!SR){ bubble("them","(speech-to-text isn't supported here — type instead)"); return; }
   if(recog){ try{ recog.stop(); }catch(e){} recog=null; $("#micBtn").classList.remove("live"); return; }
-  try{ window.speechSynthesis && window.speechSynthesis.cancel(); }catch(e){}
+  stopSpeaking();
   recog = new SR(); recog.lang="en-GB"; recog.interimResults=true; recog.maxAlternatives=1;
   $("#micBtn").classList.add("live");
   let finalTxt="";
@@ -334,7 +390,7 @@ function startListen(){
 }
 $("#micBtn").onclick = startListen;
 $("#voicetgl").onclick = ()=>{ voiceOn=!voiceOn; $("#voicetgl").textContent = voiceOn?"🔊 voice on":"🔇 voice off";
-  if(!voiceOn){ try{ window.speechSynthesis.cancel(); }catch(e){} speaking=false; } };
+  if(!voiceOn) stopSpeaking(); };
 
 // ---- boot ----
 (async function(){

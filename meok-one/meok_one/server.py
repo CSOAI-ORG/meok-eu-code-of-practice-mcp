@@ -16,6 +16,7 @@ Endpoints (all JSON unless noted):
     POST /api/hatch  {archetype, care_style, name}        -> hatched care-director
     POST /api/think  {character, message, brain, tier}    -> live reply (Sovereign-safe)
     POST /api/voice  {character, message, brain, tier}    -> reply + TTS voice spec
+    POST /api/tts    {text, voice, rate}                  -> WAV audio (real, for lip-sync)
 
 Honest: /api/think calls the real local LLM (qwen3 via Ollama) — replies take a few
 seconds and are never fabricated. If a backend is down the JSON says so.
@@ -26,6 +27,8 @@ import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
 import os
+import subprocess
+import tempfile
 
 from . import default, ladder, __version__
 from .brains import brains, think
@@ -62,6 +65,42 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.write(body)
         except FileNotFoundError:
             self._json(404, {"error": "index.html not found"})
+
+    def _tts(self, b):
+        """Real audio-stream TTS via macOS `say` -> WAV, so the avatar mouth lip-syncs
+        to ACTUAL audio volume (Amica's AnalyserNode method), not a fake sine wave."""
+        text = (b.get("text") or "").strip()[:600]
+        voice = b.get("voice") or "Samantha"
+        try:
+            rate = str(int(b.get("rate", 180)))
+        except (TypeError, ValueError):
+            rate = "180"
+        if not text:
+            return self._json(400, {"error": "no text"})
+        if not all(c.isalpha() or c.isspace() for c in voice):  # arg-injection guard
+            voice = "Samantha"
+        tmp = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+        tmp.close()
+        try:
+            subprocess.run(["say", "-v", voice, "-r", rate, "-o", tmp.name,
+                            "--data-format=LEI16@22050", "--file-format=WAVE", text],
+                           check=True, timeout=20, capture_output=True)
+            with open(tmp.name, "rb") as f:
+                audio = f.read()
+            self.send_response(200)
+            self.send_header("Content-Type", "audio/wav")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Content-Length", str(len(audio)))
+            self.end_headers()
+            self.wfile.write(audio)
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError) as e:
+            self._json(500, {"error": "tts failed", "detail": str(e)})
+        finally:
+            try:
+                os.unlink(tmp.name)
+            except OSError:
+                pass
+        return None
 
     def _body(self):
         try:
@@ -143,6 +182,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(200, out)
             if path == "/api/voice":
                 return self._json(200, voice_reply(b.get("character", "aria"), b.get("message", "")))
+            if path == "/api/tts":
+                return self._tts(b)
         except KeyError as e:
             return self._json(400, {"error": f"unknown id {e}"})
         except Exception as e:
