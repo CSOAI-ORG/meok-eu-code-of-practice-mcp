@@ -55,6 +55,18 @@ Your original "MEOK ONE must work e2e with all inner products":
 - **Training corpus:** consolidate the 20 books → "make any agent a domain expert" per vertical.
 - **Topology alignment:** restructure repo into spine/products/governance/research (after secrets→vault, big→GCS).
 
+## ⭐ KEY FINDING (research harvest, VERIFIED 2026-05-31)
+`meok/core/` already holds **64 real Python modules** — much of the roadmap is WIRE-IN, not build-from-scratch:
+| Stage | Existing code to reuse (verified on disk) |
+|---|---|
+| 1 Tamagotchi | `emotional_states.py` (374L), `soul_vault.py` (495L, encrypted memory) |
+| 2 Voice | `voice_pipeline.py` (612L — VAD/STT/TTS/lip-sync), `voice_stress.py` |
+| 5 SYNC bus | `pbft_engine.py` (766L), `pbft_moe_council.py` (443L), `chaos_router.py` (542L), `eigen_bft.py` |
+| safety (all) | `care_shield.py` (386L), `maternal_covenant.py`, `family_guardian.py` |
+**Gap = these run as standalone Python, NOT wired to the MEOK ONE 3D frontend (meok-one server).**
+So each stage = connect existing core module → meok-one /api → the character UI. (Harvest claimed
+`companion_evolution.py` — does NOT exist; trust verified files only.) Full catalogue: research harvest output.
+
 ## Execution rule
 One stage at a time · one server at a time · screenshot-verified · committed on claude/meok-one ·
 reuse existing code (don't rebuild) · honest about what's verified vs not.
