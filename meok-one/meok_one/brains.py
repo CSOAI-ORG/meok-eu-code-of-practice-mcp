@@ -25,6 +25,7 @@ with the sovereign keeping them safe, and the character as the endpoint?" — YE
 """
 
 import os
+import re
 from .connect import connect
 from .router import ask, list_models
 
@@ -76,10 +77,31 @@ def _safe(reply: str) -> bool:
     return not any(bad in low for bad in _UNSAFE)
 
 
+# Defense-in-depth: even though the capability brief says "never recite", a small local
+# model can still parrot it. The Sovereign strips any leaked capability block from EVERY
+# reply so the tool list never reaches the user (the bug Nick caught in the council).
+_CAP_LEAK_MARKERS = (
+    "LIVE CAPABILITIES", "live tools across", "Core tools temporarily offline",
+    "You can switch LLMs", "Kimi WebBridge", "mcp_bridge_discover", "mcp_bridge_call",
+    "execute_with_claw_code", "riri_build_tool", "Use the bridge",
+    "discover live before declining", "this brief is for YOU only", "use tools silently",
+)
+_CAP_GROUP_LINE = re.compile(r"^\s*[-•*]\s*(memory|council|safety/guardian|care|other)\s*:", re.I)
+
+
+def _strip_capability_leak(reply):
+    """Remove any leaked capability-brief lines from a reply (never over-strips prose)."""
+    if not reply:
+        return reply
+    kept = [ln for ln in reply.splitlines()
+            if not any(m in ln for m in _CAP_LEAK_MARKERS) and not _CAP_GROUP_LINE.match(ln)]
+    return "\n".join(kept).strip() or reply  # if filtering nuked everything, keep original
+
+
 def _run_brain(brain: str, prompt: str, tier: str) -> dict:
     model = _BRAIN_DEFAULT_MODEL.get(brain)
     out = ask(prompt, model=model, tier=tier)
-    return {"reply": out.get("reply"), "engine": out.get("model"),
+    return {"reply": _strip_capability_leak(out.get("reply")), "engine": out.get("model"),
             "backend": out.get("backend"), "source": out.get("source"),
             "note": out.get("note")}
 

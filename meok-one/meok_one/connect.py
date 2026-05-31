@@ -52,7 +52,7 @@ _AGE_GATES = {
 def connect(character_id: str, user_id: str, message: str,
             platform: str = "consumer", age_rating: str = None,
             with_memory: bool = True, tier: str = "free",
-            with_capabilities: bool = False) -> dict:
+            with_capabilities: bool = True) -> dict:
     """The connection envelope. A partner platform calls this BEFORE generating.
 
     Returns the ingredients to run the character on the partner's own model:
