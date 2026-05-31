@@ -87,9 +87,43 @@
   #micBtn{ background:var(--panel); border:1px solid var(--line); font-size:1.2rem; }
   #micBtn.live{ background:linear-gradient(135deg,#ef4444,#f472b6); animation:pulse 1s infinite; }
   @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+
+  /* ── HATCH CEREMONY (first character, free) — full-screen overlay ── */
+  #hatch{ position:fixed; inset:0; z-index:50; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:1.4rem; background:radial-gradient(120% 100% at 50% 38%, #2a1f54 0%, #0e0b1c 55%, #05040a 100%);
+    transition:opacity .8s var(--ease); text-align:center; padding:1.5rem; }
+  #hatch.gone{ opacity:0; pointer-events:none; }
+  .hegg{ font-size:7rem; cursor:pointer; user-select:none; filter:drop-shadow(0 0 28px rgba(168,85,247,.55));
+    animation:hbreathe 3s var(--ease) infinite; transition:transform .25s var(--ease); }
+  .hegg:active{ transform:scale(.92); }
+  @keyframes hbreathe{ 0%,100%{ transform:translateY(0) scale(1); } 50%{ transform:translateY(-12px) scale(1.04); } }
+  .hegg.cracking{ animation:hshake .25s linear infinite; }
+  @keyframes hshake{ 0%,100%{transform:translateX(0) rotate(0)} 25%{transform:translateX(-5px) rotate(-3deg)} 75%{transform:translateX(5px) rotate(3deg)} }
+  #hatch h1{ font-size:1.5rem; font-weight:800; letter-spacing:-.01em; }
+  #hatch p{ color:var(--dim); font-size:.95rem; max-width:24rem; line-height:1.5; }
+  .hbtn{ background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border:none;
+    border-radius:99px; padding:.85rem 1.8rem; font-size:1rem; font-weight:700; cursor:pointer;
+    box-shadow:0 8px 30px rgba(124,58,237,.45); transition:transform .2s var(--ease); }
+  .hbtn:active{ transform:scale(.95); }
+  .hsub{ font-size:.72rem; color:var(--accent2); letter-spacing:.08em; text-transform:uppercase; }
+  #hatchName{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:.8rem 1rem;
+    color:var(--txt); font-size:1.05rem; text-align:center; width:min(80vw,18rem); }
+  #hatchName:focus{ outline:none; border-color:var(--accent2); }
+  .hspark{ position:absolute; width:6px; height:6px; border-radius:50%; background:var(--accent2);
+    pointer-events:none; opacity:0; }
 </style>
 </head>
 <body>
+<!-- HATCH CEREMONY — shown only on first visit (free first character) -->
+<div id="hatch">
+  <div class="hsub" id="hStage">a new bond begins</div>
+  <div class="hegg" id="hEgg">🥚</div>
+  <h1 id="hTitle">Your sovereign is waiting</h1>
+  <p id="hBody">Tap the egg to begin. Your first companion is free — hatch it, name it, and it remembers you from here on.</p>
+  <button class="hbtn" id="hBtn" style="display:none">Hatch</button>
+  <input id="hatchName" placeholder="give them a name…" style="display:none" autocomplete="off">
+</div>
+
 <div class="app">
   <div id="stage">
     <canvas id="vrmCanvas"></canvas>
@@ -415,12 +449,65 @@ $("#micBtn").onclick = startListen;
 $("#voicetgl").onclick = ()=>{ voiceOn=!voiceOn; $("#voicetgl").textContent = voiceOn?"🔊 voice on":"🔇 voice off";
   if(!voiceOn) stopSpeaking(); };
 
+// ---- HATCH CEREMONY (first character, free) ----
+// egg → tap to crack → emerge → name → bond → enter. Runs once; returning users skip.
+const HATCH_KEY = "meok_hatched_v1";
+function spark(x,y){ const s=document.createElement("div"); s.className="hspark";
+  document.getElementById("hatch").appendChild(s); s.style.left=x+"px"; s.style.top=y+"px";
+  const dx=(Math.random()-.5)*160, dy=(Math.random()-.5)*160-40;
+  s.animate([{opacity:1,transform:"translate(0,0) scale(1.6)"},{opacity:0,transform:`translate(${dx}px,${dy}px) scale(0)`}],
+    {duration:700,easing:"cubic-bezier(.22,1,.36,1)"}).onfinish=()=>s.remove(); }
+
+async function runHatch(){
+  const H=$("#hatch"), egg=$("#hEgg"), title=$("#hTitle"), body=$("#hBody"),
+        stage=$("#hStage"), btn=$("#hBtn"), nameIn=$("#hatchName");
+  let taps=0, cracked=false;
+  egg.onclick = (e)=>{
+    taps++;
+    const r=egg.getBoundingClientRect(); spark(r.left+r.width/2, r.top+r.height/2);
+    egg.classList.add("cracking");
+    if(taps===1){ stage.textContent="something stirs…"; egg.textContent="🥚"; }
+    if(taps===2){ egg.textContent="🐣"; title.textContent="It's cracking…"; body.textContent="Keep going — they're almost here."; }
+    if(taps>=3 && !cracked){
+      cracked=true; egg.classList.remove("cracking");
+      stage.textContent="emerging"; egg.textContent="✨"; egg.style.cursor="default"; egg.onclick=null;
+      title.textContent="They're here."; body.textContent="Your free companion has hatched. What will you call them?";
+      nameIn.style.display="block"; btn.style.display="inline-block"; btn.textContent="Begin our bond →";
+      nameIn.focus();
+      // burst of sparks
+      const rr=egg.getBoundingClientRect();
+      for(let i=0;i<18;i++) setTimeout(()=>spark(rr.left+rr.width/2, rr.top+rr.height/2), i*40);
+    }
+  };
+  const enter = async ()=>{
+    const chosenName = (nameIn.value||"").trim();
+    stage.textContent="awakening"; title.textContent="Welcome."; body.textContent="";
+    btn.style.display="none"; nameIn.style.display="none"; egg.textContent="🌸";
+    localStorage.setItem(HATCH_KEY, JSON.stringify({id:"aria", name:chosenName||"Aria", at:Date.now()}));
+    // reveal the main UI behind, then select the free first character
+    await selectCharacter("aria");
+    if(chosenName){ $("#cname").textContent = chosenName; }   // honour their chosen name visually
+    H.classList.add("gone");
+    setTimeout(()=>H.remove(), 850);
+  };
+  btn.onclick = enter;
+  nameIn.addEventListener("keydown", e=>{ if(e.key==="Enter") enter(); });
+}
+
 // ---- boot ----
 (async function(){
   await loadCharacters();
-  const first = characters.find(c=>c.id==="aria") || characters[0];
-  if(first) await selectCharacter(first.id);
-  else { $("#loadtxt").textContent="no characters found"; }
+  const saved = localStorage.getItem(HATCH_KEY);
+  if(saved){
+    // returning user — skip ceremony, go straight to their character
+    $("#hatch").remove();
+    let id="aria"; try{ id = JSON.parse(saved).id || "aria"; }catch(e){}
+    const c = characters.find(x=>x.id===id) || characters.find(c=>c.id==="aria") || characters[0];
+    if(c) await selectCharacter(c.id); else $("#loadtxt").textContent="no characters found";
+  } else {
+    // first visit — run the hatch ceremony (free first character)
+    if(characters.length){ runHatch(); } else { $("#hatch").remove(); $("#loadtxt").textContent="no characters found"; }
+  }
 })();
 </script>
 </body>
