@@ -32,24 +32,26 @@ Legend: 🟢 built+real · 🟡 partial/started · 🔵 name/concept only · ⭐
 | **MEOK WORK** | The work agents — Orion (tasks) / Riri (tools) / Hourman (sprints) | `sovereign-temple-live/agents/`, 70 docs | 🟢 |
 | **MEOK ENTERPRISE** | Enterprise tier — 33-agent council, compliance, audit, £1,499/mo | `csoai-platform/`, Stripe Enterprise product live | 🟢⭐ |
 
-## THE GOVERNANCE / COMPLIANCE SURFACE (the cash engine today)
+## THE GOVERNANCE / REVENUE / OPS SURFACE
 | Product | What it is | Proof | State |
 |---|---|---|---|
 | **MEOK MAP** | Geospatial / compliance mapping (Gods-Eye, civilian) | `god-eye/`, gods-eye-geospatial-mcp, `start_dagon_maps.sh` | 🟡 |
-| **MEOK DELBOY** | "Revenue mode" — the monetization engine/playbook (not a folder, a MODE) | 14 docs (LOOPFACTORY_Delboy_Mode etc.), `loopfactory-marketplace/` | 🟡⭐ |
-| **MEOK BLACKSWAN** | x402 / machine-payment + frontier-tool research strand (a MODE/research) | 6 docs (BLACK SWAN x402/K2.6) | 🔵 |
+| **MEOK DELBOY** | **Revenue mode AND a sales PRODUCT** — agents trained on a sales-book corpus to become expert digital workers / trades / consultants across every profession | `meok-delboy-sales-engine/` (`SALES_PLAYBOOK.md`, `agents/`, **8-book corpus**: Art of the Deal, Sales Bible, SPIN Selling, Challenger Sale, Psychology of Selling, Influence, How to Win Friends, Only in It for the Money) + 14 docs | 🟢⭐ |
+| **MEOK DONE** | **Deploy / launch / integration MODE** — keeps the whole stack aligned to the *latest* frameworks (Anthropic, MCP, A2A, best SLMs/LLMs, APIs) before anything ships | `DEPLOY_QUEUE.md` (seed); mode/playbook to formalize | 🟡 |
+| **MEOK BLACKSWAN** | x402 / machine-payment + frontier-tool research strand (a research MODE) | 6 docs (BLACK SWAN x402/K2.6) | 🔵 |
 
-## NAME-ONLY (concept, no build yet — honest flag)
-| Product | Status |
-|---|---|
-| **MEOK DONE** | 🔵 0 files found. Pure name. Needs a definition before it's anything. (Task-completion product? "done" state?) |
+## The TRAINING CORPUS (cross-cutting — feeds DELBOY + every expert agent)
+`meok-delboy-sales-engine/books/` holds 8 distilled professional books. This is the seed of a
+**"make any agent a domain expert"** corpus — extend per vertical (optometry, haulage, care homes,
+aquaculture…) so each MEOK character can act as a trained consultant in its field. 🟢 (sales) / 🔵 (other professions).
 
 ---
 
 ## What this proves
-- **17 of 18 named products have real evidence on disk.** Only **MEOK DONE** is purely a name.
-- **DELBOY + BLACKSWAN are MODES/playbooks, not folders** — that's correct, they're how you *operate*
-  the products (DELBOY = make money, BLACKSWAN = chase frontier edges), not products themselves.
+- **ALL 18 named products have real evidence on disk** (after deeper scan: DELBOY is a built
+  product `meok-delboy-sales-engine/` w/ 8-book corpus; DONE seeded by `DEPLOY_QUEUE.md`).
+- **DELBOY = revenue mode + a real sales product** (agent-training-on-books → expert digital workers).
+  **BLACKSWAN = research mode** (frontier edges). **DONE = deploy/launch/integration mode** (stay current).
 - The portfolio splits cleanly into **3 layers**: Spine (infra) → Consumer products → Governance/cash.
 - Everything is unified by **MEOK MCP** (every product exposes its tools as MCPs) + **MEOK SYNC**
   (every agent/brain talks over the same SIGIL bus) + **MEOK EI3** (every action passes the safety layer).
