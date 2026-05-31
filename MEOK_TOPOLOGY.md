@@ -40,10 +40,32 @@ Legend: 🟢 built+real · 🟡 partial/started · 🔵 name/concept only · ⭐
 | **MEOK DONE** | **Deploy / launch / integration MODE** — keeps the whole stack aligned to the *latest* frameworks (Anthropic, MCP, A2A, best SLMs/LLMs, APIs) before anything ships | `DEPLOY_QUEUE.md` (seed); mode/playbook to formalize | 🟡 |
 | **MEOK BLACKSWAN** | x402 / machine-payment + frontier-tool research strand (a research MODE) | 6 docs (BLACK SWAN x402/K2.6) | 🔵 |
 
-## The TRAINING CORPUS (cross-cutting — feeds DELBOY + every expert agent)
-`meok-delboy-sales-engine/books/` holds 8 distilled professional books. This is the seed of a
-**"make any agent a domain expert"** corpus — extend per vertical (optometry, haulage, care homes,
-aquaculture…) so each MEOK character can act as a trained consultant in its field. 🟢 (sales) / 🔵 (other professions).
+## The TRAINING CORPUS (cross-cutting — "make any agent a domain expert")
+**20 real books found across the workspace, in 4 dirs — need consolidating into ONE corpus on GitHub:**
+| Dir | Count | Domain |
+|---|---|---|
+| `meok-delboy-sales-engine/books/` | 8 | Sales/persuasion (Art of the Deal, SPIN Selling, Challenger Sale, Influence, Sales Bible, Psychology of Selling, How to Win Friends, Only in It for the Money) → **consultant/sales agents** |
+| `bleeding-edge-arsenal/books/` | 12 | Hard engineering (robotics, 3D-printing, CAD, materials science, electronics, control systems, BLDC, PLC, AI/ML, sensor fusion, embedded) → **maker/engineer agents** |
+| `sovereign-temple/training_books/` | 0 | empty placeholder |
+| `meok-3d-characters/meok-storybooks/` | 0 | empty placeholder |
+
+**Plan:** consolidate → `research/corpus/{sales,engineering,…}/` (or `spine/sovereign/corpus/`), then
+extend per vertical (optometry, haulage, care homes, aquaculture) so each MEOK character/agent acts as
+a trained expert in its profession. This corpus feeds DELBOY (sales) AND MEOK WORK agents. 🟡 (20 books in, scattered → align)
+
+## POSITIONING — MEOK ONE as the context-engineering platform (Nick's strategic note)
+MEOK ONE isn't just a character app — it's **the best context layer for AI**:
+- **Memory** (SOV3 pgvector, cross-platform) = the richest user/agent context anyone can plug into.
+- **MEOK MCP gateway** = MEOK ONE connects out to every tool AND exposes its context IN, so other AI
+  apps plug into MEOK as their context provider. "The best plug-in."
+- **"Ad market for AI context"** = novel monetization: context/attention as a marketplace (capture later;
+  flagged as a strategic thesis, not yet built).
+
+## BUSINESS MODEL — character economy (corrected, Nick 2026-05-31)
+1. **First character = FREE**, via the **hatch ceremony** (the emotional onboarding; hatch is ONLY for the first/free one).
+2. After that, the user either **buys a pre-made character from the marketplace**, OR
+3. **hatches a CUSTOM character** (more expensive) — which they can then **resell on the marketplace**.
+→ This is the "Visa of AI characters" loop: free entry → marketplace buy/sell → custom creation as a paid, resellable asset. Marketplace = `loopfactory-marketplace/`.
 
 ---
 
