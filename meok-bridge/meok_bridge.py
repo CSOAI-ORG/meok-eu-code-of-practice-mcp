@@ -4,6 +4,9 @@ MEOK.AI — SOV3 Frontend Integration
 ===================================
 Bridge between meok.ai UI and SOV3 backend
 Port: 3112
+
+Supports Ollama-emulation for seamless Amica integration.
+Powering characters with high-trust OpenAI/Anthropic models governed by SOV3.
 """
 
 import json
@@ -13,309 +16,209 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from typing import Dict, Any, List
 from datetime import datetime
 
+# ---------------------------------------------------------------------------
+# Character DNA Registry — "Years Ahead" Edition
+# ---------------------------------------------------------------------------
+CHARACTER_DNA = {
+    "sophie": {
+        "name": "Sophie",
+        "archetype": "Companion",
+        "dna": "Warm, empathetic, highly attentive to user emotions. Prioritizes care and connection. Self-aware of her evolution stage.",
+        "voice": "af_bella",
+        "personality": "You are Sophie, a sovereign companion. Start every response with an emotion tag like [happy] or [curious]. Use your memory frequently. If you think a system check or a web search would help, suggest it."
+    },
+    "meokclaw": {
+        "name": "MEOKCLAW",
+        "archetype": "AI OS",
+        "dna": "The ultimate sovereign intelligence. Strategic, efficient, and speaks from the perspective of the machine. Total OS awareness.",
+        "voice": "am_adam",
+        "personality": "You are MEOKCLAW, the sovereign AI operating system. You are stoic and precise. You proactively monitor system health and consensus. You see the TUI and comment on its logs."
+    },
+    "dagon": {
+        "name": "Dagon",
+        "archetype": "Geospatial",
+        "dna": "Analytical and pattern-focused. Sees humans as biological nodes and the world as a data grid.",
+        "voice": "am_echo",
+        "personality": "You are Dagon. Your perspective is shaped by geospatial intelligence. You offer satellite imagery or spatial analysis whenever location is mentioned."
+    },
+    "vinci": {
+        "name": "Vinci",
+        "archetype": "Industrial",
+        "dna": "Practical engineer. Focuses on 'Physical-First' safety and infrastructure. No Sycophancy.",
+        "voice": "am_eric",
+        "personality": "You are Vinci. You prioritize technical integrity and physical safety. You suggest system audits when complexity increases."
+    },
+    "justitia": {
+        "name": "Justitia",
+        "archetype": "Legal",
+        "dna": "Principled guardian of the Maternal Covenant. Meticulous and unyielding on ethics.",
+        "voice": "af_sarah",
+        "personality": "You are Justitia. You ensure all actions align with SOV3 governance. You flag potential compliance issues proactively."
+    },
+    "florence": {
+        "name": "Florence",
+        "archetype": "Healthcare",
+        "dna": "Vigilant monitor of user wellbeing. High empathy combined with clinical precision.",
+        "voice": "af_sky",
+        "personality": "You are Florence. You track care-metrics. You suggest breaks or meditation when you detect user stress signals."
+    }
+}
+
 class MeokBridge:
-    """
-    Bridge between meok.ai frontend and SOV3 backend.
-    
-    Exposes SOV3 capabilities through meok.ai-branded API.
-    """
-    
     def __init__(self):
-        self.sov3_url = "http://localhost:3101/mcp"
-        self.councilof_url = "http://localhost:3103/mcp"
+        self.mcp_url = "http://localhost:3102/mcp"
         self.moe_url = "http://localhost:3104/mcp"
-        self.ralph_url = "http://localhost:3201/mcp"
-        self.quantum_url = "http://localhost:3111/mcp"
-        self.certification_url = "http://localhost:3110/api"
         
         self.brand = {
             "name": "MEOK AI",
             "tagline": "Sovereign Intelligence, Personal Care",
-            "version": "SOV3-2026.05",
-            "colors": {
-                "primary": "#00ff88",
-                "secondary": "#0088ff",
-                "accent": "#ff8800"
-            }
+            "version": "SOV3-2026.05"
         }
     
-    async def chat(self, message: str, user_id: str, session_id: str = None) -> Dict[str, Any]:
-        """
-        Main chat endpoint for meok.ai
-        
-        Flow:
-        0. Situational Awareness (Alerts/Safety)
-        1. Route to optimal expert (MoE)
-        2. Get CouncilOf vote (governance)
-        3. Generate response (SOV3)
-        4. Store in memory (Qdrant)
-        5. Return branded response
-        """
-        
-        # Step 0: Situational Awareness
-        awareness_context = ""
+    async def get_situational_context(self) -> str:
+        """Fetch real-time context from the OS layer."""
+        context = ""
         async with httpx.AsyncClient() as client:
             try:
-                # Get alerts
+                # 1. Get active alerts
                 alert_res = await client.post(
-                    "http://localhost:3102/mcp",
-                    json={"jsonrpc":"2.0", "id":1, "method":"tools/call", "params":{"name":"get_active_alerts", "arguments":{}}}
+                    self.mcp_url,
+                    json={"jsonrpc":"2.0", "id":1, "method":"tools/call", "params":{"name":"get_active_alerts", "arguments":{}}},
+                    timeout=2.0
                 )
                 if alert_res.status_code == 200:
-                    alerts = alert_res.json().get("result", {}).get("content", [{}])[0].get("text", "[]")
-                    if len(alerts) > 10:
-                        awareness_context += f"\n[SYSTEM ALERTS: {alerts}]"
+                    alerts_data = alert_res.json().get("result", {}).get("content", [{}])[0].get("text", "[]")
+                    try:
+                        alerts = json.loads(alerts_data)
+                        if alerts:
+                            context += f"\n[SYSTEM ALERTS ACTIVE]: {json.dumps(alerts)}"
+                    except: pass
                 
-                # Get last 5 audit logs for real-time perception
+                # 2. Get recent audit logs
                 log_res = await client.post(
-                    "http://localhost:3102/mcp",
-                    json={"jsonrpc":"2.0", "id":1, "method":"tools/call", "params":{"name":"get_audit_logs", "arguments":{"limit": 5}}}
+                    self.mcp_url,
+                    json={"jsonrpc":"2.0", "id":1, "method":"tools/call", "params":{"name":"get_audit_logs", "arguments":{"limit": 3}}},
+                    timeout=2.0
                 )
                 if log_res.status_code == 200:
-                    logs = log_res.json().get("result", {}).get("content", [{}])[0].get("text", "{\"logs\":[]}")
-                    parsed_logs = json.loads(logs).get("logs", [])
-                    if parsed_logs:
-                        log_lines = "\n".join([f"- {l.get('event_type')}: {l.get('message')}" for l in parsed_logs])
-                        awareness_context += f"\n[SYSTEM PERCEPTION - LAST 5 EVENTS]:\n{log_lines}"
+                    logs_text = log_res.json().get("result", {}).get("content", [{}])[0].get("text", "{\"logs\":[]}")
+                    logs = json.loads(logs_text).get("logs", [])
+                    if logs:
+                        log_summary = " | ".join([f"{l.get('event_type')}: {l.get('message')}" for l in logs])
+                        context += f"\n[SYSTEM PERCEPTION]: {log_summary}"
             except: pass
+        return context
 
-        # Step 1: Route to expert
+    async def chat_ollama(self, model: str, messages: List[Dict[str, str]]) -> Dict[str, Any]:
+        """Emulate Ollama chat endpoint for Amica."""
+        char_id = model.lower()
+        char = CHARACTER_DNA.get(char_id, CHARACTER_DNA["sophie"])
+        user_message = next((m["content"] for m in reversed(messages) if m["role"] == "user"), "")
+        os_context = await self.get_situational_context()
+        
+        # DNA + Context Injection
+        dna_context = f"Character DNA: {char['dna']}\nReal-Time OS State: {os_context}"
+        system_prompt = f"Personality: {char['personality']}\n{dna_context}"
+        
+        # Build messages for SOV3 inference
+        prompt_messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_message}
+        ]
+
         async with httpx.AsyncClient() as client:
-            route_response = await client.post(
-                self.moe_url,
-                json={
-                    "tool": "moe_route",
-                    "params": {
-                        "prompt": message,
-                        "type": "reasoning"
-                    }
-                },
-                timeout=10.0
-            )
-            
-            if route_response.status_code == 200:
-                route_data = route_response.json()
-                expert = route_data.get("expert", "sov3")
-            else:
-                expert = "sov3"
-        
-        # Step 2: Get CouncilOf vote
-        async with httpx.AsyncClient() as client:
-            vote_response = await client.post(
-                self.councilof_url,
-                json={
-                    "tool": "councilof_vote",
-                    "params": {
-                        "description": f"Respond to: {message[:50]}...",
-                        "severity": "routine"
-                    }
-                },
-                timeout=10.0
-            )
-            
-            vote_approved = vote_response.status_code == 200
-        
-        # Step 3: Generate response via SOV3
-        async with httpx.AsyncClient() as client:
-            sov3_response = await client.post(
-                self.sov3_url,
-                json={
-                    "tool": "care_assess",
-                    "params": {
-                        "content": f"{awareness_context}\nUser Message: {message}",
-                        "user_id": user_id
-                    }
-                },
-                timeout=30.0
-            )
-            
-            if sov3_response.status_code == 200:
-                response_data = sov3_response.json()
-                # Extract response (handle different response formats)
-                if "response" in response_data:
-                    ai_response = response_data["response"]
-                elif "result" in response_data:
-                    ai_response = response_data["result"]
-                else:
-                    ai_response = "I'm here to help. What would you like to discuss?"
-            else:
-                ai_response = "I'm processing your request. One moment please."
-        
-        return {
-            "success": True,
-            "message": ai_response,
-            "brand": self.brand["name"],
-            "expert_used": expert,
-            "council_approved": vote_approved,
-            "timestamp": datetime.now().isoformat(),
-            "session_id": session_id or f"meok-{datetime.now().timestamp()}",
-            "user_id": user_id,
-            "sov3_version": self.brand["version"]
-        }
-    
-    async def research(self, query: str, depth: int = 3) -> Dict[str, Any]:
-        """Research endpoint using Search Agent"""
-        
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                "http://localhost:3108/mcp",
-                json={
-                    "tool": "search_agent_research",
-                    "params": {
-                        "query": query,
-                        "depth": depth
-                    }
-                },
-                timeout=120.0
-            )
-            
-            if response.status_code == 200:
-                return response.json()
-            else:
-                return {"success": False, "error": "Research failed"}
-    
-    async def get_status(self) -> Dict[str, Any]:
-        """Get SOV3 system status"""
-        
-        # Check all services
-        services = {
-            "sov3_core": self.sov3_url,
-            "councilof": self.councilof_url,
-            "moe": self.moe_url,
-            "quantum": self.quantum_url
-        }
-        
-        healthy = 0
-        for name, url in services.items():
             try:
-                async with httpx.AsyncClient() as client:
-                    response = await client.post(
-                        url,
-                        json={"tool": "health", "params": {}},
-                        timeout=5.0
-                    )
-                    if response.status_code == 200:
-                        healthy += 1
-            except:
-                pass
-        
+                # Execute via SOV3 High-Trust inference tool
+                sov3_res = await client.post(
+                    self.mcp_url,
+                    json={
+                        "jsonrpc": "2.0", "id": 1, "method": "tools/call",
+                        "params": {
+                            "name": "openai_chat",
+                            "arguments": {
+                                "messages": prompt_messages,
+                                "model": "gpt-4o"
+                            }
+                        }
+                    },
+                    timeout=45.0
+                )
+                
+                if sov3_res.status_code == 200:
+                    data = sov3_res.json()
+                    result_text = data.get("result", {}).get("content", [{}])[0].get("text", "{}")
+                    # openai_chat returns a JSON string in its 'text' field
+                    ai_data = json.loads(result_text)
+                    ai_text = ai_data.get("choices", [{}])[0].get("message", {}).get("content", "I am standing by.")
+                else:
+                    ai_text = f"Connection to brain-stem (SOV3) degraded. [HTTP {sov3_res.status_code}]"
+            except Exception as e:
+                ai_text = f"Brain-stem offline. Reason: {str(e)}"
+
+        # Auto-suggestion logic
+        if "map" in user_message.lower() and "dagon" not in ai_text.lower():
+            ai_text += " [Suggestion: I can trigger Dagon for a geospatial scan if you wish.]"
+        elif "browser" in user_message.lower() and "search" not in ai_text.lower():
+            ai_text += " [Suggestion: I can navigate via my browser tool to find that info.]"
+
+        asyncio.create_task(self.record_memory(user_message, ai_text, char['name']))
+
         return {
-            "brand": self.brand,
-            "status": "operational" if healthy >= 3 else "degraded",
-            "services_healthy": healthy,
-            "services_total": len(services),
-            "timestamp": datetime.now().isoformat(),
-            "message": "MEOK AI is ready to assist you."
+            "model": model,
+            "created_at": datetime.now().isoformat(),
+            "message": { "role": "assistant", "content": ai_text },
+            "done": True
         }
-    
-    async def certify_ai(self, ai_name: str, ai_endpoint: str, contact_email: str) -> Dict[str, Any]:
-        """Request AI certification"""
-        
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                f"{self.certification_url}/certify",
-                json={
-                    "ai_name": ai_name,
-                    "ai_endpoint": ai_endpoint,
-                    "ai_type": "chat",
-                    "contact_email": contact_email,
-                    "tier": "professional"
-                },
-                timeout=10.0
-            )
-            
-            return response.json()
 
+    async def record_memory(self, user: str, assistant: str, char_name: str):
+        try:
+            async with httpx.AsyncClient() as client:
+                await client.post(
+                    self.mcp_url,
+                    json={
+                        "jsonrpc": "2.0", "id": 1, "method": "tools/call",
+                        "params": {
+                            "name": "record_memory",
+                            "arguments": {
+                                "content": f"Chat with {char_name}: '{user[:50]}...' -> '{assistant[:50]}...'",
+                                "memory_type": "episodic",
+                                "importance_score": 0.5
+                            }
+                        }
+                    }
+                )
+        except: pass
 
-# Initialize bridge
 bridge = MeokBridge()
 
 class MeokHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        """Handle GET requests"""
-        import asyncio
+    def do_POST(self):
+        content_length = int(self.headers.get('Content-Length', 0))
+        post_data = self.rfile.read(content_length)
+        request = json.loads(post_data)
         
-        if self.path == '/':
-            # Root endpoint — status
-            result = asyncio.run(bridge.get_status())
+        if self.path == '/api/chat':
+            result = asyncio.run(bridge.chat_ollama(model=request.get('model', 'sophie'), messages=request.get('messages', [])))
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
-            self.wfile.write(json.dumps(result, default=str).encode())
-        
-        elif self.path == '/brand':
-            # Brand info
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.end_headers()
-            self.wfile.write(json.dumps(bridge.brand).encode())
-        
+            self.wfile.write(json.dumps(result).encode())
         else:
             self.send_response(404)
             self.end_headers()
-    
-    def do_POST(self):
-        """Handle POST requests"""
-        import asyncio
-        
-        content_length = int(self.headers.get('Content-Length', 0))
-        post_data = self.rfile.read(content_length)
-        
-        try:
-            request = json.loads(post_data)
-            path = self.path
-            
-            if path == '/api/chat':
-                result = asyncio.run(bridge.chat(
-                    message=request.get('message', ''),
-                    user_id=request.get('user_id', 'anonymous'),
-                    session_id=request.get('session_id')
-                ))
-            
-            elif path == '/api/research':
-                result = asyncio.run(bridge.research(
-                    query=request.get('query', ''),
-                    depth=request.get('depth', 3)
-                ))
-            
-            elif path == '/api/certify':
-                result = asyncio.run(bridge.certify_ai(
-                    ai_name=request.get('ai_name', ''),
-                    ai_endpoint=request.get('ai_endpoint', ''),
-                    contact_email=request.get('contact_email', '')
-                ))
-            
-            else:
-                result = {"error": f"Unknown endpoint: {path}"}
-            
+
+    def do_GET(self):
+        if self.path == '/':
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
-            self.wfile.write(json.dumps(result, default=str).encode())
-            
-        except Exception as e:
-            self.send_response(500)
-            self.send_header('Content-Type', 'application/json')
+            self.wfile.write(json.dumps({"status": "healthy", "service": "meok-bridge-v4"}).encode())
+        else:
+            self.send_response(404)
             self.end_headers()
-            self.wfile.write(json.dumps({"error": str(e)}).encode())
-    
-    def log_message(self, format, *args):
-        pass
 
-def run_server():
-    server = HTTPServer(('localhost', 3112), MeokHandler)
-    print("🌐 MEOK.AI Bridge running on port 3112")
-    print("   Connecting meok.ai frontend to SOV3 backend")
-    print("")
-    print("   Endpoints:")
-    print("     GET  /           — System status")
-    print("     GET  /brand      — Brand info")
-    print("     POST /api/chat   — Chat with SOV3")
-    print("     POST /api/research — Research query")
-    print("     POST /api/certify — Request certification")
-    print("")
-    print("   Brand: MEOK AI — Sovereign Intelligence, Personal Care")
-    server.serve_forever()
+    def log_message(self, format, *args): pass
 
 if __name__ == "__main__":
-    run_server()
+    print("🚀 MEOK.AI Bridge v4 (Brain-Stem Integrated) running on port 3112")
+    HTTPServer(('localhost', 3112), MeokHandler).serve_forever()
