@@ -20,6 +20,13 @@ Legend: 🟢 built+real · 🟡 partial/started · 🔵 name/concept only · ⭐
 | **MEOK MESH** | libp2p peer mesh (decentralised transport) | `meok-mesh/` | 🟡 |
 | **MEOK EI3** | The safety substrate — care/ethics layer over everything | `csoai-org/`, `safetyof-ai/`, EI3 manifest | 🟢 |
 
+## ⭐ MEOK DOME — the destination (a WORLD for AI characters)
+**Nick's vision (2026-05-31):** MEOK DOME = a shared world where hatched AI characters *live together* —
+the social/metaverse layer the whole portfolio points at. You hatch your sovereign in MEOK ONE; it
+*lives* in the DOME (meets other characters, the marketplace is its economy, GAMING is its playground,
+COUNCIL governs it, SYNC is how they talk, GUARDIAN/EI3 keep it safe). 🔵 concept (0 files yet) — but
+it's the north-star frame: every other product is a room/system inside the DOME.
+
 ## THE CONSUMER PRODUCTS (the experiences end-users touch)
 | Product | What it is | Proof | State |
 |---|---|---|---|
