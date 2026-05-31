@@ -31,6 +31,8 @@ class CouncilOfHandler(BaseHTTPRequestHandler):
             # Route to appropriate method
             if tool == 'councilof_vote':
                 result = asyncio.run(council.vote(params))
+            elif tool == 'health':
+                result = {"status": "ok", "service": "councilof"}
             elif tool == 'councilof_audit':
                 result = asyncio.run(council.audit(params.get('work_product', {})))
             elif tool == 'councilof_get_node_status':

@@ -11,7 +11,8 @@ async function main() {
   
   // Load program keypair
   const programSecret = JSON.parse(fs.readFileSync("../program-keypair.json", "utf-8"));
-  const programId = new PublicKey(programSecret);
+  const programKeypair = Keypair.fromSecretKey(new Uint8Array(programSecret));
+  const programId = programKeypair.publicKey;
   
   const client = new MeokSbtClient(connection, programId);
   

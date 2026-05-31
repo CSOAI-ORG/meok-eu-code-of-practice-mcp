@@ -19,7 +19,7 @@ import * as borsh from "borsh";
 // Program ID (placeholder — replace after deployment)
 // ---------------------------------------------------------------------------
 export const PROGRAM_ID = new PublicKey(
-  "MEOKsbt111111111111111111111111111111111111"
+  "Dyd7JtmmuA3RZZupk98mqRQ8uySZV9FwTE6aNYmxPxpo"
 );
 
 // ---------------------------------------------------------------------------
@@ -63,10 +63,6 @@ class SbtTypeEnum {
   }
 }
 
-const SbtTypeSchema = new Map([
-  [SbtTypeEnum, { kind: "struct", fields: [["variant", "u8"]] }],
-]);
-
 class SbtInstructionMint {
   variant: number = 0;
   sbt_type: SbtTypeEnum = new SbtTypeEnum();
@@ -95,7 +91,8 @@ class SbtInstructionMint {
   }
 }
 
-const SbtInstructionSchema = new Map([
+const SCHEMA = new Map<any, any>([
+  [SbtTypeEnum, { kind: "struct", fields: [["variant", "u8"]] }],
   [
     SbtInstructionMint,
     {
@@ -180,16 +177,26 @@ export class MeokSbtClient {
   ): Promise<string> {
     const [sbtPda, bump] = await this.deriveSbtPda(owner, sbtType, tokenId);
 
-    const instruction = new SbtInstructionMint({
-      sbt_type: new SbtTypeEnum({ variant: sbtType }),
-      token_id: tokenId,
-      metadata_uri: metadataUri,
-      charter_reference: CHARTER_REFERENCES[sbtType],
-      risk_tier: riskTier,
-      expires_at: expiresAt,
-    });
-
-    const serialized = borsh.serialize(SbtInstructionSchema, instruction);
+    // Manual serialization to avoid borsh version issues
+    const metadataBuffer = Buffer.from(metadataUri, "utf-8");
+    const charterBuffer = Buffer.from(CHARTER_REFERENCES[sbtType], "utf-8");
+    
+    const dataSize = 1 + 1 + 8 + (4 + metadataBuffer.length) + (4 + charterBuffer.length) + 1 + 8;
+    const data = Buffer.alloc(dataSize);
+    
+    let offset = 0;
+    data.writeUInt8(0, offset++); // variant: Mint
+    data.writeUInt8(sbtType, offset++); // sbt_type
+    data.writeBigUInt64LE(tokenId, offset); offset += 8;
+    
+    data.writeUInt32LE(metadataBuffer.length, offset); offset += 4;
+    metadataBuffer.copy(data, offset); offset += metadataBuffer.length;
+    
+    data.writeUInt32LE(charterBuffer.length, offset); offset += 4;
+    charterBuffer.copy(data, offset); offset += charterBuffer.length;
+    
+    data.writeUInt8(riskTier, offset++);
+    data.writeBigInt64LE(expiresAt, offset); offset += 8;
 
     const tx = new Transaction().add(
       new TransactionInstruction({
@@ -200,7 +207,7 @@ export class MeokSbtClient {
           { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
         ],
         programId: this.programId,
-        data: Buffer.from(serialized),
+        data: data,
       })
     );
 
@@ -278,4 +285,4 @@ export class MeokSbtClient {
 // Convenience exports
 // ---------------------------------------------------------------------------
 
-export { SbtTypeEnum, SbtInstructionMint, SbtInstructionSchema };
+export { SbtTypeEnum, SbtInstructionMint, SCHEMA };

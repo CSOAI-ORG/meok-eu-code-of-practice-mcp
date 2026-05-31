@@ -36,6 +36,8 @@ class RalphHandler(BaseHTTPRequestHandler):
                     timeout_minutes=params.get('timeout_minutes', 30)
                 )
                 result = asyncio.run(ralph.execute_task(task))
+            elif tool == 'health':
+                result = {"status": "ok", "service": "ralph"}
             elif tool == 'ralph_check_status':
                 task_id = params.get('task_id', '')
                 task = ralph.tasks.get(task_id)

@@ -106,6 +106,8 @@ class Handler(BaseHTTPRequestHandler):
                     ),
                     "quantum_enhanced": True
                 }
+            elif tool == 'health':
+                result = {"status": "ok", "service": "quantum"}
             elif tool == 'quantum_status':
                 result = quantum_council.get_status()
             else:

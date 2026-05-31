@@ -27,6 +27,8 @@ class MoEHandler(BaseHTTPRequestHandler):
             
             if tool == 'moe_route':
                 result = asyncio.run(moe.generate(params))
+            elif tool == 'health':
+                result = {"status": "ok", "service": "moe"}
             elif tool == 'moe_ensemble':
                 num = params.get('num_experts', 3)
                 result = asyncio.run(moe.ensemble(params, num))

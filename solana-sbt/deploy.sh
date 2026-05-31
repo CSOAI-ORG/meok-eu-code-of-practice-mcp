@@ -22,7 +22,7 @@ fi
 
 # Deploy program
 echo "Deploying SBT program..."
-solana program deploy target/deploy/meok_sbt.so --program-id program-keypair.json --max-len 100000
+solana program deploy target/deploy/meok_sbt.so --program-id program-keypair.json --max-len 200000
 
 # Update client with actual program ID
 PROGRAM_ID=$(solana-keygen pubkey program-keypair.json)

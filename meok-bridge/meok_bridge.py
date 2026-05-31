@@ -44,14 +44,28 @@ class MeokBridge:
         Main chat endpoint for meok.ai
         
         Flow:
-        1. Check cache (Redis)
-        2. Route to optimal expert (MoE)
-        3. Get CouncilOf vote (governance)
-        4. Generate response (SOV3)
-        5. Store in memory (Qdrant)
-        6. Return branded response
+        0. Situational Awareness (Alerts/Safety)
+        1. Route to optimal expert (MoE)
+        2. Get CouncilOf vote (governance)
+        3. Generate response (SOV3)
+        4. Store in memory (Qdrant)
+        5. Return branded response
         """
         
+        # Step 0: Situational Awareness
+        awareness_context = ""
+        async with httpx.AsyncClient() as client:
+            try:
+                alert_res = await client.post(
+                    "http://localhost:3102/mcp",
+                    json={"jsonrpc":"2.0", "id":1, "method":"tools/call", "params":{"name":"get_active_alerts", "arguments":{}}}
+                )
+                if alert_res.status_code == 200:
+                    alerts = alert_res.json().get("result", {}).get("content", [{}])[0].get("text", "[]")
+                    if len(alerts) > 10:
+                        awareness_context += f"\n[SYSTEM ALERTS: {alerts}]"
+            except: pass
+
         # Step 1: Route to expert
         async with httpx.AsyncClient() as client:
             route_response = await client.post(
@@ -95,7 +109,7 @@ class MeokBridge:
                 json={
                     "tool": "care_assess",
                     "params": {
-                        "content": message,
+                        "content": f"{awareness_context}\nUser Message: {message}",
                         "user_id": user_id
                     }
                 },
