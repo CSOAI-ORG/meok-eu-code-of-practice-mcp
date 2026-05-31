@@ -111,6 +111,20 @@
   #hatchName:focus{ outline:none; border-color:var(--accent2); }
   .hspark{ position:absolute; width:6px; height:6px; border-radius:50%; background:var(--accent2);
     pointer-events:none; opacity:0; }
+
+  /* ── VITALS HUD (Tamagotchi life) — top-left of stage ── */
+  .vitals{ position:absolute; top:40px; left:12px; z-index:5; display:flex; flex-direction:column; gap:3px;
+    background:rgba(0,0,0,.42); border:1px solid var(--line); border-radius:12px; padding:.4rem .6rem;
+    backdrop-filter:blur(6px); min-width:118px; }
+  .vitals .vrow{ display:flex; align-items:center; gap:5px; font-size:.62rem; color:var(--dim); }
+  .vitals .vstage{ font-size:.7rem; font-weight:700; color:#fff; }
+  .vitals .vstage .se{ font-size:.95rem; }
+  .bondwrap{ height:5px; border-radius:99px; background:rgba(255,255,255,.1); overflow:hidden; margin-top:1px; }
+  .bondbar{ height:100%; width:0%; border-radius:99px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width .6s var(--ease); }
+  .vitals .vbond{ color:var(--accent2); font-weight:700; }
+  .bondpop{ animation:bondpop .5s var(--ease); }
+  @keyframes bondpop{ 0%{transform:scale(1)} 40%{transform:scale(1.18)} 100%{transform:scale(1)} }
 </style>
 </head>
 <body>
@@ -129,6 +143,11 @@
     <canvas id="vrmCanvas"></canvas>
     <div class="picker" id="picker"></div>
     <div class="moodchip" id="moodchip">calm</div>
+    <div class="vitals" id="vitals" title="your bond grows as you talk">
+      <div class="vstage"><span class="se" id="vStageEmoji">🥚</span> <span id="vStage">egg</span></div>
+      <div class="vrow">bond <span class="vbond" id="vBond">0</span> · lvl <span id="vLevel">1</span></div>
+      <div class="bondwrap"><div class="bondbar" id="vBondBar"></div></div>
+    </div>
     <div class="voicetgl" id="voicetgl">🔊 voice on</div>
     <a class="twoD" href="/">2D ›</a>
     <div class="bubble" id="bubble"></div>
@@ -333,12 +352,31 @@ async function selectCharacter(id){
   // user meets the CHARACTER, not the machinery — show her tagline, never archetype/care_style
   $("#cname").textContent = c.name; $("#ctag").textContent = c.tagline || "";
   $("#msgs").innerHTML = ""; renderStarters();
+  loadVitals(c.id);                       // show this character's living bond/stage
   await loadModel(vrmFor(c));
   setMood("care");
   const greet = c.tagline || `${c.name} is here with you.`;
   bubble("them", `${c.emoji||"🌸"} ${greet}`); showBubble(c.name, greet);
   speak(greet, true);
   setTimeout(()=>setMood("calm"), 4000);
+}
+
+// ── VITALS HUD (Tamagotchi life) — bond grows, stage evolves, persists across sessions ──
+function renderVitals(v, pop){
+  if(!v) return;
+  const stage = v.stage || "egg";
+  $("#vStage").textContent = stage;
+  $("#vStageEmoji").textContent = v.stage_emoji || "🥚";
+  $("#vBond").textContent = (v.bond ?? 0);
+  $("#vLevel").textContent = (v.level ?? 1);
+  // bond bar fills toward the next stage threshold
+  const next = v.next_stage_at || 100, bond = v.bond || 0;
+  $("#vBondBar").style.width = Math.min(100, (bond/next)*100) + "%";
+  if(pop){ const el=$("#vitals"); el.classList.remove("bondpop"); void el.offsetWidth; el.classList.add("bondpop"); }
+}
+async function loadVitals(id){
+  try{ const v = await api("/api/vitals?character="+encodeURIComponent(id)); renderVitals(v,false); }
+  catch(e){ /* HUD optional — never block the character */ }
 }
 
 // Step-3.5 starter chips — gentle openers, tap to send. Hidden once you start talking.
@@ -367,6 +405,7 @@ async function send(){
   const reply = res.reply || "[no reply]";
   typing.textContent = reply; $("#msgs").scrollTop=$("#msgs").scrollHeight;
   setMood(down?"care":"speak"); showBubble(current.name, reply);
+  if(res.vitals) renderVitals(res.vitals, true);   // bond grew from this message
   speak(reply, down);
   setTimeout(()=>{ if(!speaking) setMood(down?"care":"calm"); }, 4200);
 }

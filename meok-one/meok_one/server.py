@@ -164,6 +164,14 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(200, brains(qs.get("tier", ["pro"])[0]))
         if path == "/api/tiers":
             return self._json(200, {"ladder": ladder()})
+        if path == "/api/vitals":
+            cid = qs.get("character", ["aria"])[0]
+            try:
+                from . import vitals as _v
+                return self._json(200, _v.decay(cid))   # decay() also returns current vitals
+            except Exception as e:
+                return self._json(200, {"character": cid, "bond": 0, "stage": "egg",
+                                        "stage_emoji": "🥚", "mood": "calm", "error": str(e)})
         return self._json(404, {"error": "not found", "path": path})
 
     def do_POST(self):
@@ -176,9 +184,16 @@ class Handler(BaseHTTPRequestHandler):
                                                b.get("care_style", "gentle"),
                                                b.get("name") or None))
             if path == "/api/think":
-                out = think(b.get("character", "aria"), b.get("message", ""),
+                cid = b.get("character", "aria")
+                out = think(cid, b.get("message", ""),
                             brain=b.get("brain", "left"), tier=b.get("tier", "pro"),
                             user_id=b.get("user_id", "web"))
+                # Stage 1 Tamagotchi: grow the bond + update mood from this interaction
+                try:
+                    from . import vitals as _v
+                    out["vitals"] = _v.on_interaction(cid, b.get("message", ""), name=b.get("name"))
+                except Exception as e:
+                    out["vitals_error"] = str(e)
                 return self._json(200, out)
             if path == "/api/voice":
                 return self._json(200, voice_reply(b.get("character", "aria"), b.get("message", "")))

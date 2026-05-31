@@ -201,3 +201,4 @@ node_modules/
 *.npz
 *.dylib
 *.step
+meok-one/meok_one/data/
