@@ -13,23 +13,50 @@
   body{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif; background:var(--bg);
     color:var(--txt); height:100dvh; display:flex; justify-content:center; overflow:hidden; }
   .app{ width:100%; max-width:560px; height:100dvh; display:flex; flex-direction:column; position:relative; }
+
   /* ── 3D STAGE (the character window) ── */
-  #stage{ flex:0 0 46%; position:relative; background:
+  #stage{ flex:0 0 50%; position:relative; background:
       radial-gradient(120% 90% at 50% 0%, #241a44 0%, #0e0b1c 60%, var(--bg) 100%); overflow:hidden; }
   #vrmCanvas{ width:100%; height:100%; display:block; }
-  .nameplate{ position:absolute; left:0; right:0; bottom:10px; text-align:center; pointer-events:none; }
-  .nameplate h2{ font-size:1.15rem; font-weight:800; text-shadow:0 2px 12px #000; }
-  .nameplate .tag{ font-size:.72rem; color:var(--dim); }
-  .moodchip{ position:absolute; top:12px; left:12px; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase;
-    background:rgba(0,0,0,.4); border:1px solid var(--line); border-radius:99px; padding:.25rem .7rem; color:var(--accent2); }
+
+  /* character picker — horizontal scroller */
+  .picker{ position:absolute; top:8px; left:8px; right:8px; display:flex; gap:6px; overflow-x:auto;
+    padding:2px; scrollbar-width:none; z-index:5; }
+  .picker::-webkit-scrollbar{ display:none; }
+  .chip{ flex:0 0 auto; display:flex; align-items:center; gap:5px; background:rgba(0,0,0,.45);
+    border:1px solid var(--line); border-radius:99px; padding:.3rem .65rem; font-size:.72rem;
+    color:var(--dim); cursor:pointer; white-space:nowrap; backdrop-filter:blur(6px); transition:.2s var(--ease); }
+  .chip.on{ color:#fff; border-color:var(--accent2); background:linear-gradient(135deg,rgba(124,58,237,.55),rgba(168,85,247,.55)); }
+  .chip .e{ font-size:.95rem; }
+
+  .moodchip{ position:absolute; bottom:46px; left:12px; font-size:.6rem; letter-spacing:.1em; text-transform:uppercase;
+    background:rgba(0,0,0,.4); border:1px solid var(--line); border-radius:99px; padding:.22rem .65rem; color:var(--accent2); z-index:5; }
+  .voicetgl{ position:absolute; bottom:46px; right:64px; font-size:.6rem; color:var(--accent2); cursor:pointer;
+    background:rgba(0,0,0,.4); border:1px solid var(--line); border-radius:99px; padding:.22rem .65rem; user-select:none; z-index:5; }
+  .twoD{ position:absolute; bottom:46px; right:12px; font-size:.6rem; color:var(--dim); text-decoration:none;
+    background:rgba(0,0,0,.4); border:1px solid var(--line); border-radius:99px; padding:.22rem .65rem; z-index:5; }
+
+  /* speech bubble over the avatar (Amica-style assistantText) */
+  .bubble{ position:absolute; left:14px; right:14px; bottom:74px; background:rgba(20,16,34,.86);
+    border:1px solid var(--accent); border-radius:16px; padding:.7rem .9rem; font-size:.92rem; line-height:1.45;
+    box-shadow:0 8px 30px rgba(0,0,0,.5); backdrop-filter:blur(8px); z-index:5; opacity:0; transform:translateY(8px);
+    transition:.28s var(--ease); pointer-events:none; max-height:38%; overflow:hidden; }
+  .bubble.show{ opacity:1; transform:translateY(0); }
+  .bubble b{ color:var(--accent2); }
+
+  .nameplate{ position:absolute; left:0; right:0; bottom:12px; text-align:center; pointer-events:none; z-index:4; }
+  .nameplate h2{ font-size:1.1rem; font-weight:800; text-shadow:0 2px 12px #000; }
+  .nameplate .tag{ font-size:.7rem; color:var(--dim); }
+
   .loading{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column;
-    gap:.6rem; color:var(--dim); font-size:.85rem; }
+    gap:.6rem; color:var(--dim); font-size:.85rem; z-index:6; }
   .loading .egg{ font-size:3rem; animation:bob 2.5s var(--ease) infinite; }
   @keyframes bob{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
   /* ── CHAT BELOW ── */
-  .below{ flex:1; display:flex; flex-direction:column; min-height:0; padding:.7rem .9rem 0; }
+  .below{ flex:1; display:flex; flex-direction:column; min-height:0; padding:.6rem .9rem 0; }
   .brainpill{ position:relative; display:flex; background:var(--panel); border:1px solid var(--line);
-    border-radius:99px; padding:4px; margin:0 auto .55rem; width:max-content; }
+    border-radius:99px; padding:4px; margin:0 auto .5rem; width:max-content; }
   .brainpill .glider{ position:absolute; top:4px; bottom:4px; left:4px; width:calc((100% - 8px)/3);
     background:linear-gradient(135deg,var(--accent),var(--accent2)); border-radius:99px; transition:transform .3s var(--ease); }
   .brainpill button{ position:relative; z-index:1; background:none; border:none; color:var(--dim);
@@ -37,33 +64,32 @@
   .brainpill button.on{ color:#fff; }
   .msgs{ flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:.5rem; padding:.3rem 0; }
   .msgs::-webkit-scrollbar{ width:0; }
-  .msg{ max-width:85%; padding:.65rem .9rem; border-radius:16px; font-size:.92rem; line-height:1.45; white-space:pre-wrap; }
+  .msg{ max-width:85%; padding:.6rem .85rem; border-radius:16px; font-size:.9rem; line-height:1.45; white-space:pre-wrap; }
   .msg.you{ align-self:flex-end; background:linear-gradient(135deg,var(--accent),var(--accent2)); border-bottom-right-radius:4px; }
   .msg.them{ align-self:flex-start; background:var(--panel2); border:1px solid var(--line); border-bottom-left-radius:4px; }
   .composer{ display:flex; gap:.5rem; padding:.5rem 0 calc(.6rem + env(safe-area-inset-bottom)); }
   .composer input{ flex:1; background:var(--panel); border:1px solid var(--line); border-radius:12px;
     padding:.8rem 1rem; color:var(--txt); font-size:1rem; }
   .composer input:focus{ outline:none; border-color:var(--accent); }
-  .composer button{ width:48px; height:48px; border:none; border-radius:50%; cursor:pointer;
-    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:1.1rem; flex:0 0 auto; }
+  .composer button{ width:48px; height:48px; border:none; border-radius:50%; cursor:pointer; flex:0 0 auto;
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:1.1rem; }
   #micBtn{ background:var(--panel); border:1px solid var(--line); font-size:1.2rem; }
   #micBtn.live{ background:linear-gradient(135deg,#ef4444,#f472b6); animation:pulse 1s infinite; }
   @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
-  .voicetgl{ position:absolute; top:12px; right:64px; font-size:.62rem; color:var(--accent2); cursor:pointer;
-    background:rgba(0,0,0,.4); border:1px solid var(--line); border-radius:99px; padding:.25rem .7rem; user-select:none; }
-  .twoD{ position:absolute; top:12px; right:12px; font-size:.62rem; color:var(--dim); text-decoration:none;
-    background:rgba(0,0,0,.4); border:1px solid var(--line); border-radius:99px; padding:.25rem .7rem; }
 </style>
 </head>
 <body>
 <div class="app">
   <div id="stage">
     <canvas id="vrmCanvas"></canvas>
+    <div class="picker" id="picker"></div>
     <div class="moodchip" id="moodchip">calm</div>
     <div class="voicetgl" id="voicetgl">🔊 voice on</div>
     <a class="twoD" href="/">2D ›</a>
+    <div class="bubble" id="bubble"></div>
+    <div class="nameplate"><h2 id="cname">…</h2><div class="tag" id="ctag"></div></div>
     <div class="loading" id="loading"><div class="egg">🥚</div><div id="loadtxt">summoning your sovereign…</div></div>
-    <div class="nameplate"><h2 id="cname">Aria</h2><div class="tag" id="ctag">nurturer · gentle</div></div>
+    <div id="dbg" style="display:none"></div>
   </div>
   <div class="below">
     <div class="brainpill" id="brainToggle">
@@ -74,106 +100,187 @@
     </div>
     <div class="msgs" id="msgs"></div>
     <div class="composer">
-      <button id="micBtn" title="hold/tap to speak">🎤</button>
+      <button id="micBtn" title="tap to speak">🎤</button>
       <input id="msgInput" placeholder="talk to your sovereign…" autocomplete="off">
       <button id="sendBtn">↑</button>
     </div>
   </div>
 </div>
 
-<!-- three.js + three-vrm via ESM importmap (no bundler / no npm) -->
+<!-- three.js 0.171 + three-vrm 3.x + three-vrm-animation 3.x (Amica's stack), via ESM importmap -->
 <script type="importmap">
 { "imports": {
-  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
-  "@pixiv/three-vrm": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@2.1.1/lib/three-vrm.module.js"
+  "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.171.0/examples/jsm/",
+  "@pixiv/three-vrm-core": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm-core@3.1.6/lib/three-vrm-core.module.js",
+  "@pixiv/three-vrm": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@3.1.6/lib/three-vrm.module.js",
+  "@pixiv/three-vrm-animation": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm-animation@3.1.6/lib/three-vrm-animation.module.js"
 }}
+</script>
+<script>
+  // surface any load/import error onto the visible loading text so we can SEE the cause
+  window.addEventListener("error", e => { var t=document.getElementById("loadtxt");
+    if(t) t.textContent = "ERR: " + (e.message || (e.error && e.error.message) || e.filename || "load failed"); });
+  window.addEventListener("unhandledrejection", e => { var t=document.getElementById("loadtxt");
+    if(t) t.textContent = "ERR: " + ((e.reason && (e.reason.message||e.reason)) || "promise rejected"); });
 </script>
 
 <script type="module">
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { VRMLoaderPlugin, VRMUtils } from "@pixiv/three-vrm";
+import { VRMAnimationLoaderPlugin, createVRMAnimationClip } from "@pixiv/three-vrm-animation";
 
 const $ = s => document.querySelector(s);
-let brain = "left", current = null, vrm = null, clock = new THREE.Clock();
-let mood = "calm", blinkT = 0, talkUntil = 0, speaking = false, voiceOn = true, recog = null;
+let brain = "left", current = null, characters = [];
+let vrm = null, mixer = null, clock = new THREE.Clock();
+let mood = "calm", speaking = false, voiceOn = true, recog = null, mouthBoost = 0;
 
-// ---- three.js scene ----
+// ---- scene (Amica's framing: FOV 20, cam (0,1.3,1.5), target (0,1.3,0)) ----
 const canvas = $("#vrmCanvas");
 const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x12101f, 1);             // solid bg confirms the canvas is compositing
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 20);
-camera.position.set(0, 1.32, 1.6);
-const light = new THREE.DirectionalLight(0xffffff, 2.2); light.position.set(1, 2, 2); scene.add(light);
-scene.add(new THREE.AmbientLight(0xa78bfa, 1.0));
+const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 20);
+camera.position.set(0, 1.3, 1.5);
+const dir = new THREE.DirectionalLight(0xffffff, 2.4); dir.position.set(0.5, 1.5, 2.0); scene.add(dir);
+const dir2 = new THREE.DirectionalLight(0xffffff, 1.2); dir2.position.set(-1, 0.5, 1.0); scene.add(dir2);
+const amb = new THREE.AmbientLight(0xffffff, 1.8); scene.add(amb);
+const hemi = new THREE.HemisphereLight(0xffffff, 0x444466, 1.2); scene.add(hemi);
+// gaze target lives in front of the camera so the avatar looks at YOU (Amica autoLookAt)
+const lookTarget = new THREE.Object3D(); camera.add(lookTarget); lookTarget.position.set(0, 0, -8); scene.add(camera);
 
-function resize(){ const w=canvas.clientWidth, h=canvas.clientHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+function resize(){ const w=canvas.clientWidth, h=canvas.clientHeight; if(!w||!h) return;
+  renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
 window.addEventListener("resize", resize);
 
-// ---- load the VRM ----
 const loader = new GLTFLoader();
 loader.register(p => new VRMLoaderPlugin(p));
-loader.load("/avatar.vrm",
-  (gltf) => {
-    vrm = gltf.userData.vrm;
-    VRMUtils.removeUnnecessaryVertices(gltf.scene);
-    VRMUtils.removeUnnecessaryJoints(gltf.scene);
-    vrm.scene.rotation.y = Math.PI;          // face the camera
-    scene.add(vrm.scene);
-    resize();
-    $("#loading").style.display = "none";
-    hatchDefault();
-  },
-  (p) => { $("#loadtxt").textContent = "loading avatar… " + Math.round((p.loaded/(p.total||1))*100) + "%"; },
-  (err) => { $("#loadtxt").textContent = "3D avatar failed to load — chat still works below."; console.error(err); }
-);
+loader.register(p => new VRMAnimationLoaderPlugin(p));
 
-const MOOD_LIGHT = { calm:0xa78bfa, think:0x2dd4bf, speak:0xfbbf24, care:0xf472b6 };
-function setMood(m){ mood=m; $("#moodchip").textContent=m; const c=MOOD_LIGHT[m]||0xa78bfa;
-  scene.children.forEach(o=>{ if(o.isAmbientLight) o.color.setHex(c); }); if(m==="speak") talkUntil=performance.now()+4000; }
+// cache the idle clip-source once
+let idleVRMA = null;
+async function getIdle(){
+  if(idleVRMA) return idleVRMA;
+  try{ const g = await loader.loadAsync("/animations/idle_loop.vrma");
+       idleVRMA = g.userData.vrmAnimations?.[0] || null; }catch(e){ console.warn("idle load failed", e); }
+  return idleVRMA;
+}
 
-// ---- animation loop: breathe, blink, look, lip-flap ----
+// ---- AutoBlink (ported from Amica emoteController/autoBlink) ----
+const blink = { t:0, open:true, enabled:true,
+  update(dt){ if(!vrm?.expressionManager) return;
+    if(this.t>0){ this.t-=dt; return; }
+    if(this.open && this.enabled){ this.open=false; this.t=0.12; vrm.expressionManager.setValue("blink",1); }
+    else { this.open=true; this.t=Math.random()*5; vrm.expressionManager.setValue("blink",0); } } };
+
+// ---- emotion / mood (ported expressionController idea) ----
+const MOOD = {
+  calm:  { exp:"relaxed", w:0.25, light:0xa78bfa },
+  think: { exp:"neutral", w:0.0,  light:0x2dd4bf },
+  speak: { exp:"happy",   w:0.55, light:0xfbbf24 },
+  care:  { exp:"relaxed", w:0.7,  light:0xf472b6 },
+};
+let curExp = "neutral";
+function setMood(m){
+  mood = m; $("#moodchip").textContent = m;
+  const cfg = MOOD[m] || MOOD.calm;
+  amb.color.setHex(cfg.light);
+  if(vrm?.expressionManager){
+    if(curExp && curExp!=="neutral") vrm.expressionManager.setValue(curExp, 0);
+    if(cfg.exp!=="neutral") vrm.expressionManager.setValue(cfg.exp, cfg.w);
+    curExp = cfg.exp;
+  }
+}
+
+// ---- load a character's VRM (unloads previous, attaches idle + lookAt) ----
+async function loadModel(url){
+  if(vrm){ scene.remove(vrm.scene); try{ VRMUtils.deepDispose(vrm.scene); }catch(e){} vrm=null; mixer=null; }
+  $("#loadtxt").textContent = "loading character…"; $("#loading").style.display = "flex";
+  let gltf;
+  try{ gltf = await loader.loadAsync(url); }
+  catch(e){ $("#loadtxt").textContent = "couldn't load model — chat still works below."; console.error(e); return; }
+  vrm = gltf.userData.vrm;
+  try{ VRMUtils.removeUnnecessaryVertices(gltf.scene); }catch(e){}
+  try{ VRMUtils.combineSkeletons && VRMUtils.combineSkeletons(gltf.scene); }catch(e){}
+  try{ VRMUtils.rotateVRM0(vrm); }catch(e){}     // VRM0 → face camera
+  vrm.scene.traverse(o=>{ o.frustumCulled = false; });
+  if(vrm.lookAt) vrm.lookAt.target = lookTarget;  // look at the viewer
+  scene.add(vrm.scene);
+  curExp = "neutral"; setMood(mood);
+  resize();
+  $("#loading").style.display = "none";   // reveal the character IMMEDIATELY (don't wait on idle)
+  // the T-pose killer: AnimationMixer + idle clip — loaded NON-BLOCKING so a failed
+  // idle never keeps the loading egg over a character that already rendered.
+  mixer = new THREE.AnimationMixer(vrm.scene);
+  getIdle().then(idle => {
+    if(idle && mixer){ try { mixer.clipAction(createVRMAnimationClip(idle, vrm)).play(); }
+      catch(e){ console.warn("idle clip failed (character still shows):", e); } }
+  }).catch(e => console.warn("idle load failed (character still shows):", e));
+}
+
+// ---- render loop ----
 function animate(){
   requestAnimationFrame(animate);
-  const dt = clock.getDelta(), t = clock.elapsedTime;
+  const dt = clock.getDelta();
   if(vrm){
-    // breathe (subtle chest/whole bob)
-    vrm.scene.position.y = Math.sin(t*1.6)*0.012;
-    // blink every ~4s
-    blinkT += dt;
-    if(vrm.expressionManager){
-      let blink = 0;
-      if(blinkT > 4){ const p=(blinkT-4)/0.18; blink = p<1 ? Math.sin(p*Math.PI) : (blinkT>4.18 ? (blinkT=0,0) : 0); }
-      vrm.expressionManager.setValue("blink", blink);
-      // lip-flap while speaking (driven by real TTS when voice is on, else timed)
-      const talking = speaking || performance.now() < talkUntil;
-      vrm.expressionManager.setValue("aa", talking ? (Math.sin(t*16)*0.5+0.5)*0.7 : 0);
-      // mood expression
-      vrm.expressionManager.setValue("happy", mood==="care"?0.5: mood==="speak"?0.3:0.15);
-      vrm.expressionManager.update();
+    mixer?.update(dt);             // idle body animation
+    blink.update(dt);             // eyes
+    if(vrm.expressionManager){     // mouth: TTS-gated flap + per-word boost
+      let aa = 0;
+      if(speaking){ aa = Math.min(1, (Math.sin(clock.elapsedTime*16)*0.5+0.5)*0.55 + mouthBoost); }
+      mouthBoost = Math.max(0, mouthBoost - dt*3);
+      vrm.expressionManager.setValue("aa", aa);
     }
-    // gentle head sway toward camera
-    const head = vrm.humanoid?.getNormalizedBoneNode("head");
-    if(head){ head.rotation.y = Math.sin(t*0.6)*0.06; head.rotation.x = Math.sin(t*0.4)*0.03; }
-    vrm.update(dt);
+    vrm.update(dt);               // drives lookAt + spring bones
   }
   renderer.render(scene, camera);
 }
 animate();
 
-// ---- backend wiring (same API as the 2D UX) ----
+// ---- backend wiring ----
 async function api(p,o){ const r=await fetch(p,o); return r.json(); }
-async function hatchDefault(){
-  // default sovereign = Aria; (a fuller build would carry the hatch choice over)
-  const res = await api("/api/hatch", { method:"POST", headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ archetype:"nurturer", care_style:"gentle", name:"Aria" }) });
-  current = res; $("#cname").textContent = res.name; $("#ctag").textContent = `${res.archetype} · ${res.care_style}`;
-  bubble("them", `${res.stage_emoji||"🌸"} ${res.name} is here. "${res.tagline||""}"`);
+
+const VRM_BY_ARCH = { nurturer:"aria", sage:"sage", strategist:"sage", innovator:"spark",
+  dreamer:"spark", guardian:"guardian", protector:"guardian", rebel:"spark", explorer:"guardian" };
+const VRM_POOL = ["aria","sage","spark","guardian"];
+function vrmFor(c){ const a=(c.archetype||"").toLowerCase();
+  if(VRM_BY_ARCH[a]) return `/vrm/${VRM_BY_ARCH[a]}.vrm`;
+  let h=0; for(const ch of (c.id||"x")) h=(h*31+ch.charCodeAt(0))>>>0;
+  return `/vrm/${VRM_POOL[h%VRM_POOL.length]}.vrm`; }
+
+function showBubble(name, text){ const b=$("#bubble"); b.innerHTML=`<b>${name}</b><br>${text}`;
+  b.classList.add("show"); clearTimeout(showBubble._t); showBubble._t=setTimeout(()=>b.classList.remove("show"), 9000); }
+function bubble(who,text){ const m=document.createElement("div"); m.className="msg "+who; m.textContent=text;
+  $("#msgs").appendChild(m); $("#msgs").scrollTop=$("#msgs").scrollHeight; return m; }
+
+// build the character picker
+async function loadCharacters(){
+  const d = await api("/api/characters"); characters = d.characters || [];
+  const p = $("#picker"); p.innerHTML = "";
+  for(const c of characters){
+    const el = document.createElement("div"); el.className="chip"; el.dataset.id=c.id;
+    el.innerHTML = `<span class="e">${c.emoji||"✨"}</span>${c.name}`;
+    el.onclick = ()=>selectCharacter(c.id);
+    p.appendChild(el);
+  }
 }
+async function selectCharacter(id){
+  const c = characters.find(x=>x.id===id); if(!c) return;
+  current = c;
+  document.querySelectorAll(".chip").forEach(x=>x.classList.toggle("on", x.dataset.id===id));
+  $("#cname").textContent = c.name; $("#ctag").textContent = `${c.archetype||""} · ${c.care_style||c.voice||""}`;
+  $("#msgs").innerHTML = "";
+  await loadModel(vrmFor(c));
+  setMood("care");
+  const greet = c.tagline || `${c.name} is here with you.`;
+  bubble("them", `${c.emoji||"🌸"} ${greet}`); showBubble(c.name, greet);
+  speak(greet, true);
+  setTimeout(()=>setMood("calm"), 4000);
+}
+
 const DOWN=/\b(sad|tired|exhausted|down|hopeless|anxious|stressed|lonely|hurt|cry|awful|rough|overwhelm|depress|scared|worried|struggl)/i;
-function bubble(who,text){ const m=document.createElement("div"); m.className="msg "+who; m.textContent=text; $("#msgs").appendChild(m); $("#msgs").scrollTop=$("#msgs").scrollHeight; return m; }
 
 $("#brainToggle").onclick=e=>{ const b=e.target.closest("button"); if(!b)return; brain=b.dataset.brain;
   const btns=[...document.querySelectorAll("#brainToggle button")], i=btns.indexOf(b);
@@ -184,18 +291,18 @@ async function send(){
   const down=DOWN.test(t); setMood("think");
   const typing=bubble("them","…");
   let res; try{ res=await api("/api/think",{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({character:current.character_id,message:t,brain,tier:"pro"})}); }
+    body:JSON.stringify({character:current.id,message:t,brain,tier:"pro"})}); }
   catch(e){ res={reply:"[connection lost]"}; }
-  setMood(down?"care":"speak");
-  typing.textContent = res.reply || "[no reply]";
-  $("#msgs").scrollTop=$("#msgs").scrollHeight;
-  speak(typing.textContent, down);          // <- the sovereign says it out loud
+  const reply = res.reply || "[no reply]";
+  typing.textContent = reply; $("#msgs").scrollTop=$("#msgs").scrollHeight;
+  setMood(down?"care":"speak"); showBubble(current.name, reply);
+  speak(reply, down);
   setTimeout(()=>{ if(!speaking) setMood(down?"care":"calm"); }, 4200);
 }
 $("#sendBtn").onclick=send;
 $("#msgInput").addEventListener("keydown",e=>{ if(e.key==="Enter")send(); });
 
-// ---- VOICE: speak replies aloud (TTS) — mouth lip-syncs to the real utterance ----
+// ---- VOICE: speak aloud (TTS) — mouth flaps while speaking, pulses per word boundary ----
 function speak(text, caring){
   if(!voiceOn || !text || !window.speechSynthesis) return;
   try{ window.speechSynthesis.cancel(); }catch(e){}
@@ -204,17 +311,17 @@ function speak(text, caring){
   const vs = window.speechSynthesis.getVoices();
   const pick = vs.find(v=>/female|samantha|aria|libby|sonia|martha/i.test(v.name)) || vs.find(v=>/en-GB/.test(v.lang)) || vs[0];
   if(pick) u.voice = pick;
-  u.onstart = ()=>{ speaking = true; setMood(caring?"care":"speak"); };
-  u.onend   = ()=>{ speaking = false; setMood(caring?"care":"calm"); };
+  u.onstart = ()=>{ speaking=true; setMood(caring?"care":"speak"); };
+  u.onboundary = ()=>{ mouthBoost = 0.5; };   // pulse the mouth at each word (real speech timing)
+  u.onend = ()=>{ speaking=false; setMood(caring?"care":"calm"); };
   window.speechSynthesis.speak(u);
 }
-// some browsers load voices async
 if(window.speechSynthesis) window.speechSynthesis.onvoiceschanged = ()=>window.speechSynthesis.getVoices();
 
-// ---- VOICE: listen (STT) — tap the mic, speak, it auto-sends ----
+// ---- VOICE: listen (STT) ----
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 function startListen(){
-  if(!SR){ bubble("them","(speech-to-text isn't supported in this browser — type instead)"); return; }
+  if(!SR){ bubble("them","(speech-to-text isn't supported here — type instead)"); return; }
   if(recog){ try{ recog.stop(); }catch(e){} recog=null; $("#micBtn").classList.remove("live"); return; }
   try{ window.speechSynthesis && window.speechSynthesis.cancel(); }catch(e){}
   recog = new SR(); recog.lang="en-GB"; recog.interimResults=true; recog.maxAlternatives=1;
@@ -228,6 +335,14 @@ function startListen(){
 $("#micBtn").onclick = startListen;
 $("#voicetgl").onclick = ()=>{ voiceOn=!voiceOn; $("#voicetgl").textContent = voiceOn?"🔊 voice on":"🔇 voice off";
   if(!voiceOn){ try{ window.speechSynthesis.cancel(); }catch(e){} speaking=false; } };
+
+// ---- boot ----
+(async function(){
+  await loadCharacters();
+  const first = characters.find(c=>c.id==="aria") || characters[0];
+  if(first) await selectCharacter(first.id);
+  else { $("#loadtxt").textContent="no characters found"; }
+})();
 </script>
 </body>
 </html>

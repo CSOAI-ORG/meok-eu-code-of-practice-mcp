@@ -81,6 +81,22 @@ class Handler(BaseHTTPRequestHandler):
             return self._html(_INDEX)
         if path in ("/avatar", "/avatar.html", "/3d"):
             return self._html(os.path.join(_HERE, "web", "avatar.html"))
+        if path.endswith((".vrm", ".vrma")):
+            # serve any VRM model / VRMA animation under web/ (path-traversal safe)
+            base = os.path.join(_HERE, "web")
+            fp = os.path.normpath(os.path.join(base, path.lstrip("/")))
+            if fp.startswith(base) and os.path.isfile(fp):
+                with open(fp, "rb") as f:
+                    body = f.read()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/octet-stream")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+            else:
+                self._json(404, {"error": "not found", "path": path})
+            return
         if path == "/avatar.vrm":
             try:
                 with open(os.path.join(_HERE, "web", "avatar.vrm"), "rb") as f:
