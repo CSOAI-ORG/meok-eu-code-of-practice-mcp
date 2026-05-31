@@ -45,7 +45,12 @@
     padding:.8rem 1rem; color:var(--txt); font-size:1rem; }
   .composer input:focus{ outline:none; border-color:var(--accent); }
   .composer button{ width:48px; height:48px; border:none; border-radius:50%; cursor:pointer;
-    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:1.1rem; }
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:1.1rem; flex:0 0 auto; }
+  #micBtn{ background:var(--panel); border:1px solid var(--line); font-size:1.2rem; }
+  #micBtn.live{ background:linear-gradient(135deg,#ef4444,#f472b6); animation:pulse 1s infinite; }
+  @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  .voicetgl{ position:absolute; top:12px; right:64px; font-size:.62rem; color:var(--accent2); cursor:pointer;
+    background:rgba(0,0,0,.4); border:1px solid var(--line); border-radius:99px; padding:.25rem .7rem; user-select:none; }
   .twoD{ position:absolute; top:12px; right:12px; font-size:.62rem; color:var(--dim); text-decoration:none;
     background:rgba(0,0,0,.4); border:1px solid var(--line); border-radius:99px; padding:.25rem .7rem; }
 </style>
@@ -55,6 +60,7 @@
   <div id="stage">
     <canvas id="vrmCanvas"></canvas>
     <div class="moodchip" id="moodchip">calm</div>
+    <div class="voicetgl" id="voicetgl">🔊 voice on</div>
     <a class="twoD" href="/">2D ›</a>
     <div class="loading" id="loading"><div class="egg">🥚</div><div id="loadtxt">summoning your sovereign…</div></div>
     <div class="nameplate"><h2 id="cname">Aria</h2><div class="tag" id="ctag">nurturer · gentle</div></div>
@@ -68,6 +74,7 @@
     </div>
     <div class="msgs" id="msgs"></div>
     <div class="composer">
+      <button id="micBtn" title="hold/tap to speak">🎤</button>
       <input id="msgInput" placeholder="talk to your sovereign…" autocomplete="off">
       <button id="sendBtn">↑</button>
     </div>
@@ -90,7 +97,7 @@ import { VRMLoaderPlugin, VRMUtils } from "@pixiv/three-vrm";
 
 const $ = s => document.querySelector(s);
 let brain = "left", current = null, vrm = null, clock = new THREE.Clock();
-let mood = "calm", blinkT = 0, talkUntil = 0;
+let mood = "calm", blinkT = 0, talkUntil = 0, speaking = false, voiceOn = true, recog = null;
 
 // ---- three.js scene ----
 const canvas = $("#vrmCanvas");
@@ -140,8 +147,8 @@ function animate(){
       let blink = 0;
       if(blinkT > 4){ const p=(blinkT-4)/0.18; blink = p<1 ? Math.sin(p*Math.PI) : (blinkT>4.18 ? (blinkT=0,0) : 0); }
       vrm.expressionManager.setValue("blink", blink);
-      // lip-flap while speaking
-      const talking = performance.now() < talkUntil;
+      // lip-flap while speaking (driven by real TTS when voice is on, else timed)
+      const talking = speaking || performance.now() < talkUntil;
       vrm.expressionManager.setValue("aa", talking ? (Math.sin(t*16)*0.5+0.5)*0.7 : 0);
       // mood expression
       vrm.expressionManager.setValue("happy", mood==="care"?0.5: mood==="speak"?0.3:0.15);
@@ -182,10 +189,45 @@ async function send(){
   setMood(down?"care":"speak");
   typing.textContent = res.reply || "[no reply]";
   $("#msgs").scrollTop=$("#msgs").scrollHeight;
-  setTimeout(()=>setMood(down?"care":"calm"), 4200);
+  speak(typing.textContent, down);          // <- the sovereign says it out loud
+  setTimeout(()=>{ if(!speaking) setMood(down?"care":"calm"); }, 4200);
 }
 $("#sendBtn").onclick=send;
 $("#msgInput").addEventListener("keydown",e=>{ if(e.key==="Enter")send(); });
+
+// ---- VOICE: speak replies aloud (TTS) — mouth lip-syncs to the real utterance ----
+function speak(text, caring){
+  if(!voiceOn || !text || !window.speechSynthesis) return;
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+  const u = new SpeechSynthesisUtterance(text.replace(/[*_`#>]/g,""));
+  u.rate = caring ? 0.92 : 1.0; u.pitch = caring ? 1.05 : 1.12; u.lang = "en-GB";
+  const vs = window.speechSynthesis.getVoices();
+  const pick = vs.find(v=>/female|samantha|aria|libby|sonia|martha/i.test(v.name)) || vs.find(v=>/en-GB/.test(v.lang)) || vs[0];
+  if(pick) u.voice = pick;
+  u.onstart = ()=>{ speaking = true; setMood(caring?"care":"speak"); };
+  u.onend   = ()=>{ speaking = false; setMood(caring?"care":"calm"); };
+  window.speechSynthesis.speak(u);
+}
+// some browsers load voices async
+if(window.speechSynthesis) window.speechSynthesis.onvoiceschanged = ()=>window.speechSynthesis.getVoices();
+
+// ---- VOICE: listen (STT) — tap the mic, speak, it auto-sends ----
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+function startListen(){
+  if(!SR){ bubble("them","(speech-to-text isn't supported in this browser — type instead)"); return; }
+  if(recog){ try{ recog.stop(); }catch(e){} recog=null; $("#micBtn").classList.remove("live"); return; }
+  try{ window.speechSynthesis && window.speechSynthesis.cancel(); }catch(e){}
+  recog = new SR(); recog.lang="en-GB"; recog.interimResults=true; recog.maxAlternatives=1;
+  $("#micBtn").classList.add("live");
+  let finalTxt="";
+  recog.onresult = e=>{ let t=""; for(const r of e.results){ t+=r[0].transcript; if(r.isFinal) finalTxt+=r[0].transcript; } $("#msgInput").value=t; };
+  recog.onerror = ()=>{ $("#micBtn").classList.remove("live"); recog=null; };
+  recog.onend = ()=>{ $("#micBtn").classList.remove("live"); recog=null; if(finalTxt.trim()){ $("#msgInput").value=finalTxt.trim(); send(); } };
+  recog.start();
+}
+$("#micBtn").onclick = startListen;
+$("#voicetgl").onclick = ()=>{ voiceOn=!voiceOn; $("#voicetgl").textContent = voiceOn?"🔊 voice on":"🔇 voice off";
+  if(!voiceOn){ try{ window.speechSynthesis.cancel(); }catch(e){} speaking=false; } };
 </script>
 </body>
 </html>
