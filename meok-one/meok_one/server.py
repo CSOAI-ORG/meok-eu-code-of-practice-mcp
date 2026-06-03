@@ -131,6 +131,97 @@ _COUNCIL_ROSTER = ["turbo-llama70", "turbo-llama4s", "turbo-llama8", "turbo-llam
 _COUNCIL_PROVIDER = ["Groq", "Cerebras"]
 
 
+_VISION_PROMPT = ("Reply with ONLY this, no preamble or thinking: one short sentence describing the "
+                  "screen, then ' — ' and a comma-separated list of the key UI elements.")
+
+
+def _classify_action(action: str, target: str = "", text: str = "", context: str = "") -> str:
+    """Gate a co-pilot desktop action: read (auto) / write (confirm) / prohibited (refused).
+    Observing is always safe. For ACTING (click/type/key), the danger is in the INTENT, not the
+    bare verb ("click Confirm" can be a money transfer) — so prohibited is checked over the action
+    AND the goal+scene context (anything touching money / credentials / purchases / account deletion)."""
+    if action.lower() in ("observe", "read", "screenshot", "look", "wait", "none", "done"):
+        return "read"
+    from . import tool_gateway as _gw
+    blob = f"{action} {target} {text} {context}".lower()
+    if (_gw.classify(blob.replace(" ", "_")) == "prohibited"
+            or any(k in blob for k in ("password", "credential", "payment", "credit card", "bank",
+                                       "delete account", "buy now", "purchase", "checkout", "pay ",
+                                       "wire", "transfer", "send money", "account number", "ssn",
+                                       "card number", "withdraw", "deposit", "invoice", "crypto", "wallet"))):
+        return "prohibited"
+    return "write"   # click / type / scroll / key / drag — needs explicit human confirm
+
+
+def _parse_vision(txt: str):
+    """A vision model's free text → (scene, objects). Small models ignore rigid formats, so we
+    take the description itself as the scene + loosely grab any comma list."""
+    txt = (txt or "").strip()
+    if not txt:
+        return (None, [])
+    flat = " ".join(txt.split())
+    scene = flat[:200]
+    tail = flat.split(".", 1)[1] if "." in flat else flat
+    objs = [o.strip(" .").lower()[:40] for o in tail.split(",") if 1 < len(o.strip()) < 41][:10]
+    return (scene, objs)
+
+
+def _ollama_vision(image_b64: str, model: str, timeout: int = 90):
+    """LOCAL Ollama vision (sovereign, no key). moondream (~3s CPU) / gemma3:4b·gemma4 (GPU)."""
+    import urllib.request as _u
+    host = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
+    payload = {"model": model, "prompt": _VISION_PROMPT, "images": [image_b64], "stream": False,
+               "options": {"num_predict": 120, "temperature": 0.2}}
+    try:
+        req = _u.Request(host + "/api/generate", data=json.dumps(payload).encode(),
+                         headers={"Content-Type": "application/json"})
+        with _u.urlopen(req, timeout=timeout) as r:
+            return _parse_vision(json.loads(r.read().decode()).get("response", ""))
+    except Exception:
+        return (None, [])
+
+
+def _cloud_vision(image_b64: str, model: str, timeout: int = 50):
+    """CLOUD vision via OpenRouter (e.g. stepfun/step-3.7-flash — text+image+video). Reuses our key."""
+    import urllib.request as _u
+    key = os.environ.get("OPENROUTER_API_KEY", "")
+    if not key:
+        return (None, [])
+    # step3.7 is a REASONING model — give room for content + keep reasoning low, and fall back to
+    # the reasoning text if content lands null (it puts the answer there when tokens run short).
+    body = json.dumps({"model": model, "max_tokens": 400, "reasoning": {"effort": "low"}, "messages": [
+        {"role": "user", "content": [
+            {"type": "text", "text": _VISION_PROMPT},
+            {"type": "image_url", "image_url": {"url": "data:image/jpeg;base64," + image_b64}}]}]}).encode()
+    try:
+        req = _u.Request("https://openrouter.ai/api/v1/chat/completions", data=body,
+                         headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json",
+                                  "HTTP-Referer": "https://meok.ai", "X-Title": "MEOK ONE"})
+        with _u.urlopen(req, timeout=timeout) as r:
+            msg = json.loads(r.read().decode())["choices"][0]["message"]
+            return _parse_vision(msg.get("content") or msg.get("reasoning") or "")
+    except Exception:
+        return (None, [])
+
+
+def _vision_describe(image_b64: str, model: str = None):
+    """Pluggable screen-vision: local Ollama by default (moondream); a "/"-slug routes to OpenRouter
+    cloud (step3.7). Same SIGIL→memory→audit pipeline downstream. Returns (scene, objects)."""
+    model = model or os.environ.get("MEOK_VISION_MODEL", "moondream")
+    return _cloud_vision(image_b64, model) if "/" in model else _ollama_vision(image_b64, model)
+
+# Deep-think council default (benchmark 2026-06-01, MEOK_COUNCIL_BENCHMARK):
+#  - code-reconcile NEVER error-corrects (votes but keeps the draft); llm-reconcile DOES (it
+#    synthesizes a corrected answer from the lens critiques — lifted a weak draft to correct).
+#  - local-Ollama lenses time out on the CPU VM, so the deployed council uses a fast CLOUD roster.
+#  TURBO (2026-06-01 research): lenses pinned to Groq (~0.5s each, verified). Use only fast
+#  NON-reasoning models — reasoning models (gpt-oss/qwen3) burn the 96-tok cap on hidden thinking
+#  and return empty. Synthesis stays on Opus (reliable quality; conditional + falls back via
+#  allow_fallbacks). Override orchestrator="turbo-llama70" for a faster (jittery) all-Groq path.
+_COUNCIL_ROSTER = ["turbo-llama70", "turbo-llama4s", "turbo-llama8", "turbo-llama4s", "turbo-llama8"]
+_COUNCIL_PROVIDER = ["Groq", "Cerebras"]
+
+
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, *a):  # quiet
         pass
