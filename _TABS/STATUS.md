@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-07 — ✅ FIXED the degraded chat bug ('left brain unavailable') (MEOK ONE tab)
+**MEOK ONE** · branch `claude/meok-one` (commit pushed) · deployed to VM
+- Root cause: Ollama evicts meok-sov3 after 5min idle → next /api/think cold-loads 2.1GB + prefills the ~1289-tok persona prompt → blew past `_ask_local`'s 60s timeout → None → "[left brain unavailable]". Model itself fine (6.6s warm). NOT infra, NOT OLM.
+- Fix (`router._ask_local`): `keep_alive:30m` (stop eviction) + timeout 60→120s (cold-load completes). Deployed + restarted, health 200.
+- Verified on VM: forced-COLD /api/think now returns a REAL reply (94.5s, was a hard fail); warm ~20s. Chat works again — first msg after long idle is slow, rest fast. Follow-up option: pre-warm on boot to kill even the cold 94s.
+
 ## 2026-06-07 — ✅ OLM (ICRL) wired+deployed · 🔴 found pre-existing chat-timeout bug (MEOK ONE tab)
 **MEOK ONE** · branch `claude/meok-one` (commits 2d7ed03, 5ea51e8) · deployed to VM
 - Changed/shipped: **OLM milestone #1 LIVE on prod** — new `meok_one/olm.py` (ICRL: per-(user,character) care-ranked buffer, persisted to `data/olm/`, gate-flagged/held replies forced LOW→"avoid"); wired inject (brains `_sovereign_prompt`) + record (`/api/think`). Surgically deployed ONLY my 3 committed files (left main's uncommitted hive_queen/sovereign WIP untouched). `data/olm` added to deploy excludes (per-user state, never clobber). Verified on VM: 2-turn buffer accumulates 1→2, persists per-user.
