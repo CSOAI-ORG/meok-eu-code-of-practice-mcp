@@ -28,9 +28,10 @@ from pathlib import Path
 from .router import ask
 from .hive_queen import queen, load_hive, _HIVE_ROOT
 
-# Use the SAME resident model the queens use for routing + synthesis, so a king call
-# never forces an Ollama model swap on the RAM-constrained VM (one model stays loaded).
-_CLASSIFIER_MODEL = "llama3.2:3b"
+# Routing/synthesis model. With OpenRouter, use a fast cloud model (instant routing, no
+# local model swap); else the resident local model (no Ollama swap on the constrained VM).
+import os as _os
+_CLASSIFIER_MODEL = "gemini-or" if _os.environ.get("OPENROUTER_API_KEY") else "llama3.2:3b"
 
 
 def hives() -> list[dict]:

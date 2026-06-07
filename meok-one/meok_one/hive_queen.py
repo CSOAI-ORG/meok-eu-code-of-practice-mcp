@@ -102,8 +102,13 @@ _HIVE_ROOT = Path.home() / "hive-staging"
 # So default to a SINGLE resident model cycled across all council seats: the BFT
 # diversity comes from the 12 LENS PROMPTS, not different weights. Stays loaded → fast.
 # (Pass roster=[...] explicitly for true multi-model diversity on a bigger host.)
-_DEFAULT_ROSTER = ["llama3.2:3b"]
-# Multi-model option (needs a host with RAM for 2-3 resident 3B models):
+# When OpenRouter is configured, councils run on FAST FRONTIER cloud MoEs (genuine model
+# diversity, sub-10s) — the real fix for slow CPU councils. Falls back to a single resident
+# local model on RAM-constrained hosts when there's no key.
+_CLOUD_ROSTER = ["gemini-or", "deepseek", "kimi"]   # fast diverse frontier MoEs via OpenRouter
+_LOCAL_ROSTER = ["llama3.2:3b"]                       # single resident model (no-key fallback)
+_DEFAULT_ROSTER = _CLOUD_ROSTER if os.environ.get("OPENROUTER_API_KEY") else _LOCAL_ROSTER
+# Multi-model LOCAL option (needs a host with RAM for 2-3 resident 3B models):
 _DIVERSE_ROSTER = ["qwen2.5:3b", "llama3.2:3b", "meok-sov3"]
 # Free-local single-brain alternatives (this Mac, no key): m3 (minimax-m3:cloud), gemma4:e4b.
 _FREE_LOCAL_ROSTER = ["m3", "gemma4:e4b"]
@@ -233,10 +238,12 @@ def queen(domain: str, message: str, brain: str = "council", tier: str | None = 
         # Pad the roster to the quorum by cycling the available local models so the
         # council genuinely fills its seats (roster[0]=companion, rest=expert lenses).
         full = [roster[i % len(roster)] for i in range(quorum)]
-        # max_workers=2: local Ollama serialises anyway; lower concurrency + longer
-        # deadline lets more nodes actually return (vs the degenerate 1/N timeout).
+        # Cloud (OpenRouter) lenses parallelise freely → fire them all at once with a
+        # tight deadline; local Ollama would serialise, so cap workers when no key.
+        _cloud = bool(os.environ.get("OPENROUTER_API_KEY"))
         r = sovereign_council(char, framed, tier=tier, quorum=quorum, roster=full,
-                              max_workers=2, deadline_s=120.0)
+                              max_workers=(quorum if _cloud else 2),
+                              deadline_s=(35.0 if _cloud else 120.0))
         r["governance"] = f"sovereign_council · BFT-of-MoEs · quorum={quorum} · roster={roster}"
     else:
         r = think(char, framed, brain=brain, tier=tier, user_id=user_id)
