@@ -115,6 +115,33 @@
   body.large .win.character{flex:.5}
   body.large .win.tui{display:none}
   body.large .win.chat{flex:4}
+  /* ===== Mobile / narrow (≤760px): stack the two-pane app into one scrollable column.
+     Desktop is unchanged above this breakpoint. ===== */
+  @media (max-width:760px){
+    html,body{height:auto;overflow-x:hidden;overflow-y:auto}
+    /* minmax(0,1fr) (not 1fr) so the single column can shrink below its min-content
+       instead of blowing the layout out to ~680px on a 375px screen. */
+    .app{grid-template-columns:minmax(0,1fr);height:auto;min-height:100vh}
+    .stage,.dock{min-width:0}
+    /* product stage: compact + left-aligned so the character + chat are a short scroll away */
+    .stage{min-height:auto;padding:12px 14px 14px;text-align:left}
+    .stage h1{font-size:30px}
+    .stage .hint{max-width:none}
+    /* mode bar joins the flow as a horizontal scroll strip (was an absolute overflowing row) */
+    .modebar{position:static;overflow-x:auto;max-width:100%;padding:0 0 6px;margin-bottom:10px;
+      -webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .modebar::-webkit-scrollbar{display:none}
+    .modebar a{margin-left:10px!important}            /* cancel margin-left:auto inside a scroll row */
+    .prodtabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+    .prodtabs::-webkit-scrollbar{display:none}
+    .prodview{min-height:360px}                      /* embedded product (map/grid) needs real height */
+    /* right dock: full width, auto height, no desktop-only terminal or drag-resizers */
+    .dock{height:auto;overflow:visible;padding:0 12px 16px}
+    .win.character{min-height:300px;flex:none}
+    .win.chat{min-height:340px;flex:none}
+    .win.tui,.resizer{display:none}
+    body.orb .dock{position:static}                  /* orb mode: keep the dock in flow on mobile */
+  }
   .status{position:fixed;bottom:10px;left:12px;font-size:11px;color:var(--dim);z-index:20}
   .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--warn);margin-right:5px;vertical-align:middle}
   .dot.ok{background:var(--ok)}
