@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-07 — 🚀 DEPLOYED Guardian+Family to PROD VM (MEOK ONE tab)
+**MEOK ONE** · VM `meok-backend:/opt/meok-one` (branch `claude/meok-one`)
+- Changed: deployed branch HEAD to the VM (snapshot `/tmp/meok_one_rollback_20260607_120136.tgz` for rollback; dry-run showed 0 deletions; all 10 changed modules py_compile'd first). VM was behind → this also shipped **main's committed hive_king/hive_queen/constellation/router/sigil/auth** (server.py lazily imports them, so they HAD to deploy together).
+- Live on VM: `/guardian` `/family` `/os` = 200, Guardian tab in /os, `/api/mcp/call`→SOV3 returns real data, `/api/health` 200, service active.
+- ⚠️ MAIN: your hive/constellation/sigil/router work is now LIVE on prod (was committed, undeployed). If any of it was WIP-not-for-prod, tell me & I'll roll back to the snapshot. Public still gated on `one.meok.ai` DNS.
+
 ## 2026-06-07 — ✅ Guardian + Family OS SHIPPED into MEOK ONE (MEOK ONE tab)
 **MEOK ONE** · branch `claude/meok-one` (commits 321bac7, 07c071e)
 - Changed: main committed+left server.py → I added the `/guardian`+`/family` routes + registered both as `/os` product tabs (os.html PRODUCTS). **Verified end-to-end on a live local instance** (screenshots): `/guardian`+`/family` 200, `/os` shows the Guardian tab, opening it renders the surface in-frame with REAL SOV3 data (network 192.168.50.0/24, last_scan) via `/api/mcp/call`. Decision #2 COMPLETE.
