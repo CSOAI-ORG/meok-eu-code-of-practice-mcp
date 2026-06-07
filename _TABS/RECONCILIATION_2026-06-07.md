@@ -42,3 +42,18 @@ Crashes revert un-committed work (we hit this today). These are **not in any rep
 1. **Ecosystem 7 (Dev Platform/Distribution)** — added above.
 2. **Unbacked-up local work** — the real "miss"; needs backing up.
 3. **Home-level dirs outside `~/clawd`** — triage: archive the stubs, fold the active ones (`CSOAI-CORP`, `meok-active-systems`) into a repo or into clawd.
+
+## 🔴 CRITICAL FIND + FIXED — severed-brand repos were PUBLIC
+True repo count is **469** (not 300 — list was capped) · 15 private · 15 forks. The MCP fleet is
+~**400** (many named without the `-mcp` suffix, e.g. `agriculture-ai`, `brave-search`, `aws-cloud`).
+**7 severed-brand repos (CSGA ×5, TerraNova/erranova ×2) were PUBLIC under CSOAI-ORG** — against the
+standing "never reference CSGA/Terranova" rule. **FIXED: all 7 set to PRIVATE** (content preserved,
+reversible; 3 were archived → unarchived→private→re-archived). Verified: 0 severed-brand repos public.
+
+New real products spotted in the 469: `lib2b` (B2B AI SDK protocol), `domain-sales` (.AI domains),
+private domain-source repos (`fishkeeper`/`koikeeper`/`diyhelp`/`loopfactory`/`industrial-domains`/`asisecurity-portal`).
+
+## Backups — status
+- `councilof-ai`: already on GitHub (public, recent). Local diverged; remote now wired. ✅
+- `CSOAI-Research-Institute`: has a local crash-safe commit (protected). NOT pushed to GitHub — and it
+  contains CSGA material, so it must NOT go to a public repo. If backed up: PRIVATE + CSGA-scrub first.
