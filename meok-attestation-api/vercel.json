@@ -9,9 +9,6 @@
       "dest": "/api/payg.py"
     },
     {
-      "handle": "filesystem"
-    },
-    {
       "src": "/(.*)",
       "dest": "/api/index.py"
     }

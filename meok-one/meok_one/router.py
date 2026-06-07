@@ -53,6 +53,8 @@ MODELS = {
     "qwen2.5:3b": ("local", "qwen2.5:3b"),   # stronger local (on the VM)
     "llama3.2:3b":("local", "llama3.2:3b"),
     "meok-sov3":  ("local", "meok-sov3"),    # OUR SOV3 care model on the VM (the 'talk to one')
+    "gemma4:e4b": ("local", "gemma4:e4b"),   # local Gemma 4 e4b (this Mac) — fast lens
+    "m3":         ("local", "minimax-m3:cloud"),  # MiniMax M3 via Ollama cloud proxy — FREE reasoner/auditor, no OpenRouter key
     # sov3 tools
     "hermes":     ("sov3", "hermes_ask"),
     "nemotron":   ("sov3", "nemotron_chat"),

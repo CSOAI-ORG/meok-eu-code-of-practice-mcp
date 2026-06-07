@@ -685,6 +685,56 @@ class Handler(BaseHTTPRequestHandler):
         b = self._body()
         uid = self._uid(b)   # cross-device identity (Bearer token → user_id; else 'web')
         try:
+            # ---- /mcp : the KING as a real MCP server (JSON-RPC: initialize/tools/list/
+            #      tools/call). Exposes king_ask / queen / list_hives so any MCP client can
+            #      drive the King → 28 Queens → Honeycomb. This is the deployable endpoint. ----
+            if path == "/mcp":
+                rid = b.get("id")
+                method = b.get("method", "")
+                params = b.get("params", {}) or {}
+                def _rpc_ok(result):
+                    return self._json(200, {"jsonrpc": "2.0", "id": rid, "result": result})
+                if method == "initialize":
+                    return _rpc_ok({"protocolVersion": "2024-11-05",
+                                    "capabilities": {"tools": {}},
+                                    "serverInfo": {"name": "meok-king", "version": "1.0.0"}})
+                if method in ("notifications/initialized", "ping"):
+                    return _rpc_ok({})
+                if method == "tools/list":
+                    return _rpc_ok({"tools": [
+                        {"name": "king_ask", "description": "Ask the King (SOV3 sovereign). Routes to the right hive queen, or fan_out to convene several + synthesize.",
+                         "inputSchema": {"type": "object", "properties": {
+                             "message": {"type": "string"}, "fan_out": {"type": "boolean"},
+                             "quorum": {"type": "integer"}}, "required": ["message"]}},
+                        {"name": "queen", "description": "Ask one hive's queen directly (MoE+BFT scoped to that domain). domain = hive slug, e.g. grabhire, koikeeper, meok.",
+                         "inputSchema": {"type": "object", "properties": {
+                             "domain": {"type": "string"}, "message": {"type": "string"},
+                             "brain": {"type": "string"}, "quorum": {"type": "integer"}},
+                             "required": ["domain", "message"]}},
+                        {"name": "list_hives", "description": "List the 28 hives the King governs, with each domain's scope.",
+                         "inputSchema": {"type": "object", "properties": {}}},
+                    ]})
+                if method == "tools/call":
+                    name = params.get("name", "")
+                    args = params.get("arguments", {}) or {}
+                    if name == "king_ask":
+                        from .hive_king import king as _king
+                        out = _king(args.get("message", ""), fan_out=bool(args.get("fan_out")),
+                                    do_gossip=True, quorum=int(args.get("quorum", 3)))
+                    elif name == "queen":
+                        from .hive_queen import queen as _queen
+                        out = _queen(args.get("domain", "meok"), args.get("message", ""),
+                                     brain=args.get("brain", "council"), do_gossip=True,
+                                     quorum=int(args.get("quorum", 3)))
+                    elif name == "list_hives":
+                        from .hive_king import hives as _hives
+                        out = {"count": 28, "hives": _hives()}
+                    else:
+                        return self._json(200, {"jsonrpc": "2.0", "id": rid,
+                                                "error": {"code": -32601, "message": f"unknown tool {name}"}})
+                    return _rpc_ok({"content": [{"type": "text", "text": json.dumps(out, default=str)}]})
+                return self._json(200, {"jsonrpc": "2.0", "id": rid,
+                                        "error": {"code": -32601, "message": f"unknown method {method}"}})
             # ---- Stripe → Pro: signature-verified webhook flips the paying user to Pro ----
             if path == "/api/stripe/webhook":
                 import hmac as _hmac, hashlib as _hl
