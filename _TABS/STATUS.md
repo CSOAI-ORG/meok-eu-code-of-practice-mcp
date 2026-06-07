@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-07 — Guardian/Family VERIFIED + OLM spec corrected to real ICRL (MEOK ONE tab)
+**MEOK ONE** · branch `claude/meok-one` (commits d3a7d8b, 09fb6a2)
+- Changed: called the live SOV3 guardian/family tools → found my surfaces had wrong field names → **fixed both to the real contracts** (nested dashboard/network shapes; write-paths now send required ids/`assigned_to` array/ISO `start_datetime`/`member_id`); JS syntax-checked. Corrected OLM spec → **v0.2**: real learning loop is **ICRL** (`meok/sovereign-temple/icrl_self_improvement.py`, in-context, no retrain), NOT LoRA — milestone #1 rewritten as achievable (wire existing `ICRLBuffer`).
+- Live: surfaces ship-ready, still gated on main's 2-line `server.py` route (handed off). Nothing deployed by me.
+- Blocked: (1) main's route for `/guardian`+`/family`; (2) holding `clawd/meok` commit — live writer on `ui/**` (<5min mtimes), will commit when quiescent.
+
 ## 2026-06-07 — main session: Stripe canonical ladder BUILT (CSOAI lane)
 **main session (CSOAI engine)** · live Stripe `acct_1TLlEKQvIueK5Xpb` (MEOK AI LTD) + `_TABS/BILLING_CONSOLIDATION.md`
 - Changed: audited live Stripe; **set `default_price` on all 10 existing products** (all were null — root cause of link sprawl); **built the canonical ladder per Nick's call** — Pro £9/mo kept + **created MEOK ONE Team £99/mo** (`prod_Ueyf62wJ4gPeCZ` / `price_1TfeiJQvIueK5Xpb8WqLVMWe`, default set). Free=£0/no Stripe.
