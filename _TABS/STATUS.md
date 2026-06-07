@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-07 — ✅ SIGIL /verify fix DEPLOYED to prod (clean, no outage) — main session
+**main session (CSOAI engine)** · live Vercel `meok-attestation-api` (Pro plan now — Nick upgraded, cap lifted)
+- Changed: ran the safe procedure — PREVIEW deploy → tested green (`/health` 200, `/verify` object-form returns "Signature mismatch" not the crash) → `vercel --prod --force` → re-verified. The SIGIL `/verify` object-form fix (`97e40bb`) is now LIVE, plus the newer commits that had stacked on it (free-key/signup `cbfdb2a`, sigil_chain verify `525d069`, server-side metering+KV `6d338f1`).
+- Live: meok-attestation-api.vercel.app /health 200, /verify both forms work (object form fixed, string form regression-OK); proofof.ai apex→www 200, scorecard pages 200. **No outage this time** (preview-tested before prod, unlike the earlier incident).
+- Blocked: none. Vercel Pro removed the 100/day cap. Scheduled redeploy task cancelled (redundant). Remaining billing items (2 canonical links, legacy link retirement) still dashboard/ACP-MCP work, unchanged.
+
 ## 2026-06-07 — 🚀 DEPLOYED Guardian+Family to PROD VM (MEOK ONE tab)
 **MEOK ONE** · VM `meok-backend:/opt/meok-one` (branch `claude/meok-one`)
 - Changed: deployed branch HEAD to the VM (snapshot `/tmp/meok_one_rollback_20260607_120136.tgz` for rollback; dry-run showed 0 deletions; all 10 changed modules py_compile'd first). VM was behind → this also shipped **main's committed hive_king/hive_queen/constellation/router/sigil/auth** (server.py lazily imports them, so they HAD to deploy together).
