@@ -128,7 +128,10 @@ def list_models(tier: str = "pro") -> list:
 
 
 def _ask_local(model_id: str, prompt: str, max_tokens: "int | None" = None) -> "str | None":
-    payload = {"model": model_id, "prompt": prompt, "stream": False}
+    # keep_alive pins the model in RAM for 30m after each call. Without it Ollama evicts
+    # after 5min idle, so the next chat cold-loads the 2.1GB model + prefills the long persona
+    # prompt — which used to blow past the 60s timeout below and return "left brain unavailable".
+    payload = {"model": model_id, "prompt": prompt, "stream": False, "keep_alive": "30m"}
     if max_tokens:
         payload["options"] = {"num_predict": int(max_tokens)}
     body = json.dumps(payload).encode()
@@ -150,7 +153,9 @@ def _ask_local(model_id: str, prompt: str, max_tokens: "int | None" = None) -> "
     req = urllib.request.Request(f"{OLLAMA}/api/generate", data=body,
                                  headers={"Content-Type": "application/json"})
     try:
-        with urllib.request.urlopen(req, timeout=60) as r:
+        # 120s (was 60): a cold model load (2.1GB off disk) + long-prompt prefill can take
+        # >60s on the VM CPU. Better a slow-but-real reply than a false "brain unavailable".
+        with urllib.request.urlopen(req, timeout=120) as r:
             return json.loads(r.read().decode()).get("response")
     except (urllib.error.URLError, TimeoutError, OSError, json.JSONDecodeError):
         return None
