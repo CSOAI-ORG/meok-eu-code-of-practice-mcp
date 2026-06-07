@@ -71,7 +71,14 @@
   .maplibregl-popup-close-button{color:var(--dim)}
 
   /* ===== DOME immersion: product nodes · cosmos · chat-to-control · live activity ===== */
-  .hint{top:12px;bottom:auto}                                   /* free the bottom for the chat bar */
+  /* onboarding hint: clear of the top toggle row, width-capped, and auto-fades so it
+     never becomes permanent chrome (it used to sit under the Cosmos/Live toggles). */
+  /* sits just above the chat bar — clear of the card (top-left) and the toggles
+     (top-right) — and auto-fades so it never becomes permanent chrome. */
+  .hint{bottom:80px;top:auto;max-width:min(82vw,340px);text-align:center;overflow:hidden;
+    text-overflow:ellipsis;animation:hintIn .5s ease both,hintOut .8s ease 8s forwards}
+  @keyframes hintIn{from{opacity:0;transform:translate(-50%,6px)}to{opacity:1;transform:translate(-50%,0)}}
+  @keyframes hintOut{to{opacity:0;transform:translate(-50%,6px);visibility:hidden}}
   #flyMe,#govBtn{bottom:70px!important}                          /* lift above the chat bar */
   /* product nodes — the MEOK constellation bridged onto Earth */
   .ppin{position:relative;width:30px;height:30px;cursor:pointer;transform:translate(-50%,-50%)}
@@ -82,7 +89,9 @@
   .ppin .pring{position:absolute;inset:-5px;border-radius:12px;border:1px dashed rgba(251,191,36,.35);animation:prot 9s linear infinite}
   @keyframes prot{to{transform:rotate(360deg)}}
   .ppin .plabel{position:absolute;top:33px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:10px;
-    color:#e9e4ff;background:rgba(8,7,18,.7);padding:1px 6px;border-radius:6px;pointer-events:none;opacity:.9}
+    color:#e9e4ff;background:rgba(8,7,18,.82);padding:1px 6px;border-radius:6px;pointer-events:none;opacity:.92;
+    border:1px solid rgba(124,92,255,.18);box-shadow:0 1px 6px rgba(0,0,0,.5)}
+  .ppin:hover .plabel{opacity:1;z-index:6}                       /* lift the hovered label above neighbours */
   /* cosmos: the "zoom out to space, products as planets" cinematic layer */
   #cosmos{position:fixed;inset:0;z-index:20;display:none;opacity:0;transition:opacity .9s ease;
     background:radial-gradient(1200px 800px at 50% 42%,#1a1140 0%,#0a0820 45%,#03030a 100%);overflow:hidden}
@@ -138,7 +147,7 @@
     <p><span id="count" class="big">…</span> characters, alive across the globe. Tap one to bring it into focus on the right.</p>
     <span class="privacy">🛡️ Region-level only · from timezone · never GPS</span>
   </div>
-  <div class="hint">🌍 Drag to explore · scroll to zoom · tap a glowing character to focus it</div>
+  <div class="hint">🌍 Drag · scroll to zoom · tap a character to focus</div>
   <button id="flyMe" title="Fly to your region — timezone-derived, never GPS" style="position:absolute;right:14px;bottom:46px;z-index:5;background:rgba(18,18,30,.85);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:8px 12px;font-size:12px;cursor:pointer;backdrop-filter:blur(6px)">📍 Fly to my region</button>
   <!-- Governance HUD: WHY these agents stay in harmony (real, live config — the antidote to ungoverned AI towns) -->
   <button id="govBtn" title="How these AI agents stay in harmony — not the simulated-town chaos" style="position:absolute;left:14px;bottom:46px;z-index:5;background:rgba(18,18,30,.85);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:8px 12px;font-size:12px;cursor:pointer;backdrop-filter:blur(6px)">🛡️ Governance</button>

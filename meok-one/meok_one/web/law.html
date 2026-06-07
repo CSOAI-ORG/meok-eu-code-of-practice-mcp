@@ -45,6 +45,12 @@
         border:1px solid var(--line)}
   .pill.bind{background:rgba(248,113,113,.14);border-color:rgba(248,113,113,.4);color:#fca5a5}
   .pill.adv{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.35);color:#8fd6ff}
+  /* legend: name the colour code so binding vs advisory isn't colour-only */
+  .legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin:2px 0 10px;font-size:11px}
+  .legend .key{display:inline-flex;align-items:center;gap:5px;color:var(--dim)}
+  .legend .key::before{content:"";width:9px;height:9px;border-radius:3px;border:1px solid}
+  .legend .key.bind::before{background:rgba(248,113,113,.45);border-color:rgba(248,113,113,.6)}
+  .legend .key.adv::before{background:rgba(56,189,248,.4);border-color:rgba(56,189,248,.55)}
   .ob{display:flex;gap:9px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}
   .ob b{color:var(--gold);min-width:118px;display:inline-block;text-transform:capitalize}
   .note{font-size:12.5px;color:#fcd34d;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);
@@ -166,6 +172,12 @@ async function doApplicable(){
   const r = await (await fetch(`/api/law/applicable?region=${$("ap_region").value}&entity=${$("ap_entity").value}`)).json();
   let h = `<div style="font-size:14px;margin-bottom:8px">${esc(r.region_label)} · ${esc(r.entity_label)} — `
         + `<b style="color:${r.binding.length?'#fca5a5':'#fcd34d'}">${esc(r.status)}</b></div>`;
+  if(r.binding.length || r.advisory.length){
+    h += `<div class="legend">`
+       + (r.binding.length?`<span class="key bind">⚖ binding — must comply</span>`:``)
+       + (r.advisory.length?`<span class="key adv">advisory — best practice</span>`:``)
+       + `</div>`;
+  }
   if(r.binding.length) h += r.binding.map(b=>`<span class="pill bind" title="${esc(b.cite)}">⚖ ${esc(b.name)}</span>`).join("");
   h += r.advisory.map(a=>`<span class="pill adv" title="${esc(a.cite)}">${esc(a.name)}</span>`).join("");
   h += `<div style="margin-top:12px;font-size:12px;color:var(--dim)">OBLIGATIONS</div>`;
