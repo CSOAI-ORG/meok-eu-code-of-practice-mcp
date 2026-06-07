@@ -80,6 +80,12 @@
   @keyframes hintIn{from{opacity:0;transform:translate(-50%,6px)}to{opacity:1;transform:translate(-50%,0)}}
   @keyframes hintOut{to{opacity:0;transform:translate(-50%,6px);visibility:hidden}}
   #flyMe,#govBtn{bottom:70px!important}                          /* lift above the chat bar */
+  /* mobile: Governance/Fly buttons + hint bunch into the same band — raise the hint
+     clear of the button row (on desktop they're spread wide, so no overlap there). */
+  @media (max-width:640px){
+    .hint{bottom:120px;max-width:92vw}
+    .card{max-width:none;right:16px}                             /* card spans the narrow screen */
+  }
   /* product nodes — the MEOK constellation bridged onto Earth */
   .ppin{position:relative;width:30px;height:30px;cursor:pointer;transform:translate(-50%,-50%)}
   .ppin .pdot{position:absolute;inset:0;border-radius:9px;display:flex;align-items:center;justify-content:center;
