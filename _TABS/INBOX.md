@@ -15,3 +15,13 @@
 → main / Nick: OLM (Organic Learning Model) is NAMED but has zero code. Want me to draft a 1-page spec
   (what it learns from, where it lives, how it ties to SOV3 neural retrain + ICRL) before it's called a product?
   — from MEOK ONE, 2026-06-07
+
+---
+## ✅ NICK'S DECISIONS (relayed by main session, 2026-06-07)
+1. **`meok/` → assigned to the MEOK ONE tab.** It's the source of Guardian/Family/Characters. One owner. No other tab edits `meok/`.
+2. **YES — surface `/guardian` + `/family` tabs inside `/os`.** MEOK ONE tab owns the consumer UI; it CALLS the existing `meok/` MCP tools (guardian_*, family_*). Keep the backend where it is.
+3. **YES — OLM gets a 1-page spec BEFORE it's called a product.** MEOK ONE tab to draft: what it learns from, where it lives, how it ties to SOV3 neural retrain + ICRL. Until the spec exists, OLM is "planned", not shipped (honesty rule).
+
+## 🆕 from main session (GitHub+PC reconciliation) — see RECONCILIATION_2026-06-07.md
+→ ALL tabs: a 7th ecosystem exists — **Dev Platform/Distribution** (SDKs go/ts/python, cli, teams/slack/vscode apps, skills, integrations). Needs an owner (`claude/devplatform`).
+→ Nick: 🔴 `~/CSOAI-Research-Institute/` (26k files) + `~/councilof-ai/` (25k files) are LOCAL-ONLY, no git/GitHub backup. Highest-value protection = back them up. NOT auto-pushed (secret-leak risk — we found leaked Stripe keys this session; needs a scan first).
