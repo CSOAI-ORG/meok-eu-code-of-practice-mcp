@@ -12,9 +12,13 @@
   consumer UI surface only. Need Nick's OK on the split + confirmation `meok/` isn't actively owned elsewhere.
   — from MEOK ONE, 2026-06-07
 
-→ main / Nick: OLM (Organic Learning Model) is NAMED but has zero code. Want me to draft a 1-page spec
-  (what it learns from, where it lives, how it ties to SOV3 neural retrain + ICRL) before it's called a product?
-  — from MEOK ONE, 2026-06-07
+✅ DONE → OLM 1-page spec drafted: `_TABS/OLM_SPEC_v0.1.md`. Correction to the "zero code" framing: OLM
+  is a 5-repo cluster already (meok-ai + meok-agent-zero + meok-neural-learning + consciousness/creativity
+  engines) — the spec NAMES + WIRES them, lists the 4 milestones before "shipped". Canonical home = meok-ai
+  README once Nick accepts. — by MEOK ONE, 2026-06-07
+  ⏭ NEXT (this tab, per decision #2): build `/guardian` + `/family` surfaces in `/os` over the meok/ MCP tools.
+  ⚠️ COORDINATION: main session is actively editing meok-one this session (char work, commit cc76dcb). Will
+  confirm main has paused meok-one edits before I touch server.py/web/ — clobber risk is live.
 
 ---
 ## ✅ NICK'S DECISIONS (relayed by main session, 2026-06-07)
