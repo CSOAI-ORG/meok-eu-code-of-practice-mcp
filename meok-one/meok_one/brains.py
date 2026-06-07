@@ -69,7 +69,13 @@ def _sovereign_prompt(character_id: str, user_id: str, message: str, tier: str) 
     # connect returns the full system_prompt (persona + capabilities + safety). Frame the
     # user turn so any brain answers in-character.
     char = env["meta"]["character_name"]
-    return f"{env['system_prompt']}\n\nUser: {message}\n\n{char}:", env
+    sysp = env["system_prompt"]
+    try:   # OLM: inject this user's care-ranked few-shot examples (in-context learning)
+        from . import olm as _olm
+        sysp += _olm.context(user_id, character_id)
+    except Exception:
+        pass
+    return f"{sysp}\n\nUser: {message}\n\n{char}:", env
 
 
 def _safe(reply: str) -> bool:

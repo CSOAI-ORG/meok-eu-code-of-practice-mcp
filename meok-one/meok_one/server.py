@@ -1027,6 +1027,16 @@ class Handler(BaseHTTPRequestHandler):
                     out["vitals"] = _v.on_interaction(cid, b.get("message", ""), name=b.get("name"), user_id=uid)
                 except Exception as e:
                     out["vitals_error"] = str(e)
+                # OLM: learn from this turn — care-ranked in-context buffer, per (user, character).
+                # A reply the sovereign gate flagged/held is forced LOW so it becomes an "avoid" example.
+                try:
+                    from . import olm as _olm
+                    _gst2 = out.get("sovereign_gate", {})
+                    out["olm"] = _olm.record(uid, cid, b.get("message", ""), out.get("reply", ""),
+                                             care_flagged=bool(_gst2.get("care_flagged")),
+                                             held=bool(_gst2.get("held")))
+                except Exception:
+                    pass
                 return self._json(200, out)
             if path == "/api/sovereign":
                 # The FULL 12-around-1 BFT council powers the reply (vs /api/think's 2-node).
