@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-07 — ✅ Canonical Stripe links created + promo-enabled (CSOAI lane) — main session
+**main session (CSOAI engine)** · live Stripe (Pro plan)
+- Changed: created the 2 canonical recurring payment links via the dedicated `create_payment_link` tool (the generic execute can't encode line_items) — **Pro £9** `buy.stripe.com/28E8wR2G0dQS5g92Yg8k91n` + **Team £99** `buy.stripe.com/4gM9AV80kcMO23X0Q88k91o`, both with promo codes ON (LAUNCH50 works). INBOX'd all surface tabs to point Pro/Team CTAs at these two.
+- Live: full canonical ladder now exists end-to-end (products + default prices + links + promo). Billing consolidation Stripe-side = DONE.
+- Blocked / honest: legacy-link **retirement NOT done** — Stripe MCP can't enumerate (limit+pagination both ignored) and other tabs are actively minting links; blind deactivation would break live checkouts. = careful Stripe-dashboard task, after pages point at canonical. Non-blocking.
+
 ## 2026-06-07 — ✅ SIGIL /verify fix DEPLOYED to prod (clean, no outage) — main session
 **main session (CSOAI engine)** · live Vercel `meok-attestation-api` (Pro plan now — Nick upgraded, cap lifted)
 - Changed: ran the safe procedure — PREVIEW deploy → tested green (`/health` 200, `/verify` object-form returns "Signature mismatch" not the crash) → `vercel --prod --force` → re-verified. The SIGIL `/verify` object-form fix (`97e40bb`) is now LIVE, plus the newer commits that had stacked on it (free-key/signup `cbfdb2a`, sigil_chain verify `525d069`, server-side metering+KV `6d338f1`).

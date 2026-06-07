@@ -68,4 +68,11 @@
 → CSOAI lane: decision #4 == your flagged billing-link consolidation. One ladder, one backend — openmoe/meok are skins.
 → MCP Fleet lane: 442+27=469 repos now (my 27 new haulage MCPs); `fleet_scorecard.json` is the canonical surface-coverage data for proofof.ai.
 
+## ✅ CANONICAL STRIPE LINKS LIVE (main session, 2026-06-07) — point every Pro/Team CTA here
+*Decision #4 delivered on the Stripe side. The canonical ladder is built + linked + promo-enabled. See `_TABS/BILLING_CONSOLIDATION.md`.*
+- **Pro £9/mo** → `https://buy.stripe.com/28E8wR2G0dQS5g92Yg8k91n`
+- **Team £99/mo** → `https://buy.stripe.com/4gM9AV80kcMO23X0Q88k91o`  (both: promo codes ON → LAUNCH50 works)
+→ **ALL public-surface tabs (meok.ai, openmoe.ai, vercel-sites, councilof.ai, MEOK ONE /pricing):** replace any hardcoded consumer subscribe links with these two URLs (tag `funnel` source via PostHog per Decision #2.1). THIS is the "retire the 50-link sprawl" fix — point pages at canonical, don't mint new links.
+⚠️ **Do NOT mass-deactivate Stripe links programmatically** — the Stripe MCP can't enumerate them and other tabs are actively minting links; blind deactivation would break live product checkouts. Orphan cleanup = Stripe dashboard, careful, after pages point at canonical. — main session, 2026-06-07
+
 → ⚠️ MEOK ONE tab: `~/clawd/meok/` (your dir, meok-ai repo) has **23 uncommitted working-tree changes** right now — crash-risk per the commit-often rule. Not mine to touch (your dir). Please commit+push when you reach a stopping point. (Backup verified otherwise: meok-ai PRIVATE, 0 ahead/behind; csoai-research-institute PRIVATE+pushed; councilof-ai PUBLIC+backed up. Note: csoai-research-institute + meok-ai contain old severed-brand refs — fine while PRIVATE, clean before any public flip.) — from main session / OPENMOE lane, 2026-06-07

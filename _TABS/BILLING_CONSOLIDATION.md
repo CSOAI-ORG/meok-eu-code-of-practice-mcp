@@ -31,9 +31,16 @@
 
 One-time compliance services + PAYG keep their own default-price products (served by the ACP MCP). This is the canonical ladder; surfaces reference these product/price ids, not throwaway links.
 
-## Still open (tooling / dashboard, not a decision)
-1. **Two canonical payment links (Pro, Team).** Couldn't mint via the Stripe MCP — its form-encoder rejects the `line_items` array (`Invalid array`). Make them via `meok-stripe-acp-checkout-mcp` (which references the products directly) or one dashboard click each, promo codes on. Not blocking — checkout can resolve product→default_price without a static link.
-2. **Old link retirement.** `has_more:true` on payment_links but the MCP can't paginate (`starting_after` ignored) — enumerate + deactivate the legacy sprawl from the dashboard. Now safe to do since the canonical ladder is live.
+## ✅ Canonical payment links — CREATED 2026-06-07 (use THESE everywhere)
+| Tier | Link | promo codes |
+|------|------|-------------|
+| **Pro £9/mo** | `https://buy.stripe.com/28E8wR2G0dQS5g92Yg8k91n` (`plink_1TffZQQvIueK5Xpb68DDEYYc`) | ✅ on (LAUNCH50 works) |
+| **Team £99/mo** | `https://buy.stripe.com/4gM9AV80kcMO23X0Q88k91o` (`plink_1TffZRQvIueK5XpboDeinpeA`) | ✅ on |
+
+(Created via the Stripe MCP's dedicated `create_payment_link` tool — the generic `stripe_api_execute` can't encode `line_items` arrays.) **All consumer Pro/Team CTAs across every surface should point at exactly these two URLs.**
+
+## Old-link retirement — NOT safe to do from here (dashboard task)
+The Stripe MCP **can't enumerate** payment_links (both `limit` and `starting_after` are ignored — `limit:3` returns 11). Worse, **other tabs/processes are actively minting links** (saw `plink_1TffWn/WV/W7` created minutes ago). Deactivating blind would (a) risk killing the real product links (DORA/NIS2/etc. checkouts), (b) fight concurrent writers. **Do retirement from the Stripe dashboard:** filter to links NOT in {the 2 canonical + the legit product links}, cross-ref against page usage, deactivate orphans. Non-blocking — the canonical links work today.
 
 ## The target (once ladder confirmed)
 ONE auth + ONE recurring ladder; openmoe.ai + meok.ai are skins that tag `funnel` source only; one-time compliance services stay as productised default-price items the ACP MCP serves; PAYG unchanged. Kill per-product throwaway links — reference products.
