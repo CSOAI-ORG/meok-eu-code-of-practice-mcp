@@ -18,6 +18,7 @@ rsync -az --delete --rsync-path="sudo rsync" \
   --exclude 'e2e/node_modules' --exclude 'e2e/test-results' --exclude 'e2e/results.json' \
   --exclude '.env' \
   --exclude 'data/users.json' --exclude 'data/vitals.json' --exclude 'data/*.jsonl' \
+  --exclude 'data/olm' \
   ./meok_one ./pyproject.toml ./README.md \
   "${HOST}:${REMOTE}/"
 # ^ runtime state (accounts, vitals, SIGIL audit chain, perception + law registries) lives ONLY
