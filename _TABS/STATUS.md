@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-07 — chat cold-start fully eliminated via keep-warm cron (MEOK ONE tab)
+**MEOK ONE** · VM `meok-backend` + branch `claude/meok-one` (commit 787533c)
+- Changed: added a VM cron (user `meok`, every 20min) that pings `meok-sov3` to keep it resident — eliminates the remaining ~94s first-chat-after-idle cold-start (router's keep_alive:30m only holds 30m). Documented in `deploy/DEPLOY.md` so a VM rebuild re-adds it.
+- Why cron not app-thread: `server.py` had a LIVE writer (main fixing hardcoded `count:28`→`len()`); I did NOT edit it — keep-warm as ops avoids the clobber entirely + is more robust (survives app restarts).
+- Live + verified: warm cmd 200/1.1s, meok-sov3 loaded, cron daemon active. Chat now: always-warm → fast, no cold-starts. Combined with the earlier router fix, the "left brain unavailable" bug is fully resolved.
+
 ## 2026-06-07 — A2A Agent Card generator (move #4, SHIPPED)
 **Dev-Platform** · repo `CSOAI-ORG/lib2b` `main` (pushed 3bf2329)
 - Changed: built lib2b.agentcard — MCP -> A2A AgentCard generator (the missing *producer*; lib2b only had a client). Each MCP tool -> A2A skill. sweep_marketplace() = 340 valid cards / 1863 skills / 0 invalid; wrote .well-known/agent-card.json into all 340 (ship on next publish). 2 tests pass.
