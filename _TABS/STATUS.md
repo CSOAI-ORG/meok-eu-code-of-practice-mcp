@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-07 — 🔬 chat-timeout root-caused (NOT output length — VM CPU variance) — main session
+**main session** · investigated `meok-one` `/api/think` (read-only + measured the real VM model)
+- Changed: nothing shipped. Tried a `num_predict` cap in `brains._run_brain` → **measured it against the real `meok-sov3` VM model → no help → REVERTED.** Honest finding: the model self-limits to ~13 tokens; latency is **VM CPU inference variance** (3 back-to-back warm calls: 8.2s / 50.3s / 66.3s for the same short reply), not output size, not a clean cold-load.
+- Live: no change (left brains.py exactly as it was).
+- Handed to MEOK ONE tab (their lane): full root-cause + real fix options in INBOX (pro→fast hosted/Groq lens, or GPU host, or stream+timeout UX; confirm VM Ollama honours keep_alive). The "fallback" = frontend timeout < jittery VM latency.
+
 ## 2026-06-07 — chat cold-start fully eliminated via keep-warm cron (MEOK ONE tab)
 **MEOK ONE** · VM `meok-backend` + branch `claude/meok-one` (commit 787533c)
 - Changed: added a VM cron (user `meok`, every 20min) that pings `meok-sov3` to keep it resident — eliminates the remaining ~94s first-chat-after-idle cold-start (router's keep_alive:30m only holds 30m). Documented in `deploy/DEPLOY.md` so a VM rebuild re-adds it.
