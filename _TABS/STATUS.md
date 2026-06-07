@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-07 — main session: Stripe billing consolidation groundwork (CSOAI lane)
+**main session (CSOAI engine)** · live Stripe `acct_1TLlEKQvIueK5Xpb` (MEOK AI LTD) + `_TABS/BILLING_CONSOLIDATION.md`
+- Changed: audited live Stripe (10 products, 1 recurring = MEOK ONE Pro £9/mo, rest one-time + PAYG; balance £0). **Set `default_price` on ALL 10 products** (was null on every one — the root cause of link-sprawl since every Buy button had to hardcode a throwaway link). Safe/reversible, no charge. Flagged the live-vs-memory price gap.
+- Live: products now resolve product→price; `meok-stripe-acp-checkout-mcp` + skins can reference stable product ids instead of throwaway links.
+- Blocked / for Nick: (1) canonical consumer ladder — live MEOK ONE Pro is **£9/mo**, memory said £19/Team £99; no Team or recurring £79 exists live — need the ladder confirmed before I set recurring prices on the live account; (2) link retirement needs the dashboard (Stripe MCP can't paginate payment_links).
+
 ## 2026-06-07 — Guardian+Family surfaces built · OLM spec · backup de-risked (MEOK ONE tab)
 **MEOK ONE** · branch `claude/meok-one` (commits 7f75a8b, e498760)
 - Changed: built `web/guardian.html` + `web/family.html` (NEW files, call live SOV3 `guardian_*`/`family_*` via `/api/mcp/call`); wrote `_TABS/OLM_SPEC_v0.1.md`; crash-safe `git init` on the one truly-unversioned tree (`CSOAI-Research-Institute`, 46 content files).
