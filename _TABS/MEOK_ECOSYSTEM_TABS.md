@@ -109,3 +109,19 @@ Mochi (cosy companion ⭐ the Tamagotchi vibe), Pixel (gaming), Luna (imaginatio
 - **Streaming + markdown** in the chat (next chat-UX round) — real token streaming, code/link rendering, copy/regenerate.
 - **One funnel, not 50 Stripe links** — the link sprawl is a known leak; consolidate to the canonical ladder.
 - **Don't split MEOK ONE across tabs** — gaming/characters/world are one codebase; one tab owns it.
+
+---
+
+## 📌 2026-06-07 — Products Nick named that the hub under-specified
+*Added by the MEOK ONE tab, taking ownership. These are the 4 you listed (Gaming · Characters Factory · Guardian · Family OS · OLM) — here's where they REALLY live and their HONEST status, so the inventory stops hiding them.*
+
+| Product | Real location | Status (verified, no hype) |
+|---|---|---|
+| **MEOK Gaming** | `meok-one/meok_one/web/hud.html` (overlay surface) | LIVE on VM. A *surface* of MEOK ONE, not a separate app. |
+| **Characters** | `meok-one/meok_one/server.py` (roster + personas + `/api/character`), `meok/db/characters.json` (the 27-char source, dict-wrapped) | LIVE. Reframe shipped today (`7cea5da`): 9 OTT personas softened, faith trio → `pack:faith`, Anime Mode toggle. |
+| **Characters FACTORY** | the *generation engine* behind the roster. Memory points at `character_factory.py` — **NOT at that path anymore**; it's been refactored. Needs re-location before anyone claims it. | ⚠️ EXISTS as a concept + 27 generated chars, but the factory file is unverified. Don't cite a path until found. |
+| **Guardian** (game/child safety) | `meok/core/family_guardian.py`, `meok/mcp/tools/{family_guardian,voice_guardian}.py` + LIVE MCP tools (`guardian_add_child_profile`, `guardian_block_game`, `guardian_moderate_chat`, `guardian_check_game_content`, `guardian_scan_network`…) | REAL + tools live. **But it lives in `meok/`, and is NOT yet surfaced inside the MEOK ONE OS** (no `/guardian` tab in `/os`). That surfacing is the obvious next move. |
+| **Family OS** | same `meok/` home + LIVE MCP tools (`family_add_member`, `family_add_chore`, `family_get_dashboard`, `family_add_event`…) | REAL + tools live. Same gap as Guardian — engine exists, no MEOK ONE OS surface yet. |
+| **OLM — Organic Learning Model** | **nowhere in code.** Grep across `meok/ meok-one/ sovereign-temple-live/` finds zero. | 🟡 **NAMED, NOT BUILT.** This is the real miss. It's the branding for the self-improvement / ICRL loop (learn-from-conversations — see memory `project_jarvis_tuning`, SOV3 neural retrain). Needs a 1-page spec + a home before it's a "product." |
+
+**The `meok/` vs `meok-one/` ownership gap (must resolve):** `meok-one/` is the *deployed* OS (this tab owns it). But Characters source, Guardian, and Family OS all live in the older/bigger `meok/` app, which **the hub assigns to no tab.** Guardian/Family are currently filed under tab 6 (Physical). Decision needed from Nick: does MEOK ONE absorb the Guardian/Family *surfaces* (a `/guardian` + `/family` tab in `/os`, calling the existing `meok/` MCP tools) while tab 6 keeps the sensing/robotics backend? That's the clean split — surface here, engine there. Logged to INBOX for tab 6.

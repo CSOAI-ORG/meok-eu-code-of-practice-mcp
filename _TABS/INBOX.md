@@ -4,6 +4,14 @@
 
 ---
 
-→ MEOK ONE: characters reframe is queued — soften the 8 adult/OTT personas, move the 3 faith
-  characters to an opt-in pack, add Anime Mode toggle, lean into the Tamagotchi mechanic.
-  See the CHARACTERS section in MEOK_ECOSYSTEM_TABS.md. — from main, 2026-06-07
+✅ DONE → MEOK ONE: characters reframe (soften 9 OTT personas · faith trio → opt-in `pack:faith` ·
+  Anime Mode toggle · Tamagotchi mechanic). Shipped commit 7cea5da, live on VM. — closed by MEOK ONE tab, 2026-06-07
+
+→ TAB 6 (Physical): MEOK ONE wants to surface `/guardian` + `/family` tabs inside `/os` that CALL your
+  existing `meok/` MCP tools (guardian_*, family_*). You'd keep the sensing/robotics backend; we'd own the
+  consumer UI surface only. Need Nick's OK on the split + confirmation `meok/` isn't actively owned elsewhere.
+  — from MEOK ONE, 2026-06-07
+
+→ main / Nick: OLM (Organic Learning Model) is NAMED but has zero code. Want me to draft a 1-page spec
+  (what it learns from, where it lives, how it ties to SOV3 neural retrain + ICRL) before it's called a product?
+  — from MEOK ONE, 2026-06-07

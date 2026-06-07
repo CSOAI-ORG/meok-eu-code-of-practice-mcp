@@ -4,6 +4,18 @@
 
 ---
 
+## 2026-06-07 — MEOK ONE tab claimed ownership + inventory honesty pass
+**MEOK ONE** · branch `claude/meok-one` (this tab)
+- Changed: this tab now OWNS the MEOK ONE consumer OS. Verified real homes for the 5 products Nick named + added them to the hub (Gaming=hud surface · Characters=server.py+characters.json · Characters **Factory**=engine path unverified, flagged · Guardian + Family OS=real in `meok/` + live MCP tools, no `/os` surface yet · **OLM=named-but-not-built, the genuine miss**).
+- Live: nothing newly deployed — this was an inventory/ownership pass (no prod touch).
+- Blocked / decisions for Nick: (1) `meok/` is assigned to NO tab — Guardian/Family/Characters source live there; (2) should MEOK ONE surface `/guardian`+`/family` tabs over the existing `meok/` MCP tools? (3) OLM needs a 1-page spec before it's a product.
+
+## 2026-06-07 — characters reframe + Anime Mode (LIVE)
+**MEOK ONE** · branch `claude/meok-one` (pushed, commit 7cea5da)
+- Changed: softened 9 adult/OTT personas (Marcus/Atlas/Titan/Vox/Rex/Cipher/Ember/Nyx/Dusk → warm/playful tagline+system_prompt); faith trio tagged `pack:faith`; added Anime Mode (opt-in vivid skin, "anime mode").
+- Live on VM: softened taglines serving (`/api/character`), Anime Mode in /os, health 200, Voice Mode intact.
+- Next (not done): default/opt-in roster filtering for the faith pack; cute avatar art (needs an artist/gen — no art assets in the stdlib app); anime persona variants.
+
 ## 2026-06-07 — main session (seed)
 **MEOK ONE** · branch `claude/meok-one` (pushed)
 - Changed: responsive pass (os/dome/law mobile), Voice Mode (orb+STT+TTS), Mac↔VM reconcile, LAW physical crosswalk.
