@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-07 — ✅ OLM (ICRL) wired+deployed · 🔴 found pre-existing chat-timeout bug (MEOK ONE tab)
+**MEOK ONE** · branch `claude/meok-one` (commits 2d7ed03, 5ea51e8) · deployed to VM
+- Changed/shipped: **OLM milestone #1 LIVE on prod** — new `meok_one/olm.py` (ICRL: per-(user,character) care-ranked buffer, persisted to `data/olm/`, gate-flagged/held replies forced LOW→"avoid"); wired inject (brains `_sovereign_prompt`) + record (`/api/think`). Surgically deployed ONLY my 3 committed files (left main's uncommitted hive_queen/sovereign WIP untouched). `data/olm` added to deploy excludes (per-user state, never clobber). Verified on VM: 2-turn buffer accumulates 1→2, persists per-user.
+- 🔴 FOUND (pre-existing, NOT mine — OLM exonerated): **MEOK ONE chat is degraded on prod.** `/api/think` tier 'pro' left-brain (meok-sov3) takes ~50s → times out → `engine:"fallback"` (no real LLM reply). Yet the model alone answers in 2.3s via direct Ollama. So it's an `ask()`/router timeout vs slow 3B-on-CPU on the long persona prompt — NOT infra (Ollama up, model loads), NOT OLM (fresh user w/ empty OLM context still 52s+fallback). Needs a focused router/timeout debug. HIGH impact (core chat).
+- Live: OLM live; guardian/family live (earlier). Rollback snapshots on VM /tmp.
+
 ## 2026-06-07 — ✅ Canonical Stripe links created + promo-enabled (CSOAI lane) — main session
 **main session (CSOAI engine)** · live Stripe (Pro plan)
 - Changed: created the 2 canonical recurring payment links via the dedicated `create_payment_link` tool (the generic execute can't encode line_items) — **Pro £9** `buy.stripe.com/28E8wR2G0dQS5g92Yg8k91n` + **Team £99** `buy.stripe.com/4gM9AV80kcMO23X0Q88k91o`, both with promo codes ON (LAUNCH50 works). INBOX'd all surface tabs to point Pro/Team CTAs at these two.
