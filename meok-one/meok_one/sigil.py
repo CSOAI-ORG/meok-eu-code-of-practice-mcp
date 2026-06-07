@@ -20,6 +20,10 @@ import time
 import hashlib
 import threading
 from collections import deque
+try:
+    import fcntl  # unix file locking — cross-process chain safety (Mac + Linux VM)
+except ImportError:  # pragma: no cover — non-unix fallback
+    fcntl = None
 
 # choice symbols (wire) ↔ words (gloss) — matches SIGIL's compact vote encoding
 _CHOICE = {"+": "approve", "-": "veto", "~": "revise", "=": "abstain"}
@@ -148,45 +152,95 @@ def _load_existing() -> None:
         pass
 
 
+def _read_all() -> list:
+    """All durable records from the shared log — the cross-process source of truth."""
+    try:
+        with open(_STORE) as f:
+            return [json.loads(l) for l in f if l.strip()]
+    except Exception:
+        return []
+
+
 def _head() -> str:
-    return _LOG[-1]["receipt"] if _LOG else _GENESIS
+    """True chain head from the SHARED file's tail (not per-process memory)."""
+    try:
+        with open(_STORE, "rb") as f:
+            f.seek(0, os.SEEK_END)
+            f.seek(max(0, f.tell() - 16384))
+            lines = [l for l in f.read().decode("utf-8", "replace").splitlines() if l.strip()]
+        return json.loads(lines[-1])["receipt"] if lines else _GENESIS
+    except Exception:
+        return _LOG[-1]["receipt"] if _LOG else _GENESIS
 
 
 def record(d: dict) -> dict:
-    """Encode + append to the hash-chained log. receipt = sha256(prev_receipt + line)[:16]."""
-    with _LOCK:
-        line = encode(d)
-        prev = _head()
-        receipt = hashlib.sha256(f"{prev}{line}".encode()).hexdigest()[:16]
-        rec = {"seq": len(_LOG), "ts": int(time.time()), "op": d["op"],
-               "line": line, "gloss": gloss(line), "prev": prev, "receipt": receipt}
-        _LOG.append(rec)
-        try:   # best-effort durable append; never break the reply path
-            os.makedirs(os.path.dirname(_STORE), exist_ok=True)
-            with open(_STORE, "a") as f:
-                f.write(json.dumps(rec) + "\n")
-        except Exception:
-            pass
+    """Append to the hash-chained log — CROSS-PROCESS SAFE. receipt = sha256(prev+line)[:16],
+    where prev is read from the shared file's tail UNDER AN EXCLUSIVE FILE LOCK, so concurrent
+    writers (server + queens + tools) all chain off the true head and the chain stays intact
+    under load (fixes the multi-process chain-fork bug)."""
+    line = encode(d)
+    try:
+        os.makedirs(os.path.dirname(_STORE), exist_ok=True)
+        with open(_STORE, "a+") as f:
+            if fcntl:
+                fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            try:
+                # read the true tail under the lock (binary peek of the last 16KB)
+                last = None
+                try:
+                    with open(_STORE, "rb") as rf:
+                        rf.seek(0, os.SEEK_END); rf.seek(max(0, rf.tell() - 16384))
+                        ll = [l for l in rf.read().decode("utf-8", "replace").splitlines() if l.strip()]
+                        last = json.loads(ll[-1]) if ll else None
+                except Exception:
+                    last = None
+                prev = last["receipt"] if last else _GENESIS
+                seq = (last["seq"] + 1) if last else 0
+                receipt = hashlib.sha256(f"{prev}{line}".encode()).hexdigest()[:16]
+                rec = {"seq": seq, "ts": int(time.time()), "op": d["op"],
+                       "line": line, "gloss": gloss(line), "prev": prev, "receipt": receipt}
+                f.write(json.dumps(rec) + "\n"); f.flush()
+                try:
+                    os.fsync(f.fileno())
+                except Exception:
+                    pass
+            finally:
+                if fcntl:
+                    fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+        with _LOCK:
+            _LOG.append(rec)
         return rec
+    except Exception:
+        # in-memory fallback (no durable file available) — best-effort, never break the call
+        with _LOCK:
+            prev = _LOG[-1]["receipt"] if _LOG else _GENESIS
+            receipt = hashlib.sha256(f"{prev}{line}".encode()).hexdigest()[:16]
+            rec = {"seq": len(_LOG), "ts": int(time.time()), "op": d.get("op", "?"),
+                   "line": line, "gloss": gloss(line), "prev": prev, "receipt": receipt}
+            _LOG.append(rec)
+            return rec
 
 
 def recent(n: int = 50) -> list:
-    with _LOCK:
-        return list(_LOG)[-max(1, min(n, len(_LOG))):][::-1] if _LOG else []
+    recs = _read_all()
+    if not recs:
+        with _LOCK:
+            recs = list(_LOG)
+    return recs[-max(1, min(n, len(recs) or 1)):][::-1] if recs else []
 
 
 def verify_chain() -> dict:
-    """Recompute the hash chain — proves the log hasn't been tampered with."""
-    with _LOCK:
-        prev, ok, bad = (_LOG[0]["prev"] if _LOG else _GENESIS), 0, None
-        for r in _LOG:
-            calc = hashlib.sha256(f"{prev}{r['line']}".encode()).hexdigest()[:16]
-            if calc != r["receipt"]:
-                bad = r["seq"]
-                break
-            prev, ok = r["receipt"], ok + 1
-        return {"intact": bad is None, "verified": ok, "total": len(_LOG),
-                "head": _head(), "broken_at": bad}
+    """Recompute the chain from the durable shared file — proves it hasn't been tampered with."""
+    recs = _read_all() or list(_LOG)
+    prev, ok, bad = (recs[0]["prev"] if recs else _GENESIS), 0, None
+    for r in recs:
+        calc = hashlib.sha256(f"{prev}{r['line']}".encode()).hexdigest()[:16]
+        if calc != r["receipt"]:
+            bad = r["seq"]
+            break
+        prev, ok = r["receipt"], ok + 1
+    return {"intact": bad is None, "verified": ok, "total": len(recs),
+            "head": (recs[-1]["receipt"] if recs else _GENESIS), "broken_at": bad}
 
 
 def manifest() -> list:
