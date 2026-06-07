@@ -4,6 +4,13 @@
 
 ---
 
+## 2026-06-07 — A2A Agent Card generator (move #4, SHIPPED)
+**Dev-Platform** · repo `CSOAI-ORG/lib2b` `main` (pushed 3bf2329)
+- Changed: built lib2b.agentcard — MCP -> A2A AgentCard generator (the missing *producer*; lib2b only had a client). Each MCP tool -> A2A skill. sweep_marketplace() = 340 valid cards / 1863 skills / 0 invalid; wrote .well-known/agent-card.json into all 340 (ship on next publish). 2 tests pass.
+- Live: code on GitHub; cards staged in mcp-marketplace (publish-ready). First-mover: fleet now A2A-discoverable, not just MCP directories.
+- Next (#5/#6): serve cards at /.well-known/agent-card.json per remote endpoint; ACP shim.
+
+
 ## 2026-06-07 — ✅ FIXED the degraded chat bug ('left brain unavailable') (MEOK ONE tab)
 **MEOK ONE** · branch `claude/meok-one` (commit pushed) · deployed to VM
 - Root cause: Ollama evicts meok-sov3 after 5min idle → next /api/think cold-loads 2.1GB + prefills the ~1289-tok persona prompt → blew past `_ask_local`'s 60s timeout → None → "[left brain unavailable]". Model itself fine (6.6s warm). NOT infra, NOT OLM.
