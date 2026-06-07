@@ -35,7 +35,7 @@ Expected: list of env vars including `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KE
 
 | Location | Status |
 |----------|--------|
-| `~/.secrets/stripe_live.env` | ✅ Live key exists: `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` |
+| `~/.secrets/stripe_live.env` | ✅ Live key exists: `<REDACTED-ROTATE-2026-06-07>` |
 | `meok/ui/.env.local` | ✅ Same key |
 | Vercel production | ❓ Unknown — `vercel env ls` cannot run without auth |
 

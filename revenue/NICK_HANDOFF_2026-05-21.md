@@ -80,7 +80,7 @@ Form draft at `revenue/LINKEDIN_ACCOUNT_RECOVERY_EMAIL_2026-04-28.md`. Send to L
 
 These are in this conversation's history (and committed to memory of any LLM I'm running on):
 
-- VERCEL_TOKEN `vck_290CC066n6gEGiHawJfUV9b1W46CwETtJr72uBUBOJcPzu4z8T4MZ8AE`
+- VERCEL_TOKEN `<REDACTED-ROTATE-2026-06-07>`
 - RESEND_API_KEY `re_iET1Z4oG_7JBd73ahUUcTg9suUeQq1z46`
 - GITHUB_TOKEN `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`
 

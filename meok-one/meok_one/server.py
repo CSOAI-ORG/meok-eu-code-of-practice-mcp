@@ -318,7 +318,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(200, _mb.list_tools())
         if path == "/api/king/hives":
             from .hive_king import hives as _hives
-            return self._json(200, {"count": 28, "hives": _hives()})
+            _hv = _hives(); return self._json(200, {"count": len(_hv), "hives": _hv})
         if path in ("/constellation", "/constellation.html", "/ecosystem"):
             from . import constellation as _con
             body = _con.render().encode("utf-8")
@@ -743,7 +743,7 @@ class Handler(BaseHTTPRequestHandler):
                                      quorum=int(args.get("quorum", 3)))
                     elif name == "list_hives":
                         from .hive_king import hives as _hives
-                        out = {"count": 28, "hives": _hives()}
+                        _hv = _hives(); out = {"count": len(_hv), "hives": _hv}
                     else:
                         return self._json(200, {"jsonrpc": "2.0", "id": rid,
                                                 "error": {"code": -32601, "message": f"unknown tool {name}"}})

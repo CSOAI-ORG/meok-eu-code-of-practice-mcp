@@ -264,7 +264,9 @@ def queen(domain: str, message: str, brain: str = "council", tier: str | None = 
     _reply = r.get("reply") or ""
     _nm = re.escape(cfg.get("character", "").strip().capitalize())
     if _nm:
-        _reply = re.sub(rf"^\s*(As\s+)?{_nm}[\s,:\-—]+", "", _reply, count=1, flags=re.I)
+        # Only strip a TRUE persona prefix — the "As Aria," or "Aria:" forms — never a bare
+        # space (so "Sage advice…" / "Kai and…" aren't mutilated when the name is a real word).
+        _reply = re.sub(rf"^\s*(As\s+{_nm}[,:]|{_nm}\s*[:\-—])\s*", "", _reply, count=1, flags=re.I)
 
     out = {
         "domain": domain,

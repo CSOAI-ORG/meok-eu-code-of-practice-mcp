@@ -43,8 +43,13 @@ _VM_KEY = os.environ.get("MEOK_VM_KEY", "")
 _PROHIBITED = re.compile(
     r"(transfer|wire|withdraw|deposit|trade|buy|sell|swap|convert)_?(fund|money|asset|stock|crypto|securit)"
     r"|send_money|make_payment|execute_trade|place_order"
+    r"|wire_transfer|charge_card|pay_invoice|move_funds"                       # bare money verbs
     r"|delete_(all|permanently|forever)|empty_trash|hard_delete|purge|wipe"
+    r"|drop_table|truncate(_table)?|execute_sql|raw_sql|format_disk"           # destructive data/disk
+    r"|run_command|exec_shell|shell_exec|spawn_shell|eval_code|rm_(files|rf|dir)"  # code/shell exec
+    r"|exfiltrate|dump_(secrets|env|credentials)|leak_"                        # exfiltration
     r"|(set|change|grant|revoke)_(permission|access|role|sharing|acl)"
+    r"|grant_(admin|root|owner|superuser)|escalate_privilege"                  # privilege escalation
     r"|enter_(password|credential|ssn|card)|solve_captcha|bypass",
     re.I)
 # WRITE — side effects on the world. Needs explicit human confirm.

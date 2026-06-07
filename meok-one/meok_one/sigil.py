@@ -153,12 +153,23 @@ def _load_existing() -> None:
 
 
 def _read_all() -> list:
-    """All durable records from the shared log — the cross-process source of truth."""
+    """All durable records from the shared log — the cross-process source of truth.
+    Per-line guarded: one torn/partial line (e.g. a crash mid-write) is skipped, not
+    allowed to blank the entire audit trail (which would falsely report total:0 intact)."""
+    out = []
     try:
         with open(_STORE) as f:
-            return [json.loads(l) for l in f if l.strip()]
+            for l in f:
+                l = l.strip()
+                if not l:
+                    continue
+                try:
+                    out.append(json.loads(l))
+                except (json.JSONDecodeError, ValueError):
+                    continue
     except Exception:
-        return []
+        return out
+    return out
 
 
 def _head() -> str:
@@ -211,11 +222,14 @@ def record(d: dict) -> dict:
             _LOG.append(rec)
         return rec
     except Exception:
-        # in-memory fallback (no durable file available) — best-effort, never break the call
+        # in-memory fallback (no durable file available) — best-effort, never break the call.
+        # Chain off the TRUE head (file-aware _head) and use last_seq+1 (NOT len(_LOG), which
+        # caps at the deque maxlen → seq collisions/forks after 1000 records).
         with _LOCK:
-            prev = _LOG[-1]["receipt"] if _LOG else _GENESIS
+            prev = _head()
+            seq = (_LOG[-1]["seq"] + 1) if _LOG else 0
             receipt = hashlib.sha256(f"{prev}{line}".encode()).hexdigest()[:16]
-            rec = {"seq": len(_LOG), "ts": int(time.time()), "op": d.get("op", "?"),
+            rec = {"seq": seq, "ts": int(time.time()), "op": d.get("op", "?"),
                    "line": line, "gloss": gloss(line), "prev": prev, "receipt": receipt}
             _LOG.append(rec)
             return rec
