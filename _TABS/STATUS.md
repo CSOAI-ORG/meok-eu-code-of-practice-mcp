@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-07 — ⚠️ INCIDENT (caused + resolved): attestation-api prod outage (main session)
+**main session (CSOAI engine)** · live Vercel `meok-attestation-api` (also aliases proofof.ai)
+- What happened: `vercel --prod` of the SIGIL fix produced a build with BROKEN routing (`/health` + `/verify` → platform 404; `/` + static OK). It re-aliased prod. **Root cause of the deploy-control mess: my CLI scope was personal (`nicholastempleman-5584`) but deployments live in team `niks-projects-0a2ef942` → promote/rollback/redeploy all errored "different team".** Restored via `vercel alias set` repointing `meok-attestation-api.vercel.app` → last-good deploy `35yur5lx1`. **Now: /health 200, /verify 200, proofof.ai 200.** proofof.ai was never actually down (static served fine; only the api's dynamic routes 404'd). No customers/£0 traffic.
+- Live: baseline restored. **The SIGIL /verify object-form fix is NOT deployed** (good deploy predates it; original bug is back — low impact, was longstanding). Fix is safe in git `main` (97e40bb).
+- Blocked: deploy cap re-exhausted (~24h). To ship the fix: after reset, `vercel --prod --force` (skip the build cache that likely caused the routing break) from clean git HEAD, then verify /health+/verify BEFORE trusting the alias. Lesson: deploy to PREVIEW + test before --prod on this project.
+
 ## 2026-06-07 — Guardian/Family VERIFIED + OLM spec corrected to real ICRL (MEOK ONE tab)
 **MEOK ONE** · branch `claude/meok-one` (commits d3a7d8b, 09fb6a2)
 - Changed: called the live SOV3 guardian/family tools → found my surfaces had wrong field names → **fixed both to the real contracts** (nested dashboard/network shapes; write-paths now send required ids/`assigned_to` array/ISO `start_datetime`/`member_id`); JS syntax-checked. Corrected OLM spec → **v0.2**: real learning loop is **ICRL** (`meok/sovereign-temple/icrl_self_improvement.py`, in-context, no retrain), NOT LoRA — milestone #1 rewritten as achievable (wire existing `ICRLBuffer`).
