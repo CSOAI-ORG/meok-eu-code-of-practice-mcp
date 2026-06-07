@@ -223,7 +223,8 @@ def sovereign_council(character_id: str, message: str, tier: str = "free",
                       max_workers: int = 4, roster: "list | None" = None,
                       reconcile: str = "code", orchestrator: "str | None" = None,
                       use_evidence: bool = False, deadline_s: float = 45.0,
-                      provider: "list | None" = None) -> dict:
+                      provider: "list | None" = None,
+                      system_override: "str | None" = None) -> dict:
     """The BFT-of-MoEs deliberation. 1 companion draft + (quorum-1) expert lenses
     (each a real model through a specialist viewpoint) + Sovereign synthesis.
 
@@ -244,6 +245,10 @@ def sovereign_council(character_id: str, message: str, tier: str = "free",
     Returns: {character, reply, safe, council:{draft, reviews[], vetoes[], ...}}
     """
     env = connect(character_id, user_id, message, tier=tier)
+    if system_override:
+        # Run the council as a DOMAIN EXPERT (not the care-companion persona). Safety is
+        # still enforced by the safety lenses + the _safe backstop regardless of persona.
+        env = {**env, "system_prompt": system_override}
     char = env["meta"]["character_name"]
     emoji = env["meta"]["emoji"]
     lenses = _load_lenses()

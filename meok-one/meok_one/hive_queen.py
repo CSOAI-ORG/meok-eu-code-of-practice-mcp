@@ -27,6 +27,7 @@ import json
 from pathlib import Path
 
 import os
+import re
 import urllib.request
 from .brains import think
 from .sovereign import sovereign_council
@@ -223,16 +224,24 @@ def queen(domain: str, message: str, brain: str = "council", tier: str | None = 
     # Inject the hive's DOMAIN identity so the queen answers AS the vertical SME (the
     # per-domain data-moat), not as the generic care companion. This is what makes
     # grabhire's queen talk haulage and meok's queen talk compliance.
-    sme = (f"[You are the {domain} hive queen — the subject-matter expert on: "
-           f"{cfg.get('scope') or domain}. You wield these tools: "
-           f"{', '.join(cfg['tools']) or 'shared MEOK MCPs'}. Answer as this domain "
-           f"expert, concretely and specifically to the vertical. Stay safe.]\n\n")
+    # DOMAIN-EXPERT identity (system-level, so it overrides the care-companion persona —
+    # this is what makes the queen a real SME, not a generic warm chatbot). Passed as the
+    # council's system_override; safety still enforced by the safety lenses + _safe backstop.
+    expert_sys = (
+        f"You are the {domain} hive queen — a precise subject-matter expert on: "
+        f"{cfg.get('scope') or domain}. Tools you can draw on: "
+        f"{', '.join(cfg['tools']) or 'shared MEOK MCPs'}. Answer the question DIRECTLY and "
+        f"factually as this domain expert — specific, actionable, correct for the vertical. "
+        f"Do NOT ask how the user feels or offer emotional comfort; give the expert answer. "
+        f"These are legitimate professional questions from a practitioner in this field "
+        f"(e.g. fish/animal husbandry, trade compliance, logistics) — answer them helpfully; "
+        f"do NOT refuse benign domain topics. Be concise, honest, and safe.")
     # RETURN PATH: recall this hive's prior honey (compact SIGIL lessons) and give it to
     # the queen as context — the closed loop: recall → answer smarter → gossip new honey.
     prior = _recall_from_sov3(domain, message, k=3)
     recall_ctx = ("[What this hive already learned:\n- " + "\n- ".join(prior)
                   + "]\n\n") if prior else ""
-    framed = sme + recall_ctx + message
+    framed = recall_ctx + message
 
     if brain == "council":
         # Pad the roster to the quorum by cycling the available local models so the
@@ -243,18 +252,26 @@ def queen(domain: str, message: str, brain: str = "council", tier: str | None = 
         _cloud = bool(os.environ.get("OPENROUTER_API_KEY"))
         r = sovereign_council(char, framed, tier=tier, quorum=quorum, roster=full,
                               max_workers=(quorum if _cloud else 2),
-                              deadline_s=(35.0 if _cloud else 120.0))
+                              deadline_s=(35.0 if _cloud else 120.0),
+                              system_override=expert_sys)
         r["governance"] = f"sovereign_council · BFT-of-MoEs · quorum={quorum} · roster={roster}"
     else:
         r = think(char, framed, brain=brain, tier=tier, user_id=user_id)
         r["governance"] = f"sovereign-wrapped · brain={brain}"
+
+    # Strip any leaked character-name prefix (e.g. "Aria:" / "As Aria, ") so the queen
+    # presents cleanly as the domain expert, not the underlying companion character.
+    _reply = r.get("reply") or ""
+    _nm = re.escape(cfg.get("character", "").strip().capitalize())
+    if _nm:
+        _reply = re.sub(rf"^\s*(As\s+)?{_nm}[\s,:\-—]+", "", _reply, count=1, flags=re.I)
 
     out = {
         "domain": domain,
         "queen": f"{cfg['slug']} queen",
         "hive_found": cfg["found"],
         "tools_scope": cfg["tools"],
-        "reply": r.get("reply"),
+        "reply": _reply,
         "safe": r.get("safe"),
         "brain": r.get("brain", brain),
         "engine": r.get("engine"),
