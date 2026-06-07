@@ -60,10 +60,8 @@
     <div class="card">
       <h2>Game &amp; chat check</h2>
       <label>Game title</label><input id="game" placeholder="e.g. Roblox">
-      <label>Child age</label><input id="age" type="number" value="9" min="2" max="17">
       <div class="actions">
         <button class="sm" onclick="checkGame()">Check game content</button>
-        <button class="sm" onclick="setLimit()">Set daily limit</button>
       </div>
       <label style="margin-top:12px">Paste a chat message to moderate</label><input id="chat" placeholder="message text…">
       <div class="actions"><button class="sm" onclick="moderate()">Moderate chat</button></div>
@@ -90,6 +88,7 @@ async function mcp(tool, args={}){
   }catch(e){ toast(tool+': '+e.message, true); return {error:String(e.message||e)}; }
 }
 function esc(s){ return String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'-'+Math.random().toString(36).slice(2,6); }
 
 async function loadKids(){
   const d = await mcp('guardian_get_child_profiles');
@@ -97,40 +96,46 @@ async function loadKids(){
   const el = $('#kids');
   if(!kids.length){ el.innerHTML='<p class="muted">No child profiles yet.</p>'; return; }
   el.innerHTML = kids.map(k=>{
-    const name = esc(k.name||k.child||k.id); const age = k.age!=null?` · ${esc(k.age)}y`:'';
+    const id = esc(k.child_id||k.id||k.name); const name = esc(k.name||id); const age = k.age!=null?` · ${esc(k.age)}y`:'';
     return `<div class="row"><b>${name}</b><span class="muted">${age}</span>
-      <span class="pill ${k.blocked?'bad':'ok'}" style="margin-left:auto">${k.blocked?'restricted':'ok'}</span></div>`;
+      <button class="sm" style="margin-left:auto" onclick="setLimit('${id}','${name}')">Limit</button></div>`;
   }).join('');
 }
 async function loadNet(){
   const d = await mcp('guardian_get_network_stats');
   const el = $('#net');
   if(d.error){ el.innerHTML='<p class="muted">Network stats unavailable.</p>'; return; }
-  const devices = d.devices!=null?d.devices:(d.device_count!=null?d.device_count:'—');
-  const trusted = d.trusted!=null?d.trusted:'—';
-  el.innerHTML = `<div class="row">Devices seen<span class="pill" style="margin-left:auto">${esc(devices)}</span></div>
-    <div class="row">Trusted<span class="pill ok" style="margin-left:auto">${esc(trusted)}</span></div>`;
+  // live shape: {network_range, gateway, ssid, devices:{total,trusted,unknown}, last_scan}
+  const dev = d.devices||{};
+  const unknown = dev.unknown||0;
+  const net = esc(d.ssid || d.network_range || '—');
+  const scan = d.last_scan ? new Date(d.last_scan).toLocaleString() : '—';
+  el.innerHTML = `<div class="row">Network<span class="pill" style="margin-left:auto">${net}</span></div>
+    <div class="row">Devices seen<span class="pill" style="margin-left:auto">${esc(dev.total!=null?dev.total:'—')}</span></div>
+    <div class="row">Trusted<span class="pill ok" style="margin-left:auto">${esc(dev.trusted!=null?dev.trusted:'—')}</span></div>
+    <div class="row">Unknown<span class="pill ${unknown?'warn':''}" style="margin-left:auto">${esc(unknown)}</span></div>
+    <div class="row muted" style="font-size:12px">Last scan<span style="margin-left:auto">${esc(scan)}</span></div>`;
 }
 async function scan(){ toast('Scanning…'); const d=await mcp('guardian_scan_network'); if(!d.error){toast('Scan complete'); loadNet();} }
 async function wifi(){ const d=await mcp('guardian_check_wifi_security'); toast(d.error?'Wi-Fi check failed':(d.status||d.summary||'Wi-Fi checked')); }
 async function checkGame(){
-  const game=$('#game').value.trim(), age=+$('#age').value||9;
+  const game=$('#game').value.trim();
   if(!game) return toast('Enter a game title', true);
-  toast('Checking…'); const d=await mcp('guardian_check_game_content',{game,age,title:game});
+  toast('Checking…'); const d=await mcp('guardian_check_game_content',{game_title:game});
   $('#gameOut').textContent = d.error?('Error: '+d.error):JSON.stringify(d,null,2);
 }
 async function moderate(){
   const msg=$('#chat').value.trim(); if(!msg) return toast('Paste a message', true);
-  const d=await mcp('guardian_moderate_chat',{message:msg,text:msg});
+  const d=await mcp('guardian_moderate_chat',{message:msg});
   $('#gameOut').textContent = d.error?('Error: '+d.error):JSON.stringify(d,null,2);
 }
-async function setLimit(){
-  const game=$('#game').value.trim()||'all'; const mins=prompt('Daily limit (minutes) for '+game,'60'); if(mins==null) return;
-  const d=await mcp('guardian_set_game_limit',{game,minutes:+mins,limit_minutes:+mins}); toast(d.error?'Failed':'Limit set: '+game+' · '+mins+'m');
+async function setLimit(child_id, name){
+  const mins=prompt('Daily game limit (minutes) for '+name,'60'); if(mins==null) return;
+  const d=await mcp('guardian_set_game_limit',{child_id,minutes:+mins||0}); toast(d.error?'Failed':name+': '+mins+'m/day');
 }
 async function addKid(){
-  const name=prompt('Child name'); if(!name) return; const age=prompt('Age','9');
-  const d=await mcp('guardian_add_child_profile',{name,age:+age||null}); if(!d.error){toast('Added '+name); loadKids();}
+  const name=prompt('Child name'); if(!name) return; const age=+prompt('Age','9')||9;
+  const d=await mcp('guardian_add_child_profile',{child_id:slug(name),name,age}); if(!d.error){toast('Added '+name); loadKids();}
 }
 loadKids(); loadNet();
 </script>
