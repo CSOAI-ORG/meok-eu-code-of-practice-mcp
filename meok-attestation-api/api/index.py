@@ -654,12 +654,21 @@ def sign_attestation(
 
 
 def verify_attestation(cert: dict[str, Any]) -> tuple[bool, str]:
-    payload_str = cert.get("payload")
+    payload_field = cert.get("payload")
     sig = cert.get("signature_sha256_hmac")
-    if not payload_str or not sig:
+    if not payload_field or not sig:
         return False, "Missing payload or signature"
+    # Accept both documented forms of `payload` (see openapi VerifyRequest):
+    #   • canonical-JSON string — exactly as emitted by /sign
+    #   • JSON object — re-canonicalised here so the HMAC matches the signer
+    if isinstance(payload_field, dict):
+        payload_bytes = _canonical_payload(payload_field)
+        payload_str = payload_bytes.decode("utf-8")
+    else:
+        payload_str = payload_field
+        payload_bytes = payload_str.encode("utf-8")
     try:
-        expected = _sign_bytes(payload_str.encode("utf-8"))
+        expected = _sign_bytes(payload_bytes)
     except Exception as e:
         return False, f"Signature recomputation failed: {e}"
     if not hmac.compare_digest(expected, sig):
@@ -1145,6 +1154,31 @@ class handler(BaseHTTPRequestHandler):
         length = int(self.headers.get("Content-Length", 0))
         raw = self.rfile.read(length) if length else b"{}"
 
+        # ── ACP (Agent Communication Protocol) — Move #9 ───────────────
+        if path == "/acp" or path == "/api/acp":
+            try:
+                body = json.loads(raw) if raw else {}
+            except json.JSONDecodeError:
+                return self._json(400, {"error": "Invalid JSON"})
+            try:
+                try:
+                    from ._acp import handle_acp as _acp_handle
+                except ImportError:
+                    from _acp import handle_acp as _acp_handle
+                acp_key = body.get("api_key") or self.headers.get("X-API-Key", "")
+                acp_email = body.get("email", "")
+                acp_status, acp_env = _acp_handle(
+                    body,
+                    sign_fn=sign_attestation,
+                    verify_fn=verify_attestation,
+                    api_key=acp_key,
+                    check_api_key=_check_api_key,
+                    email=acp_email,
+                )
+                return self._json(acp_status, acp_env)
+            except Exception as e:
+                return self._json(500, {"error": f"acp: {e}"})
+
         # ── Webhooks subscribe / unsubscribe — Move #30 ────────────────
         if path == "/api/webhooks/subscribe":
             try:
@@ -1370,6 +1404,31 @@ class handler(BaseHTTPRequestHandler):
             return self._json(200, cert)
 
         if path == "/verify":
+            # SIGIL hash-chain verification — the tamper-evident audit trail (honey
+            # receipts, tool-call audit). Anyone can POST a SIGIL chain and confirm it's
+            # intact WITHOUT backend trust: receipt = sha256(prev_receipt + line)[:16].
+            chain = body.get("sigil_chain")
+            if chain is not None:
+                import hashlib as _hl
+                _GEN = "MEOK-SIGIL-GENESIS"
+                prev = (chain[0].get("prev") if chain else _GEN) or _GEN
+                verified, broken_at = 0, None
+                for r in chain:
+                    calc = _hl.sha256(f"{prev}{r.get('line','')}".encode()).hexdigest()[:16]
+                    if calc != r.get("receipt"):
+                        broken_at = r.get("seq", verified)
+                        break
+                    prev, verified = r["receipt"], verified + 1
+                return self._json(200, {
+                    "valid": broken_at is None,
+                    "kind": "sigil_chain",
+                    "verified": verified,
+                    "total": len(chain),
+                    "head": (chain[-1].get("receipt") if chain else _GEN),
+                    "broken_at": broken_at,
+                    "message": "SIGIL chain intact" if broken_at is None
+                               else f"chain broken at seq {broken_at}",
+                })
             cert = body if body.get("payload") else body.get("cert") or {}
             ok, msg = verify_attestation(cert)
             return self._json(200, {
