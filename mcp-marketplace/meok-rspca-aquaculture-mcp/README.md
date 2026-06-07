@@ -1,3 +1,4 @@
+<!-- mcp-name: io.github.CSOAI-ORG/meok-rspca-aquaculture-mcp -->
 <div align="center">
 
 # MEOK RSPCA Aquaculture MCP

@@ -1,3 +1,4 @@
+<!-- mcp-name: io.github.CSOAI-ORG/meok-laia-aquatic-mcp -->
 <div align="center">
 
 # MEOK LAIA Aquatic MCP
@@ -63,3 +64,28 @@ Verify any signed inspector pack at <https://meok.ai/verify>.
 
 <!-- BUY-LADDER:END -->
 
+
+
+## Configuration
+
+Add to your `claude_desktop_config.json` (Claude Desktop) or your MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "meok-laia-aquatic-mcp": {
+      "command": "uvx",
+      "args": ["meok-laia-aquatic-mcp"]
+    }
+  }
+}
+```
+
+Or: `pip install meok-laia-aquatic-mcp` then run the `meok-laia-aquatic-mcp` command (stdio transport).
+
+## Examples
+
+Once configured, ask your assistant, for example:
+- "Use `list_activities` to …"
+- "Use `welfare_checklist` to …"
+- "Use `licence_gap_analysis` to …"

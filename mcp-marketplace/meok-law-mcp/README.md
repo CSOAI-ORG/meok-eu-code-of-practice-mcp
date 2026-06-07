@@ -1,3 +1,4 @@
+<!-- mcp-name: io.github.CSOAI-ORG/meok-law-mcp -->
 # MEOK LAW MCP ⚖️
 
 **Region-aware AI governance for any agent, humanoid, robotics company, or business** — built
@@ -52,3 +53,28 @@ Or point your MCP client at the `meok_law_mcp` entrypoint.
   Sovereign Gate holds those for a human.
 
 Built by **MEOK AI Labs** · https://meok.ai · Council for the Safety of AI · https://csoai.org
+
+
+## Configuration
+
+Add to your `claude_desktop_config.json` (Claude Desktop) or your MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "meok-law-mcp": {
+      "command": "uvx",
+      "args": ["meok-law-mcp"]
+    }
+  }
+}
+```
+
+Or: `pip install meok-law-mcp` then run the `meok-law-mcp` command (stdio transport).
+
+## Examples
+
+Once configured, ask your assistant, for example:
+- "Use `law_overview` to …"
+- "Use `law_applicable` to …"
+- "Use `law_crosswalk` to …"

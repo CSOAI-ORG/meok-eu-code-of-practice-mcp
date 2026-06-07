@@ -1,3 +1,4 @@
+<!-- mcp-name: io.github.CSOAI-ORG/meok-koikeeper-ai-mcp -->
 <div align="center">
 
 # MEOK KoiKeeper AI MCP

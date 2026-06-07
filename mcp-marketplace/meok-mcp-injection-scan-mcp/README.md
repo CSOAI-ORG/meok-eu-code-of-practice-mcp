@@ -116,3 +116,28 @@ Free tier: 10 calls/day per MCP. Pro tier (£79/mo): unlimited + cryptographical
 
 <!-- BUY-LADDER:END -->
 
+
+
+## Configuration
+
+Add to your `claude_desktop_config.json` (Claude Desktop) or your MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "meok-mcp-injection-scan-mcp": {
+      "command": "uvx",
+      "args": ["meok-mcp-injection-scan-mcp"]
+    }
+  }
+}
+```
+
+Or: `pip install meok-mcp-injection-scan-mcp` then run the `meok-mcp-injection-scan-mcp` command (stdio transport).
+
+## Examples
+
+Once configured, ask your assistant, for example:
+- "Use `scan_mcp_url` to …"
+- "Use `audit_tool_descriptions` to …"
+- "Use `signed_safety_report` to …"

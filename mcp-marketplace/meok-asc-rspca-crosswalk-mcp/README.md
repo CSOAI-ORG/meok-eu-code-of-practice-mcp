@@ -1,3 +1,4 @@
+<!-- mcp-name: io.github.CSOAI-ORG/meok-asc-rspca-crosswalk-mcp -->
 <div align="center">
 
 # MEOK ASC ↔ RSPCA ↔ GlobalG.A.P. Crosswalk MCP
@@ -64,3 +65,28 @@ Verify any signed evidence pack at <https://meok.ai/verify>.
 
 <!-- BUY-LADDER:END -->
 
+
+
+## Configuration
+
+Add to your `claude_desktop_config.json` (Claude Desktop) or your MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "meok-asc-rspca-crosswalk-mcp": {
+      "command": "uvx",
+      "args": ["meok-asc-rspca-crosswalk-mcp"]
+    }
+  }
+}
+```
+
+Or: `pip install meok-asc-rspca-crosswalk-mcp` then run the `meok-asc-rspca-crosswalk-mcp` command (stdio transport).
+
+## Examples
+
+Once configured, ask your assistant, for example:
+- "Use `list_crosswalk_topics` to …"
+- "Use `crosswalk_topic` to …"
+- "Use `map_evidence_to_schemes` to …"

@@ -1,3 +1,4 @@
+<!-- mcp-name: io.github.CSOAI-ORG/meok-uk-fhi-mcp -->
 <div align="center">
 
 # MEOK UK FHI MCP

@@ -1,3 +1,4 @@
+<!-- mcp-name: io.github.CSOAI-ORG/meok-aquaponics-monitor-mcp -->
 <div align="center">
 
 # MEOK Aquaponics Monitor MCP
@@ -88,3 +89,28 @@ Verify any signed attestation at <https://meok.ai/verify>.
 
 <!-- BUY-LADDER:END -->
 
+
+
+## Configuration
+
+Add to your `claude_desktop_config.json` (Claude Desktop) or your MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "meok-aquaponics-monitor-mcp": {
+      "command": "uvx",
+      "args": ["meok-aquaponics-monitor-mcp"]
+    }
+  }
+}
+```
+
+Or: `pip install meok-aquaponics-monitor-mcp` then run the `meok-aquaponics-monitor-mcp` command (stdio transport).
+
+## Examples
+
+Once configured, ask your assistant, for example:
+- "Use `list_supported_hardware` to …"
+- "Use `register_rig` to …"
+- "Use `report_readings` to …"

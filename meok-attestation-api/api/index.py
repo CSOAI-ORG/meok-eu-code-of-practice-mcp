@@ -908,7 +908,36 @@ class handler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         path = (self.path or "/").split("?", 1)[0]
         if path == "/health":
-            return self._json(200, {"ok": True, "service": "meok-attestation-api"})
+            return self._json(200, {
+                "ok": True,
+                "status": "ok",
+                "service": "meok-attestation-api",
+                "kid": _SIGNING_KEY_KID,
+                "version": "1.2.0",
+            })
+        if path == "/openapi.json":
+            try:
+                from ._openapi_data import OPENAPI_SPEC  # type: ignore[import-not-found]
+            except ImportError:  # local dev fallback
+                from _openapi_data import OPENAPI_SPEC  # type: ignore[no-redef]
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Cache-Control", "public, max-age=300")
+            self.end_headers()
+            self.wfile.write(json.dumps(OPENAPI_SPEC).encode("utf-8"))
+            return
+        if path in ("/docs", "/docs.html"):
+            try:
+                from ._openapi_data import DOCS_HTML  # type: ignore[import-not-found]
+            except ImportError:
+                from _openapi_data import DOCS_HTML  # type: ignore[no-redef]
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Cache-Control", "public, max-age=300")
+            self.end_headers()
+            self.wfile.write(DOCS_HTML.encode("utf-8"))
+            return
         if path == "/robots.txt":
             self.send_response(200)
             self.send_header("Content-Type", "text/plain")
@@ -1068,12 +1097,100 @@ class handler(BaseHTTPRequestHandler):
                 "topup_url": _PAYG_TOPUP_URL,
             })
 
+        # ── Webhooks list — Move #30 ────────────────────────────────────
+        if path == "/api/webhooks/list":
+            try:
+                try:
+                    from ._webhooks import list_for as _wh_list
+                except ImportError:
+                    from _webhooks import list_for as _wh_list
+                qs = dict(urllib.parse.parse_qsl(self.path.split("?", 1)[1] if "?" in self.path else ""))
+                key = qs.get("api_key", "")
+                hooks = _wh_list(key)
+                return self._json(200, {"webhooks": hooks, "count": len(hooks)})
+            except Exception as e:
+                return self._json(500, {"error": f"webhooks list: {e}"})
+
+        # ── Audit ledger — Move #14 ─────────────────────────────────────
+        if path == "/api/audit" or path == "/audit":
+            try:
+                try:
+                    from ._audit_ledger import query as _ledger_query, stats as _ledger_stats
+                except ImportError:
+                    from _audit_ledger import query as _ledger_query, stats as _ledger_stats
+                qs = dict(urllib.parse.parse_qsl(self.path.split("?", 1)[1] if "?" in self.path else ""))
+                try:
+                    since_ts = int(qs.get("since", "0"))
+                except ValueError:
+                    since_ts = 0
+                try:
+                    limit = max(1, min(int(qs.get("limit", "100")), 500))
+                except ValueError:
+                    limit = 100
+                events = _ledger_query(since_ts=since_ts, limit=limit)
+                return self._json(200, {
+                    "stats": _ledger_stats(),
+                    "since": since_ts,
+                    "limit": limit,
+                    "events": events,
+                    "verifier": "Each event has chain_intact=true|false; the chain links via HMAC-SHA256(prev_hash || canonical(event)).",
+                })
+            except Exception as e:
+                return self._json(500, {"error": f"audit ledger error: {e}"})
+
         return self._json(404, {"error": "Not found", "path": path})
 
     def do_POST(self) -> None:
         path = (self.path or "/").split("?", 1)[0]
         length = int(self.headers.get("Content-Length", 0))
         raw = self.rfile.read(length) if length else b"{}"
+
+        # ── Webhooks subscribe / unsubscribe — Move #30 ────────────────
+        if path == "/api/webhooks/subscribe":
+            try:
+                body = json.loads(raw) if raw else {}
+            except json.JSONDecodeError:
+                return self._json(400, {"error": "Invalid JSON"})
+            url = (body.get("url") or "").strip()
+            api_key = body.get("api_key") or self.headers.get("X-API-Key", "")
+            events = body.get("events") or ["sign", "verify"]
+            if not url.startswith("https://"):
+                return self._json(400, {"error": "url must be https://"})
+            try:
+                try:
+                    from ._webhooks import subscribe as _wh_sub
+                except ImportError:
+                    from _webhooks import subscribe as _wh_sub
+                rec = _wh_sub(api_key, url, events if isinstance(events, list) else [events])
+                # Return webhook_id + secret; caller MUST store the secret.
+                return self._json(200, {
+                    "webhook_id": rec["webhook_id"],
+                    "secret": rec["secret"],
+                    "url": rec["url"],
+                    "events": rec["events"],
+                    "next_steps": "Store the secret — you'll need it to verify inbound webhooks and to unsubscribe.",
+                })
+            except Exception as e:
+                return self._json(500, {"error": f"subscribe: {e}"})
+
+        if path == "/api/webhooks/unsubscribe":
+            try:
+                body = json.loads(raw) if raw else {}
+            except json.JSONDecodeError:
+                return self._json(400, {"error": "Invalid JSON"})
+            wid = body.get("webhook_id", "")
+            secret = body.get("secret", "")
+            if not wid or not secret:
+                return self._json(400, {"error": "webhook_id + secret required"})
+            try:
+                try:
+                    from ._webhooks import unsubscribe as _wh_unsub
+                except ImportError:
+                    from _webhooks import unsubscribe as _wh_unsub
+                ok = _wh_unsub(wid, secret)
+                return self._json(200 if ok else 401, {"ok": ok})
+            except Exception as e:
+                return self._json(500, {"error": f"unsubscribe: {e}"})
 
         # /webhook needs raw body for Stripe signature verification — parse only after.
         if path == "/webhook":

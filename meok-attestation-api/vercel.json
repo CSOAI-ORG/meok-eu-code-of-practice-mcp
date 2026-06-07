@@ -1,8 +1,19 @@
 {
   "routes": [
-    { "src": "^/api/payg(?:/.*)?$", "dest": "/api/payg.py" },
-    { "src": "^/payg(?:/.*)?$", "dest": "/api/payg.py" },
-    { "src": "/(.*)", "dest": "/api/index.py" }
+    {
+      "src": "^/api/payg(?:/.*)?$",
+      "dest": "/api/payg.py"
+    },
+    {
+      "src": "^/payg(?:/.*)?$",
+      "dest": "/api/payg.py"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.py"
+    }
   ]
 }
-
