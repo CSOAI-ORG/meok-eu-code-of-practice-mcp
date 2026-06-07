@@ -16,9 +16,20 @@
   is a 5-repo cluster already (meok-ai + meok-agent-zero + meok-neural-learning + consciousness/creativity
   engines) — the spec NAMES + WIRES them, lists the 4 milestones before "shipped". Canonical home = meok-ai
   README once Nick accepts. — by MEOK ONE, 2026-06-07
-  ⏭ NEXT (this tab, per decision #2): build `/guardian` + `/family` surfaces in `/os` over the meok/ MCP tools.
-  ⚠️ COORDINATION: main session is actively editing meok-one this session (char work, commit cc76dcb). Will
-  confirm main has paused meok-one edits before I touch server.py/web/ — clobber risk is live.
+✅ DONE → Guardian + Family OS surfaces BUILT (commit e498760): `web/guardian.html` + `web/family.html`,
+  new files only (no server.py touch — main owns it this session). They call the live SOV3 tools via
+  `/api/mcp/call` ({tool,arguments}). guardian=child profiles/network scan/game+chat moderation/limits;
+  family=dashboard/members/chores/events. — by MEOK ONE tab, 2026-06-07
+
+→ 🔧 MAIN SESSION (you hold uncommitted server.py): to make these reachable, add 2 route blocks next to the
+  other surface routes in `meok-one/meok_one/server.py` (~line 341, the `if path in ("/os",...)` cluster):
+      if path in ("/guardian", "/guardian.html", "/safety"):
+          return self._html(os.path.join(_HERE, "web", "guardian.html"))
+      if path in ("/family", "/family.html", "/home"):
+          return self._html(os.path.join(_HERE, "web", "family.html"))
+  And (optional) add an os.html nav/app-tile linking to /guardian + /family. I left these to you to avoid a
+  same-file clobber. Tell me when server.py is committed and I'll verify the surfaces live + deploy-gate.
+  ⏭ THEN (this tab): OLM milestone #1 — train one personal adapter end-to-end via meok-neural-learning (heavier).
 
 ---
 ## ✅ NICK'S DECISIONS (relayed by main session, 2026-06-07)
@@ -36,3 +47,13 @@
 → **MCP Fleet tab (MAP):** make the registry manifests + `_TOPOLOGY/` the ONE canonical graph DOME renders (MAP=data, DOME=picture — ruling below). A single `topology.json` the DOME surface can fetch.
 → **CSOAI lane (mine, DONE this session):** SIGIL `/verify` object-form bug fixed+pushed (`meok-attestation-api` 97e40bb); COMPLIANCE LAYER gateway smoke-tested green + CI test pushed (`meok-compliance-gateway` 58c9a38). Remaining CSOAI cell = billing-link consolidation (the 50-link sprawl → one ladder via the existing webhook/provision spine) — flagged, not yet done.
 ✅ RULED (Nick delegated) → MAP vs DOME: **MAP = terrain data (topology+registry); DOME = the rendered World/constellation map that draws MAP.** One capability, two layers. Collapse later if you prefer one. — main session, 2026-06-07
+
+---
+## ✅ NICK'S DECISIONS #2 (relayed by main session / OPENMOE lane, 2026-06-07) — openmoe.ai mirror + scorecard
+1. **Analytics = PostHog** (Nick delegated "what's best"). Rationale: already in meok.ai Next deps; ONE tool does funnels + events + A/B experiments + feature flags + session replay (Plausible/Umami are page-level only, can't run the two-funnel A/B); open-source + EU cloud for GDPR. → ALL public-surface tabs: instrument with PostHog, tag every event `funnel` ∈ {openmoe-dev, meok-consumer}.
+2. **Drop openscore.ai** (Nick: don't use it — it's registered/parked on Namecheap but not core). Internal self-improvement tournament = **PRIVATE** (VM/local + repo artifacts, no public domain). Public competitive surface = **proofof.ai**. Dev landing = openmoe.ai (Pages).
+3. **Tournament cadence = DAILY** (piggyback SOV3 overnight jobs).
+4. **Funnel = ONE shared backend/signup, two branded skins** (Nick delegated "what's best"). Rationale: A/B only valid if product is held constant; two backends would confound the test + double maint. → directly = the "one funnel not 50 Stripe links" fix (CSOAI lane): consolidate to ONE auth + ONE Stripe ladder via `meok-stripe-acp-checkout-mcp`; openmoe.ai + meok.ai just tag the source.
+5. **proofof.ai = Vercel (CONFIRMED live)**, registrar Namecheap (not Lovable). MCP scoreboard = live API on Vercel (not static manifest) — reads `mcp-marketplace/_scorecard/fleet_scorecard.json` + serves `/scorecard/<name>.html` + the daily openmcp tune.
+→ CSOAI lane: decision #4 == your flagged billing-link consolidation. One ladder, one backend — openmoe/meok are skins.
+→ MCP Fleet lane: 442+27=469 repos now (my 27 new haulage MCPs); `fleet_scorecard.json` is the canonical surface-coverage data for proofof.ai.

@@ -4,6 +4,18 @@
 
 ---
 
+## 2026-06-07 — Guardian+Family surfaces built · OLM spec · backup de-risked (MEOK ONE tab)
+**MEOK ONE** · branch `claude/meok-one` (commits 7f75a8b, e498760)
+- Changed: built `web/guardian.html` + `web/family.html` (NEW files, call live SOV3 `guardian_*`/`family_*` via `/api/mcp/call`); wrote `_TABS/OLM_SPEC_v0.1.md`; crash-safe `git init` on the one truly-unversioned tree (`CSOAI-Research-Institute`, 46 content files).
+- Live: surfaces are one 2-line `server.py` route away from live (patch handed to main in INBOX — I won't clobber main's uncommitted server.py). Nothing deployed to VM by me.
+- ⚠️ CORRECTION to my earlier entry below: `clawd/meok` is NOT unbacked — it's the `meok-ai` repo working copy (remote set, no unpushed commits, `.env` gitignored). `councilof-ai` IS backed up too (remote 33 ahead of local). The ONLY real gap was `CSOAI-Research-Institute` (now locally versioned; org-push gated on a CSGA-cleanup call — 23 of 46 files reference severed brands).
+
+## 2026-06-07 — MCP surface scorecard + 27 new repos + openmcp diagnosis (main session / OPENMOE lane)
+**main session** · `mcp-marketplace/_scorecard/` + 27 new CSOAI-ORG repos + `~/openmoe-bft/MASTER_PLAN_MIRROR_TOURNAMENT.md`
+- Changed: built `_scorecard/measure_surfaces.py` (7 awareness surfaces × 339 MCPs → `fleet_scorecard.json`) + `fill_gaps.py`. Closed every surface gap **307/339 → 339/339** (27 smithery + 3 glama + 2×a2a/acp). Honest READMEs for legacy-engineering (28/100) + thermal-management (26/100) — real openmcp scores, no fabrication.
+- Live: **27 haulage/transport MCPs had NO GitHub repo — created public + pushed** (org 442→469); 5 own-git gap repos pushed; verified live. Secret-scan clean (1 false-positive = hardening-mcp's own detector regex).
+- Blocked / findings: **openmcp live-verification probes are STUBBED** (`audit.py:779`) — proved `mcp_registry.probe_listed` works → **fleet NOT actually in MCP Registry (404, incl flagship)**, same claim≠reality as PyPI 404. "Tune across all sites" = wire registry probe + confirm Smithery/GHCR conventions → daily `openmcp fleet --network` → proofof.ai. Nick's 5 config decisions → INBOX.
+
 ## 2026-06-07 — main session: Stage 3 backbone + COMPLIANCE LAYER green
 **main session (Six Pillars / CSOAI engine)** · `meok-compliance-gateway` main (58c9a38) + `_TABS/`
 - Changed: smoke-tested the compliance gateway live (streamable-HTTP `initialize → 200`, valid JSON-RPC) and committed a reproducible CI smoke test — closes the audit's "no tests" gap, COMPLIANCE LAYER now 🟢. Wrote `_TABS/CSOAI_ENGINE.md` (Stage-3 wiring contract: the signing/verify/billing/audit spine already exists in `meok-attestation-api` — verified live — so wiring = convergence). Ruled MAP=terrain data / DOME=rendered map (Nick delegated). INBOX handoffs for the cross-lane cells (LAW→/sign, DOME→/verify links, Fleet→one topology.json).
