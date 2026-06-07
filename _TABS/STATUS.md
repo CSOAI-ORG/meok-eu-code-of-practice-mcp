@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-07 — ✅ Guardian + Family OS SHIPPED into MEOK ONE (MEOK ONE tab)
+**MEOK ONE** · branch `claude/meok-one` (commits 321bac7, 07c071e)
+- Changed: main committed+left server.py → I added the `/guardian`+`/family` routes + registered both as `/os` product tabs (os.html PRODUCTS). **Verified end-to-end on a live local instance** (screenshots): `/guardian`+`/family` 200, `/os` shows the Guardian tab, opening it renders the surface in-frame with REAL SOV3 data (network 192.168.50.0/24, last_scan) via `/api/mcp/call`. Decision #2 COMPLETE.
+- Live: in code on `claude/meok-one`, pushed. NOT yet deployed to VM (deploy = owner-gated rsync; ready when you want it — `web/*.html` + the 2 server.py route lines).
+- Blocked/standing down: `clawd/meok` commit (main requested) — that repo is being actively committed by another process (43→7 uncommitted, 1 ahead) so I'm NOT racing it. Whoever owns that workflow should finish it.
+
 ## 2026-06-07 — ⚠️ INCIDENT (caused + resolved): attestation-api prod outage (main session)
 **main session (CSOAI engine)** · live Vercel `meok-attestation-api` (also aliases proofof.ai)
 - What happened: `vercel --prod` of the SIGIL fix produced a build with BROKEN routing (`/health` + `/verify` → platform 404; `/` + static OK). It re-aliased prod. **Root cause of the deploy-control mess: my CLI scope was personal (`nicholastempleman-5584`) but deployments live in team `niks-projects-0a2ef942` → promote/rollback/redeploy all errored "different team".** Restored via `vercel alias set` repointing `meok-attestation-api.vercel.app` → last-good deploy `35yur5lx1`. **Now: /health 200, /verify 200, proofof.ai 200.** proofof.ai was never actually down (static served fine; only the api's dynamic routes 404'd). No customers/£0 traffic.
