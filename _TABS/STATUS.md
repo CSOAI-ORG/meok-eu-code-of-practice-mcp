@@ -4,11 +4,11 @@
 
 ---
 
-## 2026-06-07 — main session: Stripe billing consolidation groundwork (CSOAI lane)
+## 2026-06-07 — main session: Stripe canonical ladder BUILT (CSOAI lane)
 **main session (CSOAI engine)** · live Stripe `acct_1TLlEKQvIueK5Xpb` (MEOK AI LTD) + `_TABS/BILLING_CONSOLIDATION.md`
-- Changed: audited live Stripe (10 products, 1 recurring = MEOK ONE Pro £9/mo, rest one-time + PAYG; balance £0). **Set `default_price` on ALL 10 products** (was null on every one — the root cause of link-sprawl since every Buy button had to hardcode a throwaway link). Safe/reversible, no charge. Flagged the live-vs-memory price gap.
-- Live: products now resolve product→price; `meok-stripe-acp-checkout-mcp` + skins can reference stable product ids instead of throwaway links.
-- Blocked / for Nick: (1) canonical consumer ladder — live MEOK ONE Pro is **£9/mo**, memory said £19/Team £99; no Team or recurring £79 exists live — need the ladder confirmed before I set recurring prices on the live account; (2) link retirement needs the dashboard (Stripe MCP can't paginate payment_links).
+- Changed: audited live Stripe; **set `default_price` on all 10 existing products** (all were null — root cause of link sprawl); **built the canonical ladder per Nick's call** — Pro £9/mo kept + **created MEOK ONE Team £99/mo** (`prod_Ueyf62wJ4gPeCZ` / `price_1TfeiJQvIueK5Xpb8WqLVMWe`, default set). Free=£0/no Stripe.
+- Live: ladder is live (Free · Pro £9 · Team £99); every product resolves product→default_price so the ACP MCP + openmoe/meok skins reference stable ids, not throwaway links.
+- Blocked / open: (1) 2 canonical payment links couldn't be minted via Stripe MCP (form-encoder rejects line_items array) → make via ACP MCP or dashboard; (2) legacy link retirement = dashboard (MCP can't paginate). Neither blocks checkout.
 
 ## 2026-06-07 — Guardian+Family surfaces built · OLM spec · backup de-risked (MEOK ONE tab)
 **MEOK ONE** · branch `claude/meok-one` (commits 7f75a8b, e498760)
