@@ -74,3 +74,13 @@ Trade-off: a second origin means CORS + a config constant to keep in sync. One-o
 ## Verify it's the right build
 The E2E gate (`cd e2e && npx playwright test`) must be **green against the live host** too — point
 `baseURL` in `e2e/playwright.config.js` at `https://<host>` and run it once after deploy.
+
+## Keep the chat model warm (no cold-starts)
+
+Ollama evicts `meok-sov3` after ~30m idle; a cold reload + long-prompt prefill is ~90s.
+`router._ask_local` sends `keep_alive: 30m`, and a cron on the VM (user `meok`) keeps it
+resident regardless of traffic — re-add on a VM rebuild:
+
+```cron
+*/20 * * * * curl -s http://localhost:11434/api/generate -d '{"model":"meok-sov3","prompt":"hi","stream":false,"keep_alive":"30m","options":{"num_predict":1}}' >/dev/null 2>&1  # keep meok-sov3 warm
+```
