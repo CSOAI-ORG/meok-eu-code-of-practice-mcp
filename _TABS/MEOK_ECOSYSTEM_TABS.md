@@ -2,8 +2,9 @@
 *Authored 2026-06-07. This is the shared source of truth for parallel Claude Code tabs.*
 
 > 🧭 Companion lens: **`SIX_PILLARS.md`** maps Nick's six names (SIGIL · LAW · MAP ·
-> COMPLIANCE LAYER · DOME · COUNCIL) onto these ecosystems + the CSOAI-as-engine
-> wiring contract. This hub wins on inventory/ownership; that doc wins on architecture.
+> COMPLIANCE LAYER · DOME · COUNCIL) onto these ecosystems. **`CSOAI_ENGINE.md`** is the
+> Stage-3 wiring contract (the one runtime's endpoints + per-pillar targets).
+> This hub wins on inventory/ownership; those docs win on architecture/wiring.
 
 ## Is multi-tab a good idea? — Yes, WITH guardrails (honest answer)
 It's a force-multiplier **only if tabs don't clobber each other.** We spent a whole session

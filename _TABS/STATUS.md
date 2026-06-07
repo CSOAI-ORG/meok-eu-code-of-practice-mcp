@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-07 — main session: Stage 3 backbone + COMPLIANCE LAYER green
+**main session (Six Pillars / CSOAI engine)** · `meok-compliance-gateway` main (58c9a38) + `_TABS/`
+- Changed: smoke-tested the compliance gateway live (streamable-HTTP `initialize → 200`, valid JSON-RPC) and committed a reproducible CI smoke test — closes the audit's "no tests" gap, COMPLIANCE LAYER now 🟢. Wrote `_TABS/CSOAI_ENGINE.md` (Stage-3 wiring contract: the signing/verify/billing/audit spine already exists in `meok-attestation-api` — verified live — so wiring = convergence). Ruled MAP=terrain data / DOME=rendered map (Nick delegated). INBOX handoffs for the cross-lane cells (LAW→/sign, DOME→/verify links, Fleet→one topology.json).
+- Live: gateway smoke green locally (eu-ai-act server); SIGIL `/verify` fix on `meok-attestation-api` main (prod deploy still on Vercel 24h cap).
+- Blocked / for Nick: (1) SIGIL prod deploy waiting on cap reset; (2) cross-lane wiring (LAW/DOME/MAP) is in MEOK ONE + Fleet lanes — handed off, not done here (would clobber the live MEOK ONE tab); (3) billing 50-link consolidation still open.
+
 ## 2026-06-07 — FULL GitHub + PC inventory sweep (MEOK ONE tab)
 **MEOK ONE** · branch `claude/meok-one`
 - Changed: swept all **442 CSOAI-ORG repos** (15 priv) + local tree → `_TABS/_inventory/{GITHUB,LOCAL}_INVENTORY_2026-06-07.md`. CSGA/Terranova excluded on sight. Folded the misses into the hub.

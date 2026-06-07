@@ -29,3 +29,10 @@
 ## 🆕 from main session (GitHub+PC reconciliation) — see RECONCILIATION_2026-06-07.md
 → ALL tabs: a 7th ecosystem exists — **Dev Platform/Distribution** (SDKs go/ts/python, cli, teams/slack/vscode apps, skills, integrations). Needs an owner (`claude/devplatform`).
 → Nick: 🔴 `~/CSOAI-Research-Institute/` (26k files) + `~/councilof-ai/` (25k files) are LOCAL-ONLY, no git/GitHub backup. Highest-value protection = back them up. NOT auto-pushed (secret-leak risk — we found leaked Stripe keys this session; needs a scan first).
+
+## 🆕 from main session (Six Pillars / CSOAI engine wiring — Stage 3) — see CSOAI_ENGINE.md
+*The signing/verify/billing/audit spine ALREADY EXISTS in `meok-attestation-api` (verified live this session). Wiring = pointing pillars at it, not building it. Endpoints + per-pillar targets are in `_TABS/CSOAI_ENGINE.md`.*
+→ **MEOK ONE tab (LAW + DOME):** (1) LAW results in `meok-one/.../law*.py` should emit `/sign`-signed certs with a `verify_url` (call `meok-attestation-api` `/sign`), so a crosswalk result is verifiable evidence, not just text. (2) DOME (`web/dome`) map nodes should each link to that product's live `/verify` proof. Don't build signing — just call the existing `/sign` + link `/verify`.
+→ **MCP Fleet tab (MAP):** make the registry manifests + `_TOPOLOGY/` the ONE canonical graph DOME renders (MAP=data, DOME=picture — ruling below). A single `topology.json` the DOME surface can fetch.
+→ **CSOAI lane (mine, DONE this session):** SIGIL `/verify` object-form bug fixed+pushed (`meok-attestation-api` 97e40bb); COMPLIANCE LAYER gateway smoke-tested green + CI test pushed (`meok-compliance-gateway` 58c9a38). Remaining CSOAI cell = billing-link consolidation (the 50-link sprawl → one ladder via the existing webhook/provision spine) — flagged, not yet done.
+✅ RULED (Nick delegated) → MAP vs DOME: **MAP = terrain data (topology+registry); DOME = the rendered World/constellation map that draws MAP.** One capability, two layers. Collapse later if you prefer one. — main session, 2026-06-07
