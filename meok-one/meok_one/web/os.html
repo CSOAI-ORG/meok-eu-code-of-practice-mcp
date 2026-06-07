@@ -190,6 +190,20 @@
   .vm-btn.on{background:var(--accent);border-color:var(--accent);color:#fff}
   .vm-x{position:absolute;top:16px;right:16px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.07);
     border:1px solid var(--line);color:var(--ink);font-size:20px;cursor:pointer;line-height:1}
+  /* ===== ANIME MODE — opt-in vivid skin (toggle via "anime mode") ===== */
+  body.anime{--line:rgba(255,79,163,.34)}
+  body.anime .stage h1{filter:drop-shadow(0 0 12px rgba(255,79,163,.55)) drop-shadow(0 0 24px rgba(34,211,238,.3))}
+  body.anime .modebar button.on,body.anime #send,body.anime .composer button,body.anime .prodtabs button.on{
+    box-shadow:0 0 16px rgba(255,79,163,.6);text-shadow:0 0 8px rgba(255,255,255,.5)}
+  body.anime .win{border-color:rgba(255,79,163,.28);box-shadow:0 0 28px rgba(34,211,238,.1),inset 0 0 1px rgba(255,79,163,.4)}
+  body.anime .msg.char{border-color:rgba(34,211,238,.35);box-shadow:0 0 14px rgba(34,211,238,.12)}
+  body.anime .msg.user{box-shadow:0 0 14px rgba(255,79,163,.45)}
+  body.anime #voiceMode canvas{filter:drop-shadow(0 0 50px rgba(255,79,163,.5)) saturate(1.3)}
+  /* a soft sweeping sheen — the "anime sparkle", GPU-cheap */
+  body.anime::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;mix-blend-mode:screen;opacity:.5;
+    background:linear-gradient(115deg,transparent 40%,rgba(255,79,163,.10) 48%,rgba(34,211,238,.10) 52%,transparent 60%);
+    background-size:300% 300%;animation:animeSheen 7s linear infinite}
+  @keyframes animeSheen{0%{background-position:120% 0}100%{background-position:-120% 0}}
 </style>
 </head>
 <body class="simple">
@@ -677,21 +691,25 @@ function speak(text){
 function ack(msg,voice){ addMsg(CHAR,msg,"char"); log("tui",`❯ ${msg}`); if(voice||VOICE_ON) speak(msg); }
 function applyTheme(t){
   const r=document.documentElement.style, b=document.body.style;
-  if(/gold|warm/.test(t)){ r.setProperty("--accent","#f5c542"); r.setProperty("--accent2","#ffb648"); b.filter=""; }
+  const anime=/anime|manga|kawaii|otaku/.test(t);
+  document.body.classList.toggle("anime",anime);   // Anime Mode = a vivid, stylised skin (opt-in)
+  if(anime){ r.setProperty("--accent","#ff4fa3"); r.setProperty("--accent2","#22d3ee"); b.filter="saturate(1.15)"; }
+  else if(/gold|warm/.test(t)){ r.setProperty("--accent","#f5c542"); r.setProperty("--accent2","#ffb648"); b.filter=""; }
   else if(/calm|cool|blue|teal|soft/.test(t)){ r.setProperty("--accent","#38bdf8"); r.setProperty("--accent2","#34d399"); b.filter=""; }
   else if(/dark/.test(t)){ b.filter="brightness(.84)"; }
   else if(/bright|light|vibrant/.test(t)){ b.filter="brightness(1.12)"; r.setProperty("--accent","#a855f7"); r.setProperty("--accent2","#ff5ca8"); }
   else { r.setProperty("--accent","#7c5cff"); r.setProperty("--accent2","#ff5ca8"); b.filter=""; }
-  try{ localStorage.setItem("meok_theme",JSON.stringify({a:r.getPropertyValue("--accent"),a2:r.getPropertyValue("--accent2"),f:b.filter})); }catch(_){}
-  return /gold|warm/.test(t)?"warm gold":/calm|cool|blue|teal|soft/.test(t)?"calmer":/dark/.test(t)?"darker":/bright|light|vibrant/.test(t)?"brighter":"reset";
+  try{ localStorage.setItem("meok_theme",JSON.stringify({a:r.getPropertyValue("--accent"),a2:r.getPropertyValue("--accent2"),f:b.filter,anime})); }catch(_){}
+  return anime?"anime mode ✨":/gold|warm/.test(t)?"warm gold":/calm|cool|blue|teal|soft/.test(t)?"calmer":/dark/.test(t)?"darker":/bright|light|vibrant/.test(t)?"brighter":"reset";
 }
-function restoreTheme(){ try{ const s=JSON.parse(localStorage.getItem("meok_theme")||"null"); if(s){ const r=document.documentElement.style; if(s.a)r.setProperty("--accent",s.a); if(s.a2)r.setProperty("--accent2",s.a2); document.body.style.filter=s.f||""; } }catch(_){} }
+function restoreTheme(){ try{ const s=JSON.parse(localStorage.getItem("meok_theme")||"null"); if(s){ const r=document.documentElement.style; if(s.a)r.setProperty("--accent",s.a); if(s.a2)r.setProperty("--accent2",s.a2); document.body.style.filter=s.f||""; document.body.classList.toggle("anime",!!s.anime); } }catch(_){} }
 restoreTheme();
 function tryLocalCommand(text,voice){
   const t=text.toLowerCase();
   const cmd=/\b(view|mode|window|layout|show|switch|make it|go to|open|minimi[sz]e|maximi[sz]e|expand|put it|set it|turn it|change to|give me)\b/.test(t);
   const L=[[/\b(simple|minimal|clean)\b/,"simple"],[/\b(pro|three|3[ -]?window|all windows|full view|everything)\b/,"pro"],[/\b(council|debate|panel)\b/,"council"],[/\b(orb|circle|minimi[sz]e|float|tiny|bubble)\b/,"orb"]];
   if(cmd){ for(const [re,m] of L){ if(re.test(t)){ setMode(m); ack(`Switched to ${m} view.`,voice); return true; } } }
+  if(/\b(anime|manga|kawaii|otaku)\b/.test(t)){ ack(`Done — ${applyTheme(t)}.`,voice); return true; }
   if(/\b(theme|colou?r|make it|turn it|go)\b/.test(t) && /\b(calm|calmer|dark|darker|gold|golden|warm|warmer|bright|brighter|light|vibrant|cool|blue|teal|soft|reset|default)\b/.test(t)){
     ack(`Done — ${applyTheme(t)} theme.`,voice); return true;
   }
