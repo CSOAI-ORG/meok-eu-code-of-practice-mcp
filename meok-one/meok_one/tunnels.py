@@ -74,8 +74,26 @@ def open_all_tunnels() -> dict:
 
 def safe_call(tool: str, args: dict = None, confirm: str = None) -> dict:
     """The ONE call a character makes. Read-only by default; writes need a human confirm
-    token; prohibited always refused. Thin wrapper over the gateway choke point."""
-    return gw.invoke(tool, args or {}, confirm=confirm, allow=("read",))
+    token; prohibited always refused. Thin wrapper over the gateway choke point.
+
+    AUDIT: every call through the gateway is recorded as ONE tamper-evident SIGIL line
+    (hash-chained via meok-sigil — reuses the existing DSL, no new ledger). An `S` opcode
+    captures {tool, tier, executed, confirmed}; a refused/prohibited call also emits an `A`
+    alert. So the whole tool-call history is `sigil.verify_chain()`-able — exactly the
+    "every action tamper-evidently logged" property (EU AI Act Art 12/14)."""
+    res = gw.invoke(tool, args or {}, confirm=confirm, allow=("read",))
+    try:
+        from . import sigil
+        tier = res.get("tier", "?")
+        sigil.record({"op": "S", "fields": {
+            "tool": tool, "tier": tier,
+            "exec": bool(res.get("executed")), "conf": bool(confirm)}})
+        if tier == "prohibited" or res.get("refused"):
+            sigil.record({"op": "A", "level": "prohibited",
+                          "msg": f"gateway refused {tool}"})
+    except Exception:  # noqa: BLE001 — audit is best-effort, never blocks the call
+        pass
+    return res
 
 
 if __name__ == "__main__":

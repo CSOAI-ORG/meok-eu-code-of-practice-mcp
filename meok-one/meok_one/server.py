@@ -316,6 +316,17 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/mcp/tools":
             from . import mcp_bridge as _mb
             return self._json(200, _mb.list_tools())
+        if path == "/api/king/hives":
+            from .hive_king import hives as _hives
+            return self._json(200, {"count": 28, "hives": _hives()})
+        if path in ("/constellation", "/constellation.html", "/ecosystem"):
+            from . import constellation as _con
+            body = _con.render().encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            return self.wfile.write(body)
         if path in ("/", "/index.html"):
             return self._html(_INDEX)
         if path in ("/avatar", "/avatar.html", "/3d"):
