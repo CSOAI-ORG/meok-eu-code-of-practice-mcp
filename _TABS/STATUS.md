@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-07 — FULL GitHub + PC inventory sweep (MEOK ONE tab)
+**MEOK ONE** · branch `claude/meok-one`
+- Changed: swept all **442 CSOAI-ORG repos** (15 priv) + local tree → `_TABS/_inventory/{GITHUB,LOCAL}_INVENTORY_2026-06-07.md`. CSGA/Terranova excluded on sight. Folded the misses into the hub.
+- Found: **OLM is real** = 5-repo cluster (`meok-ai`+`meok-agent-zero`+`meok-neural-learning`+consciousness/creativity engines) — corrected my earlier "not built". Plus a 23-repo **Distribution layer** (CLI/SDKs/IDE/Slack/Teams), the Stripe ACP checkout bridge, standalone products (pokerhud/diyhelp/loopfactory/suicidestop/asisecurity).
+- Blocked / risk: **Guardian/Family/Characters source (`clawd/meok/`, 3.9 GB) + wolf-actuator are LOCAL-ONLY, unpushed** — backup risk. Asimov NOT on disk (jpeg only).
+
 ## 2026-06-07 — main session: SIGIL trust-anchor fix + Six-Pillars lens + GitHub align
 **main session** · `meok-attestation-api` repo `main` (pushed 97e40bb) + `_TABS/` (clawd-workspace)
 - Changed: fixed the public `/verify` trust anchor — it crashed (`'dict' object has no attribute 'encode'`) on the documented object form `{payload:{...},signature}`; now re-canonicalises dict payloads so HMAC matches the signer. +regression test (both forms + tamper rejection, all pass). Added `_TABS/SIX_PILLARS.md` (architecture lens: SIGIL/LAW/MAP/COMPLIANCE/DOME/COUNCIL → real homes + CSOAI-engine wiring contract). Corrected DOME = MEOK World/constellation map (ours), NOT 3rd-party AIdome. Removed an orphan doc I'd wrongly left at `~/` (outside the repo).
