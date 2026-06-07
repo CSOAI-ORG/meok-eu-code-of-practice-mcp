@@ -100,15 +100,30 @@ def applicable(region: str, entity: str = "ai_agent") -> dict:
     """Which rules apply to THIS entity in THIS region, + the obligations it triggers."""
     r, rid = _region(region)
     entity = entity if entity in _ENTITIES else "ai_agent"
-    binding = [{"id": x, "name": _fw(x).get("name", x), "cite": _fw(x).get("cite", ""),
-                "note": _fw(x).get("note", "")} for x in r.get("binding", [])]
-    advisory = [{"id": x, "name": _fw(x).get("name", x), "cite": _fw(x).get("cite", "")}
-                for x in r.get("advisory", [])]
+    # Region frameworks. Physical entities (robots/humanoids + their builders) ALSO pick up
+    # the physical-safety layer — machinery law for their region + the global robot-safety
+    # standards (ISO 13482 / 10218 / 45001). This is the "MEOK Space" physical crosswalk.
+    reg_binding = list(r.get("binding", []))
+    reg_advisory = list(r.get("advisory", []))
+    if entity in ("humanoid", "robotics_company"):
+        for fid, f in _load()["frameworks"].items():
+            if not f.get("physical"):
+                continue
+            if f.get("region") not in ("GLOBAL", rid):
+                continue
+            tgt = reg_binding if f.get("binding") else reg_advisory
+            if fid not in tgt:
+                tgt.append(fid)
 
-    # obligations = union of topics across this region's frameworks -> plain-English duties
+    binding = [{"id": x, "name": _fw(x).get("name", x), "cite": _fw(x).get("cite", ""),
+                "note": _fw(x).get("note", "")} for x in reg_binding]
+    advisory = [{"id": x, "name": _fw(x).get("name", x), "cite": _fw(x).get("cite", "")}
+                for x in reg_advisory]
+
+    # obligations = union of topics across the applicable frameworks -> plain-English duties
     topic_ob = _load()["topic_obligations"]
     topics, seen = [], set()
-    for x in r.get("binding", []) + r.get("advisory", []):
+    for x in reg_binding + reg_advisory:
         for t in _fw(x).get("topics", []):
             if t in topic_ob and t not in seen:
                 seen.add(t)
@@ -117,9 +132,9 @@ def applicable(region: str, entity: str = "ai_agent") -> dict:
     # entity-specific overlay
     extra = []
     if entity == "humanoid":
-        extra.append("Physical robots ALSO fall under product & machinery safety law "
-                     "(e.g. EU Machinery Regulation 2023/1230, ISO 13482 for personal-care "
-                     "robots). MEOK LAW does not yet crosswalk those — treat as additional.")
+        extra.append("As a physical robot you carry BOTH the AI rules above AND physical-safety "
+                     "law: machinery safety (CE/UKCA) before market, ISO 13482 for personal-care "
+                     "robots, and ISO/TS 15066 force limits whenever you share space with people.")
     if entity in ("business", "robotics_company"):
         extra.append("As a deployer/builder you carry the obligations of every AI system you "
                      "ship or run — classify each system's risk tier and keep evidence per system.")
