@@ -172,6 +172,24 @@
   .codebig{font:700 30px/1.2 ui-monospace,monospace;letter-spacing:.3em;color:var(--accent2);margin:14px 0;padding:12px;border:1px dashed rgba(56,189,248,.5);border-radius:12px}
   .acctin{background:#0a0a14;border:1px solid var(--line);border-radius:10px;padding:.6rem .8rem;color:var(--ink);
     font:600 18px ui-monospace,monospace;text-align:center;letter-spacing:.25em;width:60%;text-transform:uppercase}
+  /* ===== VOICE MODE — immersive hands-free voice OS: Web-Audio reactive orb + live STT + TTS ===== */
+  #voiceMode{position:fixed;inset:0;z-index:80;display:none;flex-direction:column;align-items:center;justify-content:center;
+    background:radial-gradient(130% 120% at 50% 28%,rgba(38,24,72,.97),rgba(6,5,16,.99));backdrop-filter:blur(22px);
+    opacity:0;transition:opacity .5s ease;-webkit-tap-highlight-color:transparent;user-select:none}
+  #voiceMode.on{display:flex;opacity:1}
+  #voiceMode canvas{width:min(76vw,300px);height:min(76vw,300px);touch-action:none;filter:drop-shadow(0 0 40px rgba(124,92,255,.35))}
+  .vm-state{margin-top:20px;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);min-height:16px;transition:color .3s}
+  .vm-state b{color:var(--accent2);font-weight:700}
+  .vm-tx{margin-top:14px;max-width:min(88vw,540px);text-align:center;font-size:19px;line-height:1.5;color:#fff;min-height:58px;padding:0 16px}
+  .vm-tx .interim{color:var(--dim)}
+  .vm-hint{position:absolute;bottom:118px;color:rgba(255,255,255,.35);font-size:12px;text-align:center;width:100%;padding:0 20px}
+  .vm-ctrls{position:absolute;bottom:38px;display:flex;gap:12px;align-items:center}
+  .vm-btn{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--ink);border-radius:999px;
+    padding:11px 19px;font-size:13px;font-weight:600;cursor:pointer;backdrop-filter:blur(8px);display:inline-flex;gap:7px;align-items:center;transition:.18s}
+  .vm-btn:hover{border-color:var(--accent)}
+  .vm-btn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .vm-x{position:absolute;top:16px;right:16px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.07);
+    border:1px solid var(--line);color:var(--ink);font-size:20px;cursor:pointer;line-height:1}
 </style>
 </head>
 <body class="simple">
@@ -648,8 +666,11 @@ function speak(text){
     const vs=speechSynthesis.getVoices().filter(v=>/en[-_]/i.test(v.lang||""));
     if(vs.length){ const pv=pickVoice(vs,VOICE_SPEC.voice); if(pv) u.voice=pv; }
     const cf=$("#charFrame").contentWindow;
-    try{ cf.postMessage({type:"meok-speak",state:"start"},"*"); }catch(_){}
-    u.onend=()=>{ try{ cf.postMessage({type:"meok-speak",state:"end"},"*"); }catch(_){} };
+    const emit=(state)=>{ try{ cf.postMessage({type:"meok-speak",state},"*"); }catch(_){}
+      try{ window.dispatchEvent(new CustomEvent("meok-tts",{detail:{state}})); }catch(_){} };
+    u.onstart=()=>emit("start");
+    u.onend=()=>emit("end");
+    u.onerror=()=>emit("end");
     speechSynthesis.speak(u);
   }catch(_){}
 }
@@ -914,6 +935,131 @@ window.addEventListener("keydown",e=>{ if(e.altKey&&e.key>="1"&&e.key<="4")setMo
   $("#detX").onclick=close; M.onclick=e=>{ if(e.target===M) close(); };
   $("#detBtn").onclick=()=>open(CHAR);
   window.__openDetail=open;
+})();
+
+/* ===== VOICE MODE — immersive hands-free voice OS: real Web-Audio reactive orb +
+   live interim STT + per-character TTS + listen→think→speak→listen loop. No deps. ===== */
+(function(){
+  const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
+  let el=null, canvas=null, ctx=null, stateEl=null, txEl=null, hfBtn=null;
+  let ac=null, analyser=null, micStream=null, dataArr=null, raf=0;
+  let rec=null, listening=false, handsfree=true, open=false;
+  let level=0, speakLevel=0, state="idle", t=0;
+
+  function build(){
+    el=document.createElement("div"); el.id="voiceMode";
+    el.innerHTML=
+      '<button class="vm-x" title="close (Esc)">✕</button>'+
+      '<canvas width="600" height="600"></canvas>'+
+      '<div class="vm-state"></div>'+
+      '<div class="vm-tx"></div>'+
+      '<div class="vm-hint">Speak naturally — your character listens, thinks, and replies out loud. Tap the orb or Esc to leave.</div>'+
+      '<div class="vm-ctrls">'+
+        '<button class="vm-btn vm-hf on">🔁 Hands-free</button>'+
+        '<button class="vm-btn vm-end">🎙 Speak</button>'+
+      '</div>';
+    document.body.appendChild(el);
+    canvas=el.querySelector("canvas"); ctx=canvas.getContext("2d");
+    stateEl=el.querySelector(".vm-state"); txEl=el.querySelector(".vm-tx");
+    hfBtn=el.querySelector(".vm-hf");
+    el.querySelector(".vm-x").onclick=exit;
+    canvas.onclick=exit;
+    hfBtn.onclick=()=>{ handsfree=!handsfree; hfBtn.classList.toggle("on",handsfree);
+      hfBtn.innerHTML=handsfree?"🔁 Hands-free":"☝️ Single"; if(handsfree&&state==="idle") listen(); };
+    el.querySelector(".vm-end").onclick=()=>{ try{speechSynthesis.cancel();}catch(_){}
+      if(state==="listening"){ try{rec&&rec.stop();}catch(_){} } else listen(); };
+    document.addEventListener("keydown",ev=>{ if(open&&ev.key==="Escape") exit(); });
+  }
+
+  const LABELS={idle:"tap the orb to leave · 🎙 to speak",listening:"<b>listening…</b>",
+                thinking:"thinking…",speaking:"<b>speaking…</b>"};
+  function setState(s,label){ state=s; if(stateEl) stateEl.innerHTML=label||LABELS[s]||s; }
+  function setTx(html){ if(txEl) txEl.innerHTML=html; }
+
+  async function startAudio(){
+    try{
+      micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+      ac=new (window.AudioContext||window.webkitAudioContext)();
+      if(ac.state==="suspended"){ try{ await ac.resume(); }catch(_){} }
+      const src=ac.createMediaStreamSource(micStream);
+      analyser=ac.createAnalyser(); analyser.fftSize=256; analyser.smoothingTimeConstant=.82;
+      dataArr=new Uint8Array(analyser.frequencyBinCount); src.connect(analyser);
+    }catch(e){ /* no mic → the orb still animates synthetically */ }
+  }
+  function stopAudio(){ try{ micStream&&micStream.getTracks().forEach(x=>x.stop()); }catch(_){}
+    try{ ac&&ac.close(); }catch(_){} micStream=null; ac=null; analyser=null; }
+  function micEnergy(){ if(!analyser) return 0; analyser.getByteFrequencyData(dataArr);
+    let s=0; for(let i=0;i<dataArr.length;i++) s+=dataArr[i]; return (s/dataArr.length)/255; }
+
+  function draw(){
+    t+=0.016;
+    const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2;
+    let target;
+    if(state==="listening") target=micEnergy()*1.7;
+    else if(state==="speaking"){ target=0.34+0.42*Math.abs(Math.sin(t*7))+speakLevel; speakLevel*=0.9; }
+    else if(state==="thinking") target=0.18+0.07*Math.sin(t*3);
+    else target=0.10+0.04*Math.sin(t*1.6);
+    level += (target-level)*0.18; const lv=Math.max(0,Math.min(1.4,level));
+    const cs=getComputedStyle(document.documentElement);
+    const acc=(cs.getPropertyValue("--accent").trim()||"#7c5cff");
+    const acc2=(cs.getPropertyValue("--accent2").trim()||"#ff5ca8");
+    ctx.clearRect(0,0,W,H);
+    const base=W*0.16, r=base*(1+lv*0.55);
+    const g=ctx.createRadialGradient(cx,cy,r*0.2,cx,cy,r*2.4);
+    g.addColorStop(0,acc+"cc"); g.addColorStop(0.5,acc+"22"); g.addColorStop(1,"transparent");
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,r*2.4,0,7); ctx.fill();
+    const bins=48; ctx.lineWidth=3; ctx.strokeStyle=acc2; ctx.beginPath();
+    for(let i=0;i<=bins;i++){ const a=(i/bins)*Math.PI*2; let amp;
+      if(analyser&&state==="listening") amp=(dataArr[i%dataArr.length]/255);
+      else { amp=(0.4+0.6*Math.abs(Math.sin(a*4+t*3)))*lv; }
+      const rr=r*1.15+amp*base*0.7, x=cx+Math.cos(a+t*0.3)*rr, y=cy+Math.sin(a+t*0.3)*rr;
+      i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+    ctx.closePath(); ctx.globalAlpha=0.5; ctx.stroke(); ctx.globalAlpha=1;
+    const ng=ctx.createRadialGradient(cx-r*0.3,cy-r*0.3,r*0.1,cx,cy,r);
+    ng.addColorStop(0,"#ffffff"); ng.addColorStop(0.4,acc); ng.addColorStop(1,acc2);
+    ctx.fillStyle=ng; ctx.beginPath(); ctx.arc(cx,cy,r,0,7); ctx.fill();
+    raf=requestAnimationFrame(draw);
+  }
+
+  function listen(){
+    if(!SR){ setState("idle","voice input isn't supported in this browser — use the text box"); return; }
+    try{ rec&&rec.abort(); }catch(_){}
+    rec=new SR(); rec.lang="en-GB"; rec.interimResults=true; rec.continuous=false;
+    let finalTx="";
+    setState("listening"); setTx('<span class="interim">…</span>');
+    rec.onresult=e=>{ let interim="";
+      for(let i=e.resultIndex;i<e.results.length;i++){ const r=e.results[i];
+        if(r.isFinal) finalTx+=r[0].transcript; else interim+=r[0].transcript; }
+      setTx((finalTx?'<span>'+finalTx+'</span> ':'')+'<span class="interim">'+interim+'</span>'); };
+    rec.onerror=ev=>{ if(ev.error==="not-allowed") setState("idle","mic permission needed — allow it and tap 🎙"); };
+    rec.onend=()=>{ listening=false; const txt=(finalTx||"").trim();
+      if(txt) submit(txt);
+      else if(handsfree&&open&&state==="listening") listen();
+      else setState("idle"); };
+    try{ rec.start(); listening=true; }catch(_){}
+  }
+
+  function submit(text){
+    try{ rec&&rec.abort(); }catch(_){} listening=false;
+    setTx('<span>'+text+'</span>'); setState("thinking");
+    try{ sendChat(text,true); }catch(_){}      // real sovereign-gated turn; voice=true → speaks back
+    setTimeout(()=>{ if(open&&state==="thinking"){ handsfree?listen():setState("idle"); } },14000);
+  }
+
+  window.addEventListener("meok-tts",e=>{ if(!open) return;
+    const st=e.detail&&e.detail.state;
+    if(st==="start"){ setState("speaking"); speakLevel=0.5; }
+    else if(st==="end"){ handsfree?setTimeout(()=>{ open&&listen(); },350):setState("idle"); } });
+
+  async function enter(){ if(!el) build(); open=true; el.classList.add("on");
+    setState("idle"); setTx(""); await startAudio(); if(!raf) draw(); listen(); }
+  function exit(){ open=false; el&&el.classList.remove("on");
+    try{ rec&&rec.abort(); }catch(_){} rec=null; listening=false;
+    try{ speechSynthesis.cancel(); }catch(_){} cancelAnimationFrame(raf); raf=0; stopAudio(); }
+
+  window.__voiceMode={enter,exit};
+  const mic=$("#mic");
+  if(mic){ mic.title="voice mode — immersive hands-free"; mic.onclick=()=>{ open?exit():enter(); }; }
 })();
 </script>
 </body>
