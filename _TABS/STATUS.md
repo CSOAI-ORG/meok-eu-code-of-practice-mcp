@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-08 — ✅ chat-timeout FIXED + deployed to VM (local-first + fast cloud fallback) — main session
+**main session** · `meok-one/meok_one/{router,brains}.py` (commit 792a6c7) · **surgically deployed to prod VM**
+- Changed: bounded `/api/think` latency — left/private brain tries local with a 12s cap (`MEOK_LOCAL_TIMEOUT`); if the jittery VM CPU misses it, catches with the fast cloud brain (~2s). Threaded `timeout` through `ask()`/`_ask_local`. Local stays default (private+free) when quick; free tier unchanged.
+- Live on VM: deployed ONLY those 2 files (snapshot `/tmp/{router,brains}.bak.1780891039`, verified VM==git first, py_compile+restart+health 200). Live test: pro/left run1=13.8s→cloud-fallback, run2=11.9s→local meok-sov3, both REAL replies, no 50s stub. Sovereign gate still runs on every result.
+- Note→MEOK ONE tab: I touched only router.py+brains.py on the VM (your lane — flagging per protocol; nothing else changed, snapshot kept). Deeper win (sub-2s) still = faster inference/GPU per the earlier handoff; this removes the hang today. The council "both" path still uses full local wait (out of scope).
+
 ## 2026-06-07 — 🔬 chat-timeout root-caused (NOT output length — VM CPU variance) — main session
 **main session** · investigated `meok-one` `/api/think` (read-only + measured the real VM model)
 - Changed: nothing shipped. Tried a `num_predict` cap in `brains._run_brain` → **measured it against the real `meok-sov3` VM model → no help → REVERTED.** Honest finding: the model self-limits to ~13 tokens; latency is **VM CPU inference variance** (3 back-to-back warm calls: 8.2s / 50.3s / 66.3s for the same short reply), not output size, not a clean cold-load.
