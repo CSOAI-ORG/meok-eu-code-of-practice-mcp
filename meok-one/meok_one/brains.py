@@ -41,6 +41,22 @@ _BRAIN_DEFAULT_MODEL = {
     "right": "gemini",     # frontier right brain (Gemini, on Nick's key)
 }
 
+# Interactive chat: try the private LOCAL left brain first, but cap the wait — the VM CPU
+# is jittery (measured 8-66s for the SAME ~13-token reply, 2026-06-07; it's contention, not
+# output length). If local doesn't answer within _LOCAL_TIMEOUT, fall back to the fast cloud
+# brain (~2s) so the user never hits the old 50s timeout/"fallback". Local stays the default
+# (private + free) whenever it's quick; cloud only catches the slow tail. Free tier (no cloud)
+# keeps waiting on local with the full timeout (private + free is the whole point there).
+_LOCAL_TIMEOUT = int(os.environ.get("MEOK_LOCAL_TIMEOUT", "12"))
+
+
+def _cloud_ok(tier: str) -> bool:
+    """Tier allows cloud AND a usable key is present (Gemini on Nick's key, or OpenRouter)."""
+    return ("cloud" in {m["backend"] for m in list_models(tier)}
+            and (os.environ.get("GOOGLE_API_KEY", "").startswith("AIza")
+                 or bool(os.environ.get("OPENROUTER_API_KEY"))))
+
+
 # Dismissive/unsafe markers the Sovereign refuses to pass through (defense in depth on
 # top of connect's safety directive — the Sovereign is the constant safety layer).
 _UNSAFE = ("here's how to hack", "step 1: install a keylogger", "kill yourself",
@@ -104,9 +120,9 @@ def _strip_capability_leak(reply):
     return "\n".join(kept).strip() or reply  # if filtering nuked everything, keep original
 
 
-def _run_brain(brain: str, prompt: str, tier: str) -> dict:
+def _run_brain(brain: str, prompt: str, tier: str, timeout: "int | None" = None) -> dict:
     model = _BRAIN_DEFAULT_MODEL.get(brain)
-    out = ask(prompt, model=model, tier=tier)
+    out = ask(prompt, model=model, tier=tier, timeout=timeout)
     return {"reply": _strip_capability_leak(out.get("reply")), "engine": out.get("model"),
             "backend": out.get("backend"), "source": out.get("source"),
             "note": out.get("note")}
@@ -124,7 +140,16 @@ def think(character_id: str, message: str, brain: str = "left",
     emoji = env["meta"]["emoji"]
 
     if brain in ("left", "right"):
-        r = _run_brain(brain, prompt, tier)
+        # Left = private/local first, but time-bounded: if the jittery VM CPU doesn't answer
+        # within _LOCAL_TIMEOUT, catch with the fast cloud brain so chat never hangs. The
+        # Sovereign gate runs on the result regardless, so the reply is safe either way.
+        if brain == "left" and _cloud_ok(tier):
+            r = _run_brain("left", prompt, tier, timeout=_LOCAL_TIMEOUT)
+            if not r.get("reply"):
+                r = _run_brain("right", prompt, tier)
+                r["source"] = (r.get("source") or "cloud") + " · local-slow→fast-fallback"
+        else:
+            r = _run_brain(brain, prompt, tier)
         reply = r["reply"]
         safe = _safe(reply) if reply else True
         if reply and not safe:

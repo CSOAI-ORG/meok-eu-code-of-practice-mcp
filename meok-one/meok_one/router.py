@@ -127,10 +127,14 @@ def list_models(tier: str = "pro") -> list:
             for alias, (b, c) in MODELS.items() if b in allowed]
 
 
-def _ask_local(model_id: str, prompt: str, max_tokens: "int | None" = None) -> "str | None":
+def _ask_local(model_id: str, prompt: str, max_tokens: "int | None" = None,
+               timeout: "int | None" = None) -> "str | None":
     # keep_alive pins the model in RAM for 30m after each call. Without it Ollama evicts
     # after 5min idle, so the next chat cold-loads the 2.1GB model + prefills the long persona
     # prompt — which used to blow past the 60s timeout below and return "left brain unavailable".
+    # `timeout` (seconds) caps the wait so the interactive chat path can fail fast to a cloud
+    # fallback instead of hanging on the jittery VM CPU (measured 8-66s for the same reply).
+    to = int(timeout) if timeout else 120
     payload = {"model": model_id, "prompt": prompt, "stream": False, "keep_alive": "30m"}
     if max_tokens:
         payload["options"] = {"num_predict": int(max_tokens)}
@@ -140,22 +144,22 @@ def _ask_local(model_id: str, prompt: str, max_tokens: "int | None" = None) -> "
     # http://localhost Ollama uses urllib as normal.
     if OLLAMA.startswith("https"):
         import subprocess
-        cmd = ["curl", "-sS", "--max-time", "120", f"{OLLAMA}/api/generate",
+        cmd = ["curl", "-sS", "--max-time", str(to), f"{OLLAMA}/api/generate",
                "-H", "Content-Type: application/json"]
         if _VM_KEY:
             cmd += ["-H", f"X-MEOK-Key: {_VM_KEY}"]
         cmd += ["-d", body.decode()]
         try:
-            out = subprocess.run(cmd, capture_output=True, timeout=130).stdout.decode()
+            out = subprocess.run(cmd, capture_output=True, timeout=to + 10).stdout.decode()
             return json.loads(out).get("response")
         except (subprocess.SubprocessError, json.JSONDecodeError, OSError):
             return None
     req = urllib.request.Request(f"{OLLAMA}/api/generate", data=body,
                                  headers={"Content-Type": "application/json"})
     try:
-        # 120s (was 60): a cold model load (2.1GB off disk) + long-prompt prefill can take
-        # >60s on the VM CPU. Better a slow-but-real reply than a false "brain unavailable".
-        with urllib.request.urlopen(req, timeout=120) as r:
+        # default 120s: a cold model load (2.1GB off disk) + long-prompt prefill can take
+        # >60s on the VM CPU. The interactive path passes a short timeout + cloud fallback.
+        with urllib.request.urlopen(req, timeout=to) as r:
             return json.loads(r.read().decode()).get("response")
     except (urllib.error.URLError, TimeoutError, OSError, json.JSONDecodeError):
         return None
@@ -273,7 +277,7 @@ def _ask_cloud(model_id: str, prompt: str, max_tokens: "int | None" = None,
 
 
 def ask(prompt: str, model: str = "auto", tier: str = "free", max_tokens: "int | None" = None,
-        provider: "list | None" = None) -> dict:
+        provider: "list | None" = None, timeout: "int | None" = None) -> dict:
     """Route a prompt to a model the tier is allowed to use. Returns
     {reply, model, backend, source}. model='auto' picks the best allowed backend
     (local→sov3→cloud). Honest: no fabrication; says when nothing answered.
@@ -303,7 +307,7 @@ def ask(prompt: str, model: str = "auto", tier: str = "free", max_tokens: "int |
 
     for backend, mid in order:
         if backend == "local":
-            reply = _ask_local(mid, prompt, max_tokens)
+            reply = _ask_local(mid, prompt, max_tokens, timeout)
             if reply:
                 return {"reply": _strip_thinking(reply), "model": mid,
                         "backend": "local", "source": "ollama"}
