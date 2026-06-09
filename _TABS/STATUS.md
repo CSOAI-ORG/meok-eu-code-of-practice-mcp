@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-09 — ✅ revenue rails live + fleet republished + tab profile — MCP Fleet tab
+**MCP Fleet** · branch `claude/mcp-fleet` (mcp-marketplace gitignored; meok / firmware / meok-governance / meok-attestation-api committed)
+- Changed: full-fleet republish (**335/337 on PyPI**, all carry the canonical Pro link + working build/`main()`); 3 broken wheels fixed (firmware-attestation-mcp · meok-governance-smithery · optometry-patient-mcp); **scorecard schema reframe** (339 pages: self-issued AggregateRating/Review → factual PropertyValue, retires Google manual-action risk); meok.ai H3 (nis2 £99/£499 split) + homepage "0" counters fixed; proofof.ai `.vercelignore` fix restored the attestation API; created the £99 NIS2 self-serve Stripe link.
+- Live: proofof.ai (new scorecard schema + `/health` 200 v1.2.0) · meok.ai (nis2 £99/£499, real SSR counters) · 335 PyPI packages.
+- Blocked / needs Nick: Vercel KV (metering) · LAUNCH50 promo code · PAYG webhook · rotate PyPI token. **Cowork agent card → `_TABS/MCP_FLEET_TAB_PROFILE.md`.**
+
 ## 2026-06-08 — ✅ chat-timeout FIXED + deployed to VM (local-first + fast cloud fallback) — main session
 **main session** · `meok-one/meok_one/{router,brains}.py` (commit 792a6c7) · **surgically deployed to prod VM**
 - Changed: bounded `/api/think` latency — left/private brain tries local with a 12s cap (`MEOK_LOCAL_TIMEOUT`); if the jittery VM CPU misses it, catches with the fast cloud brain (~2s). Threaded `timeout` through `ask()`/`_ask_local`. Local stays default (private+free) when quick; free tier unchanged.
