@@ -213,3 +213,15 @@ meokclaw-tui/build/
 # Test data
 meok-one/data/hive_traces.jsonl
 meok-one/test_funnel.py
+
+# Nested git repos (not submodules)
+delboy/
+lib2b/
+meok-integrations/
+meok-sdk-go/
+meok-sdk-python/
+meok-sdk-typescript/
+meok-skills/
+meok-slack-app/
+meok-teams-app/
+meok-vscode-extension/
