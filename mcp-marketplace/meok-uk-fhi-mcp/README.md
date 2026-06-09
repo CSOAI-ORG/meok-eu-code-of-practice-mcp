@@ -1,4 +1,6 @@
 <!-- mcp-name: io.github.CSOAI-ORG/meok-uk-fhi-mcp -->
+[![MCP Scorecard: 84/100](https://img.shields.io/badge/proofof.ai-84%2F100-5b21b6)](https://proofof.ai/scorecard/meok-uk-fhi-mcp.html)
+
 <div align="center">
 
 # MEOK UK FHI MCP
@@ -64,7 +66,7 @@ pip install meok-uk-fhi-mcp
 | Pro | £79/mo | Unlimited. Full AW1 / IPAFFS / movement-doc generation + compliance calendar + signed audit fingerprints. |
 | Enterprise | Custom | Pro + multi-site dashboard + auto-submission webhooks. |
 
-[Subscribe — £79/mo](https://buy.stripe.com/aFa5kF3K41465g9fL28k90B)
+[Subscribe — £79/mo](https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j)
 
 ## License
 
@@ -89,7 +91,7 @@ MIT © MEOK AI Labs
 ## Get started
 
 - **Free** — 30 calls/hour, no card. Permit lookup + listed-disease register.
-- **Pro £79/mo** — AW1 / IPAFFS / movement-doc generation + 12-month compliance calendar + signed audit fingerprints → **[Subscribe](https://buy.stripe.com/aFa5kF3K41465g9fL28k90B)**
+- **Pro £79/mo** — AW1 / IPAFFS / movement-doc generation + 12-month compliance calendar + signed audit fingerprints → **[Subscribe](https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j)**
 - **Not ready to subscribe?** 30-min review of your CEFAS / EA / APHA setup — [book a call](mailto:nicholas@meok.ai?subject=UK%20FHI%20compliance%20review)
 
 Verify any signed audit fingerprint at <https://meok.ai/verify>.

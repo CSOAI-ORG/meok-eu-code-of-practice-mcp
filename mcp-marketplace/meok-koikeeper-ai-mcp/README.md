@@ -1,4 +1,6 @@
 <!-- mcp-name: io.github.CSOAI-ORG/meok-koikeeper-ai-mcp -->
+[![MCP Scorecard: 80/100](https://img.shields.io/badge/proofof.ai-80%2F100-5b21b6)](https://proofof.ai/scorecard/meok-koikeeper-ai-mcp.html)
+
 <div align="center">
 
 # MEOK KoiKeeper AI MCP

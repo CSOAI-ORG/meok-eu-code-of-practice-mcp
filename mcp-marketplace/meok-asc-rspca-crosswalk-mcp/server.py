@@ -174,7 +174,7 @@ def list_crosswalk_topics(api_key: str = "") -> dict:
     """List all topics covered by the three-scheme crosswalk."""
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/8x25kF4O85kmfUN42k8k90G"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     if not _rate_limit(tier):
         return {"error": "Rate limit exceeded."}
     return {
@@ -190,7 +190,7 @@ def crosswalk_topic(topic_id: str, api_key: str = "") -> dict:
     """Return full per-scheme clause mapping for a topic."""
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/8x25kF4O85kmfUN42k8k90G"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     if not _rate_limit(tier):
         return {"error": "Rate limit exceeded."}
     tid = topic_id.upper().strip()
@@ -209,7 +209,7 @@ def map_evidence_to_schemes(evidence_provided: list[str], api_key: str = "") -> 
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/8x25kF4O85kmfUN42k8k90G"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     if not _rate_limit(tier):
         return {"error": "Rate limit exceeded."}
 
@@ -261,7 +261,7 @@ def unified_audit_pack(
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/8x25kF4O85kmfUN42k8k90G"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     if not _rate_limit(tier):
         return {"error": "Rate limit exceeded."}
 
@@ -318,7 +318,7 @@ def retailer_requirement_check(retailer: str, api_key: str = "") -> dict:
     """What does a UK supermarket require of its farmed-fish suppliers?"""
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/8x25kF4O85kmfUN42k8k90G"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     if not _rate_limit(tier):
         return {"error": "Rate limit exceeded."}
 
@@ -346,7 +346,7 @@ if __name__ == "__main__":
 # ── MEOK monetization layer (Stripe upgrade · PAYG · pricing) ──────────
 # Free tier is zero-config. Upgrade to Pro (unlimited) or pay-as-you-go per call.
 import os as _meok_os
-MEOK_STRIPE_UPGRADE = "https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K"  # Pro (unlimited)
+MEOK_STRIPE_UPGRADE = "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"  # Pro (unlimited)
 MEOK_PAYG_KEY = _meok_os.environ.get("MEOK_PAYG_KEY", "")  # set to enable PAYG (x402 / ~GBP0.05 per call)
 MEOK_PRICING = "https://meok.ai/pricing"
 

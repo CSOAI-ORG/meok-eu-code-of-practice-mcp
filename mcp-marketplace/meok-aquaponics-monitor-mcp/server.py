@@ -163,7 +163,7 @@ def list_supported_hardware(api_key: str = "") -> dict:
     """Return the supported-hardware matrix."""
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/00w28tgwQ6oq9wpcyQ8k90E"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     return {
         "vendor_count": len(HARDWARE),
         "hardware": [{"id": k, **v} for k, v in HARDWARE.items()],
@@ -193,7 +193,7 @@ def register_rig(
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/00w28tgwQ6oq9wpcyQ8k90E"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     if not _rate_limit(tier):
         return {"error": "Rate limit exceeded."}
     if hardware_id not in HARDWARE:
@@ -227,7 +227,7 @@ def report_readings(rig_id: str, readings: dict, api_key: str = "") -> dict:
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/00w28tgwQ6oq9wpcyQ8k90E"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     if not _rate_limit(tier):
         return {"error": "Rate limit exceeded."}
 
@@ -292,7 +292,7 @@ def safe_range_check(species: str, parameters: dict, api_key: str = "") -> dict:
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/00w28tgwQ6oq9wpcyQ8k90E"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     if not _rate_limit(tier):
         return {"error": "Rate limit exceeded."}
 
@@ -325,7 +325,7 @@ def species_catalogue(api_key: str = "") -> dict:
     """Return supported species + their welfare safe-ranges."""
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/00w28tgwQ6oq9wpcyQ8k90E"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     return {
         "species_count": len(SPECIES_RANGES),
         "species": SPECIES_RANGES,
@@ -360,7 +360,7 @@ def dose_actuator(
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/00w28tgwQ6oq9wpcyQ8k90E"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     if rig_id not in _registered_rigs:
         return {"error": f"Rig '{rig_id}' not registered."}
 
@@ -384,7 +384,7 @@ def rig_status(rig_id: str, api_key: str = "") -> dict:
     """Return last-known state for a registered rig."""
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/00w28tgwQ6oq9wpcyQ8k90E"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     rig = _registered_rigs.get(rig_id)
     if not rig:
         return {"error": f"Rig '{rig_id}' not registered."}
@@ -406,7 +406,7 @@ if __name__ == "__main__":
 # ── MEOK monetization layer (Stripe upgrade · PAYG · pricing) ──────────
 # Free tier is zero-config. Upgrade to Pro (unlimited) or pay-as-you-go per call.
 import os as _meok_os
-MEOK_STRIPE_UPGRADE = "https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K"  # Pro (unlimited)
+MEOK_STRIPE_UPGRADE = "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"  # Pro (unlimited)
 MEOK_PAYG_KEY = _meok_os.environ.get("MEOK_PAYG_KEY", "")  # set to enable PAYG (x402 / ~GBP0.05 per call)
 MEOK_PRICING = "https://meok.ai/pricing"
 

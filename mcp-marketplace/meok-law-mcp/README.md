@@ -1,4 +1,6 @@
 <!-- mcp-name: io.github.CSOAI-ORG/meok-law-mcp -->
+[![MCP Scorecard: 86/100](https://img.shields.io/badge/proofof.ai-86%2F100-5b21b6)](https://proofof.ai/scorecard/meok-law-mcp.html)
+
 # MEOK LAW MCP ⚖️
 
 **Region-aware AI governance for any agent, humanoid, robotics company, or business** — built

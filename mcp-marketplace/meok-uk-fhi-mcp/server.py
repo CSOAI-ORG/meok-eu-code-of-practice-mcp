@@ -195,7 +195,7 @@ def list_permits(species: Optional[str] = None, activity: Optional[str] = None, 
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/aFa5kF3K41465g9fL28k90B"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     if not _check_rate_limit(tier):
         return {"error": "Rate limit exceeded."}
 
@@ -236,7 +236,7 @@ def generate_aw1(operator: dict, api_key: str = "") -> dict:
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/aFa5kF3K41465g9fL28k90B"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     if not _check_rate_limit(tier):
         return {"error": "Rate limit exceeded."}
 
@@ -280,7 +280,7 @@ def discharge_consent_check(
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/aFa5kF3K41465g9fL28k90B"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     if not _check_rate_limit(tier):
         return {"error": "Rate limit exceeded."}
 
@@ -350,7 +350,7 @@ def movement_document(
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/aFa5kF3K41465g9fL28k90B"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     if not _check_rate_limit(tier):
         return {"error": "Rate limit exceeded."}
 
@@ -402,7 +402,7 @@ def ipaffs_check(
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/aFa5kF3K41465g9fL28k90B"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     if not _check_rate_limit(tier):
         return {"error": "Rate limit exceeded."}
 
@@ -450,7 +450,7 @@ def disease_notification_check(
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/aFa5kF3K41465g9fL28k90B"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     if not _check_rate_limit(tier):
         return {"error": "Rate limit exceeded."}
 
@@ -514,7 +514,7 @@ def compliance_calendar(
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/aFa5kF3K41465g9fL28k90B"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     if not _check_rate_limit(tier):
         return {"error": "Rate limit exceeded."}
 
@@ -581,7 +581,7 @@ def list_diseases(api_key: str = "") -> dict:
     """List notifiable aquatic-animal diseases under AAHR 2009 (UK)."""
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/aFa5kF3K41465g9fL28k90B"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
     return {
         "register_version": "AAHR 2009 (retained, as amended)",
         "diseases": [{"code": c, **d} for c, d in LISTED_DISEASES.items()],
@@ -600,7 +600,7 @@ if __name__ == "__main__":
 # ── MEOK monetization layer (Stripe upgrade · PAYG · pricing) ──────────
 # Free tier is zero-config. Upgrade to Pro (unlimited) or pay-as-you-go per call.
 import os as _meok_os
-MEOK_STRIPE_UPGRADE = "https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K"  # Pro (unlimited)
+MEOK_STRIPE_UPGRADE = "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"  # Pro (unlimited)
 MEOK_PAYG_KEY = _meok_os.environ.get("MEOK_PAYG_KEY", "")  # set to enable PAYG (x402 / ~GBP0.05 per call)
 MEOK_PRICING = "https://meok.ai/pricing"
 

@@ -1,4 +1,6 @@
 <!-- mcp-name: io.github.CSOAI-ORG/meok-aquaponics-monitor-mcp -->
+[![MCP Scorecard: 90/100](https://img.shields.io/badge/proofof.ai-90%2F100-5b21b6)](https://proofof.ai/scorecard/meok-aquaponics-monitor-mcp.html)
+
 <div align="center">
 
 # MEOK Aquaponics Monitor MCP
@@ -58,7 +60,7 @@ Baseboard fork: [Whitebox Labs Tentacle T1 MkII](https://github.com/whitebox-lab
 | Pro | £79/mo | Unlimited. Multi-rig. Dose actuator hook + welfare-alert webhooks. |
 | Enterprise | Custom | Pro + private SOV3 deployment + fleet management. |
 
-[Subscribe — £29/mo Hobby](https://buy.stripe.com/aFa28t80k9ACdMF1Uc8k90D)
+[Subscribe — £29/mo Hobby](https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j)
 
 ## License
 
@@ -82,7 +84,7 @@ MIT © MEOK AI Labs
 ## Get started
 
 - **Free** — 60 calls/hour, no card. Safe-range checks + intent attestation.
-- **Hobby £29/mo** → **[Subscribe](https://buy.stripe.com/aFa28t80k9ACdMF1Uc8k90D)** · **Pro £79/mo** (multi-rig + care-gated actuation) → **[Subscribe](https://buy.stripe.com/00w28tgwQ6oq9wpcyQ8k90E)**
+- **Hobby £29/mo** → **[Subscribe](https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j)** · **Pro £79/mo** (multi-rig + care-gated actuation) → **[Subscribe](https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j)**
 - **Not ready to subscribe?** 30-min review of your sensor/welfare setup — [book a call](mailto:nicholas@meok.ai?subject=Aquaponics%20monitor%20review)
 
 Verify any signed attestation at <https://meok.ai/verify>.
