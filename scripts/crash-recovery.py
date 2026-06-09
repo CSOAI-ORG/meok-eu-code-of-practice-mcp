@@ -60,6 +60,17 @@ SERVICE_CONFIGS = {
         "start_cmd": "cd /Users/nicholas/clawd/meok/farm-vision && python3 -m http.server 8888",
         "depends_on": [],
     },
+    "hindsight": {
+        "port": 8765,
+        "start_cmd": "/bin/zsh /Users/nicholas/.hindsight/start.sh",
+        "depends_on": ["ollama"],
+        "health_endpoint": "http://localhost:8765/v1/default/banks/meok-empire/stats",
+    },
+    "ensemble-loop": {
+        "process_pattern": "ensemble_engine.py loop",
+        "start_cmd": "cd /Users/nicholas/clawd/sovereign-temple && exec python3 -u ensemble_engine.py loop >> /tmp/ensemble_engine.log 2>&1",
+        "depends_on": ["sov3-mcp", "hindsight"],
+    },
 }
 
 RECOVERY_DIR.mkdir(exist_ok=True)
@@ -110,8 +121,13 @@ def auto_heal_service(service_name: str) -> bool:
 
         time.sleep(3)
 
-        # Verify it started
-        status = get_service_status(config["port"])
+        # Verify it started (process-based services have no port)
+        if "process_pattern" in config:
+            status = check_process(config["process_pattern"])
+        elif "port" in config:
+            status = get_service_status(config["port"])
+        else:
+            status = {"status": "running"}
         if status["status"] == "running":
             log_alert(f"✅ {service_name} auto-healed successfully!", "INFO")
             return True
@@ -137,6 +153,19 @@ def check_and_heal() -> dict:
                 failed.append(name)
 
     return {"healed": healed, "failed": failed}
+
+
+def check_process(pattern: str) -> dict:
+    """Check if a background process matching pattern is running"""
+    try:
+        result = subprocess.run(
+            ["pgrep", "-f", pattern], capture_output=True, text=True, timeout=5
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            return {"status": "running", "pid": result.stdout.split()[0]}
+    except Exception:
+        pass
+    return {"status": "stopped", "pid": None}
 
 
 def get_service_status(port: int) -> dict:
@@ -242,6 +271,8 @@ def get_all_services() -> dict:
         "weaviate": get_service_status(8080),
         "neo4j": get_service_status(7474),
         "farm-vision": get_service_status(8888),
+        "hindsight": get_service_status(8765),
+        "ensemble-loop": check_process("ensemble_engine.py loop"),
     }
 
     with open(SERVICES_FILE, "w") as f:

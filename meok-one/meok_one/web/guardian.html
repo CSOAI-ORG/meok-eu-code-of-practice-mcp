@@ -98,7 +98,10 @@ async function loadKids(){
   el.innerHTML = kids.map(k=>{
     const id = esc(k.child_id||k.id||k.name); const name = esc(k.name||id); const age = k.age!=null?` · ${esc(k.age)}y`:'';
     return `<div class="row"><b>${name}</b><span class="muted">${age}</span>
-      <button class="sm" style="margin-left:auto" onclick="setLimit('${id}','${name}')">Limit</button></div>`;
+      <span style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">
+        <button class="sm" onclick="checkSchedule('${id}','${name}')">Schedule</button>
+        <button class="sm" onclick="blockGame('${id}','${name}')">Block</button>
+        <button class="sm" onclick="setLimit('${id}','${name}')">Limit</button></span></div>`;
   }).join('');
 }
 async function loadNet(){

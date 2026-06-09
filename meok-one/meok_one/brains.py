@@ -128,6 +128,20 @@ def _run_brain(brain: str, prompt: str, tier: str, timeout: "int | None" = None)
             "note": out.get("note")}
 
 
+def _left_bounded(prompt: str, tier: str) -> dict:
+    """The private/local LEFT brain, but time-bounded so chat never hangs on the jittery
+    VM CPU. On a cloud-capable tier: try local within _LOCAL_TIMEOUT; if it misses, catch
+    with the fast cloud brain (~2s). On free/local-only tiers: full local wait (private+free
+    is the whole point). Used by BOTH the single-brain path and the council draft."""
+    if _cloud_ok(tier):
+        r = _run_brain("left", prompt, tier, timeout=_LOCAL_TIMEOUT)
+        if not r.get("reply"):
+            r = _run_brain("right", prompt, tier)
+            r["source"] = (r.get("source") or "cloud") + " · local-slow→fast-fallback"
+        return r
+    return _run_brain("left", prompt, tier)
+
+
 def think(character_id: str, message: str, brain: str = "left",
           tier: str = "free", user_id: str = "anon") -> dict:
     """The user talks to their character; `brain` chooses the engine; the Sovereign
