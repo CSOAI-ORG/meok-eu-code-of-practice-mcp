@@ -176,13 +176,14 @@ def think(character_id: str, message: str, brain: str = "left",
     # BOTH = council: the two brains actually DELIBERATE, then the Sovereign synthesizes.
     # Right brain = cloud (frontier) when a key is set; if not, we run a SECOND local pass
     # so the council still genuinely debates on the free/local tier (no cloud required).
-    cloud_avail = any(m["backend"] == "cloud" for m in list_models(tier))
-    # cloud right-brain is usable if EITHER a Gemini key (our default) OR OpenRouter is set
-    cloud_ok = cloud_avail and (os.environ.get("GOOGLE_API_KEY", "").startswith("AIza")
-                                or bool(os.environ.get("OPENROUTER_API_KEY")))
+    cloud_ok = _cloud_ok(tier)
 
-    # 1) Left brain drafts.
-    draft = _run_brain("left", prompt, tier).get("reply") or ""
+    # 1) Left brain drafts — bounded the same way as the single-brain path so the council
+    #    doesn't hang on the jittery VM CPU (was unbounded; council = 2 calls, worst case 2×
+    #    slow-VM = >60s). _left_bounded falls back to cloud only on the slow tail.
+    draft_r = _left_bounded(prompt, tier)
+    draft = draft_r.get("reply") or ""
+    draft_voice = "left(cloud-fallback)" if "fast-fallback" in (draft_r.get("source") or "") else "left(local)"
 
     # 2) The other voice CRITIQUES + improves the draft (right=cloud if available, else a
     #    second local pass with a critic instruction). This is the "brains talk to each other".
@@ -192,10 +193,11 @@ def think(character_id: str, message: str, brain: str = "left",
                      f"Do NOT mention drafts, tools, or your own capabilities — just speak.")
     if cloud_ok:
         improved = _run_brain("right", critic_prompt, tier).get("reply") or draft
-        voices = "left(local)+right(cloud)"
+        voices = f"{draft_voice}+right(cloud)"
     else:
-        improved = _run_brain("left", critic_prompt, tier).get("reply") or draft
-        voices = "two local passes (no cloud key)"
+        # No cloud key on this tier — second local pass, bounded so the council can't hang.
+        improved = _run_brain("left", critic_prompt, tier, timeout=_LOCAL_TIMEOUT).get("reply") or draft
+        voices = "two local passes (no cloud key, bounded)"
 
     # 3) Sovereign picks the safer/better of {draft, improved}; improved wins unless unsafe.
     final = improved if (improved and _safe(improved)) else (draft if _safe(draft) else "")
