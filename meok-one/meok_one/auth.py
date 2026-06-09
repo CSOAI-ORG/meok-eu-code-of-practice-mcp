@@ -18,7 +18,16 @@ Everything here is keyed to user_id, which the rest of MEOK ONE uses to scope st
 import os, json, hmac, hashlib, base64, time, secrets, threading
 from pathlib import Path
 
-_SECRET = os.environ.get("MEOK_JWT_SECRET") or "dev-insecure-meok-jwt-secret-set-MEOK_JWT_SECRET"
+_SECRET = os.environ.get("MEOK_JWT_SECRET", "").strip()
+if not _SECRET:
+    # FAIL-LOUD (no insecure fallback) — a hardcoded default = forgeable tokens = account
+    # takeover the moment the server is exposed. Mirrors the attestation-api V-01 fix.
+    if os.environ.get("MEOK_ALLOW_DEV_JWT") == "1":
+        _SECRET = "dev-insecure-local-only"   # explicit local-dev opt-in ONLY
+    else:
+        raise RuntimeError(
+            "MEOK_JWT_SECRET is required (no insecure fallback). Set it in the environment, "
+            "or set MEOK_ALLOW_DEV_JWT=1 for local dev only.")
 _STORE = Path(os.environ.get("MEOK_USERS",
               str(Path(__file__).resolve().parent / "data" / "users.json")))
 _LOCK = threading.RLock()
