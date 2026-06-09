@@ -205,3 +205,11 @@ meok-one/meok_one/data/
 meok-one/.meok_vm_key.txt
 meok-one/.env.local
 _archive/severed/
+
+# Build artifacts
+meokclaw-tui/meokclaw-test
+meokclaw-tui/build/
+
+# Test data
+meok-one/data/hive_traces.jsonl
+meok-one/test_funnel.py
