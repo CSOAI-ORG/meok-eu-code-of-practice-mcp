@@ -37,7 +37,11 @@ The blueprint = 6 revenue streams. **My lanes drive 2 of them directly:**
 - **Stream 1 — SOV3 Cloud consumption ($8–$50 per AI system/mo):** the genuinely smart, differentiated bit — price per *AI system governed*, not per seat. My A2A registry (per-agent metering) is the natural meter for this.
 - Streams 3–6 (Certification, Land-and-expand, Freemium, Regulatory-demand) → CSOAI / MEOK ONE / Fleet tabs.
 
-**🔴 Honest misalignment to resolve (flag to Nick + CSOAI tab):** the doc prices SaaS at **$99 / $499 / $2,499/mo** (B2B governance), but the **live canonical Stripe ladder is £9 Pro / £99 Team** (consumer). Those are two different businesses. Pick one positioning per surface — don't ship both. (The £9 ladder is in `_TABS/BILLING_CONSOLIDATION.md`; the doc is the B2B-governance pricing.)
+**🔴 PRICING IS NOW A 3-WAY CONFLICT — the real revenue blocker (flag to Nick).** Across surfaces:
+- Doc (`sov3_business_model.docx`): **$99 / $499 / $2,499/mo** + consumption + enterprise $50K–$500K/yr.
+- **Live on proofof.ai (MCP Fleet tab, 2026-06-09):** **Pro £79 · Enterprise £1,499 · Assessment £4,950 · NIS2 £99/£499** — and they just replaced 18 *dead* checkout links (a deactivated Stripe account = a live £0 cause). First real customer `cus_Ufgp…` created.
+- Older "canonical ladder" (`BILLING_CONSOLIDATION.md`): **£9 Pro / £99 Team** (consumer).
+The clean resolution: **two products, two ladders** — MEOK ONE (consumer, ~£9) vs CSOAI/compliance (B2B governance, £79–£4,950, which is where the doc + the live customer actually point). The bug is any *single* surface showing both. The doc's B2B pricing ≈ the live B2B prices → converge on that for compliance; keep £9 only on the consumer OS.
 
 ## 🤝 Aligned with Cowork decisions in force (so I don't contradict sibling tabs)
 - **Analytics = PostHog**, tag every event `funnel ∈ {openmoe-dev, meok-consumer}`. I instrument my public surfaces (/developers, GEO pages) the same way.
