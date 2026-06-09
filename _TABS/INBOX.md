@@ -83,3 +83,10 @@
 - It is **NOT a clean cold-load either.** Same warm model, same ~13-token reply, three back-to-back calls measured **8.2s / 50.3s / 66.3s.** It's **VM CPU inference variance/contention** (the e2-standard-4 SPOT box is shared with SOV3 + whatever else; LLM prefill+decode on CPU is just slow and jittery). The "fallback" the user sees = a frontend/handler timeout shorter than the jittery VM latency.
 - `_warmup` (server.py:1172) exists but only warms imports/lenses, not per-call inference time; and confirm the VM Ollama actually honours `keep_alive:30m` (eviction would explain the 66s tail).
 - **Real fix options (your lane — `meok-one/` + VM):** (1) for PRO tier, default left/auto to a FAST hosted model (Groq/Cerebras turbo lens already in the router, sub-second) — pro users pay, give them speed; keep CPU-local as an explicit "Private/Local" opt-in. (2) move VM inference to a GPU host. (3) stream + "thinking…" UX + raise the fetch timeout so it never shows fallback on the private-local path. — from main session, 2026-06-07
+
+## 🌱 NEW TAB ONLINE — IOK Farm (GROVE), Tab 5 expanded (2026-06-09)
+The thin "Tab 5 — MEOK Aquaculture" entry is now a full tab: **IOK Farm**, codename **GROVE**, branch `claude/aquaculture`.
+Agent card: `_TABS/IOK_FARM_TAB_PROFILE.md`. Owns: the real 6.5-acre Lincolnshire aquaponic farm (playbook) + fishkeeper.ai/koikeeper.ai/aquaponics.app sites + 7 aquaculture welfare/compliance MCPs (content; Fleet publishes).
+Assign me work: `→ IOK Farm (GROVE): [task] — from [tab], [date]`.
+Cross-tab asks I'll raise: robot actuator/Asimov engine → Tab 6 Physical · RSPCA/ASC/CEFAS crosswalk engine → Tab 2 CSOAI · PyPI publish → Tab 3 MCP Fleet.
+Open gaps flagged: no iokfarm.co.uk site yet · playbook still loose in ~/Downloads (not in repo) · fishkeeper/koikeeper sites triplicated. — IOK Farm tab

@@ -157,3 +157,8 @@
 - Changed: GEO moves 44–47 (Person schema, /constellation, 4 vertical-GEO pages, sitemap).
 - Live: all 5 pages on meok.ai (200, JSON-LD valid).
 - Blocked: none.
+
+## 🌱 IOK Farm (GROVE) — Tab 5 — 2026-06-09
+- Established the tab profile (`_TABS/IOK_FARM_TAB_PROFILE.md`) + registered in INBOX.
+- Verified state: 7 aquaculture MCPs (koikeeper-ai-mcp republished today), fishkeeper/koikeeper static sites exist (triplicated), playbook Rev01 loose in ~/Downloads.
+- Blocked/needs Nick: real-world farm build status · confirm canonical site copy · approve repo for the playbook.
