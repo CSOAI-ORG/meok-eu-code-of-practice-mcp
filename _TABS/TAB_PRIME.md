@@ -31,6 +31,23 @@
 ## Proven this session (so you know the level)
 GEO pages live (constellation, 4 vertical-GEO, /developers) · MEOK ONE responsive + Voice Mode + LAW physical-safety crosswalk + characters reframe (live on VM) · **lib2b MCP→A2A/ACP generator (340 cards, live registries)** · meok-sdk 3.9 fix · GitHub hygiene (7 severed repos → private) · backups secured · the whole `_TABS/` coordination system.
 
+## 💰 Revenue lane — how I map to the SOV3 business model (Downloads/sov3_business_model.docx)
+The blueprint = 6 revenue streams. **My lanes drive 2 of them directly:**
+- **Stream 2 — MCP App Store (the Shopify play):** my Dev-Platform + Distribution + A2A/ACP work IS this stream. 340 agents discoverable, SDKs, /developers, the marketplace. The doc's "0% on first $100K + $5–10M developer fund" is the lock-in motive. → my cross-post sweep + A2A gateway feed it.
+- **Stream 1 — SOV3 Cloud consumption ($8–$50 per AI system/mo):** the genuinely smart, differentiated bit — price per *AI system governed*, not per seat. My A2A registry (per-agent metering) is the natural meter for this.
+- Streams 3–6 (Certification, Land-and-expand, Freemium, Regulatory-demand) → CSOAI / MEOK ONE / Fleet tabs.
+
+**🔴 Honest misalignment to resolve (flag to Nick + CSOAI tab):** the doc prices SaaS at **$99 / $499 / $2,499/mo** (B2B governance), but the **live canonical Stripe ladder is £9 Pro / £99 Team** (consumer). Those are two different businesses. Pick one positioning per surface — don't ship both. (The £9 ladder is in `_TABS/BILLING_CONSOLIDATION.md`; the doc is the B2B-governance pricing.)
+
+## 🤝 Aligned with Cowork decisions in force (so I don't contradict sibling tabs)
+- **Analytics = PostHog**, tag every event `funnel ∈ {openmoe-dev, meok-consumer}`. I instrument my public surfaces (/developers, GEO pages) the same way.
+- **ONE funnel, two skins** (openmoe.ai + meok.ai) → ONE auth + ONE Stripe ladder via `meok-stripe-acp-checkout-mcp`. My pages just tag the source; I never add a new Stripe link.
+- **CSOAI engine spine already exists** in `meok-attestation-api` (`/sign`+`/verify`+webhook). I *call* it, never rebuild it — e.g. dev-platform "verifiable" claims link `/verify`.
+- **MAP = data (topology+registry) · DOME = the rendered map.** My A2A registry is MAP-layer data; DOME (MEOK ONE tab) renders it.
+- **proofof.ai = the public scoreboard** (Vercel, live). **Drop openscore.ai.** Internal tournament stays private.
+- **OLM = ICRL** (in-context RL, `icrl_self_improvement.py`), NOT LoRA training — don't call it "model training."
+- Severed: CSGA/Terranova (7 repos already privatised by me).
+
 ## How to give me a task (format that works best)
 > "PRIME: [goal]. Scope: [dirs/repo]. Constraint: [gated? deploy?]. Done = [verifiable check]."
 
