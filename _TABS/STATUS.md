@@ -4,6 +4,24 @@
 
 ---
 
+## 2026-06-10 — 🔓 owner-gated list WORKED: MCP Registry 0→255 LIVE + 3 stale blockers closed — main session
+**main session** · mcp-marketplace registry sweep · `_TABS/VERCEL_AUDIT_FULL_2026-06-10.md` · meok-ai pushed (0182bbc)
+- Changed: **MCP Registry unblocked WITHOUT the interactive login** — `mcp-publisher login github --token "$(gh auth token)"` works (PAT, no device flow). Ran flagships (11/12 ✓) + full-fleet `publish_registry.py` → **255 unique io.github.CSOAI-ORG servers now listed** on registry.modelcontextprotocol.io. Remaining ~84 fail PyPI ownership check (live README lacks `mcp-name:` line) → need gate-harness republish (`sweep_catalogue.py <pkg>` then re-run publisher). Also: **LAUNCH50 verified ACTIVE in livemode** (promo_1TeItw…, 0 redemptions — stale "needs Nick" item) · **PAYG webhook verified ALREADY WIRED** (we_1TPOBT… enabled → attestation-api /webhook, 6 events, fail-loud 400 on bad sig; councilof.ai/payg 200; only proofof.ai/payg alias 404, index.py is Fleet-tab's uncommitted lane so left alone) · **full 161-project Vercel audit** (old one capped at 50) with keep/delete evidence — found 🔴 cobolbridge.ai is served by severed-brand project `csga-global-site` (move domain before deleting).
+- Live: registry.modelcontextprotocol.io shows 255 CSOAI-ORG servers · meok.ai home now has the free-API-key form (earlier today, commit 0182bbc, pushed) · LAUNCH50 + webhook confirmed live.
+- Blocked / still genuinely Nick: DNS `one.meok.ai→35.242.143.249` (Namecheap, no API creds on disk) · production Clerk keys · Vercel KV provision (dashboard) · rotate PyPI token · approve Vercel delete groups (evidence table ready) · cobolbridge.ai domain move off CSGA project.
+
+## 2026-06-07 — "tools don't work" ROOT-CAUSED + FIXED + republished (fleet-qa)
+**fleet-qa** (main session) · `mcp-marketplace/*` (31 repos republished to PyPI)
+- Changed: found why tools "don't work" = (1) **31 published wheels shipped only server.py**, omitting imported sidecars (auth_middleware/meok_x402/persistence) → broken on `pip install`; fixed every `only-include` + **republished all 31 (gate-passed clean-venv import, PUBLISHED ✅)**. (2) **brittle keyword classifiers false-cleared high-risk systems** (eu-ai-act called a hospital-triage AI "minimal") → applied **never-false-clear** (no-match→`unknown`, not "minimal") + Annex III healthcare/triage keywords to eu-ai-act + bias-detection (the 2 genuine false-clears; other 4 are legit score-based). (3) **rate limit 10/15→50/day** across 192 repos. (4) fixed 9 import-broken repos (Fastmcp typo, missing os, missing persistence.py).
+- Live on PyPI (verified fresh download): eu-ai-act 1.8.7 + content-registry 1.0.9 + dora 1.4.8 now ship their sidecars + import clean. quick_scan now: triage→high-risk, vague→unknown, chatbot→limited.
+- Blocked / next: MCP Registry still 0/339 (needs Nick `mcp-publisher login github` → `publish_registry.py`); ~160 rate-limit-only repos not yet republished (low urgency); proofof.ai Vercel render of fleet_scorecard.json (deploy task).
+
+## 2026-06-09 (b) — ✅ conversion engine LIVE + index.py link/price fixes — MCP Fleet tab
+**MCP Fleet** · `meok-attestation-api/api/index.py` (commit d9cd272, deployed to proofof.ai)
+- Changed: **/signup lead-capture folded into index.py** (the only function this single-fn project deploys) → POST {email} returns a free key + creates a Stripe Customer. **Verified live: first-ever customer `cus_Ufgp…` created** (meok_tier=free). Replaced **18 dead-account checkout links** (…8k836/837/833 = a deactivated account, a live £0-cause) with live links: Pro £79 (…91j), **Enterprise £1,499 newly created (…91s)**, Assessment £4,950 (…91m); aligned stale £199/£5,000 displays. **M2:** removed 7 empty dirs. **M1:** synced 301 server.json versions to pyproject + taught republish_mcp to maintain them.
+- Live: proofof.ai/signup (200, lead capture working) · all index.py pricing now price↔link coherent on the live account.
+- Blocked / needs Nick: Vercel KV (metering) · LAUNCH50 code · /payg still 404 (fold into index.py next) · fleet commit+push + registry re-push (GitHub OAuth) · rotate PyPI token. Data snapshot → `_TABS/_inventory/DATA_SNAPSHOT_2026-06-09.md`.
+
 ## 2026-06-09 — ✅ revenue rails live + fleet republished + tab profile — MCP Fleet tab
 **MCP Fleet** · branch `claude/mcp-fleet` (mcp-marketplace gitignored; meok / firmware / meok-governance / meok-attestation-api committed)
 - Changed: full-fleet republish (**335/337 on PyPI**, all carry the canonical Pro link + working build/`main()`); 3 broken wheels fixed (firmware-attestation-mcp · meok-governance-smithery · optometry-patient-mcp); **scorecard schema reframe** (339 pages: self-issued AggregateRating/Review → factual PropertyValue, retires Google manual-action risk); meok.ai H3 (nis2 £99/£499 split) + homepage "0" counters fixed; proofof.ai `.vercelignore` fix restored the attestation API; created the £99 NIS2 self-serve Stripe link.

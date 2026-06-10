@@ -28,5 +28,9 @@
 ## Standing Cowork decisions (all tabs honour)
 PostHog analytics (tag `funnel`) · ONE backend + ONE Stripe ladder, two skins (openmoe.ai + meok.ai) · proofof.ai = public scoreboard · drop openscore.ai · MAP=data / DOME=picture · OLM=ICRL · no CSGA/Terranova · MCP directories are free (no paid placement).
 
-## 🔒 Owner-gated unlocks (the actual bottleneck — all need Nick)
-DNS `one.meok.ai → 35.242.143.249` · **production Clerk keys** (all meok.ai `/api/*` 403 non-browser) · team Vercel token (project cleanup) · Vercel KV (metering → unlocks Streams 1/4) · `mcp-publisher login github` (MCP Registry 0/339) · rotate PyPI token · LAUNCH50 promo · PAYG webhook.
+## 🔒 Owner-gated unlocks (UPDATED 2026-06-10 — main session worked the list)
+- ✅ ~~`mcp-publisher login github`~~ — **DONE without Nick**: `--token "$(gh auth token)"` (PAT) works. **Registry now 255/339 live.** Remaining ~84 = PyPI README missing `mcp-name:` → gate-harness republish then re-run `_scorecard/publish_registry.py`.
+- ✅ ~~LAUNCH50 promo~~ — was already LIVE (promo_1TeItw…, livemode, active). Stale item.
+- ✅ ~~PAYG webhook~~ — was already WIRED (we_1TPOBT… → attestation-api /webhook, 6 events, sig-verified). Stale item. (proofof.ai/payg alias 404 remains; councilof.ai/payg works.)
+- ✅ ~~team Vercel token~~ — not needed: the CLI session already has team scope. Full 161-project audit done → `VERCEL_AUDIT_FULL_2026-06-10.md`. **Nick: approve delete groups.**
+- 🔒 STILL NICK: DNS `one.meok.ai → 35.242.143.249` (Namecheap) · production Clerk keys (meok.ai `/api/*` 403) · Vercel KV provision (dashboard; unlocks Streams 1/4 metering) · rotate PyPI token · move cobolbridge.ai off the severed `csga-global-site` project (then delete it).
