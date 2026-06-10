@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-10 (PM2) — 🔍 proofof.ai hive E2E AUDIT: 5 bugs found+fixed, loop now RUNNING READY — main session
+**main session** · meok-attestation-api 546075f · full report: SOV3-Launch/E2E_AUDIT_PROOFOF_2026-06-10.md
+- Changed: 🔴 **every /signup free key was REJECTED by /sign** (validator never checked free tier — funnel broken at step 2) FIXED+verified in prod · 🔴 canonical leak (vercel.app/catalogue) → proofof.ai · /payg→302 councilof · get-key.html £79→£199 · FREE14 promo CREATED (FACTS claimed it existed; it didn't).
+- Live + passing: all 14 routes · signup→key→sign→verify loop (free AND pro) · Ed25519 offline verify vs prod · webhook fail-loud · all 6 Stripe links 200 with LAUNCH50+FREE14 active · eu-ai-act 1.8.9 (banner+db+search) · powerhouse mirror (JSON-LD/llms/agent.json valid).
+- Open: dead Supabase rail blocks cutover · Clerk test-keys · mail/api DNS · drip publisher finishing ~40.
+
 ## 2026-06-10 (PM) — 💰 HIVE-1 + keys list EXECUTED: registry 294 · Ed25519 live · £199 propagated · powerhouse deployed — main session
 **main session** · proofof.ai + meok.ai + powerhouse + Stripe + fleet
 - Changed: **Registry 294 verified** (drip publisher finishing last ~40 around PyPI 429) · **Ed25519 SIGIL LIVE on proofof.ai** (keygen→env→/pubkey→co-signed certs, offline-verify PROVEN vs prod) · **ratified £199 Pro propagated** (new Stripe price+link, proofof.ai index.py + 31 meok.ai pages; fixed Article 50 kit/smoke/quick-kit buy buttons that pointed at the Pro sub) · **powerhouse deployed+operated** (proofof-powerhouse.vercel.app: entity→CSOAI LTD, placeholders stripped, 99.9% softened, JSON-LD, /llms.txt + /.well-known/agent.json live) · upsell banners on top-5 + **regulations.db ships** (fresh-install search works on 1.8.9) · 39 Vercel projects deleted · 19 GRC drafts ready · waitlist table created (was MISSING — live signups were being dropped) · SOV3 MCP connector added · M3 TUI now loads AGENTS.md · FACTS.yaml ⟨N⟩=294.
