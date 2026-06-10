@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-10 (PM5) — 👑 M4 = KING: 4-hive grid GREEN + COAI revenue mis-wire killed — main session
+**main session** · all 4 hives + KING_STATE doc
+- Changed: cross-hive sweep found+fixed: **COAI buy buttons charged £79 for £499/£1,499/£4,990 products** (rewired, new links) · meok.ai agent.json 500 (Clerk middleware ate .well-known + Next route quirk → static public/ file, 200 ✓) · COAI llms.txt+agent.json shipped · **all 4 hives now llms+agent.json+pricing GREEN** · KING_STATE_2026-06-10_PM.md written (morning king-orders were issuing stale blockers — supersedes them) · GCP Cloud SQL chain complete (DATABASE_URL secret, VM authorized).
+- Blocked/Nick: ROLL STRIPE KEY (still live!) · add_keys.sh paste · £199 checkout · PAT into git creds (9 unpushed commits + 286 fleet) · 27 queens need facts-scopes (next hive passes).
+
+
 ## 2026-06-10 (PM4) — 🐝👑 QUEEN HUMMING 24/7 + GCP stack — main session
 **main session** · meok-backend VM + GCP project meok-498012 + meok-one queen fix
 - Changed: **proofof Queen LIVE 24/7 on the VM** via meok-king.service MCP (:8077, tools king_ask/queen/list_hives, 28 hives) — found+fixed queen fact-hallucination ($500/mo!): load_hive scope parser took 1 line + let L5 scope overwrite L6 → **parser fixed (first-scope-wins, multi-line)**, proofof stack.yml scope now carries CANONICAL FACTS (£199 Pro, 2 Aug 2026, full ladder) — Queen retest: **"Pro costs GBP 199/month, Article 50 = 2 August 2026"** ✓ deployed to VM (snapshot kept) + committed. GCP: meok-backend auto-restart ON (was off!) · already STANDARD (spot fear dead) · static IP confirmed · Cloud SQL sov3-memory creating (enterprise/db-f1-micro after edition fix) + user/db/DATABASE_URL automation queued · Secret Manager LIVE with 4 secrets pre-filled (ATTESTATION/ED25519/WHSEC/RESEND) + 3 awaiting Nick (RK_LIVE/CLERK_SK/HUB_OAUTH) · add_keys.sh one-paste tool + browser tabs opened.
