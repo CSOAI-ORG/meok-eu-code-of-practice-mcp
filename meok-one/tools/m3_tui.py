@@ -44,6 +44,16 @@ AUDIT_SYS = ("You are MiniMax M3, the AUDITOR in a dual-agent protocol (Claude b
 CHAT_SYS = ("You are MiniMax M3 running locally for Nick (MEOK AI Labs). Be direct, "
             "technical, and honest. No filler.")
 
+# Cross-runtime alignment: AGENTS.md is the shared entry point for every agent
+# runtime (Claude + M3). Load it so both sides work from the same brief.
+import pathlib as _pl
+for _cand in (_pl.Path.home() / "clawd" / "AGENTS.md", _pl.Path.home() / "AGENTS.md"):
+    if _cand.is_file():
+        _agents = _cand.read_text(errors="replace")[:12000]
+        CHAT_SYS += "\n\n--- AGENTS.md (shared runtime brief) ---\n" + _agents
+        AUDIT_SYS += "\n\n--- AGENTS.md (shared runtime brief) ---\n" + _agents
+        break
+
 
 def stream(messages):
     """Stream a chat completion from local Ollama, printing tokens as they arrive.
