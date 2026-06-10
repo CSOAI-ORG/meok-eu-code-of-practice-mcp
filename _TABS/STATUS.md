@@ -4,6 +4,18 @@
 
 ---
 
+## 2026-06-10 (PM10) — 📬 34-email queue ARMED: 19 GRC + 15 verified Dutch NIS2 prospects — main session (M4)
+**main session** · hive-mailer + research agent
+- Changed: research agent verified 15 Dutch in-scope SMEs (hosting/cloud/energy/food-logistics/medtech — every email pulled live from their sites, NCSC-NL sources cited) → queued with bilingual template selling free-MCP-scope + £499 DFY → meok.ai/nis2-nl. Queue = 34; mailer sends 25/day automatically once mail.meok.ai DNS verifies.
+- The entire outbound machine is now loaded: targets researched, copy written, queue armed, sender scheduled, deliverability proper (DKIM/SPF once DNS lands).
+- Standing: ONE Namecheap login fires it all.
+
+
+## 2026-06-10 (PM10) — 📊 FULL FLEET AUDIT (every pkg live-checked) + CTA £199 canon — MCP Fleet tab
+**MCP Fleet** · canonical counts, zero estimates: **341 pkg dirs (340 real + 1 template junk) · 295 LIVE on PyPI · 46 unpublished (cap backlog, drip grinding) · 2,482 releases all-time · 186,208 dl/mo (230 pkgs w/ stats; PM re-pulls rate-limit → undercount) · avg score 84.6/100 (82 ≥90 · 201 80-89 · 54 65-79 · 2 <65) · Registry 294 unique / 814 version-entries (292 ours + 2 dirless strays; 49 unregistered) · GitHub 499 repos · ~/mcp-servers 218 · server.json sync 337/341** — confirms M4's public 294 claim. Table → `_inventory/MCP_FULL_AUDIT_2026-06-10.{md,csv}` · memory → project_mcp_canonical_counts.
+- Shipped: CTA capture form on 702 scorecard pages → **aligned to ratified £199 canon** (aFa7…91t, same link as get-key/index.py) + deployed + verified · 352 URLs → IndexNow (Bing 200) · /signup POST verified issuing keys; /sign accepts free keys (M4's 546075f) — no cross-tab clobber, their commits sit on top of mine in this checkout.
+- ⚠️ SOV3 VM disk 90% / mem 83% (13,277 eps · 0.788 · 91 agents). Revenue £0/0 subs; 3 self-test Stripe leads are mine — delete. Gates unchanged: ROLL rk_live · DNS batch · KV · LAUNCH50 · PyPI token · PAT push (repo ahead 8).
+
 ## 2026-06-10 (PM9) — 👑 4 QUEENS SPEAK CANON over remote TLS King + nis2-nl link hardened — main session (M4)
 **main session** · hive-staging × VM · meok.ai
 - Changed: canonical facts-scopes injected into meok/councilof/csoai queens (proofof already done) + deployed to VM + King restarted — **COAI queen tested over the remote TLS endpoint: "Council Universe is GBP 1,499/mo… verdicts verified offline at proofof.ai/pubkey" ✓ safe=true** · nis2-nl DIY button → GitHub repo (PyPI throttle = 3/47 landed; drip keeps grinding, days not hours at PyPI's new-project rate) · Namecheap tab opened but LOGGED OUT — DNS run waits for Nick's login.
