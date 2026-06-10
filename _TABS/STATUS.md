@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-10 (PM4) — 🐝👑 QUEEN HUMMING 24/7 + GCP stack — main session
+**main session** · meok-backend VM + GCP project meok-498012 + meok-one queen fix
+- Changed: **proofof Queen LIVE 24/7 on the VM** via meok-king.service MCP (:8077, tools king_ask/queen/list_hives, 28 hives) — found+fixed queen fact-hallucination ($500/mo!): load_hive scope parser took 1 line + let L5 scope overwrite L6 → **parser fixed (first-scope-wins, multi-line)**, proofof stack.yml scope now carries CANONICAL FACTS (£199 Pro, 2 Aug 2026, full ladder) — Queen retest: **"Pro costs GBP 199/month, Article 50 = 2 August 2026"** ✓ deployed to VM (snapshot kept) + committed. GCP: meok-backend auto-restart ON (was off!) · already STANDARD (spot fear dead) · static IP confirmed · Cloud SQL sov3-memory creating (enterprise/db-f1-micro after edition fix) + user/db/DATABASE_URL automation queued · Secret Manager LIVE with 4 secrets pre-filled (ATTESTATION/ED25519/WHSEC/RESEND) + 3 awaiting Nick (RK_LIVE/CLERK_SK/HUB_OAUTH) · add_keys.sh one-paste tool + browser tabs opened.
+- Decision: NOT creating duplicate sov3-swarm e2-micro — King+28 Queens already run 24/7 on meok-backend (16GB, 8.8GB free). Script's VM step skipped deliberately.
+- Blocked/Nick: ROLL STRIPE KEY (still live+burned!) · paste keys via add_keys.sh · £199 checkout.
+
 ## 2026-06-10 (PM3) — 👑 Cowork audit + gaps closed: agent.json LIVE, rails wired, QUEEN BORN — main session
 **main session** · meok-attestation-api + powerhouse kit + meok-one queen
 - Changed: 🔴 **exposed rk_live STILL ACTIVE** (tested /v1/balance=200 — Nick MUST roll) · **agent.json LIVE on proofof.ai** (/.well-known/agent.json 200, A2A gate 2 GREEN) · powerhouse redeployed with the /rails adapter + exact path maps (`/rails/sign|verify` → attestation API; proxy verified hitting live endpoints; full contract bridge still needs source via Lovable ticket) · last escaped £79 string → £199 · **proofof QUEEN RAN LIVE**: load_hive('proofof.ai') flagship + queen() → BFT council quorum-3 (gemini/deepseek/kimi), safe=true, coherent reply, honey → SOV3.
