@@ -1,6 +1,6 @@
 # MEOK Launch Outreach Pack — 2026-06-07
 
-Paste-ready content for the launch sprint. All Gmail drafts already in Nick's Drafts folder (addressed to nicholas@meok.ai — update `To:` per send).
+Paste-ready content for the launch sprint. **Send from `nicholas@csoai.org` (MEOK AI Labs / CSOAI LTD, CH 16939677) — BRANDED EMAIL, NOT Gmail.** Use Mail.app (one-off) or `hive-mailer` (25/day from `hello@mail.meok.ai`, reply-to `nicholas@csoai.org`) or n8n (large personalised merges). The "Gmail drafts" line is deprecated — branded email is the rule.
 
 ---
 
@@ -157,9 +157,9 @@ authors:
 
 ---
 
-## 5. Outbound emails (5 drafts → Gmail Drafts folder)
+## 5. Outbound emails (5 drafts — BRANDED sender `nicholas@csoai.org`, NOT Gmail)
 
-All drafts addressed to nicholas@meok.ai — update `To:` per recipient before sending.
+All drafts addressed to `nicholas@csoai.org` (MEOK AI Labs / CSOAI LTD, UK CH 16939677). The canonical master pack is `revenue/MASTER_OUTREACH_PACK_2026-06-10.md` — use that. Update `To:` per recipient before sending.
 
 1. **Transport consultancy** — DVSA-OCRS-focused
 2. **FORS auditor** — Bronze/Silver/Gold dossier offer

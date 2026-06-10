@@ -1,8 +1,8 @@
 # 5 Cold-Email Drafts — Paste-Ready
 
-All drafts ready to paste into Gmail compose. Just update `[bracketed]` placeholders + the `To:` recipient.
+**Send channel: BRANDED EMAIL — `nicholas@csoai.org` (MEOK AI Labs / CSOAI LTD, CH 16939677). NOT Gmail.** Use either (a) **Mail.app** with the csoai.org mailbox (one-off / small batches), or (b) **`hive-mailer`** (auto-fires 25/day from `hello@mail.meok.ai` once DNS lands; reply-to = `nicholas@csoai.org`), or (c) **n8n** (cleaner for large personalised merges — n8n mailer is the proven reliable channel per the OFFER_EMAIL_LAUNCH50.md notes). The "Gmail" line above is deprecated and wrong — branded email is the rule.
 
-(Gmail MCP needs re-auth before I can stage these as actual drafts in your Gmail Drafts folder. Run `mcp__plugin_small-business_gmail__authenticate` when ready.)
+Just update `[bracketed]` placeholders + the `To:` recipient, then send from `nicholas@csoai.org`.
 
 ---
 

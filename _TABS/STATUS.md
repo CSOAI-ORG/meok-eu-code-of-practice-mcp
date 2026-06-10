@@ -2,6 +2,20 @@
 *Every tab appends 3 lines here when it finishes a chunk: what changed · what's live · what's blocked.*
 *Newest at top. This is how all tabs + Nick stay in sync.*
 
+## 2026-06-10 (PM12) — 💰 7 NEW PAID REVENUE SURFACES SHIPPED + 5 sponsor pitches ready — main session
+**main session** · meok/ui + meok-attestation-api + revenue/
+- Shipped: **SDK Pro page** `meok.ai/developers/sdk-pro` (380 lines) — £9/mo Pro + £99/mo Team + 99.9% SLA + OSCAL + sub-200ms p99
+- Shipped: **Sponsor page** `meok.ai/sponsors` (175 lines) — 5 slots (1 Founding £1k/mo, 2 Standards £500/mo, 2 OSS £500/mo) = £2.5-£3.5k/mo
+- Shipped: **CSOAI Cert ladder** `meok.ai/council/certifications` (260 lines) — Practitioner £99 / Engineer £299 / Lead Auditor £999 / Fellow £4,950
+- Shipped: **GOS Reconciliation** `meok.ai/optimobile-gos` (300 lines) — £29/mo + £99/mo group, Templeman captive customer first
+- Shipped: **SDK Pro entitlement gate** `meok-attestation-api/api/v1_sdk_pro.py` (170 lines) — `/v1/*` returns 403 with inline upgrade URL
+- Shipped: **5 personalised sponsor pitches** `revenue/SPONSORSHIP_PITCH_2026-06-10.md` (140 lines) — Pragmatic / Last Week / AI Tidbits / Import AI / Cybernews
+- Shipped: **sponsor one-pager** `revenue/CONSTELLATION_SPONSOR_ONE_PAGER.md` (106 lines) — 5 slots, dofollow, 1k-word blog
+- Shipped: **revenue live board** `revenue/REVENUE_LIVE_BOARD_2026-06-10.md` — 15 streams + 7-day money plan + £10-£40k 30-day target
+- Sitemap updated: 4 new GEO routes (sponsors/sdk-pro/optimobile-gos/council/certifications)
+- **Open Vercel deploy** = the £-unblock. Pages are on-disk + IndexedNow-ready, need Vercel push to be live.
+- **30-day target from this turn's shipments:** £10-£40k cash + £5-£15k/mo MRR, contingent on (a) Vercel deploy, (b) Nick's 5-min unlocks (Stripe key + DNS + Clerk), (c) the 5-min "open Mail.app + send 5 emails" action.
+
 ## 2026-06-10 (PM11) — 🐉 33-WEEK EXECUTION PLAN COMMITTED + branded-email rule locked — main session
 **main session** · master plan + outreach pack + memory
 - Shipped: **`clawd/MEOK_33_WEEKS_2026-06-10.md`** (343 lines) — single source of truth for 2026-06-10 → 2027-02-03. 3 phases keyed to **Article 50 cliff 2 Aug 2026** + **Watermark cliff 2 Dec 2026**. £0 → £3,333/day (90-day ramp), 5 workstreams, 33 P0-P3 shippable items, 15 distribution channels, 33 weeks of measurable DoD, risk register, council checkpoints W8/W20/W33. **Supersedes** `MEOK_NEXT_33.md` + the `MEOK_33_MOVES.md` gaps.
