@@ -4,6 +4,13 @@
 
 ---
 
+## 2026-06-10 (PM7) — 🛰 KING ON THE WIRE + hive-mailer armed + 68 repos patched — main session (M4)
+**main session** · VM caddy + hive-mailer + mcp-marketplace
+- Changed: **King hub remotely reachable over TLS NOW**: https://35.242.143.249.sslip.io/king/mcp (X-MEOK-Key gated; king_ask/queen/list_hives verified remotely) + **sovereign.meok.ai pre-staged in caddy** (cert auto-issues when Nick adds the A-record) · **HIVE MAILER live**: launchd every 30min, auto-verifies mail.meok.ai (flipped to PENDING), sends queue from hello@mail.meok.ai when DNS lands — 19 GRC emails queued, 25/day cap, reply-to Nick · held the iokfarm@icloud send (would burn targets) · **68 repos got .mcp.json** (one-click Claude Code install; 67 committed, staged for PAT) · meok.ai £79 claim in KING_ALIGNMENT = stale (0 live, verified).
+- Live: King MCP over TLS · IndexNow 202×3 · nis2-nl page · 4-hive grid green.
+- Remaining swarm switch-on: Nick DNS batch (8 rows — or open Chrome+Namecheap and M4 pastes them) → mailer auto-fires + sovereign.meok.ai cert + hub OAuth → queens enable.
+
+
 ## 2026-06-10 (PM6) — 🍽 EAT mode: 19 emails ONE CLICK from sent + NIS2-NL £499 page LIVE + Show HN final — main session
 **main session** · Mail.app + meok.ai/nis2-nl + Stripe + launch pack
 - Changed: **19 GRC emails created as DRAFTS IN MAIL.APP** (Gmail scope not needed — Nick: open Mail → Drafts → send) · **meok.ai/nis2-nl LIVE**: Netherlands NIS2 (Wbni-2) NCSC-NL registration, deadline 30 June 2026, £499 DFY product+link created (…91E) + free-MCP DIY path + FAQ JSON-LD · Show HN + thread placeholders filled with verified 294 · COAI £499/£1,499/£4,990 links live from PM5 · note: another tab measured 96 FULL/70-need-mcp.json registry patch (REGISTRY_SCAN csv) + new gate sovereign.meok.ai A-record.
