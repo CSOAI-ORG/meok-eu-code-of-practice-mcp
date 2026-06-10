@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-06-10 (PM3) — 👑 Cowork audit + gaps closed: agent.json LIVE, rails wired, QUEEN BORN — main session
+**main session** · meok-attestation-api + powerhouse kit + meok-one queen
+- Changed: 🔴 **exposed rk_live STILL ACTIVE** (tested /v1/balance=200 — Nick MUST roll) · **agent.json LIVE on proofof.ai** (/.well-known/agent.json 200, A2A gate 2 GREEN) · powerhouse redeployed with the /rails adapter + exact path maps (`/rails/sign|verify` → attestation API; proxy verified hitting live endpoints; full contract bridge still needs source via Lovable ticket) · last escaped £79 string → £199 · **proofof QUEEN RAN LIVE**: load_hive('proofof.ai') flagship + queen() → BFT council quorum-3 (gemini/deepseek/kimi), safe=true, coherent reply, honey → SOV3.
+- Audit of Cowork claims: Clerk prod instance + 5 DNS records ✅ TRUE (all resolving — Nick can copy pk_live/sk_live now) · press-list reframe ✅ · adapter ✅ in kit (deployed now) · registry 294 ✓ (drip still grinding ~40 via 429 backoff).
+- Blocked/Nick: ROLL THE STRIPE KEY · Clerk key copy → Vercel ui env · £199 checkout · Lovable ticket (source for true rails contract fix).
+
 ## 2026-06-10 (PM2) — 🔍 proofof.ai hive E2E AUDIT: 5 bugs found+fixed, loop now RUNNING READY — main session
 **main session** · meok-attestation-api 546075f · full report: SOV3-Launch/E2E_AUDIT_PROOFOF_2026-06-10.md
 - Changed: 🔴 **every /signup free key was REJECTED by /sign** (validator never checked free tier — funnel broken at step 2) FIXED+verified in prod · 🔴 canonical leak (vercel.app/catalogue) → proofof.ai · /payg→302 councilof · get-key.html £79→£199 · FREE14 promo CREATED (FACTS claimed it existed; it didn't).
