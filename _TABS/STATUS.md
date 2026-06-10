@@ -4,6 +4,13 @@
 
 ---
 
+## 2026-06-10 (PM9) — 👑 4 QUEENS SPEAK CANON over remote TLS King + nis2-nl link hardened — main session (M4)
+**main session** · hive-staging × VM · meok.ai
+- Changed: canonical facts-scopes injected into meok/councilof/csoai queens (proofof already done) + deployed to VM + King restarted — **COAI queen tested over the remote TLS endpoint: "Council Universe is GBP 1,499/mo… verdicts verified offline at proofof.ai/pubkey" ✓ safe=true** · nis2-nl DIY button → GitHub repo (PyPI throttle = 3/47 landed; drip keeps grinding, days not hours at PyPI's new-project rate) · Namecheap tab opened but LOGGED OUT — DNS run waits for Nick's login.
+- Live: 4 fact-grounded queens behind https://35.242.143.249.sslip.io/king/mcp (X-MEOK-Key) · all visual fixes from PM8.
+- Standing: Nick login → M4 pastes 8 DNS rows → mailer fires 19 emails automatically. Everything else is humming.
+
+
 ## 2026-06-10 (PM8) — 📸 VISUAL E2E: 8 surfaces screenshotted, 5 brand/truth bugs found+fixed LIVE — main session (M4)
 **main session** · Playwright+Chrome screenshots → fixes deployed ×3 projects
 - Found via real rendering: 🔴 **Article 50 page contradicted ITSELF on screen** (red banner "144d · 2 November 2026" vs hero "2 August") — Article50Countdown component had the wrong date → fixed, 2 Aug everywhere · meok home showed THREE conflicting counts (26 PyPI / 6,798 / 1,578) → canonical "294 servers in the official MCP Registry" · COAI chip 47→294 · proofof catalogue "15 servers"→294-server fleet claim · verify page now tells auditors about Ed25519+/pubkey offline verification (was HMAC-only copy).
