@@ -2,7 +2,23 @@
 *Every tab appends 3 lines here when it finishes a chunk: what changed · what's live · what's blocked.*
 *Newest at top. This is how all tabs + Nick stay in sync.*
 
+## 2026-06-10 (PM11) — 🐉 33-WEEK EXECUTION PLAN COMMITTED + branded-email rule locked — main session
+**main session** · master plan + outreach pack + memory
+- Shipped: **`clawd/MEOK_33_WEEKS_2026-06-10.md`** (343 lines) — single source of truth for 2026-06-10 → 2027-02-03. 3 phases keyed to **Article 50 cliff 2 Aug 2026** + **Watermark cliff 2 Dec 2026**. £0 → £3,333/day (90-day ramp), 5 workstreams, 33 P0-P3 shippable items, 15 distribution channels, 33 weeks of measurable DoD, risk register, council checkpoints W8/W20/W33. **Supersedes** `MEOK_NEXT_33.md` + the `MEOK_33_MOVES.md` gaps.
+- Shipped: **`revenue/MASTER_OUTREACH_PACK_2026-06-10.md`** (155 lines) — all 24+ outbound drafts (Aveni/Tribepad/Optegra/Renishaw/HaulageHub + 14 GRC DPOs + 5 transport) consolidated. **Sender = `nicholas@csoai.org` (BRANDED) NOT Gmail.** Old "Gmail drafts" lines fixed in `LAUNCH_OUTREACH_2026-06-07.md` (line 3 + 160) and `COLD_EMAIL_DRAFTS_2026-06-07.md` (lines 3-5).
+- Memory: `project_meok_33_weeks.md` + `feedback_branded_email.md` added. SOV3 episode recorded (care=0.9, decision type).
+- **Open todos swept (the "all previous" task):** 5-min Nick unlocks (roll Stripe key / DNS batch / Clerk live / Vercel KV / PyPI token / PAT write / cobolbridge move / Vercel project-delete group). My W1 lanes: cobolbridge move, meok-sdk-py 0.1.1 republish, sovereign.meok.ai A-record, send 19+5 GRC drafts in Mail.app, MEOK ONE funnel E2E, pricing-link audit, PyPI Trusted Publishing + Sigstore on top 15 flagships, Stripe entitlement gate, Show HN pack, Ed25519+RFC-3161, C2PA product.
+- **What this plan REJECTS:** no x402/crypto on 2026 path · no "ISO-certified" lies · no "high-risk urgent" pitch (real cliff is Dec 2027, we pitch Art 50 + Watermark only) · no fake metrics · no CSGA/Terranova · no more drafts that don't ship.
+- Review: every Friday · Council: W8 / W20 / W33.
+
 ---
+
+## 2026-06-10 (PM11) — 👑 SOVEREIGN.MEOK.AI LIVE + CSGA DEAD + cobolbridge freed — main session (M4)
+- **sovereign.meok.ai LIVE with auto-issued TLS** (my A-record + pre-staged caddy = zero-touch) — King + 28 queens at the proper home, key-gated. openmoe queen verified answering on VM.
+- **cobolbridge.ai migrated** to clean cobolbridge-site project (200, zero CSGA strings) → **csga-global-site DELETED** (204). The severed brand has no remaining footholds on Vercel.
+- agent-incident-reporter-mcp (M2 gap product): gate-PASSED, PyPI 429-throttled like the other 44 new names — drip continues. DNS: one+sovereign LIVE; api/try/TXT×2/MX = 4 manual rows or the API path (whitelist dialog pre-filled, needs Nick password keystroke).
+- M2 lanes running their own queens (openmoe keeper registered, optimobile Stripe live). M4 next sitting: publish SDK/passport when throttle clears · gen_mcp_pages over fleet · README propagation kit (kills fleet-wide 2-November) · registry quality pass.
+
 
 ## 2026-06-10 (PM10) — 📬 34-email queue ARMED: 19 GRC + 15 verified Dutch NIS2 prospects — main session (M4)
 **main session** · hive-mailer + research agent
