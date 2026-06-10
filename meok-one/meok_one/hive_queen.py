@@ -154,8 +154,18 @@ def load_hive(domain: str) -> dict:
                 in_tools = False
         if s.startswith("palette:"):
             cfg["palette"] = s.split(":", 1)[1].strip().strip('"')
-        if s.startswith("scope:"):
-            cfg["scope"] = s.split(":", 1)[1].strip().strip('"')
+        if s.startswith("scope:") and not cfg["scope"]:
+            # first scope wins (L6 orchestration; the later L5 memory scope must not
+            # overwrite it) and multi-line quoted blocks are captured in full.
+            val = s.split(":", 1)[1].strip()
+            block = [val.lstrip('"')]
+            if val.startswith('"') and not (len(val) > 1 and val.endswith('"')):
+                for cont in text.splitlines()[text.splitlines().index(line) + 1:]:
+                    cs = cont.strip()
+                    block.append(cs.rstrip('"'))
+                    if cs.endswith('"'):
+                        break
+            cfg["scope"] = " ".join(b for b in block if b).strip().strip('"')
         if s.startswith("tier:") and not cfg["build_tier"]:
             cfg["build_tier"] = s.split(":", 1)[1].strip()
     return cfg
