@@ -4,6 +4,13 @@
 
 ---
 
+## 2026-06-10 (PM8) — 📸 VISUAL E2E: 8 surfaces screenshotted, 5 brand/truth bugs found+fixed LIVE — main session (M4)
+**main session** · Playwright+Chrome screenshots → fixes deployed ×3 projects
+- Found via real rendering: 🔴 **Article 50 page contradicted ITSELF on screen** (red banner "144d · 2 November 2026" vs hero "2 August") — Article50Countdown component had the wrong date → fixed, 2 Aug everywhere · meok home showed THREE conflicting counts (26 PyPI / 6,798 / 1,578) → canonical "294 servers in the official MCP Registry" · COAI chip 47→294 · proofof catalogue "15 servers"→294-server fleet claim · verify page now tells auditors about Ed25519+/pubkey offline verification (was HMAC-only copy).
+- Verdicts: nis2-nl page renders BEAUTIFULLY (sell-ready) · meok home strong brand · COAI strong · powerhouse stunning (parked) · proofof catalogue functional but plainest flagship (brand-pass candidate when Lovable source returns) · verify page clean for auditors.
+- All fixes deployed + verified live. Screenshots: /tmp/visual/.
+
+
 ## 2026-06-10 (PM7) — 🛰 KING ON THE WIRE + hive-mailer armed + 68 repos patched — main session (M4)
 **main session** · VM caddy + hive-mailer + mcp-marketplace
 - Changed: **King hub remotely reachable over TLS NOW**: https://35.242.143.249.sslip.io/king/mcp (X-MEOK-Key gated; king_ask/queen/list_hives verified remotely) + **sovereign.meok.ai pre-staged in caddy** (cert auto-issues when Nick adds the A-record) · **HIVE MAILER live**: launchd every 30min, auto-verifies mail.meok.ai (flipped to PENDING), sends queue from hello@mail.meok.ai when DNS lands — 19 GRC emails queued, 25/day cap, reply-to Nick · held the iokfarm@icloud send (would burn targets) · **68 repos got .mcp.json** (one-click Claude Code install; 67 committed, staged for PAT) · meok.ai £79 claim in KING_ALIGNMENT = stale (0 live, verified).
