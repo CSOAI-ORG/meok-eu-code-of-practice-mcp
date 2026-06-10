@@ -4,6 +4,13 @@
 
 ---
 
+## 2026-06-10 (PM6) — 🍽 EAT mode: 19 emails ONE CLICK from sent + NIS2-NL £499 page LIVE + Show HN final — main session
+**main session** · Mail.app + meok.ai/nis2-nl + Stripe + launch pack
+- Changed: **19 GRC emails created as DRAFTS IN MAIL.APP** (Gmail scope not needed — Nick: open Mail → Drafts → send) · **meok.ai/nis2-nl LIVE**: Netherlands NIS2 (Wbni-2) NCSC-NL registration, deadline 30 June 2026, £499 DFY product+link created (…91E) + free-MCP DIY path + FAQ JSON-LD · Show HN + thread placeholders filled with verified 294 · COAI £499/£1,499/£4,990 links live from PM5 · note: another tab measured 96 FULL/70-need-mcp.json registry patch (REGISTRY_SCAN csv) + new gate sovereign.meok.ai A-record.
+- Live: meok.ai/nis2-nl 200 · 4-hive grid green · drip publisher still grinding.
+- Next revenue motion: Nick sends the 19 drafts (5 min) · Smithery site submit (15 min) · Show HN fires when fulfilment proven.
+
+
 ## 2026-06-10 (PM5) — 👑 M4 = KING: 4-hive grid GREEN + COAI revenue mis-wire killed — main session
 **main session** · all 4 hives + KING_STATE doc
 - Changed: cross-hive sweep found+fixed: **COAI buy buttons charged £79 for £499/£1,499/£4,990 products** (rewired, new links) · meok.ai agent.json 500 (Clerk middleware ate .well-known + Next route quirk → static public/ file, 200 ✓) · COAI llms.txt+agent.json shipped · **all 4 hives now llms+agent.json+pricing GREEN** · KING_STATE_2026-06-10_PM.md written (morning king-orders were issuing stale blockers — supersedes them) · GCP Cloud SQL chain complete (DATABASE_URL secret, VM authorized).
