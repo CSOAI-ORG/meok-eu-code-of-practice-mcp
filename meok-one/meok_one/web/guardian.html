@@ -136,6 +136,18 @@ async function setLimit(child_id, name){
   const mins=prompt('Daily game limit (minutes) for '+name,'60'); if(mins==null) return;
   const d=await mcp('guardian_set_game_limit',{child_id,minutes:+mins||0}); toast(d.error?'Failed':name+': '+mins+'m/day');
 }
+async function checkSchedule(child_id, name){
+  const d=await mcp('guardian_check_play_schedule',{child_id});
+  if(d.error) return toast('Schedule check failed', true);
+  const can = (d.can_play!=null?d.can_play : (d.allowed!=null?d.allowed : d.ok));
+  const why = d.reason||d.message||d.next_window||'';
+  toast(`${name}: ${can===false?'⛔ not play time':'✅ can play now'}${why?' — '+why:''}`);
+}
+async function blockGame(child_id, name){
+  const game=prompt('Block which game for '+name+'?'); if(!game) return;
+  const d=await mcp('guardian_block_game',{child_id,game_title:game});
+  toast(d.error?'Block failed':`Blocked "${game}" for ${name}`);
+}
 async function addKid(){
   const name=prompt('Child name'); if(!name) return; const age=+prompt('Age','9')||9;
   const d=await mcp('guardian_add_child_profile',{child_id:slug(name),name,age}); if(!d.error){toast('Added '+name); loadKids();}
