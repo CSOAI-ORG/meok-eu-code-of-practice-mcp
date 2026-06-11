@@ -495,6 +495,11 @@ class Handler(BaseHTTPRequestHandler):
             n = int(qs.get("n", ["3"])[0] or 3)
             return self._json(200, {"user_id": uid, "character_id": cid,
                                     "context": _of.federated_context(uid, cid, n=n)})
+        if path == "/api/olm/tournament/last":
+            # Read the most recent tournament summary (JSON on disk). Cheap, no LLM calls.
+            # Used by the dashboard + the cron checker ("did last night pass the gate?").
+            from . import olm_tournament as _ot
+            return self._json(200, _ot.leaderboard_json())
         if path == "/api/products":
             # MEOK products bridged into the DOME — the geospatial product constellation
             # (map nodes + cosmos planets the user can fly to / open / ask their AI about).
@@ -792,14 +797,24 @@ class Handler(BaseHTTPRequestHandler):
                 if b.get("type") == "checkout.session.completed":
                     sess = (b.get("data") or {}).get("object") or {}
                     puid = sess.get("client_reference_id")
+                    
+                    # Extract line items or assume from session (Stripe usually sends line_items if expanded, 
+                    # but we can check the amount_total as a proxy if line_items isn't expanded)
+                    amount = sess.get("amount_total", 0)
+                    tier_to_set = "pro"
+                    if amount >= 149900:
+                        tier_to_set = "enterprise"
+                    elif amount >= 19900:
+                        tier_to_set = "professional"
+                    
                     if puid:
-                        auth.set_tier(puid, "pro")
+                        auth.set_tier(puid, tier_to_set)
                         try:
                             from . import sigil as _sigil
-                            _sigil.record({"op": "S", "fields": {"event": "stripe_paid", "user": puid, "tier": "pro"}})
+                            _sigil.record({"op": "S", "fields": {"event": "stripe_paid", "user": puid, "tier": tier_to_set}})
                         except Exception:
                             pass
-                        return self._json(200, {"ok": True, "user": puid, "tier": "pro"})
+                        return self._json(200, {"ok": True, "user": puid, "tier": tier_to_set})
                 return self._json(200, {"ok": True, "ignored": b.get("type")})
             # ---- MCP bridge: OS/DOME/LAW/MAP + characters → SOV3 tools + compliance MCP catalogue ----
             if path == "/api/mcp/call":
@@ -1155,6 +1170,50 @@ class Handler(BaseHTTPRequestHandler):
                 _w = _of.wipe_user(b.get("user_id", "anon"),
                                    character_id=b.get("character_id"))
                 return self._json(200, _w)
+            if path == "/api/olm/snapshot":
+                # Persist the current OLM buffer to disk as a named snapshot — the BEFORE
+                # half of a future tournament. Returns {path, episodes, ts}.
+                from . import olm_tournament as _ot
+                _p = _ot.snapshot_now(b.get("user_id", "anon"),
+                                      b.get("character_id", "aria"),
+                                      tag=b.get("tag", ""))
+                return self._json(200, {"path": _p})
+            if path == "/api/olm/tournament":
+                # BFT-gated OLM proof-of-improvement. Compares a BEFORE buffer (snapshot path
+                # or inline list) to the AFTER (current on-disk buffer by default) across the
+                # OLM battery, judging care delta + Horus safety. The BFT gate fails the run
+                # if AFTER introduces a Horus VETO that BEFORE didn't have — care != unsafe.
+                from . import olm_tournament as _ot
+                _prompts = b.get("prompts")
+                if not isinstance(_prompts, list):
+                    n = int(b.get("n", 5)) if "n" in b else None
+                    _prompts = _ot.OLM_BATTERY[:n] if n else None
+                before = b.get("before")
+                before_eps = None
+                if isinstance(before, str) and before:
+                    before_eps = _ot._load_snapshot(before)
+                elif isinstance(before, list):
+                    before_eps = before
+                # If caller passed a snapshot_path AND a fresh inline list, prefer inline
+                # (caller knows best); _load_snapshot returns [] on miss so the cold-start
+                # baseline is the empty list — matching run_tournament's contract.
+                _r = _ot.run_tournament(b.get("user_id", "anon"),
+                                        b.get("character_id", "aria"),
+                                        before_episodes=before_eps,
+                                        after_episodes=(b.get("after")
+                                                        if isinstance(b.get("after"), list)
+                                                        else None),
+                                        prompts=_prompts,
+                                        model=b.get("model", "auto"))
+                return self._json(200, _r)
+            if path == "/api/olm/tournament/overnight":
+                # Cron-friendly: compares the last tournament's AFTER to today's buffer.
+                from . import olm_tournament as _ot
+                _r = _ot.run_overnight_tournament(b.get("user_id", "anon"),
+                                                  b.get("character_id", "aria"),
+                                                  n_prompts=int(b.get("n", 5)),
+                                                  model=b.get("model", "auto"))
+                return self._json(200, _r)
             if path == "/api/siri":
                 # SIRI / Apple Shortcuts bridge. A spoken query → a MEOK character's reply,
                 # routed through the SAME Sovereign gate as everything else, so Siri inherits

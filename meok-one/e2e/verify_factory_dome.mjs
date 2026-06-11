@@ -2,7 +2,7 @@
 // + DOME-world integration (your creation shows as a gold pin with a "Make this my AI" CTA).
 import { chromium } from '@playwright/test';
 
-const BASE = 'http://localhost:4173';
+const BASE = process.env.QA_BASE || 'https://meok-one.35.242.143.249.sslip.io';
 const ok = (c, m) => console.log(`${c ? '✅' : '❌'} ${m}`);
 let fails = 0;
 const must = (c, m) => { ok(c, m); if (!c) fails++; };
@@ -114,7 +114,7 @@ const sg = await page.evaluate(async () => {
   const g = await (await fetch('/api/sigil/gloss?line=' + encodeURIComponent('V|care_governor|p1|+|0.9'))).json();
   return { ops: (m.opcodes || []).length, gloss: g.gloss };
 });
-must(sg.ops === 8 && /votes approve/.test(sg.gloss || ''), `SIGIL grammar (${sg.ops} opcodes; "${(sg.gloss || '').slice(0, 30)}")`);
+must(sg.ops === 10 && /votes approve/.test(sg.gloss || ''), `SIGIL grammar (${sg.ops} opcodes; "${(sg.gloss || '').slice(0, 30)}")`);
 // council EMITS SIGIL → hash-chained, verifiable
 const emit = await page.evaluate(async () => {
   await fetch('/api/sovereign', { method: 'POST', headers: { 'Content-Type': 'application/json' },

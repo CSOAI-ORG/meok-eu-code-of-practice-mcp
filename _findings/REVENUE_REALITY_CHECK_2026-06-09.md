@@ -32,7 +32,7 @@
 ## 2. WHAT'S ACTUALLY WORKING (verified live)
 
 ### Stripe (the money pipe)
-- **Pro £79/mo:** `https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j` → **200 OK**
+- **Pro £79/mo:** `https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t` → **200 OK**
 - **Consumer Pro £9/mo:** `https://buy.stripe.com/28E8wR2G0dQS5g92Yg8k91n`
 - **Team £99/mo:** `https://buy.stripe.com/4gM9AV80kcMO23X0Q88k91o`
 - **Enterprise £1,499/mo:** `https://buy.stripe.com/14AfZjfsM6oq7oh2Yg8k90P` (needs verification)

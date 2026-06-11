@@ -9,9 +9,9 @@ from meok_one.tiers import (TIERS, get_tier, can_hatch, quote,  # noqa: E402
 from meok_one.connect import connect  # noqa: E402
 
 
-# ---- the ladder (Nick's 5 decisions) ----
-def test_five_tiers_exist():
-    assert set(TIERS) == {"local", "free", "pro", "usage", "enterprise"}
+# ---- the ladder (Nick's decisions) ----
+def test_all_tiers_exist():
+    assert set(TIERS) == {"local", "free", "pro", "professional", "usage", "enterprise"}
 
 
 def test_local_is_free_selfhost_oss():
@@ -46,9 +46,9 @@ def test_can_hatch_gating():
     assert can_hatch("enterprise", "gaming") is True
 
 
-def test_ladder_renders_all_five():
+def test_ladder_renders_all_six():
     rows = ladder()
-    assert len(rows) == 5 and rows[0]["id"] == "local" and rows[-1]["id"] == "enterprise"
+    assert len(rows) == 6 and rows[0]["id"] == "local" and rows[-1]["id"] == "enterprise"
 
 
 def test_unknown_tier_fails_loud():

@@ -70,7 +70,7 @@
 - **Welfare/aquaculture claims** are animal-welfare-regulated — ground tool logic in actual RSPCA/ASC/CEFAS standards, cite the standard, don't invent thresholds.
 
 ## 8. Canonical money facts (MEOK AI LTD · `acct_1TLlEKQvIueK5Xpb` · Companies House 16939677)
-- **Aquaculture welfare-compliance MCPs (B2B fish farms/koi dealers):** point at **Compliance Pro £79/mo** → `https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j`. Tier range for the vertical per memory = **£29–£999/mo** (RSPCA/ASC/CEFAS products).
+- **Aquaculture welfare-compliance MCPs (B2B fish farms/koi dealers):** point at **Compliance Pro £79/mo** → `https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t`. Tier range for the vertical per memory = **£29–£999/mo** (RSPCA/ASC/CEFAS products).
 - **Hobbyist (fishkeeper.ai / koikeeper.ai consumers):** **Consumer Pro £9/mo** → `https://buy.stripe.com/28E8wR2G0dQS5g92Yg8k91n` · **Team £99/mo** → `https://buy.stripe.com/4gM9AV80kcMO23X0Q88k91o` (both LAUNCH50-enabled).
 - **Physical farm revenue (separate from MCP SaaS):** Playbook Phase-A target ~£22k–£28k/mo ramping to £33k/mo; Phase C goal £3,333/day. Funded by koi liquidation, ~94–97% margin once built. Grant income £4.9k–£9.6k/yr.
 - **Don't conflate** the SaaS Stripe ladder with the farm's produce/koi/grant cash flow — they're different P&Ls under the same person.

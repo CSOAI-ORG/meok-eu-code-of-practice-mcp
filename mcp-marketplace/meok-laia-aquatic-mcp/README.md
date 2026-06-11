@@ -35,7 +35,7 @@ This MCP turns the spec into one programmable surface: list the activities, run 
 | Free | £0 | 30 calls/hour. List + checklist only. |
 | Pro | £29/mo | Unlimited. Full gap analysis + inspector pack + reminder webhooks. |
 
-[Subscribe — £29/mo](https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j)
+[Subscribe — £29/mo](https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t)
 
 ## License
 
@@ -59,7 +59,7 @@ Distributed via OATA + fishkeeper.ai + koikeeper.ai consumer funnels.
 ## Get started
 
 - **Free** — 30 calls/hour, no card. Activities list + 7-point welfare checklist.
-- **Pro £29/mo** — full LAIA gap analysis + indicative star rating + inspector-ready pack → **[Subscribe](https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j)**
+- **Pro £29/mo** — full LAIA gap analysis + indicative star rating + inspector-ready pack → **[Subscribe](https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t)**
 - **Not ready to subscribe?** 30-min review of your LAIA licence readiness — [book a call](mailto:nicholas@meok.ai?subject=LAIA%20aquatic%20licence%20review)
 
 Verify any signed inspector pack at <https://meok.ai/verify>.

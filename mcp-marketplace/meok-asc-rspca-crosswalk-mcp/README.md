@@ -37,7 +37,7 @@ If you supply more than one retail channel, you do not have one audit. You have 
 | Pro | £999/mo | Unlimited. Full unified audit pack + multi-site bundle + retailer-requirement webhooks + signed attestation chain. |
 | Enterprise | Custom | Pro + dedicated certifier onboarding + private crosswalk extensions. |
 
-[Subscribe — £999/mo](https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j)
+[Subscribe — £999/mo](https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t)
 
 ## License
 
@@ -60,7 +60,7 @@ MIT © MEOK AI Labs
 ## Get started
 
 - **Free** — 10 calls/hour, no card. Crosswalk topics + retailer-requirement lookup.
-- **Enterprise £999/mo** — one unified audit pack satisfying ASC + RSPCA + GlobalG.A.P. + multi-site + signed attestation chain → **[Subscribe](https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j)**
+- **Enterprise £999/mo** — one unified audit pack satisfying ASC + RSPCA + GlobalG.A.P. + multi-site + signed attestation chain → **[Subscribe](https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t)**
 - For retail-supplier migration (Sainsbury's 100% ASC / Co-op by 2027): [book a call](mailto:nicholas@meok.ai?subject=ASC%20RSPCA%20crosswalk%20review)
 
 Verify any signed evidence pack at <https://meok.ai/verify>.

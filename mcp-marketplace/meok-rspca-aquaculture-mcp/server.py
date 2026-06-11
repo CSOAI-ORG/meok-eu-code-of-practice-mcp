@@ -291,9 +291,9 @@ def list_standards(species: str = "trout", api_key: str = "") -> dict:
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t"}
     if not _check_rate_limit(tier):
-        return {"error": "Rate limit exceeded. Upgrade at https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
+        return {"error": "Rate limit exceeded. Upgrade at https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t"}
 
     species = species.lower()
     if species == "trout":
@@ -331,7 +331,7 @@ def lookup_clause(clause_id: str, api_key: str = "") -> dict:
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t"}
     if not _check_rate_limit(tier):
         return {"error": "Rate limit exceeded."}
 
@@ -362,7 +362,7 @@ def gap_analysis(species: str, farm_data: dict, api_key: str = "") -> dict:
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t"}
     if not _check_rate_limit(tier):
         return {"error": "Rate limit exceeded."}
 
@@ -638,7 +638,7 @@ def welfare_attestation(
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t"}
 
     version = TROUT_VERSION if species.lower() == "trout" else SALMON_VERSION
     issued_at = datetime.now(timezone.utc).isoformat()
@@ -667,7 +667,7 @@ def list_versions(api_key: str = "") -> dict:
     """Return current RSPCA Assured standard versions wrapped by this MCP."""
     allowed, msg, tier = check_access(api_key)
     if not allowed:
-        return {"error": msg, "upgrade_url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"}
+        return {"error": msg, "upgrade_url": "https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t"}
     return {
         "trout": {
             "version": TROUT_VERSION,
@@ -697,7 +697,7 @@ if __name__ == "__main__":
 # ── MEOK monetization layer (Stripe upgrade · PAYG · pricing) ──────────
 # Free tier is zero-config. Upgrade to Pro (unlimited) or pay-as-you-go per call.
 import os as _meok_os
-MEOK_STRIPE_UPGRADE = "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"  # Pro (unlimited)
+MEOK_STRIPE_UPGRADE = "https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t"  # Pro (unlimited)
 MEOK_PAYG_KEY = _meok_os.environ.get("MEOK_PAYG_KEY", "")  # set to enable PAYG (x402 / ~GBP0.05 per call)
 MEOK_PRICING = "https://meok.ai/pricing"
 

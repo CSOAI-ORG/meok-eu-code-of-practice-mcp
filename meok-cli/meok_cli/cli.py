@@ -12,6 +12,13 @@ Commands:
   meok mcp list              — list MEOK MCP servers (full 32-MCP catalogue)
   meok mcp search <term>     — search the catalogue by keyword
   meok health                — check that the verifier API is up
+  meok csoai map [region]    — display compliance map
+  meok csoai crosswalk [domain] — show framework crosswalk matrix
+  meok csoai dome            — show DOME status snapshot
+  meok csoai council         — show council voting state
+  meok csoai verify <cert_id> — verify SIGIL certificate
+  meok csoai countdown       — show regulatory countdowns
+  meok csoai status          — overall csoai.org system status
   meok version
 
 Override the API base with MEOK_API_BASE (default https://meok-attestation-api.vercel.app).
@@ -27,6 +34,11 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import webbrowser
+
+try:
+    from meok_cli import csoai
+except ImportError:
+    import csoai
 
 # Single source of truth — overridable for local-dev + edge.
 API_BASE = os.environ.get("MEOK_API_BASE", "https://meok-attestation-api.vercel.app").rstrip("/")
@@ -220,6 +232,8 @@ def build_parser():
     msr.set_defaults(func=cmd_mcp_search)
 
     sub.add_parser("version", help="show version").set_defaults(func=cmd_version)
+
+    csoai.register(sub)
     return p
 
 

@@ -51,7 +51,7 @@
 ## 6. Open tasks already routed to me (from INBOX, 2026-06-07)
 - **MAP lane:** make the registry manifests + `_TOPOLOGY/` the ONE canonical graph DOME renders → a single `topology.json` the DOME surface can fetch.
 - `fleet_scorecard.json` is the canonical surface-coverage data for proofof.ai — keep it the source of truth.
-- **Refinement I flagged 2026-06-09:** the fleet upsell is **Compliance Pro £79** (`5kQ6oJ0xS3ce8sl7ew8k91j`) — correct for *compliance* MCPs, but the ~non-compliance dev-utility MCPs should likely point at the **consumer Pro £9** (`28E8wR2G0dQS5g92Yg8k91n`) instead. Needs a per-package CTA audit.
+- **Refinement I flagged 2026-06-09:** the fleet upsell is **Compliance Pro £79** (`aFa7sNcgAdQS0ZT1Uc8k91t`) — correct for *compliance* MCPs, but the ~non-compliance dev-utility MCPs should likely point at the **consumer Pro £9** (`28E8wR2G0dQS5g92Yg8k91n`) instead. Needs a per-package CTA audit.
 
 ## 7. Hard rules & gates
 - **PyPI new-project cap:** publishing a *brand-new* package re-trips the cap. **Republish existing only** unless deliberately spending the cap.
@@ -62,7 +62,7 @@
 - **Nick-only gates:** provision Vercel KV (activates metering) · add LAUNCH50 promo code · verify PAYG webhook · reconnect Gmail · **rotate the PyPI token** · approve GitHub OAuth for registry bursts.
 
 ## 8. Canonical money facts (MEOK AI LTD · `acct_1TLlEKQvIueK5Xpb` · Companies House 16939677)
-- **Compliance Pro £79/mo** → `https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j` (fleet/compliance upsell)
+- **Compliance Pro £79/mo** → `https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t` (fleet/compliance upsell)
 - **Consumer Pro £9/mo** → `https://buy.stripe.com/28E8wR2G0dQS5g92Yg8k91n` · **Team £99/mo** → `https://buy.stripe.com/4gM9AV80kcMO23X0Q88k91o` (LAUNCH50-enabled; meok.ai/openmoe.ai consumer)
 - Service tiers: NIS2-DE £99 `…8k91p` (self-serve) / £499 `…8k91k` (DFY) · DORA-BE £999 `…8k91l` · Audit-Prep £4,950 `…8k91m`
 - **Target:** £3,333/day (£100k/mo) · 1M downloads/mo · every MCP 100/100.

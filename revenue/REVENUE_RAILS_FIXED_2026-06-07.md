@@ -8,7 +8,7 @@ intents ever**. Customers' clicks never reached it.
 ## Canonical Stripe (LIVE account — use ONLY these)
 - Account: **MEOK AI LTD** `acct_1TLlEKQvIueK5Xpb` (livemode)
 - **Compliance Pro £79/mo** — product `prod_UeyPEb58exuL3I` · price `price_1TfeSQQvIueK5XpbIqoWxqhc`
-  · **link `https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j`** (HTTP 200, this is THE upgrade link)
+  · **link `https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t`** (HTTP 200, this is THE upgrade link)
 - **LAUNCH50** coupon `MIoZIRM1` (50% off, 6 mo) — promo *code* still needs adding in dashboard (MCP tool API-skew)
 - Existing catalog: PAYG £10/£50/£200, NIS2-DE £499/£99, DORA-BE £999, Audit-Prep £4,950, Watermark £999, Smoke £1, MEOK ONE Pro £9/mo
 - Missing: Enterprise £1,499 (website advertises it — create if wanted)

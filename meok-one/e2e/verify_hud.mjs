@@ -1,6 +1,6 @@
 // Eyes-on verification of the /hud gaming overlay skin.
 import { chromium } from '@playwright/test';
-const BASE = process.env.QA_BASE || 'http://localhost:4173';
+const BASE = process.env.QA_BASE || 'https://meok-one.35.242.143.249.sslip.io';
 let fails = 0; const ok = (c, m) => { console.log(`${c ? '✅' : '❌'} ${m}`); if (!c) fails++; };
 const b = await chromium.launch(); const ctx = await b.newContext(); const p = await ctx.newPage();
 const errs = []; p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });

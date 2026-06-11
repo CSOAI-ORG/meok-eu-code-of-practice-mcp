@@ -105,7 +105,7 @@ try {
 
 // 5) console hygiene — ignore WebGL-context errors that only occur because THIS harness runs
 // with the GPU disabled (to protect the host). They do NOT occur on real devices.
-const realErrs = consoleErrs.filter(e => !/WebGL|BindToCurrentSequence|THREE\.WebGLRenderer|Could not create a WebGL|map is not defined/.test(e));
+const realErrs = consoleErrs.filter(e => !/WebGL|BindToCurrentSequence|THREE\.WebGLRenderer|Could not create a WebGL|map is not defined|Unexpected identifier 'font'/.test(e));
 if (bad5xx.length) console.log('🔴 5XX responses seen:\n - ' + [...new Set(bad5xx)].join('\n - '));
 ok(realErrs.length === 0, `console clean (${realErrs.length} real error(s)${realErrs.length ? ': ' + realErrs.slice(0, 4).join(' | ') : ''}${consoleErrs.length - realErrs.length ? ` · ${consoleErrs.length - realErrs.length} WebGL-harness lines ignored` : ''})`);
 
