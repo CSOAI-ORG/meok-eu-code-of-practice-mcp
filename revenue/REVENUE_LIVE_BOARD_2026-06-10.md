@@ -72,3 +72,14 @@
 - Branded-email rule enforced (memory + 3 file edits)
 
 **Total: 7 new paid revenue surfaces shipped. £10-£40k cash + £5-£15k/mo MRR achievable from what's now on disk + the 8 email sends.**
+
+## AUDIT FIXES (later in turn) — E2E test exposed 3 real bugs, all fixed on disk
+- **`v1_sdk_pro.py` was broken pseudocode** (referenced `self.*` on module functions, had no `class handler`). Refactored to proper `BaseHTTPRequestHandler` class with 5 routes + 6/6 health matrix + 5/5 sign matrix + 3/3 usage + 3/3 webhooks + signature round-trip verified locally. E2E test shows: pro/team/master → 200, garbage → 403+upgrade_url, free → 403+upgrade_url, derived meok_* → 200.
+- **4 new pages had no Product/FAQPage schema** — only boilerplate Organization/Place/Person. That kills the AEO/GEO play. Added JSON-LD: sdk-pro = Product(2 Offers) + FAQPage(5 Qs); sponsors = Product(3 Offers) + FAQPage(6 Qs); certifications = ItemList → 4 EducationalOccupationalCredentials; optimobile-gos = Product(2 Offers). All 4 type-check clean. Schema validates as proper JSON.
+- **vercel.json missing rewrites for /v1/* path** — added `/v1/healthx` + `/v1/:path*` + `/api/v1/:path*` → `/api/v1_sdk_pro` so Vercel actually serves the new file on next deploy.
+- 2 commits: `meok-attestation-api` 93081b6 (v1_sdk_pro.py + vercel.json), `meok` 8b2dcd6 (4 pages JSON-LD).
+
+## DEPLOY-GATED (Nick action, 5-10 min)
+- **Vercel deploy `meok-attestation-api`** → all /v1/* routes go live (£9/£99 paywall activated).
+- **Vercel deploy `meok/ui`** → 4 new pages go live with schema (AEO/GEO surfaces).
+- These two deploys are the £-unblock. Until then, the new surfaces are IndexedNow-ready and Schema-valid on disk but not crawling/indexing.

@@ -2,6 +2,15 @@
 *Every tab appends 3 lines here when it finishes a chunk: what changed · what's live · what's blocked.*
 *Newest at top. This is how all tabs + Nick stay in sync.*
 
+## 2026-06-10 (PM13) — 🔍 E2E AUDIT: 3 REAL BUGS FOUND + FIXED — M5 auditor role
+**M5 auditor session** · meok-attestation-api + meok/ui
+- **Bug 1 (CRITICAL):** `v1_sdk_pro.py` was broken pseudocode (referenced `self.*` on module functions, no class handler). Refactored to proper `class handler(BaseHTTPRequestHandler)` with 5 routes. E2E tested locally: 6/6 health matrix, 5/5 sign matrix, 3/3 usage, 3/3 webhooks, signature round-trip ✓. Commit `meok-attestation-api` 93081b6.
+- **Bug 2 (HIGH):** 4 new pages had NO Product/FAQPage JSON-LD — only boilerplate Organization/Place/Person. That kills AEO/GEO pull. Added Product+Offer+FAQPage to sdk-pro + sponsors, ItemList+EducationalOccupationalCredential to certs, Product to optimobile-gos. All 4 type-check clean, schema validates, no `/pricing` leaks. Commit `meok` 8b2dcd6.
+- **Bug 3 (MEDIUM):** `vercel.json` missing `/v1/*` rewrites → added `/v1/healthx`, `/v1/:path*`, `/api/v1/:path*` → `/api/v1_sdk_pro`. So Vercel actually serves the new file.
+- **Live audit status:** 4 meok.ai pages 200 ✓, sitemap 4/4 routes present ✓, Stripe paywall links 2/2 per page ✓, stale-pricing leak 0/4 ✓, attestation API live at v1.2.0 (gate code on disk, gated on Vercel deploy).
+- Memory: `session_june10_e2e_audit.md` saved. Live board: `REVENUE_LIVE_BOARD_2026-06-10.md` updated with audit fixes.
+- **Deploy-gated:** 2 Vercel deploys = the £-unblock.
+
 ## 2026-06-10 (PM12) — 💰 7 NEW PAID REVENUE SURFACES SHIPPED + 5 sponsor pitches ready — main session
 **main session** · meok/ui + meok-attestation-api + revenue/
 - Shipped: **SDK Pro page** `meok.ai/developers/sdk-pro` (380 lines) — £9/mo Pro + £99/mo Team + 99.9% SLA + OSCAL + sub-200ms p99
