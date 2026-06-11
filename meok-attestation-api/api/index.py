@@ -15,7 +15,7 @@ The signing key lives ONLY on the server (MEOK_ATTESTATION_KEY env var). Clients
 never see it. Every cert comes with a signature_sha256_hmac that any third party
 can cross-check by POSTing back to /verify with the full cert.
 
-Pricing alignment: Starter £29/mo; Pro £79/mo; Enterprise £1499/mo; 48h Gap Analysis £4,950.
+Pricing alignment: Starter £29/mo; Pro £199/mo; Enterprise £1499/mo; 48h Gap Analysis £4,950.
 """
 
 from __future__ import annotations
@@ -125,6 +125,32 @@ def _canonical_payload(payload: dict[str, Any]) -> bytes:
 
 def _sign_bytes(data: bytes) -> str:
     return hmac.new(_SIGNING_KEY, data, hashlib.sha256).hexdigest()
+
+
+# ── Ed25519 (SIGIL) — asymmetric co-signature, offline-verifiable ──────
+# Anyone can verify with the published PUBLIC key (GET /pubkey); the private
+# key lives only in the MEOK_SIGNING_KEY_HEX env secret. Guarded import so the
+# API stays up even if pynacl is missing from the runtime.
+_ED25519_PUB_HEX = os.environ.get("MEOK_PUBKEY_HEX", "")
+_ED25519_IDENTITY = "d4cb0eaa"
+try:
+    from nacl.signing import SigningKey as _Ed25519SigningKey
+
+    _ED25519_SK_HEX = os.environ.get("MEOK_SIGNING_KEY_HEX", "")
+except ImportError:  # pynacl not installed — Ed25519 disabled, HMAC still works
+    _Ed25519SigningKey = None  # type: ignore[assignment]
+    _ED25519_SK_HEX = ""
+
+
+def _ed25519_sign(data: bytes) -> str:
+    """Hex Ed25519 signature over the same canonical payload bytes HMAC signs.
+    Returns "" when signing is unavailable (no key / no pynacl)."""
+    if not (_Ed25519SigningKey and _ED25519_SK_HEX):
+        return ""
+    try:
+        return _Ed25519SigningKey(bytes.fromhex(_ED25519_SK_HEX)).sign(data).signature.hex()
+    except Exception:
+        return ""
 
 
 def _is_valid_email(email: str) -> bool:
@@ -269,9 +295,9 @@ def _check_api_key(api_key: str, email: str = "") -> tuple[bool, str, str]:
             return True, "OK (free-tier lead-capture path)", "free"
         return False, (
             "Missing email. Free tier: pass {email: 'you@company.com'} for instant "
-            "signed attestation (lead-capture). Pro tier (\u00a379/mo): pass {api_key, email} "
+            "signed attestation (lead-capture). Pro tier (\u00a3199/mo): pass {api_key, email} "
             "for verifiable attestations on a custom domain. "
-            "Pro checkout: https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"
+            "Pro checkout: https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t"
         ), ""
     if _MASTER_KEY and hmac.compare_digest(api_key, _MASTER_KEY):
         return True, "OK (master)", "enterprise"
@@ -283,7 +309,14 @@ def _check_api_key(api_key: str, email: str = "") -> tuple[bool, str, str]:
         return True, "OK (derived enterprise)", "enterprise"
     if email and derived_key_valid(api_key, email, tier="pro"):
         return True, "OK (derived pro)", "pro"
-    return False, "Invalid or unknown api_key. Contact hello@meok.ai or subscribe at https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j", ""
+    if email and derived_key_valid(api_key, email, tier="free"):
+        return True, "OK (derived free)", "free"
+    if api_key.startswith("meok_free_") and not email:
+        return False, (
+            "Free keys are bound to the signup email. Send {api_key, email} together "
+            "(the email you used at /signup)."
+        ), ""
+    return False, "Invalid or unknown api_key. Contact hello@meok.ai or subscribe at https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t", ""
 
 
 # ── Stripe webhook signature verification (stdlib-only) ────────────────
@@ -340,7 +373,8 @@ _PRICE_TIER_MAP = {
     "price_assessment_5000": "pro",  # one-time buyers get 1-year pro as bundled value
     # 2026-04-26 new ladder
     "price_1TQNegQvIueK5Xpb4JMCREn5": "pro",  # £29 Starter (over-grant pro for now; tighten later)
-    "price_1TQNeiQvIueK5XpbFB6iSl7P": "pro",  # £79 Pro
+    "price_1TQNeiQvIueK5XpbFB6iSl7P": "pro",  # legacy £79 Pro (existing subscribers)
+    "price_1Tget9QvIueK5Xpb73rQh1lw": "pro",  # £199 Pro (ratified 2026-06-10)
 }
 # Allow ops-time price → tier overrides via env (JSON). Last-write-wins.
 try:
@@ -671,7 +705,7 @@ def sign_attestation(
             "signature_sha256_hmac": signature,
             "verify_url_UNAVAILABLE": (
                 "Public verify URLs are a Pro feature. Upgrade: "
-                "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j"
+                "https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t"
             ),
             "assessment": assessment,
             "score_percent": payload["score_percent"],
@@ -685,17 +719,20 @@ def sign_attestation(
             ),
             "what_to_do_with_this": [
                 "This free-tier cert has NO public verify URL — auditors cannot independently validate it",
-                "Upgrade to Pro (£79/mo) for verifiable attestations: https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j",
+                "Upgrade to Pro (£199/mo) for verifiable attestations: https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t",
                 "Enterprise (£1,499/mo) adds co-branded PDFs + webhook pushes to your Trust Center",
             ],
         }
 
+    ed25519_sig = _ed25519_sign(canonical)
     return {
         "cert_id": cert_id,
         "issued_utc": now.isoformat(),
         "expires_utc": expires.isoformat(),
         "payload": canonical.decode("utf-8"),
         "signature_sha256_hmac": signature,
+        **({"signature_ed25519": ed25519_sig, "signing_pubkey_id": _ED25519_IDENTITY,
+            "pubkey_url": f"{_VERIFY_BASE.rsplit('/verify', 1)[0]}/pubkey"} if ed25519_sig else {}),
         "verify_url": f"{_VERIFY_BASE}/{cert_id}",
         "assessment": assessment,
         "score_percent": payload["score_percent"],
@@ -803,7 +840,7 @@ def _catalogue_html() -> str:
                 "operatingSystem": "Cross-platform (Python)",
                 "offers": [
                     {"@type": "Offer", "name": "Pro", "price": "199", "priceCurrency": "GBP",
-                     "url": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j",
+                     "url": "https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t",
                      "priceSpecification": {"@type": "UnitPriceSpecification", "billingIncrement": 1, "unitCode": "MON"}},
                     {"@type": "Offer", "name": "Enterprise", "price": "1499", "priceCurrency": "GBP",
                      "url": "https://buy.stripe.com/fZu5kF0xS8wy9wpeGY8k91s"},
@@ -820,13 +857,13 @@ def _catalogue_html() -> str:
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MEOK Compliance MCP Catalogue — Signed EU AI Act, DORA, NIS2, CRA, CSRD Attestations</title>
-<meta name="description" content="15 Python MCP servers that audit AI systems + compliance posture against EU AI Act, DORA, NIS2, CRA, CSRD, GDPR, HIPAA, SOC 2, ISO 42001, UK AI Regulation. Each emits HMAC-signed attestations with public verify URLs. Pro £79/mo.">
+<meta name="description" content="A 294-server compliance fleet (official MCP Registry, verified June 2026) that audits AI systems + compliance posture against EU AI Act, DORA, NIS2, CRA, CSRD, GDPR, HIPAA, SOC 2, ISO 42001, UK AI Regulation. Each emits HMAC-signed attestations with public verify URLs. Pro £199/mo.">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta property="og:title" content="MEOK Compliance MCP Catalogue — Signed EU Compliance Attestations">
 <meta property="og:description" content="15 Python MCPs for EU AI Act, DORA, NIS2, CRA, CSRD, UK AI. HMAC-signed attestations with public verify URLs.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://meok-attestation-api.vercel.app/catalogue">
-<link rel="canonical" href="https://meok-attestation-api.vercel.app/catalogue">
+<link rel="canonical" href="https://www.proofof.ai/">
 <script type="application/ld+json">{json.dumps(jsonld, ensure_ascii=False)}</script>
 <style>
   body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:960px;margin:0 auto;padding:2rem 1rem;color:#111;line-height:1.55;}}
@@ -858,7 +895,7 @@ def _catalogue_html() -> str:
 <body>
 
 <h1>MEOK Compliance MCP Catalogue</h1>
-<p class="lead">15 Python MCP servers that audit AI systems + compliance posture against EU AI Act, DORA, NIS2, CRA, CSRD, UK AI Regulation and more. Every Pro-tier audit emits a HMAC-signed attestation your auditor validates at a public URL <strong>without contacting MEOK</strong>.</p>
+<p class="lead">A 294-server compliance fleet (official MCP Registry, verified June 2026) that audits AI systems + compliance posture against EU AI Act, DORA, NIS2, CRA, CSRD, UK AI Regulation and more. Every Pro-tier audit emits a HMAC-signed attestation your auditor validates at a public URL <strong>without contacting MEOK</strong>.</p>
 
 <h2>Pricing</h2>
 <div class="tiers">
@@ -870,9 +907,9 @@ def _catalogue_html() -> str:
   </div>
   <div class="tier highlight">
     <h3>Pro <span class="badge">most popular</span></h3>
-    <div class="price">£79/mo</div>
+    <div class="price">£199/mo</div>
     <p>Unlimited + HMAC-signed attestations + public verify URLs + priority support.</p>
-    <a class="cta pro" href="https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j">Subscribe</a>
+    <a class="cta pro" href="https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t">Subscribe</a>
   </div>
   <div class="tier">
     <h3>Enterprise</h3>
@@ -888,6 +925,18 @@ def _catalogue_html() -> str:
   </div>
 </div>
 
+<h2>Done-for-you services (fixed fee, 7-day turnaround)</h2>
+<div class="tiers">
+  <div class="tier"><h3>🇳🇱 Netherlands NIS2</h3><div class="price">£499</div>
+    <p>NCSC-NL registration filed + board evidence pack. Deadline 30 June 2026.</p>
+    <a class="cta" href="https://meok.ai/nis2-nl">Details</a></div>
+  <div class="tier"><h3>🇩🇪 Germany NIS2</h3><div class="price">£499</div>
+    <p>BSI late-filing rapid response for the ~17.5K entities that missed 6 March.</p>
+    <a class="cta" href="https://meok.ai/nis2-de-kit">Details</a></div>
+  <div class="tier"><h3>EU AI Act Article 50 kit</h3><div class="price">£999</div>
+    <p>Two-layer output marking (C2PA + invisible watermark) + signed conformity attestation. 2 Aug 2026.</p>
+    <a class="cta" href="https://meok.ai/article-50-kit">Details</a></div>
+</div>
 <h2>How signed attestations work</h2>
 <div class="flow">
   <div class="step">Subscribe to Pro at Stripe — key provisioned via webhook.</div>
@@ -956,7 +1005,7 @@ meok-attestation-verify &lt; cert.json</pre>
         "code{background:#f3f4f6;padding:.1rem .3rem;border-radius:.25rem}</style>"
         f"</head><body>{body}"
         "<hr><p><small>Issued by <a href=\"https://meok.ai\">MEOK AI Labs</a>. "
-        "Every cert ID is signed with HMAC-SHA256. Key rotation policy: quarterly.</small></p>"
+        "Every cert is signed with HMAC-SHA256 + Ed25519. Verify offline with the public key at /pubkey — no account, no contact with MEOK. Key rotation policy: quarterly.</small></p>"
         "</body></html>"
     )
 
@@ -970,16 +1019,21 @@ class handler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type,X-API-Key")
         self.end_headers()
-        self.wfile.write(json.dumps(body).encode())
+        if self.command != 'HEAD':
+            self.wfile.write(json.dumps(body).encode())
 
     def _html(self, status: int, body: str) -> None:
         self.send_response(status)
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.end_headers()
-        self.wfile.write(body.encode())
+        if self.command != 'HEAD':
+            self.wfile.write(body.encode())
 
     def do_OPTIONS(self) -> None:
         self._json(204, {})
+
+    def do_HEAD(self) -> None:
+        self.do_GET()
 
     def do_GET(self) -> None:
         path = (self.path or "/").split("?", 1)[0]
@@ -990,6 +1044,25 @@ class handler(BaseHTTPRequestHandler):
                 "service": "meok-attestation-api",
                 "kid": _SIGNING_KEY_KID,
                 "version": "1.2.0",
+                "ed25519": bool(_ED25519_SK_HEX and _Ed25519SigningKey),
+            })
+        if path == "/payg" or path == "/payg/":
+            self.send_response(302)
+            self.send_header("Location", _PAYG_TOPUP_URL)
+            self.end_headers()
+            return
+        if path == "/pubkey":
+            if not _ED25519_PUB_HEX:
+                return self._json(503, {"error": "MEOK_PUBKEY_HEX not configured."})
+            return self._json(200, {
+                "alg": "Ed25519",
+                "identity": _ED25519_IDENTITY,
+                "pubkey_hex": _ED25519_PUB_HEX,
+                "how_to_verify": (
+                    "VerifyKey(bytes.fromhex(pubkey_hex)).verify(cert['payload'].encode(), "
+                    "bytes.fromhex(cert['signature_ed25519'])) — fully offline, no account, "
+                    "no contact with MEOK required. pip install pynacl"
+                ),
             })
         if path == "/openapi.json":
             try:
@@ -1048,7 +1121,7 @@ class handler(BaseHTTPRequestHandler):
                 "- GET /catalogue — HTML marketing page with all MCPs + pricing\n"
                 "- GET /health — liveness\n\n"
                 "## Pricing\n\n"
-                "- Pro: £79/mo — https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j\n"
+                "- Pro: £199/mo — https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t\n"
                 "- Enterprise: £1,499/mo — https://buy.stripe.com/fZu5kF0xS8wy9wpeGY8k91s\n"
                 "- One-time assessment: £4,950 — https://buy.stripe.com/eVq6oJ3K49AC0ZTaqI8k91m\n\n"
                 "## Verify locally\n\n"
@@ -1093,7 +1166,7 @@ class handler(BaseHTTPRequestHandler):
                     "GET /health": "Liveness",
                 },
                 "pricing": {
-                    "pro_per_month": "£79 — https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j",
+                    "pro_per_month": "£199 — https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t",
                     "enterprise_per_month": "£1499 — https://buy.stripe.com/fZu5kF0xS8wy9wpeGY8k91s",
                     "one_time_assessment": "£4,950 — https://buy.stripe.com/eVq6oJ3K49AC0ZTaqI8k91m",
                 },
@@ -1363,8 +1436,8 @@ class handler(BaseHTTPRequestHandler):
                 "free_limit": "200/day",
                 "next": f"Set MEOK_API_KEY={api_key} in your MCP client env for 200 calls/day.",
                 "upgrade": {
-                    "compliance_pro_79_mo": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j",
-                    "pay_as_you_go": "https://proofof.ai/payg",
+                    "compliance_pro_79_mo": "https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t",
+                    "pay_as_you_go": "https://councilof.ai/payg",
                 },
             })
 
@@ -1499,7 +1572,7 @@ class handler(BaseHTTPRequestHandler):
                         "You've used 1 of 3 free daily attestations. This cert is UNVERIFIED "
                         "and has no public verify URL. Upgrade to Pro for auditor-ready certs."
                     ),
-                    "pro_tier_79_mo": "https://buy.stripe.com/5kQ6oJ0xS3ce8sl7ew8k91j",
+                    "pro_tier_79_mo": "https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t",
                     "enterprise_tier_1499_mo": "https://buy.stripe.com/fZu5kF0xS8wy9wpeGY8k91s",
                     "what_pro_unlocks": [
                         "Public verify URL your auditor checks independently",
