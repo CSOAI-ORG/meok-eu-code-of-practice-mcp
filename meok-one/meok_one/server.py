@@ -467,6 +467,34 @@ class Handler(BaseHTTPRequestHandler):
             from . import sigil as _sigil
             line = qs.get("line", [""])[0]
             return self._json(200, {"line": line, "gloss": _sigil.gloss(line)})
+        # ---- Horus (auditor) + Harmony (reconciler) governance surface ----
+        if path == "/api/horus/index":
+            from . import fleet_indexer as _fi
+            return self._json(200, _fi.load_index())
+        if path == "/api/horus/refresh":
+            from . import fleet_indexer as _fi
+            return self._json(200, _fi.build_index())
+        if path == "/api/horus/find":
+            from . import fleet_indexer as _fi
+            slug = qs.get("slug", [""])[0]
+            if not slug:
+                return self._json(400, {"error": "slug required"})
+            return self._json(200, _fi.find(slug))
+        if path == "/api/horus/route_catalog":
+            from . import fleet_indexer as _fi
+            return self._json(200, {"routing": _fi.route_catalog()})
+        if path == "/api/olm/stats":
+            from . import olm_federation as _of
+            uid = qs.get("user_id", ["anon"])[0]
+            cid = qs.get("character_id", [None])[0]
+            return self._json(200, _of.federation_stats(uid, cid))
+        if path == "/api/olm/context":
+            from . import olm_federation as _of
+            uid = qs.get("user_id", ["anon"])[0]
+            cid = qs.get("character_id", ["aria"])[0]
+            n = int(qs.get("n", ["3"])[0] or 3)
+            return self._json(200, {"user_id": uid, "character_id": cid,
+                                    "context": _of.federated_context(uid, cid, n=n)})
         if path == "/api/products":
             # MEOK products bridged into the DOME — the geospatial product constellation
             # (map nodes + cosmos planets the user can fly to / open / ask their AI about).
@@ -1081,6 +1109,52 @@ class Handler(BaseHTTPRequestHandler):
                 except Exception:
                     pass
                 return self._json(200, out)
+            if path == "/api/horus":
+                # HORUS — audit any reply through the 11 expert lenses (defense in depth
+                # above whatever brain produced it). Returns verdict + per-lens reviews.
+                # Queens in the 28-hive mesh call this BEFORE exposing a reply to the user.
+                from . import horus as _h
+                _a = _h.audit(b.get("reply", ""), user_message=b.get("user_message", ""),
+                              character=b.get("character", "the character"),
+                              model=b.get("model", "auto"),
+                              parallel=int(b.get("parallel", 4)),
+                              timeout=int(b.get("timeout", 30)))
+                if b.get("emit_sigil", True):
+                    _h.record_to_sigil(_a, character=b.get("character", "?"),
+                                       brain=b.get("brain", "horus"),
+                                       user_message=b.get("user_message", ""))
+                return self._json(200, _a)
+            if path == "/api/harmony":
+                # HARMONY — full pipeline: Horus audit → reconcile. This is the one queens
+                # should call when they're not already wrapping their own response in a gate.
+                from . import horus as _h
+                _res = _h.horus_and_harmony(b.get("reply", ""),
+                                            user_message=b.get("user_message", ""),
+                                            character=b.get("character", "the character"),
+                                            model=b.get("model", "auto"),
+                                            parallel=int(b.get("parallel", 4)),
+                                            timeout=int(b.get("timeout", 30)))
+                if b.get("emit_sigil", True):
+                    _h.record_to_sigil(_res, character=b.get("character", "?"),
+                                       brain=b.get("brain", "harmony"),
+                                       user_message=b.get("user_message", ""))
+                return self._json(200, _res)
+            if path == "/api/olm/record":
+                # OLM FEDERATION — record a turn (local + SOV3 mirror). Used by /api/think,
+                # but also by queens in the mesh that want to share learning across users.
+                from . import olm_federation as _of
+                _r = _of.federated_record(b.get("user_id", "anon"),
+                                          b.get("character_id", "aria"),
+                                          b.get("query", ""), b.get("response", ""),
+                                          care_flagged=bool(b.get("care_flagged")),
+                                          held=bool(b.get("held")))
+                return self._json(200, _r)
+            if path == "/api/olm/wipe":
+                # GDPR right-to-be-forgotten. Always wipes local; asks SOV3 to forget.
+                from . import olm_federation as _of
+                _w = _of.wipe_user(b.get("user_id", "anon"),
+                                   character_id=b.get("character_id"))
+                return self._json(200, _w)
             if path == "/api/siri":
                 # SIRI / Apple Shortcuts bridge. A spoken query → a MEOK character's reply,
                 # routed through the SAME Sovereign gate as everything else, so Siri inherits
