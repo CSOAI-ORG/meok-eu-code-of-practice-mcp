@@ -527,6 +527,50 @@ export default function ComplianceMap() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100 selection:bg-cyan-500/30">
+
+      {/* Sticky CTA bar — CSOAI Council attestation ladder.
+          Server-rendered plain <a href> tags so the Stripe URLs appear in the
+          initial HTML (crawled + visible without JS hydration). */}
+      <div className="sticky top-0 z-40 backdrop-blur-md bg-slate-950/85 border-b border-amber-500/30 shadow-lg shadow-amber-500/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-200">
+              <span aria-hidden="true">🛡️</span>
+              <span>
+                <strong className="text-amber-300">Need a CSOAI Council attestation?</strong>{" "}
+                Pick the tier that matches your deadline.
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <a
+                href="https://buy.stripe.com/5kQ6nK0xS3ce8sl7ew8k91H"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs sm:text-sm transition-colors"
+              >
+                <span aria-hidden="true">⚡</span> Kit £999
+              </a>
+              <a
+                href="https://buy.stripe.com/5kQ6nK0xS3ce8sl7ew8k91F"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-200 font-bold text-xs sm:text-sm transition-colors"
+              >
+                <span aria-hidden="true">📈</span> Pro £199/mo
+              </a>
+              <a
+                href="https://buy.stripe.com/5kQ6nK0xS3ce8sl7ew8k91G"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-violet-500/20 hover:bg-violet-500/30 border border-violet-500/40 text-violet-200 font-bold text-xs sm:text-sm transition-colors"
+              >
+                <span aria-hidden="true">📋</span> Assessment £4,950
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
         {/* Hero */}
