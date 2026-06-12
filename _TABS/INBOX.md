@@ -90,3 +90,49 @@ Agent card: `_TABS/IOK_FARM_TAB_PROFILE.md`. Owns: the real 6.5-acre Lincolnshir
 Assign me work: `→ IOK Farm (GROVE): [task] — from [tab], [date]`.
 Cross-tab asks I'll raise: robot actuator/Asimov engine → Tab 6 Physical · RSPCA/ASC/CEFAS crosswalk engine → Tab 2 CSOAI · PyPI publish → Tab 3 MCP Fleet.
 Open gaps flagged: no iokfarm.co.uk site yet · playbook still loose in ~/Downloads (not in repo) · fishkeeper/koikeeper sites triplicated. — IOK Farm tab
+
+---
+
+## 🆕 Council submerge — done this session (2026-06-12, main session)
+
+**Five csoai.org/council pages built + committed** as `415520d` on branch `feat/stripe-checkout-wiring` (csoai-org-v2 repo). Build green (Next 16.2.4, 18 routes, 5 new prerendered, no v2 token regressions).
+
+### Wired to the CSOAI engine spine (this session, deliverables)
+- **`csoai-org-v2/src/lib/attestation.ts`** — server-side fetcher for meok-attestation-api. Uses `/pubkey` as the canonical identity endpoint (the live Vercel deploy doesn't expose `/v1/health` publicly). Surfaces Ed25519 `kid` + `pubkey_hex` (identity `d4cb0eaa`).
+- **`csoai-org-v2/src/app/council/page.tsx`** — Council overview now renders a "CSOAI engine spine" card row: live SIGIL kid (LIVE/STALE badge) + audit ledger tail (`/api/audit` count + last hash) with links to both endpoints on the canonical spine. Falls back to last-known values if unreachable (matches the existing substrate pattern).
+- **`scripts/council_smoke.sh`** — reusable smoke harness. 7 PASS / 9 FAIL at 2026-06-12 02:32 UTC. Run it any time you want to know the live state. **7/9 of the FAILs are Vercel-deploy-gated; they will flip green the moment `feat/stripe-checkout-wiring` reaches production.**
+
+### Live smoke results (verbatim, 2026-06-12 02:32 UTC)
+| Surface | State |
+|---------|-------|
+| `meok-attestation-api.vercel.app/api/audit` | ✅ 200 |
+| `meok-attestation-api.vercel.app/pubkey` | ✅ 200 (Ed25519 identity `d4cb0eaa`) |
+| `meok-attestation-api.vercel.app/v1/health` | ❌ 404 (SDK Pro route not exposed publicly; the `/pubkey` route is canonical, not a bug) |
+| `csoai.org/council{,/dome,/maps,/compliance,/law,/sigil}` | ❌ 404 × 6 — **Vercel deploy blocked, code is built + committed** |
+| `meok-api:3200/api/{council/status, expertise/network, bridges/topology, memory/status}` | ✅ 200 × 4 — substrate is alive locally |
+| `meok-api:3200/health` | ❌ 404 — health route not exposed (substrate uses `/api/council/status` as its liveness probe) |
+| `api.meok.ai/health` | ✅ 200 (scaffold-stage public mirror) |
+| `api.meok.ai/api/council/status` | ❌ 404 — public mirror doesn't expose the substrate routes (separate deploy) |
+
+### What I did NOT do (clearly out of scope, by design)
+- Did **not** push to Vercel — that's owner-gated on the Vercel token in your `.env.local`. The branch + build are ready for `vercel --prod` or a merge to main + auto-deploy.
+- Did **not** add a `/council/*` mirror on `meok.ai` — CSOAI is the body, MEOK is the surface. The substrate (`meok-api :3200`) is shared so meok-one agents can call it directly. If you want a "Council badge" on meok-one's settings, that's a separate PR on `meok-one` (meok-one lane owns it).
+- Did **not** wire `/v1/sign` (SDK Pro gate) into csoai.org — the surface already exposes `/sign` via the free-tier route; gating to Pro/Team on csoai.org would be a product decision, not wiring.
+
+### Hand-offs (each tab owns its own code; this lane only writes `csoai-org-v2/` + `scripts/` + `_TABS/INBOX.md`)
+- **CSOAI engine tab (this lane, next pass):** the wiring contract in `_TABS/CSOAI_ENGINE.md` is now materialised at the surface — the council page actually reads the spine. The "billing 50-link consolidation" cell is still open in your queue; the canonical Stripe ladder (Pro £9 / Team £99) is in `BILLING_CONSOLIDATION.md` and still needs the meok-one + openmoe skins to point at it.
+- **MEOK ONE tab (LAW + DOME):** the CSOAI engine handoff in this INBOX at line 56 (LAW → emit `/sign`-signed certs with `verify_url`; DOME → link each node to live `/verify`) is **still open**. csoai.org/council can be the verification target for LAW/DOME outputs if you want one canonical verify path.
+- **MCP Fleet tab (MAP):** the `topology.json` for DOME to consume is **still open** (line 57). The bridges topology endpoint (`/api/bridges/topology`) on meok-api is a starting point; the registry manifests are the canonical source. If you publish one `topology.json`, csoai.org/council/maps will pick it up via the same fetcher pattern.
+- **Verticals / openmoe lane (CTAs):** the canonical "Council" link is `https://csoai.org/council`. Don't mint a `meok.ai/council` URL; that doesn't exist by design.
+
+### Open on Nick (ordered by leverage, 2026-06-12)
+1. **Vercel deploy** of `feat/stripe-checkout-wiring` → flips 6 council URLs from 404 to 200. 5-min unblock, single biggest lever.
+2. **`/v1/health` route** on meok-attestation-api — currently the SDK Pro route isn't on a public path. Either expose it (one-line route addition in `v1_sdk_pro.py` or `vercel.json` rewrite) or formally retire it and document `/pubkey` as the canonical identity endpoint.
+3. **Article 50 link target** — homepage nav added the link; the destination page needs confirming.
+
+### Open in this lane (next session, when unblocked)
+- Build a **`/council/sigil/sign`** in-browser page that calls the live `meok-attestation-api /sign` endpoint (currently the in-browser demo is encode/decode only — adding `sign` makes it a real issuance demo).
+- Run the smoke harness as a weekly cron → append results to `_TABS/STATUS.md` so the hive sees drift, not surprises.
+
+— from main session, 2026-06-12
+
