@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 
 function EmailCapture({ source }: { source: string }) {
   const [email, setEmail] = useState("");
@@ -38,6 +39,10 @@ export default function Home() {
             <div className="hidden md:flex items-center space-x-8">
               <a href="#layers" className="text-sm text-slate-400 hover:text-white transition">The 8 Layers</a>
               <a href="#mcp-packs" className="text-sm text-slate-400 hover:text-white transition">MCP Packs</a>
+              <Link href="/council" className="text-sm text-slate-400 hover:text-emerald-400 transition flex items-center gap-1">
+                Council <span className="text-[9px] text-emerald-400 font-bold">●</span>
+              </Link>
+              <Link href="/article-50-kit" className="text-sm text-slate-400 hover:text-red-400 transition">Article 50</Link>
               <a href="#pricing" className="text-sm text-slate-400 hover:text-white transition">Pricing</a>
               <a href="https://github.com/CSOAI-ORG" className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm hover:bg-white/10 transition">GitHub</a>
             </div>
@@ -75,6 +80,73 @@ export default function Home() {
               <span>14 PyPI Packages</span>
               <span className="w-1 h-1 bg-slate-800 rounded-full" />
               <span>13 Compliance Frameworks</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* The CSOAI Council — the live substrate */}
+      <section id="council" className="py-32 border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <p className="text-emerald-400 text-xs font-bold tracking-widest uppercase mb-3">The Council substrate</p>
+              <h2 className="text-4xl sm:text-5xl font-black tracking-tighter mb-6">
+                The independent authority that certifies AI is safe.
+              </h2>
+              <p className="text-slate-400 text-lg leading-relaxed mb-6">
+                CSOAI sets the safety expectations, maintains the crosswalks
+                between 20+ governance frameworks, and issues{" "}
+                <strong className="text-white">Watchdog Certification</strong>:
+                a cryptographically signed safety attestation with a public
+                verify URL your regulator, customer or auditor checks{" "}
+                <em>without contacting us</em>. Independence is the product.
+              </p>
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                  <p className="text-2xl font-black text-emerald-400">36</p>
+                  <p className="text-xs text-slate-500">Council nodes (BFT)</p>
+                </div>
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                  <p className="text-2xl font-black text-cyan-400">235</p>
+                  <p className="text-xs text-slate-500">Architecture nodes</p>
+                </div>
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                  <p className="text-2xl font-black text-violet-400">12</p>
+                  <p className="text-xs text-slate-500">Expertise domains</p>
+                </div>
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                  <p className="text-2xl font-black text-amber-400">6</p>
+                  <p className="text-xs text-slate-500">Legal regions</p>
+                </div>
+              </div>
+              <Link
+                href="/council"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold transition"
+              >
+                Enter the Council →
+              </Link>
+            </div>
+            <div className="space-y-3">
+              {[
+                { name: "Dome", desc: "12-domain expertise map", href: "/council/dome", color: "cyan" },
+                { name: "Maps", desc: "33-node council graph + bridges", href: "/council/maps", color: "violet" },
+                { name: "Compliance", desc: "13 frameworks · live posture", href: "/council/compliance", color: "emerald" },
+                { name: "Law", desc: "Region-aware lookup (EU/UK/US/CA/APAC)", href: "/council/law", color: "amber" },
+                { name: "Sigil", desc: "Agent language · live demo", href: "/council/sigil", color: "rose" },
+              ].map((s) => (
+                <Link
+                  key={s.name}
+                  href={s.href}
+                  className="group flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10 hover:border-emerald-500/30 transition"
+                >
+                  <div>
+                    <p className="font-bold">{s.name}</p>
+                    <p className="text-xs text-slate-500">{s.desc}</p>
+                  </div>
+                  <span className="text-slate-600 group-hover:text-emerald-400 group-hover:translate-x-1 transition">→</span>
+                </Link>
+              ))}
             </div>
           </div>
         </div>
