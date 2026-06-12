@@ -85,6 +85,7 @@ import ISO42001Guide from "./pages/ISO42001Guide";
 import TC260Guide from "./pages/TC260Guide";
 import WhyCSOAI from "./pages/WhyCSOAI";
 import Article50Kit from "./pages/Article50Kit";
+import ComplianceMap from "./pages/ComplianceMap";
 // Legal Pages
 import MembershipAgreement from "./pages/legal/MembershipAgreement";
 import FoundingCouncilAgreement from "./pages/legal/FoundingCouncilAgreement";
@@ -213,6 +214,9 @@ function App() {
                   <Route path="/article-50-kit" component={Article50Kit} />
                   <Route path="/eu-ai-act/article-50" component={Article50Kit} />
                   <Route path="/kit" component={Article50Kit} />
+                  <Route path="/compliance-map" component={ComplianceMap} />
+                  <Route path="/map/regulations" component={ComplianceMap} />
+                  <Route path="/map/regimes" component={ComplianceMap} />
                   {/* AI Framework Guides */}
                   <Route path="/eu-ai-act" component={EUAIActGuide} />
                   <Route path="/frameworks/eu-ai-act" component={EUAIActGuide} />
