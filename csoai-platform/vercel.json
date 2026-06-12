@@ -1,5 +1,5 @@
 {
-  "buildCommand": "echo 'static deploy'",
-  "outputDirectory": ".",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/client",
   "framework": null
 }
