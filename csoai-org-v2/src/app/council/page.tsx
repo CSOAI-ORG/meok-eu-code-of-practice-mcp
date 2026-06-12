@@ -5,18 +5,32 @@ import {
   getBridgesTopology,
   getMemoryStats,
 } from "@/lib/meok";
+import {
+  getAttestHealth,
+  getAuditLedger,
+  ATTESTATION_API_BASE,
+} from "@/lib/attestation";
 
 export const revalidate = 60;
 
 export default async function CouncilPage() {
-  const [council, expertise, bridges, memory] = await Promise.all([
+  const [council, expertise, bridges, memory, attest, audit] = await Promise.all([
     getCouncilStatus(),
     getExpertiseNetwork(),
     getBridgesTopology(),
     getMemoryStats(),
+    getAttestHealth(),
+    getAuditLedger(8),
   ]);
 
   const live = council !== null;
+  const sigilLive = attest?.ok === true;
+  const sigilKid = attest?.kid ?? "—";
+  const auditEvents = audit?.events ?? audit?.entries ?? [];
+  const auditCount =
+    audit?.count ?? audit?.stats?.total_events ?? auditEvents.length;
+  const auditLastHash =
+    auditEvents.length > 0 ? auditEvents[auditEvents.length - 1]?.hash : null;
 
   return (
     <main className="max-w-7xl mx-auto px-4 py-16">
@@ -102,6 +116,61 @@ export default async function CouncilPage() {
           <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Memory</h3>
           <p className="text-3xl font-black text-amber-400">{memory?.episodes ?? 1400}+</p>
           <p className="text-xs text-slate-500 mt-1">episodes</p>
+        </div>
+      </div>
+
+      {/* CSOAI engine spine — live SIGIL signer + audit ledger */}
+      <h2 className="text-2xl font-bold mb-2">CSOAI engine spine</h2>
+      <p className="text-sm text-slate-500 mb-6 max-w-3xl">
+        The cryptographic backbone. Every Council verdict, compliance finding, and
+        law crosswalk is signed by the SIGIL engine and appended to a hash-chained
+        audit ledger. No shadow keys, no parallel signers — csoai.org is the body.
+      </p>
+      <div className="grid md:grid-cols-2 gap-4 mb-12">
+        <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest">SIGIL signer</h3>
+            <span
+              className={`text-[10px] font-bold px-2 py-1 rounded-full ${
+                sigilLive
+                  ? "bg-emerald-500/20 text-emerald-300"
+                  : "bg-yellow-500/20 text-yellow-300"
+              }`}
+            >
+              {sigilLive ? "LIVE" : "STALE"}
+            </span>
+          </div>
+          <p className="text-3xl font-black text-emerald-400">kid: {sigilKid}</p>
+          <p className="text-xs text-slate-500 mt-1">
+            v{attest?.version ?? "1.2.0"} ·{" "}
+            <a className="text-emerald-400 hover:underline" href={`${ATTESTATION_API_BASE}/v1/health`} target="_blank" rel="noreferrer">
+              /v1/health ↗
+            </a>
+          </p>
+          <p className="text-xs text-slate-600 mt-3 font-mono break-all">
+            {attest?.public_key ? `${attest.public_key.slice(0, 32)}…` : "pubkey pending spine handshake"}
+          </p>
+        </div>
+
+        <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest">Audit ledger</h3>
+            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-white/5 text-slate-400">
+              {audit?.live ? "live" : "fallback"} · {auditCount} entries
+            </span>
+          </div>
+          <p className="text-3xl font-black text-amber-400">
+            {auditLastHash ? `${auditLastHash.slice(0, 12)}…` : "—"}
+          </p>
+          <p className="text-xs text-slate-500 mt-1">last hash · tamper-evident chain</p>
+          <a
+            className="inline-block mt-3 text-xs text-emerald-400 hover:underline"
+            href={`${ATTESTATION_API_BASE}/api/audit`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            /api/audit ↗
+          </a>
         </div>
       </div>
 
