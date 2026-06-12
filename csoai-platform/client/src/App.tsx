@@ -84,6 +84,7 @@ import NISTAIRMFGuide from "./pages/NISTAIRMFGuide";
 import ISO42001Guide from "./pages/ISO42001Guide";
 import TC260Guide from "./pages/TC260Guide";
 import WhyCSOAI from "./pages/WhyCSOAI";
+import Article50Kit from "./pages/Article50Kit";
 // Legal Pages
 import MembershipAgreement from "./pages/legal/MembershipAgreement";
 import FoundingCouncilAgreement from "./pages/legal/FoundingCouncilAgreement";
@@ -209,6 +210,9 @@ function App() {
                   <Route path="/why-csoai" component={WhyCSOAI} />
                   <Route path="/our-difference" component={WhyCSOAI} />
                   <Route path="/why" component={WhyCSOAI} />
+                  <Route path="/article-50-kit" component={Article50Kit} />
+                  <Route path="/eu-ai-act/article-50" component={Article50Kit} />
+                  <Route path="/kit" component={Article50Kit} />
                   {/* AI Framework Guides */}
                   <Route path="/eu-ai-act" component={EUAIActGuide} />
                   <Route path="/frameworks/eu-ai-act" component={EUAIActGuide} />
