@@ -95,6 +95,12 @@ import DataProcessingAgreement from "./pages/legal/DataProcessingAgreement";
 import CookiePolicy from "./pages/legal/CookiePolicy";
 import ServiceLevelAgreement from "./pages/legal/ServiceLevelAgreement";
 import Council from "./pages/Council";
+import CouncilDome from "./pages/CouncilDome";
+import CouncilDomains from "./pages/CouncilDomains";
+import CouncilMaps from "./pages/CouncilMaps";
+import CouncilCompliance from "./pages/CouncilCompliance";
+import CouncilLaw from "./pages/CouncilLaw";
+import CouncilSigil from "./pages/CouncilSigil";
 import { AnalyticsProvider } from "./components/Analytics";
 
 function ScrollToTop() {
@@ -221,7 +227,13 @@ function App() {
                   <Route path="/prosperity-fund" component={ProsperityFund} />
                   <Route path="/founding-members" component={FoundingMembers} />
                   <Route path="/byzantine" component={AgentCouncil} />
-                  <Route path="/council" component={Council} />
+                  <Route path="/council" component={CouncilDome} />
+                  <Route path="/council/overview" component={Council} />
+                  <Route path="/council/dome" component={CouncilDomains} />
+                  <Route path="/council/maps" component={CouncilMaps} />
+                  <Route path="/council/compliance" component={CouncilCompliance} />
+                  <Route path="/council/law" component={CouncilLaw} />
+                  <Route path="/council/sigil" component={CouncilSigil} />
                   <Route path="/public-watchdog" component={PublicWatchdog} />
                   <Route path="/government" component={GovernmentDashboard} />
                   <Route path="/government-dashboard" component={GovernmentDashboard} />
