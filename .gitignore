@@ -216,7 +216,10 @@ meok-one/test_funnel.py
 
 # Nested git repos (not submodules)
 delboy/
+iokfarm-site/
 lib2b/
+meok/
+meok-compliance-gateway/
 meok-integrations/
 meok-sdk-go/
 meok-sdk-python/
