@@ -1,9 +1,18 @@
 #!/usr/bin/env python3
 """MEOK 100/100 e2e scorecard. Scores every live product against a fixed rubric
 so '100/100' is measurable, not a vibe. Output: /tmp/meok_scorecard.json + summary."""
+import os, sys
+# Force certifi CA bundle — homebrew python's default SSL context is broken on macOS
+try:
+    import certifi
+    os.environ['SSL_CERT_FILE'] = certifi.where()
+    os.environ['REQUESTS_CA_BUNDLE'] = certifi.where()
+except ImportError:
+    pass
+
 import json, urllib.request, urllib.error, ssl
 B = "https://meok-one.35.242.143.249.sslip.io"
-ctx = ssl.create_default_context()
+ctx = ssl.create_default_context(cafile=os.environ.get("SSL_CERT_FILE"))
 def code(u, m="GET", data=None):
     try:
         r = urllib.request.Request(u, method=m, data=data, headers={"User-Agent":"meok-scorecard","Content-Type":"application/json"})

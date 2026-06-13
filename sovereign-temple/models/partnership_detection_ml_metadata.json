@@ -1,12 +1,12 @@
 {
   "model_name": "partnership_detection_ml",
   "metrics": {
-    "mse": 0.014479739711501693,
-    "mae": 0.06622311999663717,
-    "training_samples": 61,
-    "input_features": 183,
+    "mse": 0.008380702526517573,
+    "mae": 0.05291546650798104,
+    "training_samples": 63,
+    "input_features": 98,
     "output_dimensions": 8
   },
   "is_trained": true,
-  "saved_at": "2026-06-10T22:09:03.470447"
+  "saved_at": "2026-06-12T22:01:48.150624"
 }
