@@ -171,3 +171,38 @@ The 35 "published" + 296 in registry from earlier was a **phantom count** from a
 - `/Users/nicholas/clawd/mcp-marketplace/_tooling/fix_server_json_icons.py` (server.json schema fixer)
 - `/Users/nicholas/clawd/mcp-marketplace/_scorecard/publish_registry_v2.py` (better error classification)
 - `/Users/nicholas/clawd/mcp-marketplace/_scorecard/publish_registry.py` (now a deprecation wrapper for v2)
+
+---
+
+## PM23 UPDATE #3 — Diagnostics + Phantom correction
+
+### The publish actually didn't go through
+
+**The honest truth (verified via /v0.1/servers full list):**
+- 0 CSOAI-ORG packages in the MCP registry
+- 837 unique packages total (across all publishers)
+- The "296/300 in registry" number was a phantom from the search-endpoint quirk
+
+### Fixes applied
+1. **12 server.json version mismatches fixed** — aligned `version` and `packages[0].version` with PyPI latest
+2. **5 publish targets remaining** (after the version fixes) — credential-manager-mcp, meok-aaif-agent-card-mcp, meok-abci-bridge-mcp, meok-cra-art14-reporter-mcp, risk-assessment-ai-mcp
+3. **publish_registry_v2.py** with proper AUTH-EXPIRED vs real-fail classification
+4. **publish_registry.py** is now a deprecation wrapper for v2
+
+### 14 Apify Actor directories built
+- 14 compliance packages × 6 files each (actor.json + input + output + Dockerfile + main.py + README)
+- Total 126 files, 64KB
+- Template at /Users/nicholas/clawd/apify_actors/
+- Reusable builder at /Users/nicholas/clawd/mcp-marketplace/_tooling/build_apify_actors.py
+
+### Punkpeye PR drafted
+- 30 packages listed (top by downloads + relevance)
+- Full PR body at /Users/nicholas/clawd/_TABS/_inventory/PUNKPEYE_PR_2026-06-13.md
+- Nick can submit via the GitHub web UI (gh CLI requires token)
+
+### Current state
+- **341/341 packages wired with /verify meter**
+- **340/340 scoreboard surfaces (7/7 × 340)**
+- **341/341 server.json schema-valid**
+- **0 CSOAI-ORG in MCP registry (real state)**
+- **Fresh device code: B0B1-8EAA** (waiting for Nick's click)
