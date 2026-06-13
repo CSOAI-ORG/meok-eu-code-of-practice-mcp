@@ -1,0 +1,25 @@
+{
+  "title": "MEOK Agent Audit Logger Output",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "result": {
+      "title": "Result",
+      "type": "object",
+      "description": "Tool-specific structured output"
+    },
+    "audit_id": {
+      "title": "Audit ID",
+      "type": "string",
+      "description": "Hash-chained audit trail reference"
+    },
+    "version": {
+      "title": "Server version",
+      "type": "string"
+    },
+    "timestamp_utc": {
+      "title": "Timestamp (UTC)",
+      "type": "string"
+    }
+  }
+}

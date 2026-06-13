@@ -103,3 +103,71 @@ mcp-publisher login github && \
 ```
 
 The publish is parallel + idempotent. Expected: 46 packages published in <5 min.
+
+---
+
+## PM23 UPDATE — Additional improvements
+
+### 4. ship.py — one CLI to rule them all
+Built `mcp-marketplace/_tooling/ship.py` with 7 subcommands: `check`, `score`, `publish`, `meter`, `index`, `badge`, `ship`. The `check` command is the daily health-check one-liner.
+
+### 5. fleet_scorecard.json live-state bug fix
+The publish_registry.py was using `live.on_pypi` from the scoreboard, but `measure_surfaces.py` doesn't populate the `live` field — so 0 targets were found. Built `/tmp/enrich_scorecard.py` to add live state via real PyPI + registry queries. Now: **on_pypi=300, in_mcp_registry=292**. Actual publish targets: **9 packages** (not 46).
+
+### 6. The 9 publish targets
+```
+- agent-incident-reporter-mcp
+- credential-manager-mcp
+- gos-claim-validator-mcp
+- korea-ai-basic-act-mcp
+- mcp-spec-compliance-mcp
+- meok-aaif-agent-card-mcp
+- meok-abci-bridge-mcp
+- meok-cra-art14-reporter-mcp
+- risk-assessment-ai-mcp
+```
+
+### 7. /verify meter — now wired into 341/341 server.py
+Before: 14 packages had `_server_meter_check` (the live /verify wire).
+After: **341 packages wired** with the fail-open `_server_meter_check` function.
+23 packages had a `__future__` ordering issue that I fixed by checking each file and re-wiring with the corrected script (`wire_meter.py` is the canonical version; the broken first pass was rolled back via git).
+
+### 8. Auth still blocking publish
+- `mcp-publisher login github` was successfully completed by Nick in the prior turn (token exp 5:40, refreshed to 6:38).
+- That token expired 25 minutes ago.
+- `GITHUB_TOKEN` env var is still invalid (the original blocker).
+
+**Path forward:** The 9-publish script is ready. Just need a fresh device-flow click OR a working GitHub PAT in env.
+
+---
+
+## PM23 UPDATE #2 — Hard truth: 0 CSOAI-ORG in registry
+
+The 35 "published" + 296 in registry from earlier was a **phantom count** from a broken search endpoint.
+
+**What actually happened:**
+1. `mcp-publisher publish` on 300 packages — token expired 4-5 minutes in
+2. The 35 "published" includes 31 "already" (silent pass — same package, multiple versions in search results)
+3. The 265 "fail" were actually 401 token-expired (misclassified as "validation failed" / "400 Bad Request")
+4. The "296 in registry" number was from a search endpoint that returns 20 versions of the same package, so 296 names returned search hits ≠ 296 distinct packages
+5. **The actual count of CSOAI-ORG packages in the MCP registry: 0**
+
+**Verified via the FULL registry list endpoint** (`/v0.1/servers` with pagination): 837 unique packages, 0 with CSOAI-ORG namespace.
+
+**What this means:**
+- We need to actually publish all 300 packages
+- Each device-flow login gives ~5 min TTL
+- Best strategy: split into 5-package batches, re-auth between each, OR fix a non-expiring token
+- Save the full registry state to `/Users/nicholas/clawd/_TABS/_inventory/mcp_registry_full_2026-06-13.json` (1.7MB)
+
+**Diagnostic files saved:**
+- `/Users/nicholas/clawd/_TABS/_inventory/MCP_REGISTRY_TRUTH_2026-06-13.md` (this finding)
+- `/Users/nicholas/clawd/_TABS/_inventory/mcp_registry_full_2026-06-13.json` (the full 837-package snapshot)
+- `/Users/nicholas/clawd/_TABS/_inventory/openmcp_npm_status_2026-06-13.json` (npm squat audit, 192 csga_global)
+
+**Code shipped:**
+- `/Users/nicholas/clawd/mcp-marketplace/_tooling/ship.py` (unified CLI, 7 subcommands)
+- `/Users/nicholas/clawd/mcp-marketplace/_tooling/wire_meter.py` (/verify wire, fixed __future__ trap)
+- `/Users/nicholas/clawd/mcp-marketplace/_tooling/fix_server_json_icons.py` (server.json schema fixer)
+- `/Users/nicholas/clawd/mcp-marketplace/_scorecard/publish_registry_v2.py` (better error classification)
+- `/Users/nicholas/clawd/mcp-marketplace/_scorecard/publish_registry.py` (now a deprecation wrapper for v2)
