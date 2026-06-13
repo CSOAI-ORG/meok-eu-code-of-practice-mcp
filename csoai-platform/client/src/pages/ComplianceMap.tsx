@@ -45,6 +45,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { getCrosswalk } from "@/data/crosswalk-provenance";
 
 // ---------------------------------------------------------------------------
 // Data — regimes, frameworks, time horizons, AI systems
@@ -1032,6 +1033,7 @@ export default function ComplianceMap() {
 // ---------------------------------------------------------------------------
 
 function RegimePanel({ regime, systems }: { regime: Regime; systems: AISystem[] }) {
+  const xwalk = getCrosswalk(regime.id);
   return (
     <div className="space-y-2 text-xs">
       <div className="bg-slate-950/50 rounded p-2">
@@ -1057,6 +1059,31 @@ function RegimePanel({ regime, systems }: { regime: Regime; systems: AISystem[] 
         <div className="text-slate-500 text-[10px] uppercase tracking-widest mb-1">Penalty</div>
         <div className="text-red-300">{regime.penalty}</div>
       </div>
+      {xwalk && (
+        <div className="bg-slate-950/50 rounded p-2 border-l-2 border-cyan-500/50">
+          <div className="text-slate-500 text-[10px] uppercase tracking-widest mb-1">Crosswalk source</div>
+          <div className="text-cyan-300 font-mono text-[11px]">{xwalk.framework}</div>
+          <div className="text-slate-400 text-[10px] mt-1">
+            {xwalk.csoai_article_count} of 52 CSOAI articles · {xwalk.key_articles} external refs · {xwalk.heading_count} source headings
+          </div>
+          <div className="text-slate-500 text-[10px] mt-1 font-mono break-all">
+            {xwalk.md_file}{xwalk.docx_file ? " · .docx" : ""}{xwalk.pdf_file ? " · .pdf" : ""}
+          </div>
+          <div className="text-slate-500 text-[10px] mt-1">
+            {xwalk.version && xwalk.date ? `Extracted ${xwalk.date} (${xwalk.version})` : xwalk.version || xwalk.date}
+          </div>
+          {xwalk.first_headings.length > 0 && (
+            <details className="mt-1">
+              <summary className="text-slate-500 text-[10px] cursor-pointer hover:text-slate-300">First 5 source headings</summary>
+              <ul className="mt-1 space-y-0.5">
+                {xwalk.first_headings.map((h, i) => (
+                  <li key={i} className="text-slate-400 text-[10px]">· {h}</li>
+                ))}
+              </ul>
+            </details>
+          )}
+        </div>
+      )}
       <div className="bg-slate-950/50 rounded p-2">
         <div className="text-slate-500 text-[10px] uppercase tracking-widest mb-1">Systems bound ({systems.length})</div>
         {systems.slice(0, 8).map((s) => (
