@@ -52,6 +52,9 @@ _OPS = {
           'Frame: {scene} — objects: {objects} [{ref}].'),          # one screen/video frame, summarised
     "D": ("detect", [("label", "s"), ("bbox", "s"), ("conf", "float")],
           "Detected {label} at {bbox} (confidence {conf})."),        # one on-screen detection / region
+    "L0": ("layer0_audit", [("tool", "s"), ("tier", "s"), ("verdict", "s"), ("reason", "s"),
+                            ("world", "s"), ("executed", "s"), ("hive", "s"), ("replicas", "s")],
+           "Layer 0 audit of {tool} ({world}/{tier}): {verdict} — {reason}."),
 }
 
 _SAFE = str.maketrans({"|": "/", ":": ";", "\n": " "})   # keep the wire grammar unambiguous

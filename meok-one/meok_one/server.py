@@ -467,6 +467,17 @@ class Handler(BaseHTTPRequestHandler):
             from . import sigil as _sigil
             line = qs.get("line", [""])[0]
             return self._json(200, {"line": line, "gloss": _sigil.gloss(line)})
+        # ---- Layer 0 audit + ASI-Evolve protocol hive surface ----
+        if path == "/api/horus-layer0/audit-log":
+            from . import horus_layer0 as _hl0
+            n = int(qs.get("n", ["50"])[0] or 50)
+            return self._json(200, {"records": _hl0.recent_audit_events(n)})
+        if path == "/api/telemetry":
+            from . import telemetry as _tel
+            return self._json(200, _tel.aggregate(window_seconds=float(qs.get("window", ["3600"])[0] or 3600)))
+        if path == "/api/asi-evolve/status":
+            from . import asi_evolve_hive as _ae
+            return self._json(200, _ae.status())
         # ---- Horus (auditor) + Harmony (reconciler) governance surface ----
         if path == "/api/horus/index":
             from . import fleet_indexer as _fi
@@ -1256,6 +1267,10 @@ class Handler(BaseHTTPRequestHandler):
                 from .tunnels import safe_call
                 return self._json(200, safe_call(b.get("tool", ""), b.get("args", {}),
                                                  confirm=b.get("confirm")))
+            if path == "/api/asi-evolve/tick":
+                # One governed evolution tick. Requires no args; the hive consumes telemetry.
+                from . import asi_evolve_hive as _ae
+                return self._json(200, _ae.tick())
         except KeyError as e:
             return self._json(400, {"error": f"unknown id {e}"})
         except Exception as e:

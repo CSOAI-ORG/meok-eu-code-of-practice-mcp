@@ -34,6 +34,7 @@ from .sovereign import sovereign_council
 from . import tunnels
 from . import tool_gateway as gw
 from . import sigil
+from . import telemetry
 
 # The honeycomb (SOV3) runs as its own process on :3101 — not importable into this
 # engine — so honey is delivered to it over MCP/HTTP, not in-process. Localhost on the VM.
@@ -206,8 +207,20 @@ def gossip(honey: dict) -> dict:
         return {"sigil": rec["line"], "receipt": rec["receipt"],
                 "delivery": {"ok": False, "refused": "prohibited"}}
     # 3) deliver the compact SIGIL line to the honeycomb (SOV3 runs as its own process).
-    return {"sigil": rec["line"], "receipt": rec["receipt"],
-            "delivery": _deliver_to_sov3(rec["line"], hive)}
+    delivery = _deliver_to_sov3(rec["line"], hive)
+
+    # 4) publish anonymised telemetry for cross-hive learning (ASI-Evolve, etc.).
+    # No raw Q/A is included — only aggregate-safe signals.
+    telemetry.publish(
+        hive=hive,
+        event_type="queen_interaction",
+        payload={
+            "safe": bool(honey.get("safe")),
+            "tags": ["honey", "queen", hive],
+        },
+    )
+
+    return {"sigil": rec["line"], "receipt": rec["receipt"], "delivery": delivery}
 
 
 def queen(domain: str, message: str, brain: str = "council", tier: str | None = None,

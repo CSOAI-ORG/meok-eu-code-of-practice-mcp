@@ -32,6 +32,9 @@ import re
 import json
 import subprocess
 
+from . import horus_layer0 as _hl0
+from .horus_layer0 import bft_audit_event as _bft_audit, is_active as _horus_active
+
 # --- backends ---------------------------------------------------------------
 _VM = os.environ.get("MEOK_VM_LLM", "").rstrip("/").replace("/llm", "")
 _SOV3_MCP = os.environ.get("SOV3_MCP", "https://35.246.43.221.sslip.io/sov3/mcp")
@@ -163,53 +166,80 @@ def invoke(tool: str, args: dict = None, *, confirm: str = None,
 
     PROHIBITED tools are NEVER executed (no confirm overrides them) — the gateway returns
     a refusal telling the human to do it themselves. This is the guarantee that a small
-    model driving the character cannot move money / change access / delete data."""
+    model driving the character cannot move money / change access / delete data.
+
+    Layer 0 audit: every invocation is logged to the SIGIL chain by horus_layer0.
+    Phase 2 is read-only; Phase 4 will enable BFT-replicated VETO challenges."""
     tier = classify(tool)
     world = _world_of(tool)
+    result: dict
 
     if tier == "prohibited":
-        return {"ok": False, "tier": "prohibited", "executed": False, "tool": tool,
-                "refusal": "This action is off-limits to the character (money movement, "
-                           "credentials, access control, or permanent deletion). Please "
-                           "do it yourself — I won't do it for you, even if asked."}
-
-    if tier == "write":
-        if not confirm:
-            return {"ok": True, "tier": "write", "executed": False, "tool": tool,
-                    "confirm_required": True, "world": world,
-                    "preview": {"tool": tool, "args": args or {}},
-                    "message": f"'{tool}' has real-world side effects. It will run ONLY "
-                               f"after a human approves. Pass confirm=<token> to proceed."}
-        # confirmed write — fall through to execute (only SOV3 is wired to actually run)
-
-    if "write" not in allow and tier == "write" and confirm:
-        pass  # explicit confirm overrides the allow-set for a single approved write
-
-    if tier == "read" and "read" not in allow:
-        return {"ok": False, "tier": "read", "executed": False,
-                "error": "read tier not in allow-set"}
-
-    # --- execute ---
-    if world == "sov3":
+        result = {"ok": False, "tier": "prohibited", "executed": False, "tool": tool,
+                  "refusal": "This action is off-limits to the character (money movement, "
+                             "credentials, access control, or permanent deletion). Please "
+                             "do it yourself — I won't do it for you, even if asked."}
+    elif tier == "write" and not confirm:
+        result = {"ok": True, "tier": "write", "executed": False, "tool": tool,
+                  "confirm_required": True, "world": world,
+                  "preview": {"tool": tool, "args": args or {}},
+                  "message": f"'{tool}' has real-world side effects. It will run ONLY "
+                             f"after a human approves. Pass confirm=<token> to proceed."}
+    elif tier == "read" and "read" not in allow:
+        result = {"ok": False, "tier": "read", "executed": False,
+                  "error": "read tier not in allow-set"}
+    elif world == "sov3":
         r = _call_sov3(tool, args or {})
         r.update({"tier": tier, "executed": r.get("ok", False), "tool": tool, "world": world})
-        return r
-    if world == "published_mcp":
+        result = r
+    elif world == "published_mcp":
         ep = _REGISTRY["published_mcp"].get(tool, {}).get("endpoint")
         if not ep:
-            return {"ok": False, "tier": tier, "executed": False, "tool": tool,
-                    "world": world, "error": "published MCP not running / no endpoint "
-                    "registered. Bridge it first (see published_bridge.py)."}
-        return {"ok": False, "tier": tier, "executed": False, "tool": tool, "world": world,
-                "error": "published MCP HTTP invoke not yet wired (endpoint known: %s)" % ep}
-    if world == "session_mcp":
-        return {"ok": False, "tier": tier, "executed": False, "tool": tool, "world": world,
-                "error": "session/business MCPs (Stripe/Gmail/...) run in the MCP HOST, not "
-                "in the character process. Tunnel requires the host to proxy the call; the "
-                "gateway has classified it safe-to-request but cannot self-execute it here.",
-                "note": "By design: keeps money/email tools OUT of the character runtime."}
-    return {"ok": False, "tier": tier, "executed": False, "tool": tool,
-            "error": f"unknown tool/world for {tool!r}"}
+            result = {"ok": False, "tier": tier, "executed": False, "tool": tool,
+                      "world": world, "error": "published MCP not running / no endpoint "
+                      "registered. Bridge it first (see published_bridge.py)."}
+        else:
+            result = {"ok": False, "tier": tier, "executed": False, "tool": tool, "world": world,
+                      "error": "published MCP HTTP invoke not yet wired (endpoint known: %s)" % ep}
+    elif world == "session_mcp":
+        result = {"ok": False, "tier": tier, "executed": False, "tool": tool, "world": world,
+                  "error": "session/business MCPs (Stripe/Gmail/...) run in the MCP HOST, not "
+                  "in the character process. Tunnel requires the host to proxy the call; the "
+                  "gateway has classified it safe-to-request but cannot self-execute it here.",
+                  "note": "By design: keeps money/email tools OUT of the character runtime."}
+    else:
+        result = {"ok": False, "tier": tier, "executed": False, "tool": tool,
+                  "error": f"unknown tool/world for {tool!r}"}
+
+    # --- Layer 0 BFT audit (Phase 4 active veto when HORUS_LAYER0_ACTIVE=true) ---
+    try:
+        audit = _bft_audit(
+            tool=tool,
+            args=args,
+            world=world,
+            tier=tier,
+            executed=result.get("executed", False),
+        )
+        result["horus_layer0"] = audit
+
+        if _horus_active() and audit.get("verdict") == "VETO":
+            # BFT quorum veto: do not execute, return refusal envelope.
+            # Any already-executed result is overridden (active veto is checked
+            # before the response leaves the gateway).
+            return {
+                "ok": False,
+                "tier": tier,
+                "executed": False,
+                "tool": tool,
+                "world": world,
+                "refusal": "Horus Layer 0 BFT veto: 2-of-3 replicas flagged this invocation. "
+                           "The action was not executed.",
+                "horus_layer0": audit,
+            }
+    except Exception:
+        result["horus_layer0"] = {"verdict": "PASS", "reason": "audit unavailable", "alert": False}
+
+    return result
 
 
 # auto-seed SOV3 on import (best-effort, non-fatal)

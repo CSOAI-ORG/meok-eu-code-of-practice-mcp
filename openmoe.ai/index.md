@@ -31,6 +31,7 @@ Every claim in this dossier was verified against live sources on 12 June 2026.
 ## Read the dossier
 
 - [Read on the web](https://councilof.ai/openmoe/) (rendered)
+- [🔥 Burn the Forest doctrine](eaten-hive-burn-the-forest.md) — asymmetric warfare strategy for openmoe.ai
 - [Original first edition](original-first-edition.md) (preserved for diff)
 - [Fact-check appendix](README.md#appendix-a-fact-check-summary) in the main report
 
