@@ -876,6 +876,29 @@ class E2ERunner:
         await self.run_test(group, "gateway → sov3 → api", gateway_to_sov3_to_api, target="gateway")
         await self.run_test(group, "register → memory → query", full_flow, target="sov3")
 
+    # ── Phase 9.5: Stripe Live-Mode Probe (Day 3) ───────────────────────────
+    async def test_stripe_live_links(self):
+        """Verify all 8 live Stripe payment links return 200.
+        Each link is a real entry point to a real product. If any 404/500,
+        the customer hits a dead button and we lose the sale."""
+        group = "stripe"
+        links = [
+            ("Sovereign £29/mo",     "https://buy.stripe.com/9B67sNeoIcMObEx56o8k91S"),
+            ("Pro £199/mo",          "https://buy.stripe.com/eVq14p1BWcMO4c59mE8k91T"),
+            ("Enterprise £1,499/mo", "https://buy.stripe.com/28E7sNdkEeUW5g96as8k91U"),
+            ("Article 50 Kit £999",  "https://buy.stripe.com/fZu00l4O8fZ07oh0Q88k91V"),
+            ("LAUNCH50 £499",        "https://buy.stripe.com/4gMcN7a8s6oq0ZTaqI8k91Z"),
+            ("Quick Kit £9",         "https://buy.stripe.com/9B68wR6WgfZ0gYR8iA8k91W"),
+            ("Audit-Prep £4,950",    "https://buy.stripe.com/28E6oJ94ofZ0aAt1Uc8k91X"),
+            ("Watchdog Cert £4,950", "https://buy.stripe.com/9B6dRb2G0eUWcIBaqI8k91Y"),
+        ]
+        for name, url in links:
+            async def real_check(_url=url, _name=name):
+                code, _ = await self.client.request("GET", _url)
+                assert code == 200, f"status={code} (link dead or Stripe misconfig)"
+                return f"200 OK"
+            await self.run_test(group, name, real_check, target=url)
+
     # ═══════════════════════════════════════════════════════════════════════════
     # MAIN ORCHESTRATOR
     # ═══════════════════════════════════════════════════════════════════════════
@@ -915,6 +938,8 @@ class E2ERunner:
                 ("Core A2A", lambda: self.test_a2a(sov3)),
                 ("Core Neural", lambda: self.test_neural(sov3)),
                 ("Core Gateway", lambda: self.test_gateway()),
+                ("Cross-Service", lambda: self.test_cross_service()),
+                ("Stripe Live Links", lambda: self.test_stripe_live_links()),
             ]
         else:
             phases = [
@@ -938,6 +963,7 @@ class E2ERunner:
                 ("Core Neural", lambda: self.test_neural(sov3)),
                 ("Core Gateway", lambda: self.test_gateway()),
                 ("Cross-Service", lambda: self.test_cross_service()),
+                ("Stripe Live Links", lambda: self.test_stripe_live_links()),
             ]
 
         for phase_name, phase_fn in phases:
