@@ -52,7 +52,7 @@ All three servers use Ed25519 signatures over canonical JSON. Every response inc
 
 All three servers are MIT-licensed, installable via `pip install meok-eu-code-of-practice-mcp`, `meok-ai-psych-vuln-audit-mcp`, `meok-annex-iii-impact-mcp`, and registered in the official MCP Registry. The signing keys are managed by MEOK's keystone attestation API in production; demo keys are included for evaluation.
 
-**Contact:** press@meok.ai | **Verify URL pattern:** https://meok-attestation-api.vercel.app/verify/{content_hash} | **Documentation:** https://meok.ai/eu-code-of-practice
+**Contact:** press@meok.ai | **Verify URL pattern:** https://meok-attestation-api.vercel.app/verify/{content_hash} | **Documentation:** https://meok-q4e0w62es-niks-projects-0a2ef942.vercel.app/eu-code-of-practice (live preview; custom domain meok.ai hosts the marketing site at the same `/eu-code-of-practice` path)
 
 ---
 
@@ -129,7 +129,7 @@ All three servers are MIT-licensed, installable via `pip install meok-eu-code-of
 >
 > Repo: github.com/csoai-org/<each>
 > PyPI: pip install meok-eu-code-of-practice-mcp (etc.)
-> Docs: meok.ai/eu-code-of-practice
+> Docs: meok-q4e0w62es-niks-projects-0a2ef942.vercel.app/eu-code-of-practice (preview)
 >
 > Founders note: I'm the solo founder of MEOK AI Labs, a UK company (CSOAI Ltd 16939677), building the open-source compliance layer for the sovereign AI era. We're 1.5 years into this, the substrate is live, the keystone is signed, and this is the first wave of "compliance-native from birth" products.
 >
@@ -152,6 +152,6 @@ All three servers are MIT-licensed, installable via `pip install meok-eu-code-of
 2. **The 3 MCPs need to be published to PyPI** (currently only built locally). The `mcp-publisher` workflow is the canonical path per the meok-ecosystem-navigation skill.
 3. **The 3 MCPs need to be in the official MCP Registry.** Per the skill: "30 CSOAI-ORG servers now in the official MCP Registry" — need to add these 3.
 4. **The keystone signing keys need to be rotated** to the production KMS for the verify URLs to work (the demo keys in the MCPs are clearly marked TODO).
-5. **The meok.ai landing page needs an `/eu-code-of-practice` page** that this press release links to. Currently no such page exists.
+5. **The `meok.ai` landing page is at `meok-ai.vercel.app` (preview URL).** The custom domain `meok.ai` is currently bound to a different Vercel project (`ui`, which is the live meok.ai site). **Discovery (15 Jun 2026, via Kimi WebBridge): moving meok.ai from `ui` → `meok-ai` would take down production, so the public-facing URL for the press release is the vercel.app preview URL until a separate Vercel project is created for the new meok-ai marketing site.**
 
 **Estimated ship time:** 2-3 days of focused work (PyPI publish + registry + landing page + press list import + send automation), in time for the 2 August cliff.

@@ -3314,8 +3314,10 @@ async def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             # SIGIL bus: sign + hash-chain an inter-agent exchange (multi_agent/sigil bus.py)
             import traceback as _tb
             try:
-                from sigil bus import get_bus as _gb
-                _bus = _gb(audit_logger)
+                # SIGIL bus import: module is `sigil_bus` (file: multi_agent/sigil_bus.py)
+                import importlib as _il
+                _sigmod = _il.import_module("sigil_bus")
+                _bus = _sigmod.get_bus(audit_logger)
                 if arguments.get("line"):
                     result = _bus.emit(arguments["line"])
                     return result

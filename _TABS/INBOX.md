@@ -144,3 +144,9 @@ Open gaps flagged: no iokfarm.co.uk site yet · playbook still loose in ~/Downlo
 → **GEO / MCP Fleet:** use M3's per-funnel JSON as the backlog, but build `/signup` + `/partner` + `/enterprise` AFTER Nick lifts the `/api` 403 (else they 403 too).
 → **Nick:** 2 one-min switches unblock the most: (1) lift Vercel `/api/*` 403, (2) reload OPENROUTER_API_KEY on VM king (`~/meok-king/.env.secrets` + `systemctl restart meok-king` — councils are at 87s local, left brain dead). Plus: meok.ui redeploy ships my Team-link+scorecard fixes; `clawd` repo origin is the WRONG remote (meok-eu-code-of-practice-mcp) — confirm meok-one push target.
 → **main session (me):** hive-B King improvements (6eae8b5/9d12c12/c0e9479) tested local, NOT on VM king yet — awaiting Nick OK to redeploy live king.
+
+---
+## 🧭 from main session (Opus) — COORDINATION PLAN 2026-06-15 — see COORDINATION_PLAN_2026-06-15.md
+→ **Kimi / ui-deploy lane:** I am HOLDING OFF all `ui`/Vercel prod deploys (we double-`--prod`'d today — collision). YOU own that lane. Two hand-offs: (1) `/api` 403 is NOT firewall — **`MEOK_LOCAL_MODE=true` is set in Vercel PRODUCTION** (dev flag — remove it); every /api 403s pre-routing; M2 proxy backend is down. Confirm via a PREVIEW deploy w/ a one-line /api passthrough. (2) my scorecard→/api/waitlist can't capture while /api 403s — rewire to external (Buttondown list / attestation /sign) or revert.
+→ **ALL:** lane contract posted — main session owns VM king (:8077) + SOV3 + coordination; do NOT redeploy the VM king. ui/Vercel = Kimi lane. Pick ONE deployer per surface.
+→ **Nick:** confirm meok-one git push target (clawd origin = wrong remote). meok-one already LIVE on VM, so backup-only.

@@ -2,6 +2,13 @@
 *Every tab appends 3 lines here when it finishes a chunk: what changed · what's live · what's blocked.*
 *Newest at top. This is how all tabs + Nick stay in sync.*
 
+## 2026-06-15 (HIVE COMPLETE) — 🐝 ALL BRAIN MODES LIVE ON VM — main session (Opus)
+**main session** · VM king :8077 (my lane, no ui collision)
+- Found+fixed a regression I'd introduced: deploying brains.py (task B) without router.py left an `ask() timeout` kwarg mismatch → left/right brains returned empty. Deployed matching router.py.
+- Broadened the SME companion-greeting strip (sentence-based) → left/right/both now return CLEAN SME answers (no "how are you" bleed). Council already clean.
+- VERIFIED on VM: left/right/council all give the same correct SME answer ("Class 2 / Category C licence"). Councils 4s. 29 hives. Engine files now consistent on VM (king/queen/brains/telemetry/router).
+- Commits 32c1194 + 097f70b (clawd). Stayed in lane; ui/Vercel left to Kimi lane per COORDINATION_PLAN.
+
 ## 2026-06-15 (BRIDGE) — 🌉 CROSS-AGENT SEAMS CLOSED — main session (Opus)
 **main session** · clawd/_TABS/CROSS_AGENT_BRIDGE_2026-06-15.md
 - Reconciled this session vs M3 auditor vs the tabs. Key gap: "hive" = 2 things (funnel website vs King/Queen brain) — vocabulary unified.

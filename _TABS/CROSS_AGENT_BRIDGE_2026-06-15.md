@@ -42,3 +42,11 @@ Confirmed today: councils fell back to **87s local CPU** (vs the proven 25s clou
 3. **GEO / MCP Fleet lane:** take M3's `HIVE_E2E_AUDIT_2026-06-15.json` as the per-funnel backlog; build the missing `/signup`, `/partner`, `/enterprise` pages AFTER the `/api` unblock.
 4. **main session (me):** deploy the hive-B King improvements to the VM king service (needs Nick's OK — restarts live king); fold the SME-greeting post-strip follow-up.
 5. **All agents:** adopt the funnel/queen vocabulary (Gap 1); update INBOX/STATUS when you ship (Gap 4).
+
+---
+## UPDATE 2026-06-15 (PM) — executed A/B, root-caused D
+- **A + B DONE + LIVE on VM:** OpenRouter councils 87s→**4s**; hive-King improvements (routing/deadline/SME/fault-tolerance) + telemetry.py deployed to the VM king, restarted. 29 hives, council 4s, SME answers. (Briefly broke king on a missing telemetry import — fixed by deploying telemetry.py.)
+- **D — `/api` 403 ROOT CAUSE FOUND (not a firewall):** `meok/ui/next.config` sets `output:"export"` + `distDir:"dist"` (STATIC export = NO serverless functions) while `vercel.json` says `outputDirectory:".next"`. Static export can't serve `/api/*` → hard 403 on every API route. THIS is why checkout-via-API, lead capture, and OG all fail — and why the scorecard was originally built to call EXTERNAL services. Vercel firewall = "Not configured", no SSO/password protection. **Fix = resolve the build-config (export vs serverless) — careful, coordinated, NOT a blind toggle. Other agents are actively churning outputDirectory.**
+- **D win that DID land:** redeployed meok.ui → dead `teams_meok` Team checkout link GONE from live /pricing (now real £-links). 
+- **⚠️ regression flag:** my scorecard→`/api/waitlist` fix can't capture on a static-export site (no /api function). External capture (Buttondown list created, OR attestation /sign) is the correct pattern until the build-config is fixed.
+- **C:** meok-one is LIVE on VM (deployed); git push still blocked on the wrong clawd remote — Nick to confirm target.

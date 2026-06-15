@@ -176,8 +176,8 @@ def main():
         expected_count = int(expected.split()[0])
         status, detail = mcp_health(name, rel_path, expected_count)
         color = color_for(status)
-        if s == "UP": mcp_up += 1
-        elif s == "DEGRADED": pass  # degraded still counts as live
+        if status == "UP": mcp_up += 1
+        elif status == "DEGRADED": pass  # degraded still counts as live
         else: mcp_down += 1
         print(f"  {name:<28} {color}{status:<12}{ENDC} {detail} (expected {expected})")
 
