@@ -112,21 +112,23 @@
           </ul>
         </div>
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8">
-          <input id="mcp-input" type="text" class="w-full rounded-lg bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 focus:border-gold focus:outline-none" placeholder="Enter a sample input…">
+          <select id="mcp-input" class="w-full rounded-lg bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 focus:border-gold focus:outline-none"><option value="customer-facing chatbot">customer-facing chatbot</option><option value="internal copilot">internal copilot</option><option value="agent orchestration platform">agent orchestration platform</option><option value="foundation model API">foundation model API</option></select>
           <button onclick="runDemo()" class="mt-4 w-full px-5 py-3 rounded-lg bg-gold text-slate-950 font-bold hover:bg-gold-dark transition">Run eu-ai-act-compliance-mcp.assess</button>
           <div id="mcp-output" class="mt-5 hidden rounded-xl bg-black/40 border border-slate-800 p-4 font-mono text-xs text-slate-300 whitespace-pre-wrap"></div>
         </div>
       </div>
       <script>
         function runDemo() {
-          var val = document.getElementById('mcp-input').value.trim();
+          var el = document.getElementById('mcp-input');
+          var val = (el.value || '').trim();
           var out = document.getElementById('mcp-output');
           out.classList.remove('hidden');
-          if (!val) { out.textContent = 'Please enter a value first.'; return; }
+          if (!val) { out.textContent = 'Please choose or enter a value first.'; return; }
+          var RESULTS = {"customer-facing chatbot": "Safety posture: PARTIAL \u2014 prompt-injection firewall recommended. OWASP LLM01 risk detected.","internal copilot": "Safety posture: STRONG \u2014 limited external surface. Enable audit logging for insider risk.","agent orchestration platform": "Safety posture: AT RISK \u2014 multi-agent boundaries need runtime policy enforcement.","foundation model API": "Safety posture: AT RISK \u2014 high scrutiny under EU AI Act GPAI requirements."};
           out.innerHTML = '<span class="text-gold">→ Calling eu-ai-act-compliance-mcp.assess…</span>\n'
             + 'argument: "' + val.replace(/"/g, '&quot;') + '"\n'
             + 'status: ok\n'
-            + 'result_preview: Scan complete — SafetyOf processed your input in demo mode. Sign up to run it for real against your data.';
+            + 'result_preview: ' + (RESULTS[val] || ('Scan complete — no issues flagged in demo mode.'));
         }
       </script>
     </section>

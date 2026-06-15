@@ -112,21 +112,23 @@
           </ul>
         </div>
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8">
-          <input id="mcp-input" type="text" class="w-full rounded-lg bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 focus:border-gold focus:outline-none" placeholder="Enter a sample input…">
+          <select id="mcp-input" class="w-full rounded-lg bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 focus:border-gold focus:outline-none"><option value="recruitment, gender+age">recruitment, gender+age</option><option value="lending, ethnicity+postcode">lending, ethnicity+postcode</option><option value="healthcare, disability+age">healthcare, disability+age</option></select>
           <button onclick="runDemo()" class="mt-4 w-full px-5 py-3 rounded-lg bg-gold text-slate-950 font-bold hover:bg-gold-dark transition">Run bias-detection-mcp.scan</button>
           <div id="mcp-output" class="mt-5 hidden rounded-xl bg-black/40 border border-slate-800 p-4 font-mono text-xs text-slate-300 whitespace-pre-wrap"></div>
         </div>
       </div>
       <script>
         function runDemo() {
-          var val = document.getElementById('mcp-input').value.trim();
+          var el = document.getElementById('mcp-input');
+          var val = (el.value || '').trim();
           var out = document.getElementById('mcp-output');
           out.classList.remove('hidden');
-          if (!val) { out.textContent = 'Please enter a value first.'; return; }
+          if (!val) { out.textContent = 'Please choose or enter a value first.'; return; }
+          var RESULTS = {"recruitment, gender+age": "Disparate impact ratio: 0.78 (threshold 0.80). Recommend stratified re-sampling.","lending, ethnicity+postcode": "Proxy correlation detected: postcode \u2192 ethnicity (r=0.64). Review feature engineering.","healthcare, disability+age": "No significant disparity found. Continue monitoring production drift."};
           out.innerHTML = '<span class="text-gold">→ Calling bias-detection-mcp.scan…</span>\n'
             + 'argument: "' + val.replace(/"/g, '&quot;') + '"\n'
             + 'status: ok\n'
-            + 'result_preview: Scan complete — BiasDetectionOf processed your input in demo mode. Sign up to run it for real against your data.';
+            + 'result_preview: ' + (RESULTS[val] || ('Scan complete — no issues flagged in demo mode.'));
         }
       </script>
     </section>

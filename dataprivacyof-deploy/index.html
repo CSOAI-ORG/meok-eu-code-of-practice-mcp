@@ -112,21 +112,23 @@
           </ul>
         </div>
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8">
-          <input id="mcp-input" type="text" class="w-full rounded-lg bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 focus:border-gold focus:outline-none" placeholder="Enter a sample input…">
+          <select id="mcp-input" class="w-full rounded-lg bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 focus:border-gold focus:outline-none"><option value="training on personal data">training on personal data</option><option value="automated decision-making">automated decision-making</option><option value="third-country transfer">third-country transfer</option></select>
           <button onclick="runDemo()" class="mt-4 w-full px-5 py-3 rounded-lg bg-gold text-slate-950 font-bold hover:bg-gold-dark transition">Run data-privacy-dpia-mcp.assess</button>
           <div id="mcp-output" class="mt-5 hidden rounded-xl bg-black/40 border border-slate-800 p-4 font-mono text-xs text-slate-300 whitespace-pre-wrap"></div>
         </div>
       </div>
       <script>
         function runDemo() {
-          var val = document.getElementById('mcp-input').value.trim();
+          var el = document.getElementById('mcp-input');
+          var val = (el.value || '').trim();
           var out = document.getElementById('mcp-output');
           out.classList.remove('hidden');
-          if (!val) { out.textContent = 'Please enter a value first.'; return; }
+          if (!val) { out.textContent = 'Please choose or enter a value first.'; return; }
+          var RESULTS = {"training on personal data": "Lawful basis: likely Legitimate Interest + DPIA required. Art 35 GDPR triggered.","automated decision-making": "Art 22 GDPR check required. Provide a meaningful human-review mechanism.","third-country transfer": "Transfer impact assessment + SCCs + supplementary measures required."};
           out.innerHTML = '<span class="text-gold">→ Calling data-privacy-dpia-mcp.assess…</span>\n'
             + 'argument: "' + val.replace(/"/g, '&quot;') + '"\n'
             + 'status: ok\n'
-            + 'result_preview: Scan complete — DataPrivacyOf processed your input in demo mode. Sign up to run it for real against your data.';
+            + 'result_preview: ' + (RESULTS[val] || ('Scan complete — no issues flagged in demo mode.'));
         }
       </script>
     </section>

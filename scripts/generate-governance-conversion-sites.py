@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
-"""Generate governance-hive conversion page deploy directories."""
+"""DEPRECATED 2026-06-15 — ABSORBED into ../build_hive_conversion_pages.py (the
+single MASTER hive conversion generator). Retained for reference only; do NOT run
+(it produces duplicate sites). The standalone governance domains (agisafe,
+asisecurity) live in the master. The hub sites (meok/proofof/councilof/csoai) are
+real apps — the static copies this script made are superseded by the real deploys.
+See memory: project_hive_conversion_pages."""
+import sys as _sys
+if __name__ == "__main__":
+    print("DEPRECATED → use build_hive_conversion_pages.py (master). Absorbed 2026-06-15. Not running.")
+    _sys.exit(0)
 import os
 import json
 from pathlib import Path

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Generate conversion-page static sites for Construction + Agriculture hives."""
+import json
 from pathlib import Path
 
 ROOT = Path("/Users/nicholas/clawd")
@@ -316,6 +317,44 @@ def cta_section(domain_key: str, primary_text: str = "Get started", secondary_te
     """
 
 
+# Rich per-domain interactive demo samples, ABSORBED from the now-deprecated
+# scripts/generate-compliance-deploys.py (its one genuine strength). Each entry
+# is a list of (sample_input, simulated_result). index_page() renders these as a
+# dropdown when present, else falls back to the generic free-text demo.
+HIVE_DEMOS = {
+    "safetyof": [
+        ("customer-facing chatbot", "Safety posture: PARTIAL — prompt-injection firewall recommended. OWASP LLM01 risk detected."),
+        ("internal copilot", "Safety posture: STRONG — limited external surface. Enable audit logging for insider risk."),
+        ("agent orchestration platform", "Safety posture: AT RISK — multi-agent boundaries need runtime policy enforcement."),
+        ("foundation model API", "Safety posture: AT RISK — high scrutiny under EU AI Act GPAI requirements."),
+    ],
+    "transparencyof": [
+        ("Generated quarterly report summary", "C2PA manifest embedded. Signature: 0x7a3f…e9d2. Verification URL: /verify/0x7a3f"),
+        ("AI-generated product image", "Invisible watermark applied + C2PA provenance. Article 50 transparency satisfied."),
+    ],
+    "accountabilityof": [
+        ("credit-decision-2026-06-15-001", "Decision logged. Hash: sha256:9c2b…1a4f. Attestation: sig_v1_2026_06_15"),
+        ("agent-handoff support→billing", "Handoff recorded with tamper-evident chain. EU AI Act Art 12 + DORA Art 17 satisfied."),
+    ],
+    "biasdetectionof": [
+        ("recruitment, gender+age", "Disparate impact ratio: 0.78 (threshold 0.80). Recommend stratified re-sampling."),
+        ("lending, ethnicity+postcode", "Proxy correlation detected: postcode → ethnicity (r=0.64). Review feature engineering."),
+        ("healthcare, disability+age", "No significant disparity found. Continue monitoring production drift."),
+    ],
+    "dataprivacyof": [
+        ("training on personal data", "Lawful basis: likely Legitimate Interest + DPIA required. Art 35 GDPR triggered."),
+        ("automated decision-making", "Art 22 GDPR check required. Provide a meaningful human-review mechanism."),
+        ("third-country transfer", "Transfer impact assessment + SCCs + supplementary measures required."),
+    ],
+    "ethicalgovernanceof": [
+        ("EU AI Act", "Crosswalk complete: 42 controls mapped to ISO/IEC 42001, NIST AI RMF, UK AI Bill."),
+        ("ISO/IEC 42001", "Crosswalk complete: 37 AIMS clauses mapped to EU AI Act obligations."),
+        ("NIST AI RMF", "Crosswalk complete: Govern/Map/Measure/Manage mapped to EU AI Act articles."),
+        ("UK AI Bill", "Crosswalk complete: 9 regulator principles mapped to EU AI Act + CSOAI commitments."),
+    ],
+}
+
+
 def index_page(domain_key: str) -> str:
     cfg = DOMAINS[domain_key]
     features = "".join(
@@ -333,6 +372,18 @@ def index_page(domain_key: str) -> str:
         for m in cfg["mcps"]
     )
     demo_tool = cfg["mcps"][0][0] if cfg.get("mcps") else f"{domain_key}-mcp.run"
+    samples = HIVE_DEMOS.get(domain_key)
+    if samples:
+        # Rich demo: dropdown of curated inputs → specific simulated results.
+        options = "".join(f'<option value="{inp}">{inp}</option>' for inp, _ in samples)
+        results_js = ",".join(f'{json.dumps(inp)}: {json.dumps(res)}' for inp, res in samples)
+        demo_control = f"""<select id="mcp-input" class="w-full rounded-lg bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 focus:border-gold focus:outline-none">{options}</select>"""
+        demo_results = f"var RESULTS = {{{results_js}}};"
+        result_expr = "RESULTS[val] || ('Scan complete — no issues flagged in demo mode.')"
+    else:
+        demo_control = """<input id="mcp-input" type="text" class="w-full rounded-lg bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 focus:border-gold focus:outline-none" placeholder="Enter a sample input…">"""
+        demo_results = ""
+        result_expr = f"'Scan complete — {cfg['name']} processed your input in demo mode. Sign up to run it for real against your data.'"
     demo_section = f"""
     <section class="max-w-6xl mx-auto px-6 py-16 border-y border-slate-800">
       <div class="grid md:grid-cols-2 gap-10 items-center">
@@ -346,21 +397,23 @@ def index_page(domain_key: str) -> str:
           </ul>
         </div>
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8">
-          <input id="mcp-input" type="text" class="w-full rounded-lg bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 focus:border-gold focus:outline-none" placeholder="Enter a sample input…">
+          {demo_control}
           <button onclick="runDemo()" class="mt-4 w-full px-5 py-3 rounded-lg bg-gold text-slate-950 font-bold hover:bg-gold-dark transition">Run {demo_tool}</button>
           <div id="mcp-output" class="mt-5 hidden rounded-xl bg-black/40 border border-slate-800 p-4 font-mono text-xs text-slate-300 whitespace-pre-wrap"></div>
         </div>
       </div>
       <script>
         function runDemo() {{
-          var val = document.getElementById('mcp-input').value.trim();
+          var el = document.getElementById('mcp-input');
+          var val = (el.value || '').trim();
           var out = document.getElementById('mcp-output');
           out.classList.remove('hidden');
-          if (!val) {{ out.textContent = 'Please enter a value first.'; return; }}
+          if (!val) {{ out.textContent = 'Please choose or enter a value first.'; return; }}
+          {demo_results}
           out.innerHTML = '<span class="text-gold">→ Calling {demo_tool}…</span>\\n'
             + 'argument: "' + val.replace(/"/g, '&quot;') + '"\\n'
             + 'status: ok\\n'
-            + 'result_preview: Scan complete — {cfg['name']} processed your input in demo mode. Sign up to run it for real against your data.';
+            + 'result_preview: ' + ({result_expr});
         }}
       </script>
     </section>

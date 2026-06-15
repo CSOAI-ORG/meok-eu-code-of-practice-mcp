@@ -112,21 +112,23 @@
           </ul>
         </div>
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8">
-          <input id="mcp-input" type="text" class="w-full rounded-lg bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 focus:border-gold focus:outline-none" placeholder="Enter a sample input…">
+          <select id="mcp-input" class="w-full rounded-lg bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 focus:border-gold focus:outline-none"><option value="credit-decision-2026-06-15-001">credit-decision-2026-06-15-001</option><option value="agent-handoff support→billing">agent-handoff support→billing</option></select>
           <button onclick="runDemo()" class="mt-4 w-full px-5 py-3 rounded-lg bg-gold text-slate-950 font-bold hover:bg-gold-dark transition">Run agent-audit-logger-mcp.record</button>
           <div id="mcp-output" class="mt-5 hidden rounded-xl bg-black/40 border border-slate-800 p-4 font-mono text-xs text-slate-300 whitespace-pre-wrap"></div>
         </div>
       </div>
       <script>
         function runDemo() {
-          var val = document.getElementById('mcp-input').value.trim();
+          var el = document.getElementById('mcp-input');
+          var val = (el.value || '').trim();
           var out = document.getElementById('mcp-output');
           out.classList.remove('hidden');
-          if (!val) { out.textContent = 'Please enter a value first.'; return; }
+          if (!val) { out.textContent = 'Please choose or enter a value first.'; return; }
+          var RESULTS = {"credit-decision-2026-06-15-001": "Decision logged. Hash: sha256:9c2b\u20261a4f. Attestation: sig_v1_2026_06_15","agent-handoff support\u2192billing": "Handoff recorded with tamper-evident chain. EU AI Act Art 12 + DORA Art 17 satisfied."};
           out.innerHTML = '<span class="text-gold">→ Calling agent-audit-logger-mcp.record…</span>\n'
             + 'argument: "' + val.replace(/"/g, '&quot;') + '"\n'
             + 'status: ok\n'
-            + 'result_preview: Scan complete — AccountabilityOf processed your input in demo mode. Sign up to run it for real against your data.';
+            + 'result_preview: ' + (RESULTS[val] || ('Scan complete — no issues flagged in demo mode.'));
         }
       </script>
     </section>

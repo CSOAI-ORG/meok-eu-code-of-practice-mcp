@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
-"""Generate static deploy directories for the 6 compliance hive domains."""
+"""DEPRECATED 2026-06-15 — ABSORBED into ../build_hive_conversion_pages.py (the
+single MASTER hive conversion generator). Retained for reference only; do NOT run
+(it produces duplicate sites). All 6 compliance domains AND this script's rich
+per-domain interactive demo content now live in the master (HIVE_DEMOS).
+See memory: project_hive_conversion_pages."""
+import sys as _sys
+if __name__ == "__main__":
+    print("DEPRECATED → use build_hive_conversion_pages.py (master). Absorbed 2026-06-15. Not running.")
+    _sys.exit(0)
 import os, json, textwrap
 
 BASE = "/Users/nicholas/clawd"

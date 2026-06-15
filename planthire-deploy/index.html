@@ -116,14 +116,16 @@
       </div>
       <script>
         function runDemo() {
-          var val = document.getElementById('mcp-input').value.trim();
+          var el = document.getElementById('mcp-input');
+          var val = (el.value || '').trim();
           var out = document.getElementById('mcp-output');
           out.classList.remove('hidden');
-          if (!val) { out.textContent = 'Please enter a value first.'; return; }
+          if (!val) { out.textContent = 'Please choose or enter a value first.'; return; }
+          
           out.innerHTML = '<span class="text-gold">→ Calling planthire-ai-mcp.book_equipment…</span>\n'
             + 'argument: "' + val.replace(/"/g, '&quot;') + '"\n'
             + 'status: ok\n'
-            + 'result_preview: Scan complete — PlantHire processed your input in demo mode. Sign up to run it for real against your data.';
+            + 'result_preview: ' + ('Scan complete — PlantHire processed your input in demo mode. Sign up to run it for real against your data.');
         }
       </script>
     </section>

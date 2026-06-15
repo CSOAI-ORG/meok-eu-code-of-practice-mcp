@@ -112,21 +112,23 @@
           </ul>
         </div>
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8">
-          <input id="mcp-input" type="text" class="w-full rounded-lg bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 focus:border-gold focus:outline-none" placeholder="Enter a sample input…">
+          <select id="mcp-input" class="w-full rounded-lg bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 focus:border-gold focus:outline-none"><option value="EU AI Act">EU AI Act</option><option value="ISO/IEC 42001">ISO/IEC 42001</option><option value="NIST AI RMF">NIST AI RMF</option><option value="UK AI Bill">UK AI Bill</option></select>
           <button onclick="runDemo()" class="mt-4 w-full px-5 py-3 rounded-lg bg-gold text-slate-950 font-bold hover:bg-gold-dark transition">Run ai-governance-crosswalk-mcp.map</button>
           <div id="mcp-output" class="mt-5 hidden rounded-xl bg-black/40 border border-slate-800 p-4 font-mono text-xs text-slate-300 whitespace-pre-wrap"></div>
         </div>
       </div>
       <script>
         function runDemo() {
-          var val = document.getElementById('mcp-input').value.trim();
+          var el = document.getElementById('mcp-input');
+          var val = (el.value || '').trim();
           var out = document.getElementById('mcp-output');
           out.classList.remove('hidden');
-          if (!val) { out.textContent = 'Please enter a value first.'; return; }
+          if (!val) { out.textContent = 'Please choose or enter a value first.'; return; }
+          var RESULTS = {"EU AI Act": "Crosswalk complete: 42 controls mapped to ISO/IEC 42001, NIST AI RMF, UK AI Bill.","ISO/IEC 42001": "Crosswalk complete: 37 AIMS clauses mapped to EU AI Act obligations.","NIST AI RMF": "Crosswalk complete: Govern/Map/Measure/Manage mapped to EU AI Act articles.","UK AI Bill": "Crosswalk complete: 9 regulator principles mapped to EU AI Act + CSOAI commitments."};
           out.innerHTML = '<span class="text-gold">→ Calling ai-governance-crosswalk-mcp.map…</span>\n'
             + 'argument: "' + val.replace(/"/g, '&quot;') + '"\n'
             + 'status: ok\n'
-            + 'result_preview: Scan complete — EthicalGovernanceOf processed your input in demo mode. Sign up to run it for real against your data.';
+            + 'result_preview: ' + (RESULTS[val] || ('Scan complete — no issues flagged in demo mode.'));
         }
       </script>
     </section>
