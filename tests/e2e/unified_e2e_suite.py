@@ -905,6 +905,7 @@ class E2ERunner:
         """Verify the CSOAI MCP Monetization API on :3400.
         6 endpoints: / (HTML), /api, /servers, /packs, /bundles, /analytics.
         Plus POST /subscribe and POST /purchase/pack for the revenue flow.
+        Day 7 added /tiers, /sectors, /sectors/{name}, POST /purchase/tier.
         Without Stripe secrets, all flow endpoints still work in mock mode
         (in-memory storage); the E2E test certifies the API surface is live.
         """
@@ -914,19 +915,43 @@ class E2ERunner:
         async def api_info():
             code, body = await self.client.request("GET", f"{base}/api")
             assert code == 200, f"status={code}"
-            return f"mcp_servers={body.get('mcp_servers', '?')}, packs={body.get('packs', '?')}"
+            return f"mcp_servers={body.get('mcp_servers', '?')}, packs={body.get('packs', '?')}, tiers={body.get('tiers', '?')}, sectors={body.get('sectors', '?')}"
 
         async def list_servers():
             code, body = await self.client.request("GET", f"{base}/servers")
             assert code == 200, f"status={code}"
-            assert body.get("total_servers", 0) >= 100, f"too few servers: {body.get('total_servers')}"
-            return f"total_servers={body.get('total_servers')}"
+            assert body.get("total", 0) >= 100, f"too few servers: {body.get('total')}"
+            return f"total_servers={body.get('total')}"
 
         async def list_packs():
             code, body = await self.client.request("GET", f"{base}/packs")
             assert code == 200, f"status={code}"
             assert body.get("total_packs") == 3, f"expected 3 packs, got {body.get('total_packs')}"
             return f"3 packs live (£999, £499, £1,499)"
+
+        async def list_tiers():
+            code, body = await self.client.request("GET", f"{base}/tiers")
+            assert code == 200, f"status={code}"
+            assert body.get("total_tiers") == 8, f"expected 8 tiers, got {body.get('total_tiers')}"
+            return f"8 tiers live (Sovereign £29 → Watchdog £4,950)"
+
+        async def list_sectors():
+            code, body = await self.client.request("GET", f"{base}/sectors")
+            assert code == 200, f"status={code}"
+            assert body.get("total_sectors", 0) >= 12, f"too few sectors: {body.get('total_sectors')}"
+            return f"{body.get('total_sectors')} sectors indexed"
+
+        async def sector_healthcare():
+            code, body = await self.client.request("GET", f"{base}/sectors/healthcare")
+            assert code == 200, f"status={code}"
+            assert body.get("server_count", 0) >= 5, f"too few healthcare servers: {body.get('server_count')}"
+            return f"healthcare: {body.get('server_count')} servers"
+
+        async def servers_by_sector_filter():
+            code, body = await self.client.request("GET", f"{base}/servers?sector=finance&limit=5")
+            assert code == 200, f"status={code}"
+            assert len(body.get("servers", [])) > 0, f"no finance servers returned"
+            return f"finance filter: {body.get('total')} total, returned {len(body['servers'])}"
 
         async def subscribe_enterprise():
             code, body = await self.client.request("POST", f"{base}/subscribe",
@@ -942,11 +967,24 @@ class E2ERunner:
             assert body.get("amount") == 999, f"wrong amount: {body.get('amount')}"
             return f"pack={body.get('purchase_id')}, £999"
 
+        async def purchase_pro_tier():
+            code, body = await self.client.request("POST", f"{base}/purchase/tier",
+                {"tier_id": "pro", "customer_email": "e2e-pro@meok.ai"})
+            assert code == 200, f"status={code}"
+            assert body.get("amount") == 199, f"wrong amount: {body.get('amount')}"
+            assert body.get("stripe_link") == "https://buy.stripe.com/eVq14p1BWcMO4c59mE8k91T"
+            return f"tier={body.get('purchase_id')}, Pro £199/mo"
+
         await self.run_test(group, "/api", api_info, target=base)
         await self.run_test(group, "/servers", list_servers, target=base)
         await self.run_test(group, "/packs", list_packs, target=base)
+        await self.run_test(group, "/tiers (8 canonical)", list_tiers, target=base)
+        await self.run_test(group, "/sectors (12 industries)", list_sectors, target=base)
+        await self.run_test(group, "/sectors/healthcare", sector_healthcare, target=base)
+        await self.run_test(group, "/servers?sector=finance", servers_by_sector_filter, target=base)
         await self.run_test(group, "POST /subscribe (enterprise)", subscribe_enterprise, target=base)
         await self.run_test(group, "POST /purchase/pack (EU AI Act)", purchase_eu_pack, target=base)
+        await self.run_test(group, "POST /purchase/tier (Pro)", purchase_pro_tier, target=base)
 
     # ═══════════════════════════════════════════════════════════════════════════
     # MAIN ORCHESTRATOR
