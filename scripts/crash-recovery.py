@@ -8,7 +8,7 @@ import json
 import os
 import subprocess
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -24,13 +24,21 @@ RECOVERY_DIR.mkdir(exist_ok=True)
 SERVICE_CONFIGS = {
     "meok-api": {
         "port": 3200,
-        "start_cmd": "cd /Users/nicholas/clawd/meok && python3 -m uvicorn api.server:app --host 0.0.0.0 --port 3200",
+        "start_cmd": "cd /Users/nicholas/clawd/meok && /opt/homebrew/bin/python3.11 -m uvicorn api.server:app --host 0.0.0.0 --port 3200",
         "depends_on": ["postgres", "redis"],
-        "health_endpoint": "http://localhost:3200/api/health",
+        "health_endpoint": "http://localhost:3200/health",
     },
     "sov3-mcp": {
         "port": 3101,
-        "start_cmd": "cd /Users/nicholas/clawd/sovereign-temple && python3 sovereign-mcp-server.py --port 3101",
+        # Server is a FastAPI app; running under gunicorn+uvicorn.workers with 2 workers.
+        # The plain `python3 -u sovereign-mcp-server.py` (uvicorn) uses PORT env var (default 3100)
+        # so the --port flag is ignored — must set PORT=3101. Venv is required (sklearn, asyncpg, etc.).
+        # Match the working proc_50175a382f68 launch: gunicorn + uvicorn workers, port 3101.
+        # 2026-06-15 05:28Z: confirmed gunicorn PIDs 82282/82643/82644 serving live traffic; MCP
+        # initialize returns 200 with proper JSON-RPC + serverInfo. venv recreated 05:21Z.
+        # 2026-06-15 18:00Z: WORM_GUARD_ENFORCE=1 + SECURITY_BRAIN_ENFORCE=1 flipped on after Phase-1
+        # log-only soak. SOV3 task task_f4e66284. W1+W2+W8 green; 4 SOV3 tools verified pass.
+        "start_cmd": "cd /Users/nicholas/clawd/sovereign-temple && PORT=3101 HOST=0.0.0.0 WORM_GUARD_ENFORCE=1 SECURITY_BRAIN_ENFORCE=1 SECURITY_BRAIN_VETO_PAYMENT=0 exec /Users/nicholas/clawd/sovereign-temple/.venv/bin/gunicorn sovereign-mcp-server:app --worker-class uvicorn.workers.UvicornWorker --workers 2 --bind 0.0.0.0:3101 --max-requests 1000 --max-requests-jitter 50 --timeout 120 --graceful-timeout 30 --access-logfile /tmp/sov3-access.log --error-logfile /tmp/sov3-error.log --log-level info",
         "depends_on": ["postgres", "redis"],
         "health_endpoint": "http://localhost:3101/health",
     },
@@ -53,7 +61,7 @@ SERVICE_CONFIGS = {
     "ollama": {
         "port": 11434,
         "start_cmd": "ollama serve",
-        "check_func": None,
+        "check_func": "check_ollama",
     },
     "farm-vision": {
         "port": 8888,
@@ -68,7 +76,7 @@ SERVICE_CONFIGS = {
     },
     "ensemble-loop": {
         "process_pattern": "ensemble_engine.py loop",
-        "start_cmd": "cd /Users/nicholas/clawd/sovereign-temple && exec python3 -u ensemble_engine.py loop >> /tmp/ensemble_engine.log 2>&1",
+        "start_cmd": "cd /Users/nicholas/clawd/sovereign-temple && exec /Users/nicholas/clawd/sovereign-temple/.venv/bin/python3 -u ensemble_engine.py loop >> /tmp/ensemble_engine.log 2>&1",
         "depends_on": ["sov3-mcp", "hindsight"],
     },
 }
@@ -78,7 +86,7 @@ RECOVERY_DIR.mkdir(exist_ok=True)
 
 def log_alert(message: str, level: str = "INFO") -> None:
     """Log an alert to the alert file"""
-    timestamp = datetime.utcnow().isoformat() + "Z"
+    timestamp = datetime.now(timezone.utc).isoformat() + "Z"
     with open(ALERT_FILE, "a") as f:
         f.write(f"[{timestamp}] [{level}] {message}\n")
 
@@ -229,7 +237,7 @@ def check_ollama() -> dict:
 def save_checkpoint(label: str, data: dict) -> None:
     """Save a named checkpoint with progress data"""
     checkpoint = {
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
         "label": label,
         "data": data,
     }
@@ -253,21 +261,46 @@ def save_progress(key: str, value: any) -> None:
         with open(PROGRESS_FILE) as f:
             progress = json.load(f)
 
-    progress[key] = {"value": value, "timestamp": datetime.utcnow().isoformat() + "Z"}
+    progress[key] = {"value": value, "timestamp": datetime.now(timezone.utc).isoformat() + "Z"}
 
     with open(PROGRESS_FILE, "w") as f:
         json.dump(progress, f, indent=2)
 
 
+def _resolve_check(func_name: str):
+    """Resolve a check function by name, allowing forward references."""
+    if func_name is None:
+        return None
+    fn = globals().get(func_name)
+    if callable(fn):
+        return fn
+    log_alert(f"Unknown check_func: {func_name}", "WARN")
+    return None
+
+
+def _status_for(config: dict) -> dict:
+    """Resolve status using explicit check_func, port, or process pattern."""
+    cf = config.get("check_func")
+    if cf is not None:
+        fn = _resolve_check(cf)
+        if fn:
+            return fn()
+    if "process_pattern" in config:
+        return check_process(config["process_pattern"])
+    if "port" in config:
+        return get_service_status(config["port"])
+    return {"status": "unknown"}
+
+
 def get_all_services() -> dict:
     """Get status of all critical services"""
     services = {
-        "meok-api": get_service_status(3200),
-        "sov3-mcp": get_service_status(3101),
-        "meok-ui": get_service_status(3000) or get_service_status(3001),
-        "postgres": check_postgres(),
-        "redis": check_redis(),
-        "ollama": check_ollama(),
+        "meok-api": _status_for(SERVICE_CONFIGS["meok-api"]),
+        "sov3-mcp": _status_for(SERVICE_CONFIGS["sov3-mcp"]),
+        "meok-ui": _status_for(SERVICE_CONFIGS["meok-ui"]),
+        "postgres": _status_for(SERVICE_CONFIGS["postgres"]),
+        "redis": _status_for(SERVICE_CONFIGS["redis"]),
+        "ollama": _status_for(SERVICE_CONFIGS["ollama"]),
         "weaviate": get_service_status(8080),
         "neo4j": get_service_status(7474),
         "farm-vision": get_service_status(8888),
@@ -277,7 +310,7 @@ def get_all_services() -> dict:
 
     with open(SERVICES_FILE, "w") as f:
         json.dump(
-            {"timestamp": datetime.utcnow().isoformat() + "Z", "services": services},
+            {"timestamp": datetime.now(timezone.utc).isoformat() + "Z", "services": services},
             f,
             indent=2,
         )
@@ -288,7 +321,7 @@ def get_all_services() -> dict:
 def save_session_state() -> None:
     """Save current session state"""
     state = {
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
         "hostname": os.uname().nodename,
         "user": os.environ.get("USER", "unknown"),
     }
