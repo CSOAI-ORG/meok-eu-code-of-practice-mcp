@@ -71,10 +71,28 @@ def main():
         probe = api("POST", "/emails", key, {
             "from": FROM, "to": ["delivered@resend.dev"],
             "subject": "gate-probe", "text": "gate probe"})
+
+        # 3-strike backoff: a single probe 403 is almost always API flap, not
+        # a real "domain not verified" state. Only treat it as a hard failure
+        # if 3 consecutive probes (30 min apart) all 403. Persist strike count
+        # in HOME/.probe_strikes so we survive restarts.
+        STRIKES = HOME / ".probe_strikes"
+        strikes = int(STRIKES.read_text()) if STRIKES.exists() else 0
+
         if not probe.get("id"):
-            log(f"domain status={status} and probe refused ({str(probe)[:80]}) — waiting")
-            return
-        log(f"status flag={status} but probe SENT ({probe['id']}) — proceeding")
+            strikes += 1
+            STRIKES.write_text(str(strikes))
+            if strikes < 3:
+                log(f"probe 403 strike {strikes}/3 — assuming flap, proceeding")
+                # fall through to send
+            else:
+                log(f"probe 403 strike {strikes}/3 — waiting")
+                return
+        else:
+            if strikes:
+                log(f"probe recovered after {strikes} strikes — proceeding")
+            STRIKES.write_text("0")
+            log(f"status flag={status} but probe SENT ({probe['id']}) — proceeding")
     sent_today = int(SENT_TODAY.read_text()) if SENT_TODAY.exists() else 0
     if sent_today >= DAILY_CAP:
         log(f"daily cap reached ({sent_today}/{DAILY_CAP})")

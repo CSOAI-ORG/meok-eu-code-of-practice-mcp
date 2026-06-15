@@ -42,6 +42,7 @@ export default function Home() {
               <Link href="/council" className="text-sm text-slate-400 hover:text-emerald-400 transition flex items-center gap-1">
                 Council <span className="text-[9px] text-emerald-400 font-bold">●</span>
               </Link>
+              <a href="https://councilof.ai" target="_blank" rel="noopener noreferrer" className="text-sm text-emerald-400 hover:text-emerald-300 transition">Run a Council ↗</a>
               <Link href="/article-50-kit" className="text-sm text-slate-400 hover:text-red-400 transition">Article 50</Link>
               <a href="#pricing" className="text-sm text-slate-400 hover:text-white transition">Pricing</a>
               <a href="https://github.com/CSOAI-ORG" className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm hover:bg-white/10 transition">GitHub</a>
@@ -286,6 +287,7 @@ export default function Home() {
               <div className="flex flex-col gap-3">
                 <span className="text-[10px] font-black tracking-widest uppercase text-slate-500">Community</span>
                 <a href="https://github.com/CSOAI-ORG" className="text-sm hover:text-emerald-400 transition">GitHub</a>
+                <a href="https://councilof.ai" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-emerald-400 transition">CouncilOf.AI ↗</a>
                 <a href="https://meok.ai" className="text-sm hover:text-emerald-400 transition">MEOK AI</a>
                 <a href="mailto:nicholas@csoai.org" className="text-sm hover:text-emerald-400 transition">Contact</a>
               </div>

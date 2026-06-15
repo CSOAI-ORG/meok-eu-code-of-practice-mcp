@@ -38,6 +38,14 @@ export default function CouncilNav() {
               </Link>
             );
           })}
+          <a
+            href="https://councilof.ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-1.5 rounded-lg transition text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10"
+          >
+            Run a Council →
+          </a>
         </div>
       </div>
     </nav>
