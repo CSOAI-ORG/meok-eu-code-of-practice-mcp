@@ -1,0 +1,11 @@
+# socialmediamanager.ai
+
+Plan, draft, schedule, and analyse posts across every major platform. One inbox, one calendar, one AI that learns your brand voice.
+
+Part of the MEOK AI Labs sovereign hive: https://meok.ai
+
+## Pages
+- Home: https://socialmediamanager.ai/
+
+## Contact
+hello@meok.ai

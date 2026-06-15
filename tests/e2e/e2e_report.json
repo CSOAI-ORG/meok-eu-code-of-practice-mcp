@@ -1,9 +1,9 @@
 {
-  "started_at": "2026-06-15T11:52:39.351186+00:00",
-  "finished_at": "2026-06-15T11:52:39.351192+00:00",
+  "started_at": "2026-06-15T12:28:55.784021+00:00",
+  "finished_at": "2026-06-15T12:28:55.784029+00:00",
   "total": 31,
-  "passed": 31,
-  "failed": 0,
+  "passed": 28,
+  "failed": 3,
   "skipped": 0,
   "results": [
     {
@@ -11,7 +11,7 @@
       "name": "SOV3 health",
       "status": "PASS",
       "detail": "status=healthy",
-      "ms": 4.677832999732345,
+      "ms": 6.564249997609295,
       "target": "port 3101"
     },
     {
@@ -19,7 +19,7 @@
       "name": "MEOK_API health",
       "status": "PASS",
       "detail": "status=operational",
-      "ms": 1.313375003519468,
+      "ms": 1.2243330129422247,
       "target": "port 3200"
     },
     {
@@ -27,7 +27,7 @@
       "name": "MEOK_MCP health",
       "status": "PASS",
       "detail": "status=healthy",
-      "ms": 2.5091249990509823,
+      "ms": 5.6785420019878075,
       "target": "port 3102"
     },
     {
@@ -35,7 +35,7 @@
       "name": "Gateway health",
       "status": "PASS",
       "detail": "status=ok, platform=webhook",
-      "ms": 106.17816699959803,
+      "ms": 2.9788329993607476,
       "target": "port 8644"
     },
     {
@@ -43,23 +43,23 @@
       "name": "Sovereign_API health",
       "status": "PASS",
       "detail": "http_200, content_len=36445",
-      "ms": 40.385000000242144,
+      "ms": 3.4075000003213063,
       "target": "port 8888"
     },
     {
       "group": "health",
       "name": "MEOK_UI health",
       "status": "PASS",
-      "detail": "http_200, content_len=259804",
-      "ms": 325.53016699966975,
+      "detail": "http_200, content_len=257687",
+      "ms": 520.709500007797,
       "target": "port 3000"
     },
     {
       "group": "core_council_bft",
       "name": "register_agent",
-      "status": "PASS",
-      "detail": "registered",
-      "ms": 2.8034159913659096,
+      "status": "FAIL",
+      "detail": "status=500",
+      "ms": 5.746708004153334,
       "target": "port 3101"
     },
     {
@@ -67,7 +67,7 @@
       "name": "submit_proposal",
       "status": "PASS",
       "detail": "proposal submitted",
-      "ms": 3.6051659990334883,
+      "ms": 6.366041998262517,
       "target": "port 3101"
     },
     {
@@ -75,15 +75,15 @@
       "name": "vote_and_tally",
       "status": "PASS",
       "detail": "vote cast, status=?",
-      "ms": 1508.5543750028592,
+      "ms": 1751.4321250055218,
       "target": "port 3101"
     },
     {
       "group": "core_sbt",
       "name": "SBT mint",
       "status": "PASS",
-      "detail": "minted, token_id=6",
-      "ms": 8.311707992106676,
+      "detail": "minted, token_id=13",
+      "ms": 2.587750001111999,
       "target": "port 3101"
     },
     {
@@ -91,15 +91,15 @@
       "name": "SBT verify",
       "status": "PASS",
       "detail": "verified=True",
-      "ms": 0.9435829997528344,
+      "ms": 1.5135830035433173,
       "target": "port 3101"
     },
     {
       "group": "core_payments",
       "name": "create payment session",
       "status": "PASS",
-      "detail": "session_id=daadf869...",
-      "ms": 0.9587499953340739,
+      "detail": "session_id=898a7e07...",
+      "ms": 1.5503750037169084,
       "target": "port 3101"
     },
     {
@@ -107,23 +107,23 @@
       "name": "get payment status",
       "status": "PASS",
       "detail": "status=pending",
-      "ms": 0.7434169965563342,
+      "ms": 1.3261659914860502,
       "target": "port 3101"
     },
     {
       "group": "core_chronicle",
       "name": "log event",
       "status": "PASS",
-      "detail": "logged, event_id=evt-1781524356210-409cb6f4",
-      "ms": 0.8035829960135743,
+      "detail": "logged, event_id=evt-1781526534209-409cb6f4",
+      "ms": 1.9622090039774776,
       "target": "port 3101"
     },
     {
       "group": "core_chronicle",
       "name": "verify chain",
       "status": "PASS",
-      "detail": "valid=True, chain_length=5",
-      "ms": 0.659666009596549,
+      "detail": "valid=True, chain_length=8",
+      "ms": 1.6557920025661588,
       "target": "port 3101"
     },
     {
@@ -131,39 +131,39 @@
       "name": "create bucket",
       "status": "PASS",
       "detail": "bucket created",
-      "ms": 0.7809589878888801,
+      "ms": 2.90079100523144,
       "target": "port 3101"
     },
     {
       "group": "core_storage",
       "name": "list buckets",
       "status": "PASS",
-      "detail": "buckets=5",
-      "ms": 0.6900410080561414,
+      "detail": "buckets=8",
+      "ms": 1.8904589960584417,
       "target": "port 3101"
     },
     {
       "group": "core_a2a",
       "name": "A2A bridge",
       "status": "PASS",
-      "detail": "bridged, hash=688b97a37fb5478d...",
-      "ms": 0.98637500195764,
+      "detail": "bridged, hash=77f63c43a0d76ac4...",
+      "ms": 1.9327499903738499,
       "target": "port 3101"
     },
     {
       "group": "core_neural",
       "name": "care_validation inference",
-      "status": "PASS",
-      "detail": "care_score=0.254",
-      "ms": 344.7457080037566,
+      "status": "FAIL",
+      "detail": "status=500",
+      "ms": 5.813833995489404,
       "target": "port 3101"
     },
     {
       "group": "core_neural",
       "name": "threat_detection inference",
-      "status": "PASS",
-      "detail": "detect_threat not exposed via MCP \u2014 SKIP (expected)",
-      "ms": 325.00262500252575,
+      "status": "FAIL",
+      "detail": "status=500",
+      "ms": 7.374584005447105,
       "target": "port 3101"
     },
     {
@@ -171,7 +171,7 @@
       "name": "GET /health",
       "status": "PASS",
       "detail": "services=['status', 'platform']",
-      "ms": 1.0657499951776117,
+      "ms": 2.252125006634742,
       "target": "port 8644"
     },
     {
@@ -179,15 +179,15 @@
       "name": "gateway \u2192 sov3 \u2192 api",
       "status": "PASS",
       "detail": "gateway_health=200, sov3_sbt_mint=200",
-      "ms": 1.8153749988414347,
+      "ms": 6.863667003926821,
       "target": "gateway"
     },
     {
       "group": "cross_service",
       "name": "register \u2192 memory \u2192 query",
       "status": "PASS",
-      "detail": "agent registered, memory stored, queried 5 results",
-      "ms": 1290.7852500065928,
+      "detail": "agent registered, memory stored, queried 0 results",
+      "ms": 16.48504201148171,
       "target": "sov3"
     },
     {
@@ -195,7 +195,7 @@
       "name": "Sovereign \u00a329/mo",
       "status": "PASS",
       "detail": "200 OK",
-      "ms": 472.36058399721514,
+      "ms": 437.52104199666064,
       "target": "https://buy.stripe.com/9B67sNeoIcMObEx56o8k91S"
     },
     {
@@ -203,7 +203,7 @@
       "name": "Pro \u00a3199/mo",
       "status": "PASS",
       "detail": "200 OK",
-      "ms": 106.23133298940957,
+      "ms": 203.64304100803565,
       "target": "https://buy.stripe.com/eVq14p1BWcMO4c59mE8k91T"
     },
     {
@@ -211,7 +211,7 @@
       "name": "Enterprise \u00a31,499/mo",
       "status": "PASS",
       "detail": "200 OK",
-      "ms": 80.8807919966057,
+      "ms": 257.8742090117885,
       "target": "https://buy.stripe.com/28E7sNdkEeUW5g96as8k91U"
     },
     {
@@ -219,7 +219,7 @@
       "name": "Article 50 Kit \u00a3999",
       "status": "PASS",
       "detail": "200 OK",
-      "ms": 100.30029200424906,
+      "ms": 117.57545800355729,
       "target": "https://buy.stripe.com/fZu00l4O8fZ07oh0Q88k91V"
     },
     {
@@ -227,7 +227,7 @@
       "name": "LAUNCH50 \u00a3499",
       "status": "PASS",
       "detail": "200 OK",
-      "ms": 94.175666992669,
+      "ms": 140.5470830068225,
       "target": "https://buy.stripe.com/4gMcN7a8s6oq0ZTaqI8k91Z"
     },
     {
@@ -235,7 +235,7 @@
       "name": "Quick Kit \u00a39",
       "status": "PASS",
       "detail": "200 OK",
-      "ms": 80.08729199355002,
+      "ms": 102.45399999257643,
       "target": "https://buy.stripe.com/9B68wR6WgfZ0gYR8iA8k91W"
     },
     {
@@ -243,7 +243,7 @@
       "name": "Audit-Prep \u00a34,950",
       "status": "PASS",
       "detail": "200 OK",
-      "ms": 90.60520799539518,
+      "ms": 141.78429199091624,
       "target": "https://buy.stripe.com/28E6oJ94ofZ0aAt1Uc8k91X"
     },
     {
@@ -251,9 +251,9 @@
       "name": "Watchdog Cert \u00a34,950",
       "status": "PASS",
       "detail": "200 OK",
-      "ms": 148.51095901394729,
+      "ms": 123.93845900078304,
       "target": "https://buy.stripe.com/9B6dRb2G0eUWcIBaqI8k91Y"
     }
   ],
-  "summary": "31/31 passed, 0 failed, 0 skipped"
+  "summary": "28/31 passed, 3 failed, 0 skipped"
 }

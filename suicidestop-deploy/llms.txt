@@ -1,0 +1,12 @@
+# suicidestop.ai
+
+Free, fast access to international crisis helplines and mental health resources. If you are in crisis, you are not alone.
+
+Part of the MEOK AI Labs sovereign hive: https://meok.ai
+
+## Pages
+- Home: https://suicidestop.ai/
+- Partner: https://suicidestop.ai/partner
+
+## Contact
+hello@meok.ai

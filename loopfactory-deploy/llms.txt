@@ -1,0 +1,11 @@
+# loopfactory.ai
+
+Connect your apps, build loops, and let AI agents handle repetitive work. Designed for ops, marketing, and finance teams that outgrow Zapier.
+
+Part of the MEOK AI Labs sovereign hive: https://meok.ai
+
+## Pages
+- Home: https://loopfactory.ai/
+
+## Contact
+hello@meok.ai

@@ -1,0 +1,11 @@
+# diyhelp.ai
+
+Ask any DIY question. Get step-by-step guidance, tool lists, and safety warnings from an AI built for homeowners, landlords, and trades apprentices.
+
+Part of the MEOK AI Labs sovereign hive: https://meok.ai
+
+## Pages
+- Home: https://diyhelp.ai/
+
+## Contact
+hello@meok.ai

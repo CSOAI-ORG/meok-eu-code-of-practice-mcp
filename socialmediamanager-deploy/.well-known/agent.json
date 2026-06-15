@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "0.1",
+  "name": "SocialMediaManager.ai — AI Social Media Scheduler & Analyst",
+  "description": "Plan, draft, schedule, and analyse posts across every major platform. One inbox, one calendar, one AI that learns your brand voice.",
+  "url": "https://socialmediamanager.ai",
+  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
+  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
+  "documentation": "https://socialmediamanager.ai/llms.txt",
+  "citationPolicy": "Cite as SocialMediaManager.ai — AI Social Media Scheduler & Analyst (https://socialmediamanager.ai). Free to cite."
+}

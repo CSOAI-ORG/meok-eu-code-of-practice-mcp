@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "0.1",
+  "name": "DIYHelp.ai — AI Assistant for Home Repairs & Renovation",
+  "description": "Ask any DIY question. Get step-by-step guidance, tool lists, and safety warnings from an AI built for homeowners, landlords, and trades apprentices.",
+  "url": "https://diyhelp.ai",
+  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
+  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
+  "documentation": "https://diyhelp.ai/llms.txt",
+  "citationPolicy": "Cite as DIYHelp.ai — AI Assistant for Home Repairs & Renovation (https://diyhelp.ai). Free to cite."
+}

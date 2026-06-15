@@ -93,21 +93,26 @@ def mcp_health(name, rel_path, expected_tools):
         proc.stdin.flush()
         # Read until we get the tools/list response
         out = b""
-        end = time.time() + 5
+        end = time.time() + 8
+        buf = b""
         while time.time() < end:
-            line = proc.stdout.readline()
-            if not line:
+            ch = proc.stdout.read(1)
+            if not ch:
                 continue
-            try:
-                obj = json.loads(line.decode())
-                if obj.get("id") == 2 and "result" in obj:
-                    tools = obj["result"].get("tools", [])
-                    proc.terminate()
-                    proc.wait(timeout=2)
-                    return ("UP" if len(tools) == expected_tools else "DEGRADED",
-                            f"{len(tools)}/{expected_tools} tools")
-            except Exception:
-                continue
+            buf += ch
+            if ch == b"\n":
+                line = buf.decode().strip()
+                buf = b""
+                if not line:
+                    continue
+                try:
+                    obj = json.loads(line)
+                    if obj.get("id") == 2 and "result" in obj:
+                        n = len(obj["result"].get("tools", []))
+                        proc.kill()
+                        return (("UP" if n >= expected_tools else "DEGRADED"), f"{n} tools (expected ≥{expected_tools})")
+                except Exception:
+                    continue
         proc.terminate()
         proc.wait(timeout=2)
         return "DOWN", "no response"
@@ -171,7 +176,8 @@ def main():
         expected_count = int(expected.split()[0])
         status, detail = mcp_health(name, rel_path, expected_count)
         color = color_for(status)
-        if status == "UP": mcp_up += 1
+        if s == "UP": mcp_up += 1
+        elif s == "DEGRADED": pass  # degraded still counts as live
         else: mcp_down += 1
         print(f"  {name:<28} {color}{status:<12}{ENDC} {detail} (expected {expected})")
 

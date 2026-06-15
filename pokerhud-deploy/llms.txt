@@ -1,0 +1,11 @@
+# pokerhud.ai
+
+Review hands, spot leaks, and study GTO concepts with a private AI coach. No banned HUD overlays — just intelligence.
+
+Part of the MEOK AI Labs sovereign hive: https://meok.ai
+
+## Pages
+- Home: https://pokerhud.ai/
+
+## Contact
+hello@meok.ai
