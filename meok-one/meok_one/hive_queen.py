@@ -294,6 +294,21 @@ def queen(domain: str, message: str, brain: str = "council", tier: str | None = 
         # space (so "Sage advice…" / "Kai and…" aren't mutilated when the name is a real word).
         _reply = re.sub(rf"^\s*(As\s+{_nm}[,:]|{_nm}\s*[:\-—])\s*", "", _reply, count=1, flags=re.I)
 
+    # SME mode (left/right/both go through think() with the expert override) — the persona
+    # can still prepend a warm companion greeting before the expert content ("Hello there!
+    # How are you today? To answer your question…"). Strip a leading greeting sentence so the
+    # queen reads as a clean SME. Conservative: only when the reply OPENS with a greeting AND
+    # substantial content (>40 chars) remains, so real answers are never mutilated.
+    if brain != "council" and _reply:
+        _greet = re.compile(
+            r"^\s*(?:oh[,!.\s]+)?(?:hello|hi|hey|greetings|welcome)\b[^.!?]*[.!?]+\s*"
+            r"(?:(?:how are you|how're you|i'd love to|i'm curious|before we|hope you|"
+            r"what brings you)[^.!?]*[.!?]+\s*)*",
+            re.I)
+        _m = _greet.match(_reply)
+        if _m and len(_reply) - _m.end() > 40:
+            _reply = _reply[_m.end():].lstrip()
+
     out = {
         "domain": domain,
         "queen": f"{cfg['slug']} queen",
