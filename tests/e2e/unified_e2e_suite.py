@@ -48,6 +48,7 @@ PORTS = {
     "gateway": 8644,
     "sovereign_api": 8888,
     "meok_ui": 3000,
+    "csoai_monetization": 3400,
 }
 
 BASE_URL = "http://localhost"
@@ -899,6 +900,54 @@ class E2ERunner:
                 return f"200 OK"
             await self.run_test(group, name, real_check, target=url)
 
+    # ── Phase 9.6: CSOAI MCP Monetization API (Day 6) ─────────────────────────
+    async def test_csoai_monetization(self):
+        """Verify the CSOAI MCP Monetization API on :3400.
+        6 endpoints: / (HTML), /api, /servers, /packs, /bundles, /analytics.
+        Plus POST /subscribe and POST /purchase/pack for the revenue flow.
+        Without Stripe secrets, all flow endpoints still work in mock mode
+        (in-memory storage); the E2E test certifies the API surface is live.
+        """
+        group = "csoai_monetization"
+        base = f"{BASE_URL}:{PORTS['csoai_monetization']}"
+
+        async def api_info():
+            code, body = await self.client.request("GET", f"{base}/api")
+            assert code == 200, f"status={code}"
+            return f"mcp_servers={body.get('mcp_servers', '?')}, packs={body.get('packs', '?')}"
+
+        async def list_servers():
+            code, body = await self.client.request("GET", f"{base}/servers")
+            assert code == 200, f"status={code}"
+            assert body.get("total_servers", 0) >= 100, f"too few servers: {body.get('total_servers')}"
+            return f"total_servers={body.get('total_servers')}"
+
+        async def list_packs():
+            code, body = await self.client.request("GET", f"{base}/packs")
+            assert code == 200, f"status={code}"
+            assert body.get("total_packs") == 3, f"expected 3 packs, got {body.get('total_packs')}"
+            return f"3 packs live (£999, £499, £1,499)"
+
+        async def subscribe_enterprise():
+            code, body = await self.client.request("POST", f"{base}/subscribe",
+                {"bundle_id": "enterprise"})
+            assert code == 200, f"status={code}"
+            assert body.get("amount") == 299, f"wrong amount: {body.get('amount')}"
+            return f"sub={body.get('subscription_id')}, £299/mo"
+
+        async def purchase_eu_pack():
+            code, body = await self.client.request("POST", f"{base}/purchase/pack",
+                {"pack_id": "pack_eu_ai_act", "customer_email": "e2e-test@meok.ai"})
+            assert code == 200, f"status={code}"
+            assert body.get("amount") == 999, f"wrong amount: {body.get('amount')}"
+            return f"pack={body.get('purchase_id')}, £999"
+
+        await self.run_test(group, "/api", api_info, target=base)
+        await self.run_test(group, "/servers", list_servers, target=base)
+        await self.run_test(group, "/packs", list_packs, target=base)
+        await self.run_test(group, "POST /subscribe (enterprise)", subscribe_enterprise, target=base)
+        await self.run_test(group, "POST /purchase/pack (EU AI Act)", purchase_eu_pack, target=base)
+
     # ═══════════════════════════════════════════════════════════════════════════
     # MAIN ORCHESTRATOR
     # ═══════════════════════════════════════════════════════════════════════════
@@ -940,6 +989,7 @@ class E2ERunner:
                 ("Core Gateway", lambda: self.test_gateway()),
                 ("Cross-Service", lambda: self.test_cross_service()),
                 ("Stripe Live Links", lambda: self.test_stripe_live_links()),
+                ("CSOAI Monetization", lambda: self.test_csoai_monetization()),
             ]
         else:
             phases = [
@@ -964,6 +1014,7 @@ class E2ERunner:
                 ("Core Gateway", lambda: self.test_gateway()),
                 ("Cross-Service", lambda: self.test_cross_service()),
                 ("Stripe Live Links", lambda: self.test_stripe_live_links()),
+                ("CSOAI Monetization", lambda: self.test_csoai_monetization()),
             ]
 
         for phase_name, phase_fn in phases:
