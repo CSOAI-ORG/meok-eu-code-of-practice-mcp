@@ -8,17 +8,37 @@ C. "Article 5(1)(f) compliance for gambling AI — first vertical-specific tool"
 
 ---
 
+## ⚠️ VERIFICATION STATUS (15 Jun 2026, end of session)
+
+**CORRECTION (15 Jun 2026, verified via DuckDuckGo + EURACTIV author page):**
+- ❌ ~~"Gareth Corley, The Register AI policy desk"~~ → ✅ **Gareth Corfield, The Register** (UK tech reporter, not specifically AI policy desk; gareth.corfield@theregister.com per URL convention — NOT YET CONFIRMED)
+
+**VERIFIED in this session:**
+- ✅ **Luca Bertuzzi, EURACTIV** — "Editor, Tech", Brussels, wrote on EU AI law 02.2024. Author page: `euractiv.com/authors/luca-bertuzzi/`. Email pattern `luca.bertuzzi@euractiv.com` is the standard convention.
+
+**NEEDS VERIFICATION BEFORE SEND (24 of 26):**
+- All other 24 contacts use best-guess email patterns (`firstname.lastname@outlet.com`)
+- These are based on standard industry conventions but **NONE have been verified**
+- **DO NOT send to any of these without independent verification** (LinkedIn, outlet contact page, or Twitter/X DM)
+
+**The right send path:**
+1. For each contact, search LinkedIn / outlet author page / Twitter to confirm the email
+2. If the email can't be verified, use the outlet's contact form or pitch via Twitter/X DM
+3. Bounced emails to real journalists are worse than no email at all
+
+---
+
 ## TIER 1: Tech press (highest leverage for developer audience)
 
-| Outlet | Reporter / Editor | Email pattern | Why this person | Source |
-|---|---|---|---|---|
-| The Register (UK) | Gareth Corley (AI policy desk) | gareth.corley@theregister.com | UK tech, EU AI Act regular coverage | Known from prior CSOAI work |
-| Hacker News (Y Combinator) | dang@ (front page submit) | hn@ycombinator.com | Show HN slot = day-of spike | Standard HN pitch |
-| Ars Technica EU | Stephanie Condon (AI policy) | stephanie.condon@arstechnica.com | Long-form EU policy coverage | Known beat |
-| Wired UK | Matt Burgess (investigations) | matt.burgess@wired.co.uk | UK tech, sovereign AI angle | Standard pitch |
-| MIT Technology Review | James Temple (AI policy desk) | james.temple@technologyreview.com | Deep tech, EU AI Act regular | Standard pitch |
-| The Verge | Emilia David (AI policy) | emilia.david@theverge.com | Consumer AI, regulatory | Standard pitch |
-| Sifted (FT-backed, EU startups) | Molly Smithson | molly.smithson@sifted.eu | EU compliance, AI governance | Standard pitch |
+| Outlet | Reporter / Editor | Email pattern | Why this person | Source | Verified? |
+|---|---|---|---|---|---|
+| The Register (UK) | **Gareth Corfield** (not Gareth Corley) | gareth.corfield@theregister.com | UK tech, AI policy occasional coverage | URL convention | ⚠️ NEEDS VERIFICATION |
+| Hacker News (Y Combinator) | dang@ (front page submit) | hn@ycombinator.com | Show HN slot = day-of spike | Standard HN pitch | N/A (news aggregator) |
+| Ars Technica EU | Stephanie Condon (AI policy) | stephanie.condon@arstechnica.com | Long-form EU policy coverage | Known beat | ⚠️ NEEDS VERIFICATION |
+| Wired UK | Matt Burgess (investigations) | matt.burgess@wired.co.uk | UK tech, sovereign AI angle | Standard pitch | ⚠️ NEEDS VERIFICATION |
+| MIT Technology Review | James Temple (AI policy desk) | james.temple@technologyreview.com | Deep tech, EU AI Act regular | Standard pitch | ⚠️ NEEDS VERIFICATION |
+| The Verge | Emilia David (AI policy) | emilia.david@theverge.com | Consumer AI, regulatory | Standard pitch | ⚠️ NEEDS VERIFICATION |
+| Sifted (FT-backed, EU startups) | Molly Smithson | molly.smithson@sifted.eu | EU compliance, AI governance | Standard pitch | ⚠️ NEEDS VERIFICATION |
 
 ## TIER 2: Reg/fintech/compliance press (specialist)
 
