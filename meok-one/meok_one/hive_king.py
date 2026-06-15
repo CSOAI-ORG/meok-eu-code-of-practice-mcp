@@ -67,12 +67,33 @@ def route(message: str, k: int = 1, model: str = _CLASSIFIER_MODEL, tier: str = 
     slugs = [s.strip().lower() for s in (r.get("reply") or "").replace("\n", ",").split(",")]
     valid = {h["slug"] for h in hv}
     picked = [s for s in slugs if s in valid][:k]
+    if not picked:
+        # Near-miss: the classifier often returns a close variant ("koikeeper-hive",
+        # or just "koi"). Accept it if it cleanly maps to exactly one valid slug by
+        # substring containment — beats dropping a basically-correct answer to keyword.
+        for s in slugs:
+            if not s:
+                continue
+            cand = [v for v in valid if (s in v or v in s)]
+            if len(cand) == 1 and cand[0] not in picked:
+                picked.append(cand[0])
+                if len(picked) >= k:
+                    break
     if picked:
-        return picked
-    # keyword fallback: score by word overlap with slug+scope
-    words = set(message.lower().split())
-    scored = sorted(hv, key=lambda h: -len((set((h["slug"] + " " + h["scope"]).lower().split())) & words))
-    return [scored[0]["slug"]] if scored else []
+        return picked[:k]
+    # Keyword fallback (classifier down/empty): score by word overlap, weighting a hit
+    # on the slug name 3× a hit in the (longer, noisier) scope text so the most on-topic
+    # hive wins instead of whichever scope happens to share common words.
+    words = {w for w in message.lower().split() if len(w) > 2}
+
+    def _score(h):
+        slug_words = set(h["slug"].lower().replace("-", " ").split())
+        scope_words = set((h.get("scope") or "").lower().split())
+        return 3 * len(slug_words & words) + len(scope_words & words)
+
+    scored = sorted(hv, key=_score, reverse=True)
+    return [scored[0]["slug"]] if scored and _score(scored[0]) > 0 else (
+        [scored[0]["slug"]] if scored else [])
 
 
 def king(message: str, fan_out: bool = False, k: int = 3, brain: str = "council",
@@ -90,18 +111,32 @@ def king(message: str, fan_out: bool = False, k: int = 3, brain: str = "council"
 
     answers = []
     for slug in targets:
-        a = queen(slug, message, brain=brain, do_gossip=do_gossip, quorum=quorum)
-        answers.append({"hive": slug, "reply": a.get("reply"), "engine": a.get("engine"),
-                        "safe": a.get("safe"), "governance": a.get("governance")})
+        # Resilience: one queen erroring (model/network/VM wobble) must not take down
+        # the whole king — especially in fan_out where k queens are consulted. Capture
+        # the failure as a non-fatal entry so the other queens (and the synthesis) survive.
+        try:
+            a = queen(slug, message, brain=brain, do_gossip=do_gossip, quorum=quorum)
+            answers.append({"hive": slug, "reply": a.get("reply"), "engine": a.get("engine"),
+                            "safe": a.get("safe"), "governance": a.get("governance")})
+        except Exception as e:
+            answers.append({"hive": slug, "reply": None, "engine": None, "safe": True,
+                            "governance": None, "error": type(e).__name__})
+
+    ok = [a for a in answers if a.get("reply")]
 
     if not fan_out:
         a = answers[0]
+        reply = a["reply"] or f"[{a['hive']} queen unavailable: {a.get('error', 'no reply')}]"
         return {"king": "SOV3 sovereign", "routed_to": targets, "mode": "route",
-                "reply": a["reply"], "queens": answers}
+                "reply": reply, "queens": answers}
 
-    # fan-out: the sovereign synthesizes the queens' answers into one.
-    brief = "\n\n".join(f"[{x['hive']} queen]: {x['reply']}" for x in answers)
-    synth = ask(f"You are SOV3, the sovereign over MEOK's hives. {len(answers)} hive "
+    # fan-out: the sovereign synthesizes the queens' answers into one. Synthesize only
+    # over queens that actually answered; if none did, surface that honestly.
+    if not ok:
+        return {"king": "SOV3 sovereign", "routed_to": targets, "mode": "fan_out",
+                "reply": "[all routed queens were unavailable]", "queens": answers}
+    brief = "\n\n".join(f"[{x['hive']} queen]: {x['reply']}" for x in ok)
+    synth = ask(f"You are SOV3, the sovereign over MEOK's hives. {len(ok)} hive "
                 f"queens answered the user. Synthesize ONE clear, safe answer for the "
                 f"user, noting which hive each insight came from.\n\nUSER: {message}\n\n"
                 f"QUEEN ANSWERS:\n{brief}\n\nSOVEREIGN SYNTHESIS:",
