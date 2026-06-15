@@ -279,8 +279,11 @@ def queen(domain: str, message: str, brain: str = "council", tier: str | None = 
                               system_override=expert_sys)
         r["governance"] = f"sovereign_council · BFT-of-MoEs · quorum={quorum} · roster={roster}"
     else:
-        r = think(char, framed, brain=brain, tier=tier, user_id=user_id)
-        r["governance"] = f"sovereign-wrapped · brain={brain}"
+        # Pass the hive's domain-expert identity so left/right/both answer as the SME too
+        # (not just council) — otherwise a vertical hive's fast brain replies as the generic
+        # care companion. Safety gate is unchanged (override LEADS, persona/safety still follow).
+        r = think(char, framed, brain=brain, tier=tier, user_id=user_id, system_override=expert_sys)
+        r["governance"] = f"sovereign-wrapped · brain={brain} · SME"
 
     # Strip any leaked character-name prefix (e.g. "Aria:" / "As Aria, ") so the queen
     # presents cleanly as the domain expert, not the underlying companion character.

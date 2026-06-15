@@ -78,14 +78,27 @@ def brains(tier: str = "free") -> dict:
     }
 
 
-def _sovereign_prompt(character_id: str, user_id: str, message: str, tier: str) -> str:
+def _sovereign_prompt(character_id: str, user_id: str, message: str, tier: str,
+                      system_override: "str | None" = None) -> str:
     """The Sovereign wrapper: persona + capability-awareness + safety, via connect.
-    This is what makes the character the SAFE endpoint regardless of brain."""
+    This is what makes the character the SAFE endpoint regardless of brain.
+
+    system_override: when set (e.g. a hive queen's domain-expert identity), it LEADS the
+    system prompt so the model answers as that SME rather than the generic care companion —
+    the persona/capability/safety block still follows, so the Sovereign safety gate is
+    unchanged. This makes left/right/both brains domain-expert too, not just council."""
     env = connect(character_id, user_id, message, tier=tier)
     # connect returns the full system_prompt (persona + capabilities + safety). Frame the
     # user turn so any brain answers in-character.
     char = env["meta"]["character_name"]
     sysp = env["system_prompt"]
+    if system_override:
+        # SME mode (hive queen): the expert identity LEADS and the turn ends with a neutral
+        # expert cue — not "{char}:" — so the model answers as the domain expert. We also skip
+        # the OLM care-companion few-shot (it pulls the voice back to the companion). The
+        # persona/safety block still follows, so the Sovereign safety gate is unchanged.
+        sysp = f"{system_override}\n\n{sysp}"
+        return f"{sysp}\n\nUser: {message}\n\nExpert answer:", env
     try:   # OLM: inject this user's care-ranked few-shot examples (in-context learning)
         from . import olm as _olm
         sysp += _olm.context(user_id, character_id)
@@ -143,13 +156,18 @@ def _left_bounded(prompt: str, tier: str) -> dict:
 
 
 def think(character_id: str, message: str, brain: str = "left",
-          tier: str = "free", user_id: str = "anon") -> dict:
+          tier: str = "free", user_id: str = "anon",
+          system_override: "str | None" = None) -> dict:
     """The user talks to their character; `brain` chooses the engine; the Sovereign
-    keeps it safe. brain ∈ {left, right, both}."""
+    keeps it safe. brain ∈ {left, right, both}.
+
+    system_override: optional domain-expert identity (hive queens pass their expert_sys
+    here) so the left/right/both brains answer as the SME, matching the council path."""
     if brain not in ("left", "right", "both"):
         return {"error": f"brain must be left/right/both, got {brain!r}"}
 
-    prompt, env = _sovereign_prompt(character_id, message=message, user_id=user_id, tier=tier)
+    prompt, env = _sovereign_prompt(character_id, message=message, user_id=user_id, tier=tier,
+                                    system_override=system_override)
     char = env["meta"]["character_name"]
     emoji = env["meta"]["emoji"]
 
