@@ -178,7 +178,8 @@ def king(message: str, fan_out: bool = False, k: int = 3, brain: str = "council"
             "reply": synth.get("reply") or brief, "queens": answers}
 
 
-if __name__ == "__main__":
+def _cli():
+    """Console entry point: `meok-king "<message>" [--fan]`."""
     import sys
     msg = sys.argv[1] if len(sys.argv) > 1 else "I need to tip soil at a construction site — what permits?"
     fan = "--fan" in sys.argv
@@ -189,3 +190,7 @@ if __name__ == "__main__":
     print("\n--- queens consulted ---")
     for q in res["queens"]:
         print(f"  👑 {q['hive']}: {q['engine']} | safe={q['safe']}")
+
+
+if __name__ == "__main__":
+    _cli()

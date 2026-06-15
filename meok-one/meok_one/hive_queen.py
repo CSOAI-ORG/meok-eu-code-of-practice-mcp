@@ -337,7 +337,8 @@ def queen(domain: str, message: str, brain: str = "council", tier: str | None = 
     return out
 
 
-if __name__ == "__main__":
+def _cli():
+    """Console entry point: `meok-queen <domain> "<message>" [brain]`."""
     import sys
     dom = sys.argv[1] if len(sys.argv) > 1 else "meok"
     msg = sys.argv[2] if len(sys.argv) > 2 else "In one sentence, what is this hive for?"
@@ -347,3 +348,7 @@ if __name__ == "__main__":
     print(json.dumps({k: v for k, v in res.items() if k != "honey"}, indent=2, default=str))
     print("\n--- honey (nectar for the honeycomb) ---")
     print(json.dumps(res["honey"], indent=2, default=str))
+
+
+if __name__ == "__main__":
+    _cli()

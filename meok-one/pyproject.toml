@@ -15,6 +15,8 @@ dependencies = []
 
 [project.scripts]
 meok-one = "meok_one.cli:main"
+meok-king = "meok_one.hive_king:_cli"
+meok-queen = "meok_one.hive_queen:_cli"
 
 [project.urls]
 Homepage = "https://meok.ai"
