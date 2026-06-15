@@ -99,11 +99,17 @@ def route(message: str, k: int = 1, model: str = _CLASSIFIER_MODEL, tier: str = 
 
 
 def king(message: str, fan_out: bool = False, k: int = 3, brain: str = "council",
-         do_gossip: bool = True, quorum: int = 3, deadline: float = 90.0) -> dict:
+         do_gossip: bool = True, quorum: int = 3, deadline: float = 90.0,
+         fan_brain: str = "right") -> dict:
     """The sovereign answers by convening the right queen(s).
 
-    fan_out=False : route to the single best hive, return its queen's answer.
+    fan_out=False : route to the single best hive, return its queen's answer (full `brain`,
+                    default council — single-hive answers keep BFT depth).
     fan_out=True  : convene the top-k queens, then the sovereign synthesizes ONE answer.
+                    Each queen uses the lighter `fan_brain` (default "right" = one fast cloud
+                    pass) instead of a full council — running k full BFT councils in parallel
+                    was ~2-3min; the sovereign SYNTHESIS step already provides the cross-queen
+                    deliberation, so per-queen council depth is redundant here.
     do_gossip     : each queen records its lesson UP to the SOV3 honeycomb.
     deadline      : overall wall-clock budget (seconds) for convening the queens. A queen
                     that hangs (not just errors) is abandoned so the king always returns.
@@ -113,11 +119,14 @@ def king(message: str, fan_out: bool = False, k: int = 3, brain: str = "council"
         return {"king": "SOV3 sovereign", "routed_to": [], "reply":
                 "[king couldn't route — no hives found]", "queens": []}
 
+    # Fan-out queens run a fast single brain (synthesis deliberates); single-hive keeps depth.
+    per_queen_brain = fan_brain if fan_out else brain
+
     def _call(slug: str) -> dict:
         # One queen erroring (model/network/VM wobble) must not take down the king —
         # especially in fan_out where k queens are consulted. Capture failure non-fatally.
         try:
-            a = queen(slug, message, brain=brain, do_gossip=do_gossip, quorum=quorum)
+            a = queen(slug, message, brain=per_queen_brain, do_gossip=do_gossip, quorum=quorum)
             return {"hive": slug, "reply": a.get("reply"), "engine": a.get("engine"),
                     "safe": a.get("safe"), "governance": a.get("governance")}
         except Exception as e:
