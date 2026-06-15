@@ -63,6 +63,27 @@ def test_king_survives_one_failing_queen(monkeypatch):
     assert res["reply"] == "sovereign synthesis"
 
 
+def test_king_deadline_abandons_hung_queen(monkeypatch):
+    import time as _t
+    monkeypatch.setattr(K, "route", lambda *a, **k: ["koikeeper", "grabhire"])
+    monkeypatch.setattr(K, "ask", lambda *a, **k: {"reply": "synthesis"})
+
+    def slow_queen(slug, message, **kw):
+        if slug == "grabhire":
+            _t.sleep(10)  # hang well past the deadline
+        return {"reply": f"{slug} answer", "engine": "council", "safe": True, "governance": {}}
+
+    monkeypatch.setattr(K, "queen", slow_queen)
+    t0 = _t.monotonic()
+    res = K.king("x", fan_out=True, k=2, deadline=0.5)
+    elapsed = _t.monotonic() - t0
+    assert elapsed < 5, f"king blocked on hung queen ({elapsed:.1f}s)"
+    timed_out = [q for q in res["queens"] if q.get("error") == "timeout"]
+    assert len(timed_out) == 1 and timed_out[0]["hive"] == "grabhire"
+    # the fast queen still contributed
+    assert any(q.get("reply") == "koikeeper answer" for q in res["queens"])
+
+
 def test_king_all_queens_down_is_honest(monkeypatch):
     monkeypatch.setattr(K, "route", lambda *a, **k: ["koikeeper", "grabhire"])
 

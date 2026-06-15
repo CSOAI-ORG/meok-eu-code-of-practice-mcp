@@ -23,6 +23,8 @@ Inference runs on the GCP VM (the fast box); SOV3 (king/honeycomb) runs on the M
 from __future__ import annotations
 
 import json
+import time
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as _FutureTimeout
 from pathlib import Path
 
 from .router import ask
@@ -97,30 +99,52 @@ def route(message: str, k: int = 1, model: str = _CLASSIFIER_MODEL, tier: str = 
 
 
 def king(message: str, fan_out: bool = False, k: int = 3, brain: str = "council",
-         do_gossip: bool = True, quorum: int = 3) -> dict:
+         do_gossip: bool = True, quorum: int = 3, deadline: float = 90.0) -> dict:
     """The sovereign answers by convening the right queen(s).
 
     fan_out=False : route to the single best hive, return its queen's answer.
     fan_out=True  : convene the top-k queens, then the sovereign synthesizes ONE answer.
     do_gossip     : each queen records its lesson UP to the SOV3 honeycomb.
+    deadline      : overall wall-clock budget (seconds) for convening the queens. A queen
+                    that hangs (not just errors) is abandoned so the king always returns.
     """
     targets = route(message, k=k if fan_out else 1)
     if not targets:
         return {"king": "SOV3 sovereign", "routed_to": [], "reply":
                 "[king couldn't route — no hives found]", "queens": []}
 
-    answers = []
-    for slug in targets:
-        # Resilience: one queen erroring (model/network/VM wobble) must not take down
-        # the whole king — especially in fan_out where k queens are consulted. Capture
-        # the failure as a non-fatal entry so the other queens (and the synthesis) survive.
+    def _call(slug: str) -> dict:
+        # One queen erroring (model/network/VM wobble) must not take down the king —
+        # especially in fan_out where k queens are consulted. Capture failure non-fatally.
         try:
             a = queen(slug, message, brain=brain, do_gossip=do_gossip, quorum=quorum)
-            answers.append({"hive": slug, "reply": a.get("reply"), "engine": a.get("engine"),
-                            "safe": a.get("safe"), "governance": a.get("governance")})
+            return {"hive": slug, "reply": a.get("reply"), "engine": a.get("engine"),
+                    "safe": a.get("safe"), "governance": a.get("governance")}
         except Exception as e:
-            answers.append({"hive": slug, "reply": None, "engine": None, "safe": True,
-                            "governance": None, "error": type(e).__name__})
+            return {"hive": slug, "reply": None, "engine": None, "safe": True,
+                    "governance": None, "error": type(e).__name__}
+
+    # Convene queens in parallel, bounded by an overall deadline (closes Bug#4: king had
+    # no overall deadline + ran fan-out sequentially, so 3 queens took 3× one queen's time
+    # and a single hang blocked everything). Results collected in target order.
+    by_slug: dict[str, dict] = {}
+    ex = ThreadPoolExecutor(max_workers=max(1, len(targets)))
+    try:
+        futs = {slug: ex.submit(_call, slug) for slug in targets}
+        end = time.monotonic() + deadline
+        for slug, fut in futs.items():
+            try:
+                by_slug[slug] = fut.result(timeout=max(0.0, end - time.monotonic()))
+            except _FutureTimeout:
+                by_slug[slug] = {"hive": slug, "reply": None, "engine": None,
+                                 "safe": True, "governance": None, "error": "timeout"}
+            except Exception as e:
+                by_slug[slug] = {"hive": slug, "reply": None, "engine": None,
+                                 "safe": True, "governance": None, "error": type(e).__name__}
+    finally:
+        # Don't block on a hung queen's thread; let it finish its gossip in the background.
+        ex.shutdown(wait=False)
+    answers = [by_slug[slug] for slug in targets]
 
     ok = [a for a in answers if a.get("reply")]
 
