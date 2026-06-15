@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import express, { Router } from 'express';
 import { pool } from '../db';
 
 export const stripeWebhookRouter = Router();

@@ -3,7 +3,7 @@
   "name": "meok-explainability-report-mcp",
   "title": "Explainability Report",
   "description": "EU AI Act Article 13 explainability for high-risk AI.",
-  "version": "1.0.0",
+  "version": "1.0",
   "input": "./input_schema.json",
   "output": "./output_schema.json",
   "dockerfile": "../Dockerfile",

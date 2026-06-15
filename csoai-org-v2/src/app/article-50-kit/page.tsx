@@ -12,11 +12,11 @@ function daysUntil(iso: string): number {
 
 // Canonical Stripe price IDs (from meok-attestation-api/checkout canonical ladder)
 // £999 one-time Article 50 Kit
-const STRIPE_KIT_URL = "https://buy.stripe.com/5kQ6nK0xS3ce8sl7ew8k91H";
+const STRIPE_KIT_URL = "https://buy.stripe.com/4gMcN7a8s6oq0ZTaqI8k91Z";
 // £199/mo Pro (unlimited + signed attestations)
-const STRIPE_PRO_URL = "https://buy.stripe.com/5kQ6nK0xS3ce8sl7ew8k91F";
+const STRIPE_PRO_URL = "https://buy.stripe.com/00wfZjbcw9ACcIBfL28k91K";
 // £4,950 Assessment (full gap analysis)
-const STRIPE_ASSESS_URL = "https://buy.stripe.com/5kQ6nK0xS3ce8sl7ew8k91G";
+const STRIPE_ASSESS_URL = "https://buy.stripe.com/cNieVf0xS7sueQJfL28k91G";
 
 const OBLIGATIONS = [
   {

@@ -1,0 +1,19 @@
+# MEOK Post-Signup — Free Tier Welcome
+
+> What you got + first 5 minutes + next 24 hours
+
+## Your API key
+sent via email. Use as `x-api-key` header on every keystone call.
+
+## First 5 minutes
+1. Sign a free-tier attestation
+2. Verify the cert
+3. Open the human-readable verify page
+4. Install the offline verify tool
+5. Browse the 32 MCP servers
+
+## Next 24 hours
+7-day lead-magnet email sequence. Day 0: the Article 50 scope brief. Day 1-7: each day's deep dive.
+
+## Pro
+£199/mo · 1,000 calls/day · signed Ed25519 · priority support

@@ -544,7 +544,7 @@ export default function ComplianceMap() {
             </div>
             <div className="flex flex-wrap gap-2">
               <a
-                href="https://buy.stripe.com/5kQ6nK0xS3ce8sl7ew8k91H"
+                href="https://buy.stripe.com/4gMcN7a8s6oq0ZTaqI8k91Z"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs sm:text-sm transition-colors"
@@ -552,7 +552,7 @@ export default function ComplianceMap() {
                 <span aria-hidden="true">⚡</span> Kit £999
               </a>
               <a
-                href="https://buy.stripe.com/5kQ6nK0xS3ce8sl7ew8k91F"
+                href="https://buy.stripe.com/00wfZjbcw9ACcIBfL28k91K"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-200 font-bold text-xs sm:text-sm transition-colors"
@@ -560,7 +560,7 @@ export default function ComplianceMap() {
                 <span aria-hidden="true">📈</span> Pro £199/mo
               </a>
               <a
-                href="https://buy.stripe.com/5kQ6nK0xS3ce8sl7ew8k91G"
+                href="https://buy.stripe.com/cNieVf0xS7sueQJfL28k91G"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-violet-500/20 hover:bg-violet-500/30 border border-violet-500/40 text-violet-200 font-bold text-xs sm:text-sm transition-colors"

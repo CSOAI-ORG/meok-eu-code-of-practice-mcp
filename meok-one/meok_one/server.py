@@ -822,7 +822,7 @@ class Handler(BaseHTTPRequestHandler):
                         auth.set_tier(puid, tier_to_set)
                         try:
                             from . import sigil as _sigil
-                            _sigil.record({"op": "S", "fields": {"event": "stripe_paid", "user": puid, "tier": tier_to_set}})
+                            _sigil.record({"op": "S", "tier": "warm", "fields": {"event": "stripe_paid", "user": puid, "tier": tier_to_set}})
                         except Exception:
                             pass
                         return self._json(200, {"ok": True, "user": puid, "tier": tier_to_set})
@@ -1065,7 +1065,7 @@ class Handler(BaseHTTPRequestHandler):
                 try:   # SIGIL: record this decision on the tamper-evident ledger (the moat, made visible)
                     from . import sigil as _sigil
                     _gst = out.get("sovereign_gate", {})
-                    _rec = _sigil.record({"op": "S", "fields": {
+                    _rec = _sigil.record({"op": "S", "tier": "warm", "fields": {
                         "char": cid, "brain": str(out.get("brain", b.get("brain", "left"))),
                         "engine": str(out.get("engine", out.get("backend", "?"))),
                         "care": "flagged" if _gst.get("care_flagged") else "ok",
@@ -1130,7 +1130,7 @@ class Handler(BaseHTTPRequestHandler):
                 try:   # EMIT SIGIL — every council run becomes a hash-chained audit record
                     from . import sigil as _sigil
                     _sigil.emit_council(cid, b.get("message", ""), out.get("council", {}))
-                    _sigil.record({"op": "S", "fields": {"char": cid, "gate": _g.get("gate", "pass"),
+                    _sigil.record({"op": "S", "tier": "warm", "fields": {"char": cid, "gate": _g.get("gate", "pass"),
                                                          "care": _g.get("care_flagged", False)}})
                 except Exception:
                     pass

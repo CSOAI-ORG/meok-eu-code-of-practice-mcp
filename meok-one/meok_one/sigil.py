@@ -35,15 +35,15 @@ _OPS = {
           'Proposal {id}: "{topic}" — options: {options}.'),
     "V": ("vote", [("agent", "s"), ("prop", "s"), ("choice", "choice"), ("conf", "float")],
           "{agent} votes {choice} on {prop} (confidence {conf})."),
-    "M": ("memory", [("key", "s"), ("value", "s"), ("salience", "float")],
-          'Store memory [{key}] = "{value}" (salience {salience}).'),
-    "Q": ("query", [("pattern", "s"), ("k", "int")],
-          'Retrieve top {k} memories matching "{pattern}".'),
+    "M": ("memory", [("key", "s"), ("value", "s"), ("salience", "float"), ("tier", "s")],
+          'Store memory [{key}] = "{value}" (salience {salience}, tier {tier}).'),
+    "Q": ("query", [("pattern", "s"), ("k", "int"), ("tier", "s")],
+          'Retrieve top {k} memories matching "{pattern}" (tier {tier}).'),
     "C": ("care", [("subject", "s"), ("score", "float"), ("dims", "list")],
           "Care assessment of {subject}: {score} across {dims}."),
-    "H": ("handoff", [("frm", "s"), ("to", "s"), ("task", "s")],
-          "Handoff from {frm} to {to}: {task}."),
-    "S": ("state", [("fields", "kv*")], "State — {fields}."),
+    "H": ("handoff", [("frm", "s"), ("to", "s"), ("task", "s"), ("tier", "s")],
+          "Handoff from {frm} to {to}: {task} (tier {tier})."),
+    "S": ("state", [("tier", "s"), ("fields", "kv*")], "State — {fields} (tier {tier})."),
     "A": ("alert", [("level", "s"), ("msg", "s")], "ALERT[{level}]: {msg}"),
     # ---- multimodal: SIGIL as the SEMANTIC layer over media (not a pixel codec). A vision
     # model (e.g. step3.7) looks at a screen/frame ONCE and emits these compact opcodes; agents
@@ -281,7 +281,7 @@ def emit_council(character: str, message: str, council: dict) -> list:
     if vetoes:
         out.append(record({"op": "A", "level": "veto",
                            "msg": f"{character} council vetoed by {', '.join(vetoes)}"}))
-    out.append(record({"op": "S", "fields": {
+    out.append(record({"op": "S", "tier": "warm", "fields": {
         "char": character, "decision": council.get("decision", "?"),
         "nodes": council.get("available_nodes", 0),
         "f": council.get("byzantine_tolerance_f", 0), "vetoes": len(vetoes)}}))
@@ -295,7 +295,7 @@ _load_existing()
 if __name__ == "__main__":
     record({"op": "V", "agent": "care_governor", "prop": "pAB12cd", "choice": "approve", "conf": "0.91"})
     record({"op": "A", "level": "veto", "msg": "security_sentinel flagged exfiltration"})
-    record({"op": "S", "fields": {"char": "aria", "decision": "approved", "nodes": 5, "f": 1}})
+    record({"op": "S", "tier": "warm", "fields": {"char": "aria", "decision": "approved", "nodes": 5, "f": 1}})
     for r in recent():
         print(f"  {r['line']}\n    → {r['gloss']}  [{r['receipt']}]")
     print("verify:", verify_chain())

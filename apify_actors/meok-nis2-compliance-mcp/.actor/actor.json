@@ -3,7 +3,7 @@
   "name": "meok-nis2-compliance-mcp",
   "title": "NIS2 Compliance",
   "description": "160k entities, 18 sectors. LIVE since 18 Oct 2024.",
-  "version": "1.0.0",
+  "version": "1.0",
   "input": "./input_schema.json",
   "output": "./output_schema.json",
   "dockerfile": "../Dockerfile",

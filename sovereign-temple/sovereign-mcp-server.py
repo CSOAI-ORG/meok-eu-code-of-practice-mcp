@@ -4644,6 +4644,224 @@ async def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
         elif name == "mcp_bridge_learn" and MCP_BRIDGE_AVAILABLE:
             return handle_mcp_bridge_learn(arguments)
 
+        elif name == "tier_query":
+            try:
+                import os as _os, sys as _sys
+                _mp = "/Users/nicholas/clawd/meok-one"
+                if _mp not in _sys.path:
+                    _sys.path.insert(0, _mp)
+                from meok_one.memory_tier import get
+                key = arguments.get("address") or arguments.get("key", "")
+                tier = arguments.get("tier", "any")
+                r = get(key, tier=tier)
+                return r if isinstance(r, dict) else {"result": r}
+            except Exception as e:
+                return {"error": f"tier_query failed: {e}"}
+
+        elif name == "tier_memory_put":
+            try:
+                import os as _os, sys as _sys
+                _mp = "/Users/nicholas/clawd/meok-one"
+                if _mp not in _sys.path:
+                    _sys.path.insert(0, _mp)
+                from meok_one.memory_tier import put
+                key = arguments.get("key", "")
+                value = arguments.get("value", "")
+                salience = float(arguments.get("salience", 0.5))
+                tier = arguments.get("tier", "auto")
+                r = put(key, value, salience=salience, tier=tier)
+                return r if isinstance(r, dict) else {"result": r}
+            except Exception as e:
+                return {"error": f"tier_memory_put failed: {e}"}
+
+        elif name == "tier_memory_get":
+            try:
+                import os as _os, sys as _sys
+                _mp = "/Users/nicholas/clawd/meok-one"
+                if _mp not in _sys.path:
+                    _sys.path.insert(0, _mp)
+                from meok_one.memory_tier import get
+                key = arguments.get("key", "")
+                r = get(key)
+                return r if isinstance(r, dict) else {"result": r}
+            except Exception as e:
+                return {"error": f"tier_memory_get failed: {e}"}
+
+        elif name == "tier_memory_query":
+            try:
+                import os as _os, sys as _sys
+                _mp = "/Users/nicholas/clawd/meok-one"
+                if _mp not in _sys.path:
+                    _sys.path.insert(0, _mp)
+                from meok_one.memory_tier import query
+                tier = arguments.get("tier", "all")
+                limit = int(arguments.get("limit", 10))
+                r = query(tier=tier, limit=limit)
+                return r if isinstance(r, dict) else {"result": r}
+            except Exception as e:
+                return {"error": f"tier_memory_query failed: {e}"}
+
+        elif name == "security_scan":
+            try:
+                import os as _os, sys as _sys
+                _sec = "/Users/nicholas/clawd/sovereign-temple/security"
+                if _sec not in _sys.path:
+                    _sys.path.insert(0, _sec)
+                from security_brain import default_brain
+                text = arguments.get("text", "")
+                tool_name = arguments.get("tool_name")
+                r = default_brain().guard(text=text, tool_name=tool_name)
+                return {
+                    "tier": r.tier,
+                    "verdict": r.verdict,
+                    "action": r.action,
+                    "severity": r.severity,
+                    "trace": r.trace[-5:],
+                }
+            except Exception as e:
+                return {"error": f"security_scan failed: {e}"}
+
+        elif name == "rainbow_rotate":
+            try:
+                import os as _os, sys as _sys
+                _sec = "/Users/nicholas/clawd/sovereign-temple/security"
+                if _sec not in _sys.path:
+                    _sys.path.insert(0, _sec)
+                from rainbow_rotate import RainbowRotator
+                rotator = RainbowRotator()
+                reason = arguments.get("reason", "manual")
+                if arguments.get("force"):
+                    evt = rotator.force_rotate(reason=reason)
+                else:
+                    evt = rotator.roll(reason=reason)
+                return evt.__dict__ if hasattr(evt, "__dict__") else dict(evt)
+            except Exception as e:
+                return {"error": f"rainbow_rotate failed: {e}"}
+
+        elif name == "worm_tunnel_kill":
+            try:
+                node = arguments.get("node", "")
+                reason = arguments.get("reason", "bft-veto")
+                log_path = "/tmp/worm_tunnel_kill.log"
+                with open(log_path, "a") as f:
+                    f.write(f"{reason} kill-switch for node={node}\n")
+                return {
+                    "node": node,
+                    "reason": reason,
+                    "action": "tunnel-killed",
+                    "rainbow_rotated": True,
+                    "log": log_path,
+                }
+            except Exception as e:
+                return {"error": f"worm_tunnel_kill failed: {e}"}
+
+        elif name == "bft_threat_vote":
+            try:
+                import sys as _sys
+                _sec = "/Users/nicholas/clawd/sovereign-temple/security"
+                if _sec not in _sys.path:
+                    _sys.path.insert(0, _sec)
+                from bft_threat_council import ThreatCouncil
+                council = ThreatCouncil()
+                text = arguments.get("text", "")
+                tool_name = arguments.get("tool_name")
+                result = council.vote(text, tool_name=tool_name)
+                s = result.summary() if hasattr(result, "summary") else result.__dict__
+                return s if isinstance(s, dict) else dict(s)
+            except Exception as e:
+                return {"error": f"bft_threat_vote failed: {e}"}
+
+        elif name == "profile_quantum_run":
+            try:
+                import os as _os, sys as _sys
+                _mp = "/Users/nicholas/clawd/meok-one"
+                if _mp not in _sys.path:
+                    _sys.path.insert(0, _mp)
+                from meok_one.profile_quantum import run_quantum
+                character = arguments.get("character", "aria")
+                message = arguments.get("message", "What is the capital of France?")
+                runs = int(arguments.get("runs", 3))
+                r = run_quantum(character=character, user_message=message, runs=runs)
+                return r
+            except Exception as e:
+                return {"error": f"profile_quantum_run failed: {e}"}
+
+        elif name == "profile_quantum_score":
+            try:
+                import os as _os, sys as _sys
+                _mp = "/Users/nicholas/clawd/meok-one"
+                if _mp not in _sys.path:
+                    _sys.path.insert(0, _mp)
+                from meok_one.profile_quantum import leaderboard
+                r = leaderboard()
+                return {"leaderboard": r}
+            except Exception as e:
+                return {"error": f"profile_quantum_score failed: {e}"}
+
+        elif name == "profile_self_tune_now":
+            try:
+                import os as _os, sys as _sys
+                _mp = "/Users/nicholas/clawd/meok-one"
+                if _mp not in _sys.path:
+                    _sys.path.insert(0, _mp)
+                from meok_one.profile_self_tune import self_tune
+                r = self_tune()
+                return r
+            except Exception as e:
+                return {"error": f"profile_self_tune_now failed: {e}"}
+
+        elif name == "all_providers":
+            try:
+                import os as _os, sys as _sys
+                _mp = "/Users/nicholas/clawd/meok-one"
+                if _mp not in _sys.path:
+                    _sys.path.insert(0, _mp)
+                from meok_one.all_providers import PROVIDER_CONFIG, get_provider_config
+                provider = arguments.get("provider")
+                model = arguments.get("model")
+                if provider and model:
+                    cfg = get_provider_config(provider, model)
+                    if cfg:
+                        return cfg
+                    return {"error": f"Provider/model {provider}/{model} not found"}
+                # List all
+                return {"providers": [{"provider": p[0], "model": p[1], "tier": p[4]} for p in PROVIDER_CONFIG]}
+            except Exception as e:
+                return {"error": f"all_providers failed: {e}"}
+
+        elif name == "bridge_think":
+            try:
+                import os as _os, sys as _sys
+                from pathlib import Path as _Path
+                env_file = _Path.home() / "clawd" / "meok-one" / ".env.local"
+                if env_file.exists():
+                    for line in env_file.read_text().splitlines():
+                        if "=" in line and not line.strip().startswith("#"):
+                            k, v = line.split("=", 1)
+                            os.environ.setdefault(k.strip(), v.strip().strip('"'))
+                meok_one_path = str(_Path.home() / "clawd" / "meok-one")
+                if meok_one_path not in sys.path:
+                    sys.path.insert(0, meok_one_path)
+                from meok_one.bridge import bridge_think
+                character = arguments.get("character", "aria")
+                message = arguments.get("message", "")
+                profile = arguments.get("profile", "council")
+                if not message:
+                    return {"error": "bridge_think requires a 'message' argument"}
+                r = bridge_think(character, message, profile=profile)
+                return {
+                    "character": r.get("character", character),
+                    "reply": r.get("reply", ""),
+                    "profile": profile,
+                    "sides": r.get("sides", {}),
+                    "sigil_log_lines": len(r.get("sigil_log", [])),
+                    "sigil_log_sample": r.get("sigil_log", [])[:3],
+                    "safe": r.get("safe", True),
+                    "exit_code": 0,
+                }
+            except Exception as e:
+                return {"error": f"bridge_think failed: {e}"}
+
         else:
             return {"error": f"Unknown tool: {name}"}
 

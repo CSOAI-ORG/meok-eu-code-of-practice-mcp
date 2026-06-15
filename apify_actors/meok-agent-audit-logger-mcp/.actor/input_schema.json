@@ -1,45 +1,22 @@
 {
-  "title": "MEOK Agent Audit Logger Input",
+  "title": "MEOK MCP Input",
   "type": "object",
   "schemaVersion": 1,
   "properties": {
     "query": {
       "title": "Query",
       "type": "string",
-      "description": "Plain-text query or system description"
+      "description": "Plain-text query or system description",
+      "editor": "textfield"
     },
     "operation": {
       "title": "Operation",
       "type": "string",
-      "enum": [
-        "default",
-        "audit",
-        "validate",
-        "classify",
-        "report"
-      ],
+      "description": "Operation mode",
+      "editor": "select",
+      "enum": ["default", "audit", "validate", "classify", "report"],
       "default": "default"
-    },
-    "region": {
-      "title": "Region",
-      "type": "string",
-      "enum": [
-        "EU",
-        "UK",
-        "US",
-        "CA",
-        "AU",
-        "GLOBAL"
-      ],
-      "default": "EU"
-    },
-    "api_key": {
-      "title": "MEOK API key (optional)",
-      "type": "string",
-      "description": "For higher rate limits (200/day cap). Get one at meok.ai/dashboard"
     }
   },
-  "required": [
-    "query"
-  ]
+  "required": ["query"]
 }

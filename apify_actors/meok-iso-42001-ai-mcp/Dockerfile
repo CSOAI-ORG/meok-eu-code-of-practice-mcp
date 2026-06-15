@@ -1,4 +1,5 @@
-FROM meok/mcp-base:latest
+FROM python:3.11-slim
+RUN pip install --no-cache-dir     fastmcp==0.4.0     mcp==1.0.0     uvicorn==0.32.0     starlette==0.41.3
 COPY . /app
 WORKDIR /app
 RUN pip install --no-cache-dir iso-42001-ai-mcp==1.0.0

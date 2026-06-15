@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://wowmcp.ai/sitemap.xml

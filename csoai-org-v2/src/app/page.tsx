@@ -291,6 +291,15 @@ export default function Home() {
                 <a href="https://meok.ai" className="text-sm hover:text-emerald-400 transition">MEOK AI</a>
                 <a href="mailto:nicholas@csoai.org" className="text-sm hover:text-emerald-400 transition">Contact</a>
               </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-[10px] font-black tracking-widest uppercase text-slate-500">Vertical AIs</span>
+                <a href="https://www.fishkeeper.ai" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-emerald-400 transition">FishKeeper.ai ↗</a>
+                <a href="https://www.koikeeper.ai" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-emerald-400 transition">KoiKeeper.ai ↗</a>
+                <a href="https://grabhire-site-a5s80x6zt-niks-projects-0a2ef942.vercel.app" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-emerald-400 transition">GrabHire.ai ↗</a>
+                <a href="https://planthire-site-niks-projects-0a2ef942.vercel.app" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-emerald-400 transition">PlantHire.ai ↗</a>
+                <a href="https://care-lfnevbs14-niks-projects-0a2ef942.vercel.app" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-emerald-400 transition">CareShield.ai ↗</a>
+                <a href="https://wowmcp-deploy-hl5uc1twi-niks-projects-0a2ef942.vercel.app" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-emerald-400 transition">WoWMCP.ai ↗</a>
+              </div>
             </div>
           </div>
         </div>

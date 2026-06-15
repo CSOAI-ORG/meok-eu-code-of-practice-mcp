@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "meok-laia-aquatic-mcp"
-version = "1.0.3"
+version = "1.0.5"
 readme = "README.md"
 description = "England Animal Welfare (Licensing of Activities Involving Animals) Regulations 2018 — LAIA — for aquatic licensables: koi dealers, ornamental retailers, public aquaria, online live-fish sellers. Local-authority inspector-ready pack. From MEOK AI Labs."
 license = {file = "LICENSE"}
@@ -30,3 +30,22 @@ only-include = ["server.py"]
 
 [project.scripts]
 meok_laia_aquatic_mcp = "server:main"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "W", "I", "N"]
+ignore = ["E501"]
+
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_Configs = true
+disallow_untyped_defs = true
+

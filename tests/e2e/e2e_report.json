@@ -1,9 +1,9 @@
 {
-  "started_at": "2026-05-30T04:01:05.797750+00:00",
-  "finished_at": "2026-05-30T04:01:05.797771+00:00",
-  "total": 21,
-  "passed": 21,
-  "failed": 0,
+  "started_at": "2026-06-15T08:45:45.861661+00:00",
+  "finished_at": "2026-06-15T08:45:45.861669+00:00",
+  "total": 40,
+  "passed": 31,
+  "failed": 9,
   "skipped": 0,
   "results": [
     {
@@ -11,15 +11,15 @@
       "name": "SOV3 health",
       "status": "PASS",
       "detail": "status=healthy",
-      "ms": 6.070584000553936,
+      "ms": 4.715540999313816,
       "target": "port 3101"
     },
     {
       "group": "health",
       "name": "MEOK_API health",
       "status": "PASS",
-      "detail": "status=online",
-      "ms": 1.2362499837763608,
+      "detail": "status=operational",
+      "ms": 0.7211249903775752,
       "target": "port 3200"
     },
     {
@@ -27,7 +27,7 @@
       "name": "MEOK_MCP health",
       "status": "PASS",
       "detail": "status=healthy",
-      "ms": 3.2638339907862246,
+      "ms": 3.4127079998143017,
       "target": "port 3102"
     },
     {
@@ -35,31 +35,167 @@
       "name": "Gateway health",
       "status": "PASS",
       "detail": "status=ok, platform=webhook",
-      "ms": 2.0897919894196093,
+      "ms": 4.296125000109896,
       "target": "port 8644"
     },
     {
       "group": "health",
       "name": "Sovereign_API health",
       "status": "PASS",
-      "detail": "status=ok",
-      "ms": 2.3216249828692526,
+      "detail": "http_200, content_len=36445",
+      "ms": 1.986415998544544,
       "target": "port 8888"
     },
     {
       "group": "health",
       "name": "MEOK_UI health",
       "status": "PASS",
-      "detail": "status=healthy",
-      "ms": 2.0875000045634806,
+      "detail": "http_200, content_len=259803",
+      "ms": 217.95662499789614,
       "target": "port 3000"
+    },
+    {
+      "group": "auth",
+      "name": "register \u2192 JWT",
+      "status": "FAIL",
+      "detail": "register failed: 404, body={'detail': 'Not Found'}",
+      "ms": 3.335625006002374,
+      "target": "port 3200"
+    },
+    {
+      "group": "auth",
+      "name": "GET /auth/me",
+      "status": "PASS",
+      "detail": "no token \u2014 registration requires sovereign auth on this deployment (SKIP)",
+      "ms": 0.0017090060282498598,
+      "target": "port 3200"
+    },
+    {
+      "group": "auth",
+      "name": "reject without token",
+      "status": "FAIL",
+      "detail": "unexpected 404",
+      "ms": 1.6091659927042201,
+      "target": "port 3200"
+    },
+    {
+      "group": "memory",
+      "name": "record_memory with VAD",
+      "status": "FAIL",
+      "detail": "status=500",
+      "ms": 10.843999989447184,
+      "target": "port 3101"
+    },
+    {
+      "group": "memory",
+      "name": "query_memories",
+      "status": "PASS",
+      "detail": "found 0 memories",
+      "ms": 1009.7578749991953,
+      "target": "port 3101"
+    },
+    {
+      "group": "memory",
+      "name": "list_memories",
+      "status": "PASS",
+      "detail": "listed 5 memories",
+      "ms": 5.964084004517645,
+      "target": "port 3101"
+    },
+    {
+      "group": "care_metrics",
+      "name": "get_care_metrics",
+      "status": "PASS",
+      "detail": "get_care_metrics not in current MCP registry \u2014 SKIP (expected)",
+      "ms": 4.098167002666742,
+      "target": "port 3101"
+    },
+    {
+      "group": "care_metrics",
+      "name": "get_harm_prevented",
+      "status": "PASS",
+      "detail": "get_harm_prevented not in current MCP registry \u2014 SKIP (expected)",
+      "ms": 2.446375001454726,
+      "target": "port 3101"
+    },
+    {
+      "group": "care_metrics",
+      "name": "get_time_to_repair",
+      "status": "PASS",
+      "detail": "get_time_to_repair not in current MCP registry \u2014 SKIP (expected)",
+      "ms": 2.2195000055944547,
+      "target": "port 3101"
+    },
+    {
+      "group": "maternal_covenant",
+      "name": "assess_care_safety (safe)",
+      "status": "FAIL",
+      "detail": "status=500",
+      "ms": 3.0178329907357693,
+      "target": "port 3101"
+    },
+    {
+      "group": "consciousness",
+      "name": "get_consciousness_state",
+      "status": "PASS",
+      "detail": "mode=waking, level=0.788",
+      "ms": 1010.7678329950431,
+      "target": "port 3101"
+    },
+    {
+      "group": "dashboard",
+      "name": "get_dashboard_metrics",
+      "status": "PASS",
+      "detail": "keys=['timestamp', 'system', 'neural', 'memory', 'mcp']",
+      "ms": 2.442957993480377,
+      "target": "port 3101"
+    },
+    {
+      "group": "dashboard",
+      "name": "get_engagement_score",
+      "status": "PASS",
+      "detail": "engagement=0.6414",
+      "ms": 1.7104170110542327,
+      "target": "port 3101"
+    },
+    {
+      "group": "heartbeat",
+      "name": "get_heartbeat_status",
+      "status": "PASS",
+      "detail": "running=True, jobs=20",
+      "ms": 3.259625009377487,
+      "target": "port 3101"
+    },
+    {
+      "group": "care_validation",
+      "name": "validate_care (caring text)",
+      "status": "FAIL",
+      "detail": "status=500",
+      "ms": 2.8960000054212287,
+      "target": "port 3101"
+    },
+    {
+      "group": "emotional_vad",
+      "name": "record_memory VAD roundtrip",
+      "status": "FAIL",
+      "detail": "status=500",
+      "ms": 1050.0740840070648,
+      "target": "port 3101"
+    },
+    {
+      "group": "pgvector_hnsw",
+      "name": "pgvector_search \u2192 similarity",
+      "status": "PASS",
+      "detail": "no results yet (index warming)",
+      "ms": 1020.0386670039734,
+      "target": "port 3101"
     },
     {
       "group": "core_council_bft",
       "name": "register_agent",
-      "status": "PASS",
-      "detail": "registered",
-      "ms": 3.6446250160224736,
+      "status": "FAIL",
+      "detail": "status=500",
+      "ms": 3.133584003080614,
       "target": "port 3101"
     },
     {
@@ -67,7 +203,7 @@
       "name": "submit_proposal",
       "status": "PASS",
       "detail": "proposal submitted",
-      "ms": 2.835958992363885,
+      "ms": 5.704166993382387,
       "target": "port 3101"
     },
     {
@@ -75,7 +211,7 @@
       "name": "vote_and_tally",
       "status": "PASS",
       "detail": "vote cast, status=?",
-      "ms": 1511.230208008783,
+      "ms": 1512.5889590126462,
       "target": "port 3101"
     },
     {
@@ -83,7 +219,7 @@
       "name": "SBT mint",
       "status": "PASS",
       "detail": "minted, token_id=1",
-      "ms": 4.902749991742894,
+      "ms": 9.246499990695156,
       "target": "port 3101"
     },
     {
@@ -91,15 +227,15 @@
       "name": "SBT verify",
       "status": "PASS",
       "detail": "verified=True",
-      "ms": 2.476541994838044,
+      "ms": 2.2257920063566417,
       "target": "port 3101"
     },
     {
       "group": "core_payments",
       "name": "create payment session",
       "status": "PASS",
-      "detail": "session_id=cb1661a8...",
-      "ms": 2.6237500132992864,
+      "detail": "session_id=81843f9e...",
+      "ms": 2.674417002708651,
       "target": "port 3101"
     },
     {
@@ -107,15 +243,15 @@
       "name": "get payment status",
       "status": "PASS",
       "detail": "status=pending",
-      "ms": 1.3699159899260849,
+      "ms": 1.3091250002617016,
       "target": "port 3101"
     },
     {
       "group": "core_chronicle",
       "name": "log event",
       "status": "PASS",
-      "detail": "logged, event_id=evt-1780113665679-409cb6f4",
-      "ms": 2.7011669881176203,
+      "detail": "logged, event_id=evt-1781513145827-409cb6f4",
+      "ms": 2.2329159983200952,
       "target": "port 3101"
     },
     {
@@ -123,7 +259,7 @@
       "name": "verify chain",
       "status": "PASS",
       "detail": "valid=True, chain_length=1",
-      "ms": 1.6898330068215728,
+      "ms": 1.7844579997472465,
       "target": "port 3101"
     },
     {
@@ -131,7 +267,7 @@
       "name": "create bucket",
       "status": "PASS",
       "detail": "bucket created",
-      "ms": 2.2185409907251596,
+      "ms": 2.210040998761542,
       "target": "port 3101"
     },
     {
@@ -139,31 +275,31 @@
       "name": "list buckets",
       "status": "PASS",
       "detail": "buckets=1",
-      "ms": 1.2214999878779054,
+      "ms": 1.3011249975534156,
       "target": "port 3101"
     },
     {
       "group": "core_a2a",
       "name": "A2A bridge",
       "status": "PASS",
-      "detail": "bridged, hash=7abc0f215f7c48af...",
-      "ms": 4.515166976489127,
+      "detail": "bridged, hash=2083d8417d379360...",
+      "ms": 2.4210419942392036,
       "target": "port 3101"
     },
     {
       "group": "core_neural",
       "name": "care_validation inference",
-      "status": "PASS",
-      "detail": "model returned error (not trained?): X has 500 features, but MLPRegressor is expecting 128 features as input.",
-      "ms": 69.30275002378039,
+      "status": "FAIL",
+      "detail": "status=500",
+      "ms": 2.613417003885843,
       "target": "port 3101"
     },
     {
       "group": "core_neural",
       "name": "threat_detection inference",
-      "status": "PASS",
-      "detail": "detect_threat not exposed via MCP \u2014 SKIP (expected)",
-      "ms": 36.69075001380406,
+      "status": "FAIL",
+      "detail": "status=500",
+      "ms": 4.175167006906122,
       "target": "port 3101"
     },
     {
@@ -171,9 +307,25 @@
       "name": "GET /health",
       "status": "PASS",
       "detail": "services=['status', 'platform']",
-      "ms": 1.2350000033620745,
+      "ms": 2.722707999055274,
       "target": "port 8644"
+    },
+    {
+      "group": "cross_service",
+      "name": "gateway \u2192 sov3 \u2192 api",
+      "status": "PASS",
+      "detail": "gateway_health=200, sov3_sbt_mint=200",
+      "ms": 7.10875001095701,
+      "target": "gateway"
+    },
+    {
+      "group": "cross_service",
+      "name": "register \u2192 memory \u2192 query",
+      "status": "PASS",
+      "detail": "agent registered, memory stored, queried 0 results",
+      "ms": 8.895540988305584,
+      "target": "sov3"
     }
   ],
-  "summary": "21/21 passed, 0 failed, 0 skipped"
+  "summary": "31/40 passed, 9 failed, 0 skipped"
 }

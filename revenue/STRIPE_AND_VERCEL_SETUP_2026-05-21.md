@@ -35,7 +35,7 @@ vercel env add STRIPE_SECRET_KEY live
 # Paste: sk_live_... (your secret key, NOT the restricted key)
 
 vercel env add STRIPE_RESTRICTED_KEY live
-# Paste: rk_live_51TLlEKQvIueK5Xpb...
+# Paste: rk_live_REDACTED...
 
 vercel env add STRIPE_WEBHOOK_SECRET live
 # Paste from Stripe Dashboard → Webhooks

@@ -76,6 +76,7 @@ class ASIEvolveHive:
         # SIGIL record every tick.
         sigil.record({
             "op": "S",
+            "tier": "warm",
             "fields": {
                 "hive": "asi-evolve",
                 "candidate": candidate.id,

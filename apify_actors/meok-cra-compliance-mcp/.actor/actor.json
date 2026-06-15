@@ -3,7 +3,7 @@
   "name": "meok-cra-compliance-mcp",
   "title": "CRA Compliance",
   "description": "Regulation (EU) 2024/2847. Cliff 11 Dec 2027. Product cybersecurity.",
-  "version": "1.0.0",
+  "version": "1.0",
   "input": "./input_schema.json",
   "output": "./output_schema.json",
   "dockerfile": "../Dockerfile",

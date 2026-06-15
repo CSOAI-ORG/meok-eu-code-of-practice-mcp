@@ -1,0 +1,38 @@
+# wowmcp.ai
+
+World of Warcraft Model Context Protocol server for AI agents.
+
+> 10 tools for WoW data. COAI-certified, SOV3-attested. By MEOK AI Labs.
+
+Part of the [MEOK Gaming hive](https://meok.ai/gaming) — the sovereign organic mesh of MCP servers for game data.
+
+## Quick start
+
+```bash
+npm install @csoai-org/blizzard-wow-mcp
+# or via Smithery
+npx -y @smithery/cli install @csoai-org/blizzard-wow-mcp
+# or via GitHub
+git clone https://github.com/CSOAI-ORG/blizzard-wow-mcp
+cd blizzard-wow-mcp && npm install && npm start
+```
+
+## Sister servers
+
+- [github.com/CSOAI-ORG/mmoagent-mcp](https://github.com/CSOAI-ORG/mmoagent-mcp) — 6 cross-game intelligence tools
+- [github.com/CSOAI-ORG/evergame-hive-mcp](https://github.com/CSOAI-ORG/evergame-hive-mcp) — 4 data-moat tools
+
+## Compliance
+
+COAI INTELLIGENCE_ONLY — no automated character actions. Signed Ed25519 receipts on every Pro call.
+
+## Parent
+
+[MEOK AI Labs](https://meok.ai) · [CSOAI](https://csoai.org) · [ProofOf.AI](https://proofof.ai)
+
+## See also
+
+- meok.ai/hive: https://hive-deploy.vercel.app (SOV3 agent universe)
+- meok.ai/industries: https://industries-deploy.vercel.app (8 verticals)
+- meok.ai/blog: https://blog-deploy-azure.vercel.app (6 articles)
+- meok.ai portfolio: https://portfolio-deploy-orcin-three.vercel.app

@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "framework": "nextjs",
+  "redirects": [
+    {
+      "source": "/checkout",
+      "destination": "/pricing",
+      "permanent": false
+    }
+  ]
+}

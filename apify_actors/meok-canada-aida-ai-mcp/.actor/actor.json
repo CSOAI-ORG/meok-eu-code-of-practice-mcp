@@ -3,7 +3,7 @@
   "name": "meok-canada-aida-ai-mcp",
   "title": "Canada AIDA AI",
   "description": "Canada's proposed Artificial Intelligence and Data Act. High-impact AI system classification.",
-  "version": "1.0.0",
+  "version": "1.0",
   "input": "./input_schema.json",
   "output": "./output_schema.json",
   "dockerfile": "../Dockerfile",

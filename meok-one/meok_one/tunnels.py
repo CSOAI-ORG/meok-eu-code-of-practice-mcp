@@ -85,9 +85,9 @@ def safe_call(tool: str, args: dict = None, confirm: str = None) -> dict:
     try:
         from . import sigil
         tier = res.get("tier", "?")
-        sigil.record({"op": "S", "fields": {
-            "tool": tool, "tier": tier,
-            "exec": bool(res.get("executed")), "conf": bool(confirm)}})
+        sigil.record({"op": "S", "tier": tier,
+                      "fields": {"tool": tool, "exec": bool(res.get("executed")),
+                                 "conf": bool(confirm)}})
         if tier == "prohibited" or res.get("refused"):
             sigil.record({"op": "A", "level": "prohibited",
                           "msg": f"gateway refused {tool}"})

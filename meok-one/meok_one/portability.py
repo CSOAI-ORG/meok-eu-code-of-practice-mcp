@@ -60,7 +60,7 @@ def export_bundle(user_id: str) -> dict:
     receipt = None
     try:
         rec = sigil.record({"op": "M", "key": f"export:{user_id}",
-                            "value": digest[:16], "salience": "1.0"})
+                            "value": digest[:16], "salience": "1.0", "tier": "cold"})
         receipt = rec.get("receipt")
     except Exception:
         pass

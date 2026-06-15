@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "public": true,
+  "framework": "nextjs",
+  "redirects": [
+    {
+      "source": "/checkout",
+      "destination": "https://www.csoai.org/checkout",
+      "permanent": false
+    }
+  ]
+}

@@ -201,7 +201,7 @@ def gossip(honey: dict) -> dict:
     hive = honey.get("hive", "unknown")
     # 1) tamper-evident receipt FIRST — honey is never lost even if the honeycomb is down.
     rec = sigil.record({"op": "M", "key": f"honey:{hive}",
-                        "value": honey.get("a", "")[:80], "salience": 0.6})
+                        "value": honey.get("a", "")[:80], "salience": 0.6, "tier": "warm"})
     # 2) safety gate: a hardcoded honey write must never be prohibited (fail-closed).
     if gw.classify("record_memory") == "prohibited":
         return {"sigil": rec["line"], "receipt": rec["receipt"],

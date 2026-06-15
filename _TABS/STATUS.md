@@ -1373,3 +1373,47 @@ DO NEXT QUARTER:
 10. **156 PyPI description upgrades** (GEO/AEO rich) — drives weekly download count
 
 ### Memory: 327 lines, 22.2 KB (added §22-phantom HARD-BLOCKED, §VM 0/20 confirms, §5 re-fetch different method)
+
+---
+
+## PM23+ UPDATE #4 — 299/300 CSOAI-ORG in MCP registry
+
+**Big ship.** Started the turn with 0 CSOAI-ORG packages in the MCP registry. Ended with 299/300. Only `credential-manager-mcp` left, blocked by PyPI per-PROJECT throttle (403).
+
+### Pipeline that worked
+- `tight_watch.py` watches the JWT mtime → publishes IMMEDIATELY on click
+- `publish_registry_v2.py --limit 30-50` runs in parallel (12 workers)
+- `republish_all_with_mcp_name.py` bumped + republished 336/336 packages to PyPI
+- `fix_repo_field.py` fixed 179 server.json files
+- `fix_mcp_name_all.py` fixed 156 READMEs
+
+### Tools shipped (all in /Users/nicholas/clawd/mcp-marketplace/_tooling/)
+- `ship.py` — unified CLI (7 subcommands)
+- `ship_everything.py` — 10-step pipeline orchestrator
+- `tight_watch.py` — JWT mtime watcher (the killer feature)
+- `auto_publish.py` + `auto_publish_v3.py` — 30-min publish orchestrators
+- `wire_meter.py` — /verify metering wire (341/341 wired)
+- `fix_server_json_icons.py` — schema fixer
+- `fix_repo_field.py` — repo URL format fixer
+- `fix_mcp_name_all.py` — README mcp-name fixer
+- `build_apify_actors.py` — 14 Apify Actor directories
+- `republish_all_with_mcp_name.py` — bulk PyPI republisher
+- `gen_landing_pages.py` — 35 compliance landing pages
+- `gen_practitioner_guides.py` — 30 practitioner guides
+
+### Other deliverables
+- 14 Apify Actor directories
+- 35 compliance landing pages on meok.ai/dist
+- 30 practitioner guides on meok.ai/guides
+- EAT audit (29 channels, coverage 2/29)
+- Ship-everything status doc
+- Punkpeye PR draft (30 packages, ready to submit)
+- Distribution kit (HN + IndieHackers + Reddit)
+- Apify submission kit (per-Actor template)
+- 4 master inventory docs (EAT, MCP_REGISTRY_TRUTH, OPENMCP_FINAL, SHIP_EVERYTHING)
+- Full registry snapshot (4.7MB)
+
+### 3 hard gates still blocked
+1. **csga_global npm password change** (30 sec) — kills 8 remaining tokens, releases 192 squatted packages
+2. **GitHub PAT refresh** — for credential-manager-mcp + 40 first-publish packages  
+3. **PyPI per-PROJECT throttle** — credential-manager-mcp 403, 22 phantoms + 40 first-publish blocked

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "meok-uk-fhi-mcp"
-version = "1.0.3"
+version = "1.0.4"
 readme = "README.md"
 description = "MCP server wrapping the UK aquaculture regulatory stack — CEFAS Fish Health Inspectorate AW1 APB authorisation, APHA fish movement docs + IPAFFS imports, Environment Agency Site/Supplier/EPR discharge/Abstraction permits, AAHR 2009 listed-disease notifications. From MEOK AI Labs."
 license = {file = "LICENSE"}
@@ -31,3 +31,22 @@ only-include = ["server.py"]
 
 [project.scripts]
 meok_uk_fhi_mcp = "server:main"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "W", "I", "N"]
+ignore = ["E501"]
+
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_Configs = true
+disallow_untyped_defs = true
+

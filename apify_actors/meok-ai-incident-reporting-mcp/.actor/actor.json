@@ -3,7 +3,7 @@
   "name": "meok-ai-incident-reporting-mcp",
   "title": "AI Incident Reporting",
   "description": "Article 73 + NIS2 incident reporting. Hash-chained.",
-  "version": "1.0.0",
+  "version": "1.0",
   "input": "./input_schema.json",
   "output": "./output_schema.json",
   "dockerfile": "../Dockerfile",

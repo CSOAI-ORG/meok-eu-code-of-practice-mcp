@@ -1,5 +1,5 @@
 import { Connection, Keypair, PublicKey, clusterApiUrl } from "@solana/web3.js";
-import { MeokSbtClient, SbtType } from "./sbt_client";
+import { MeokSbtClient, SbtType } from "./sbt_client.ts";
 import * as fs from "fs";
 
 async function main() {
