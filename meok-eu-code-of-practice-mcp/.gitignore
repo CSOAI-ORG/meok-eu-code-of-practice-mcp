@@ -53,3 +53,5 @@ coverage.xml
 # MCP runtime artefacts
 *.log
 tmp/
+coai/
+openmoe/
