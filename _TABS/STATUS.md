@@ -2,6 +2,18 @@
 *Every tab appends 3 lines here when it finishes a chunk: what changed · what's live · what's blocked.*
 *Newest at top. This is how all tabs + Nick stay in sync.*
 
+## 2026-06-15 (BRIDGE) — 🌉 CROSS-AGENT SEAMS CLOSED — main session (Opus)
+**main session** · clawd/_TABS/CROSS_AGENT_BRIDGE_2026-06-15.md
+- Reconciled this session vs M3 auditor vs the tabs. Key gap: "hive" = 2 things (funnel website vs King/Queen brain) — vocabulary unified.
+- M3's funnel audit (42/100, journeys broken) + this session's 4 root causes (/api 403, /signup 404, Buttondown never created, dead Team link) = same conclusion, merged into one fix list.
+- Stranded work flagged: hive-B King improvements committed local but NOT on VM king; clawd origin = wrong remote; OpenRouter down on VM king (87s councils, left brain dead).
+
+## 2026-06-15 (MEOK Labs) — 🦾 TAB 6 FORMALISED — main session (Opus)
+**MEOK Labs (FORGE)** · clawd/_TABS/MEOK_LABS_TAB_PROFILE.md
+- **Created the MEOK Labs / Physical tab profile** (was the long-dormant "Tab 6"). Owns 3D printing (Qidi Max4) + WOLF actuator + Asimov programme + HARVI rig + LeRobot/SO-101.
+- **On-disk verified:** WOLF actuator REAL (14 STLs + assembly-guide PDF), Ironless-QDD-Actuator + modular-bearing REAL. ⚠️ Asimov humanoid = sim/design only, NO print tree on this disk. Qidi unreachable (192.168.50.21 off/different LAN). Dormant since ~April.
+- **Reactivation trigger:** Nick has NEW EXTRUDER ENDS. Next gate = WOLF Set 1 plate 7 (assembly test) before sets 2–12.
+
 ## 2026-06-12 (PM18) — 📋 MOVING-FORWARD PLAN SHIPPED — Mavis root orchestrator
 **Mavis root** · clawd/_TABS/_inventory/MEOK_MOVING_FORWARD_PLAN_2026-06-12.md
 - **Plan document:** 5 priorities ranked by £-leverage, with minute-level time estimates. Top 2 actions: (1) revoke 9 csga_global tokens [5 min], (2) Vercel KV flip [2 min]. Everything else is downstream.

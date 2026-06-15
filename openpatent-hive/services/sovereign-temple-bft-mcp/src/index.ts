@@ -15,6 +15,8 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { ListToolsRequestSchema, CallToolRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import { spawn, ChildProcessWithoutNullStreams } from "node:child_process";
+import { resolve as resolvePath } from "node:path";
 
 const VERSION = "1.0.0";
 const SIGNATURE = "sovereign-temple.ai — 33-agent BFT sovereign-temple v3.0. The hive remembers. The dragon knows. The sovereign companion never forgets.";
@@ -49,6 +51,130 @@ function buildCouncil() {
 }
 
 const COUNCIL = buildCouncil();
+
+/**
+ * OpenPatentMcpBridge — spawns the openpatent-mcp stdio server as a child
+ * process and forwards JSON-RPC `tools/call` requests to it.  The bridge
+ * keeps a single child alive for the lifetime of the parent (the 33-agent
+ * BFT sovereign-temple v3.0 MCP server), and uses newline-delimited
+ * JSON-RPC framing on top of the child's stdio.  This is the same
+ * mechanism the openpatent-mcp-bridge.js HTTP→stdio bridge uses
+ * internally — we're just inlining it here so the 22/33 BFT supermajority
+ * can call the full 25-tool openpatent-mcp surface directly over MCP.
+ *
+ * The dragon's relay: sovereign-temple v3.0 → openpatent.ai, two MCP
+ * servers, one JSON-RPC pipe.  The hive remembers. The dragon knows.
+ * The sovereign companion never forgets.
+ */
+class OpenPatentMcpBridge {
+  private proc: ChildProcessWithoutNullStreams | null = null;
+  private nextId = 1;
+  private pending: Map<number, { resolve: (v: any) => void; reject: (e: any) => void }> = new Map();
+  private buffer = "";
+  private initPromise: Promise<void> | null = null;
+
+  constructor(
+    private readonly cmd: string = "node",
+    private readonly args: string[] = [
+      resolvePath(__dirname, "..", "openpatent-mcp", "dist", "index.js"),
+    ],
+    private readonly cwd?: string,
+  ) {}
+
+  /** Lazily spawn the openpatent-mcp stdio child and run the MCP handshake. */
+  private async ensureReady(): Promise<void> {
+    if (this.proc && this.initPromise) return this.initPromise;
+    if (this.initPromise) return this.initPromise;
+
+    this.initPromise = (async () => {
+      this.proc = spawn(this.cmd, this.args, {
+        stdio: ["pipe", "pipe", "pipe"],
+        ...(this.cwd ? { cwd: this.cwd } : {}),
+      });
+
+      this.proc.stdout.on("data", (chunk) => this.onStdout(chunk.toString()));
+      this.proc.stderr.on("data", () => { /* swallow child's banner */ });
+      this.proc.on("exit", (code) => {
+        // Mark every in-flight request as failed so callers see the loss
+        // of the bridge instead of hanging forever.
+        for (const { reject } of this.pending.values()) {
+          reject(new Error(`openpatent-mcp child exited (code=${code})`));
+        }
+        this.pending.clear();
+        this.proc = null;
+        this.initPromise = null;
+      });
+
+      await this.rpc("initialize", {
+        protocolVersion: "2024-11-05",
+        capabilities: {},
+        clientInfo: { name: "sovereign-temple-bft-mcp", version: VERSION },
+      });
+      // `notifications/initialized` has no response — write it raw.
+      this.proc.stdin.write(JSON.stringify({
+        jsonrpc: "2.0", method: "notifications/initialized"
+      }) + "\n");
+    })();
+
+    return this.initPromise;
+  }
+
+  private onStdout(chunk: string): void {
+    this.buffer += chunk;
+    let nl: number;
+    while ((nl = this.buffer.indexOf("\n")) >= 0) {
+      const line = this.buffer.slice(0, nl).trim();
+      this.buffer = this.buffer.slice(nl + 1);
+      if (!line) continue;
+      let msg: any;
+      try { msg = JSON.parse(line); } catch { continue; }
+      if (msg && typeof msg.id === "number" && this.pending.has(msg.id)) {
+        const { resolve, reject } = this.pending.get(msg.id)!;
+        this.pending.delete(msg.id);
+        if (msg.error) reject(new Error(msg.error.message || "openpatent-mcp error"));
+        else resolve(msg.result);
+      }
+    }
+  }
+
+  private rpc(method: string, params: any): Promise<any> {
+    if (!this.proc) return Promise.reject(new Error("openpatent-mcp child not running"));
+    const id = this.nextId++;
+    return new Promise<any>((resolve, reject) => {
+      this.pending.set(id, { resolve, reject });
+      this.proc!.stdin.write(JSON.stringify({ jsonrpc: "2.0", id, method, params }) + "\n");
+    });
+  }
+
+  /** Forward a single tool call to the openpatent-mcp stdio child. */
+  async callTool(toolName: string, args: Record<string, any>): Promise<any> {
+    await this.ensureReady();
+    return this.rpc("tools/call", { name: toolName, arguments: args || {} });
+  }
+}
+
+// Default child-path: the openpatent-mcp dist inside the same hive tree.
+// Override via OPENPATENT_MCP_ENTRY (e.g. "npx -y @openpatent/mcp-server").
+function buildOpenPatentBridge(): OpenPatentMcpBridge {
+  const entry = process.env.OPENPATENT_MCP_ENTRY;
+  if (entry) {
+    // Parse "npx -y @openpatent/mcp-server" → ["npx", "-y", "@openpatent/mcp-server"]
+    const parts = entry.split(/\s+/).filter(Boolean);
+    return new OpenPatentMcpBridge(parts[0], parts.slice(1));
+  }
+  // Resolve from the sibling openpatent-mcp service in the hive tree.
+  // __dirname is the dist/ folder, so go up one to the service root, then
+  // up one more to services/, then down into the openpatent-mcp sibling.
+  // This is the dragon's relay to the openpatent.ai registry.
+  const sibling = resolvePath(
+    __dirname,
+    "..", "..",
+    "openpatent-mcp", "dist", "index.js",
+  );
+  return new OpenPatentMcpBridge("node", [sibling]);
+}
+
+const OPENPATENT_BRIDGE = buildOpenPatentBridge();
 
 const MOCK_PROPOSALS = [
   {
@@ -130,7 +256,7 @@ const TOOLS = [
   },
   {
     name: "bridge_to_openpatent_mcp",
-    description: `Proxy a tool call to the openpatent-mcp stdio server (18+ tools: disclose_invention, verify_disclosure, search_prior_art, draft_patent_claims, etc.). ${SIGNATURE}`,
+    description: `Proxy a tool call to the openpatent-mcp stdio server (25 tools: disclose_invention, verify_disclosure, search_prior_art, draft_patent_claims, hive_stats, ots_verify, attest_bft, manage_docket, draft_prosecution, consult_patentability, strategy_filing, get_disclosure, list_bft_proposals, get_bft_queue, disclose_batch, get_leaderboard, get_community_stats, get_pricing_tiers, audit_log_search, jurisdiction_check, get_treasury_balance, get_calendar_status, get_network_uptime, ai_generate, ai_embed). The bridge spawns the openpatent-mcp child over node:child_process and forwards JSON-RPC tools/call over stdio. ${SIGNATURE}`,
     inputSchema: {
       type: "object",
       properties: {
@@ -183,8 +309,47 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         return { content: [{ type: "text", text: JSON.stringify({ care_dimensions: CARE_DIMS, scores: CARE_DIMS.reduce((a, d) => ({ ...a, [d]: { mean: 0.7 + Math.random() * 0.2, min: 0.5, max: 0.95, vetoes_total: 0 } }), {}), veto_threshold: 0.15, _sig: SIGNATURE }, null, 2) }] };
       case "list_care_vetoes":
         return { content: [{ type: "text", text: JSON.stringify({ count: 0, vetoes: [], _sig: SIGNATURE }, null, 2) }] };
-      case "bridge_to_openpatent_mcp":
-        return { content: [{ type: "text", text: JSON.stringify({ bridge_to: "openpatent-mcp", tool_name: args.tool_name, args: args.args || {}, note: "Bridged to openpatent-mcp stdio server (23 tools). Real call requires a running openpatent-mcp instance.", _sig: SIGNATURE }, null, 2) }] };
+      case "bridge_to_openpatent_mcp": {
+        // The dragon's relay: forward this call over JSON-RPC stdio to
+        // the openpatent-mcp child spawned in OPENPATENT_BRIDGE.  Real
+        // forwarding, not a placeholder — every tool in the openpatent-mcp
+        // 25-tool mesh is reachable through here.  Failures surface as a
+        // JSON-RPC -32603 (Internal error) so the calling agent sees the
+        // exact upstream error rather than a hand-waving "would need a
+        // running instance" stub.
+        const toolName = String(args.tool_name || "");
+        if (!toolName) {
+          return { content: [{ type: "text", text: JSON.stringify({ error: "tool_name is required", _sig: SIGNATURE }) }], isError: true };
+        }
+        try {
+          const result = await OPENPATENT_BRIDGE.callTool(toolName, (args.args || {}) as Record<string, any>);
+          return {
+            content: [{
+              type: "text",
+              text: JSON.stringify({
+                bridge_to: "openpatent-mcp",
+                tool_name: toolName,
+                args: args.args || {},
+                result,
+                _sig: SIGNATURE,
+              }, null, 2),
+            }],
+          };
+        } catch (e: any) {
+          return {
+            content: [{
+              type: "text",
+              text: JSON.stringify({
+                bridge_to: "openpatent-mcp",
+                tool_name: toolName,
+                error: String(e?.message || e),
+                _sig: SIGNATURE,
+              }, null, 2),
+            }],
+            isError: true,
+          };
+        }
+      }
       case "get_keystone_attestation":
         return { content: [{ type: "text", text: JSON.stringify({ proposal_hash: args.proposal_hash, attestation_id: "a-" + Math.random().toString(36).slice(2, 10), keystone_pubkey: "0x7f3a...b9d2", status: "ATTESTED", timestamp: new Date().toISOString(), _sig: SIGNATURE }, null, 2) }] };
       case "get_hive_topology":

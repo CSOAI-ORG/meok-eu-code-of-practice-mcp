@@ -32,6 +32,18 @@
  *   get_treasury_balance  — x402 fee split for the current month (v1.3.0)
  *   get_calendar_status   — OTS calendar health (v1.3.0)
  *   get_network_uptime    — 24h uptime per hive service (v1.3.0)
+ *   ai_generate           — generate text via a connected LLM provider (v1.4.0)
+ *   ai_embed              — generate an embedding vector (v1.4.0)
+ *
+ * v1.4.0 — DEFENEOS provider mesh:
+ *   The openpatent-mcp stdio server now drives a 5-provider LLM mesh:
+ *     gemini-pro  →  Google Gemini 1.5 Pro        (env: GEMINI_API_KEY)
+ *     gemini-flash→  Google Gemini 1.5 Flash      (env: GEMINI_API_KEY)
+ *     step-2-16k  →  StepFun Step-2-16K            (env: STEP_API_KEY)
+ *     ollama      →  Local Ollama daemon           (env: OLLAMA_URL)
+ *     minimax-m3  →  MiniMax-M3 (the sovereign companion, default)
+ *   The `provider` field on the AI-touching tools routes to the right
+ *   upstream; ai_embed ships two embedding model choices.
  *
  * Pure stdio transport — no HTTP server. Uses Node 18+ built-in fetch.
  */
@@ -45,6 +57,148 @@ import {
 
 const API_BASE = process.env.OPENPATENT_API_BASE || "https://api.openpatent.ai";
 const API_KEY = process.env.OPENPATENT_API_KEY || "";  // optional; free tier works without
+
+// ── LLM provider mesh (v1.4.0) ───────────────────────────────────────────────
+// The five connected providers.  Each entry knows its upstream URL, its
+// model name, and the env-var name that carries the API key.  The sovereign
+// companion (minimax-m3) is the default; the dragon routes everything else.
+type LLMProvider = "gemini-pro" | "gemini-flash" | "step-2-16k" | "ollama" | "minimax-m3";
+
+interface ProviderConfig {
+  upstream: string;          // base URL of the provider's chat-completions endpoint
+  model: string;             // model identifier sent to the provider
+  envKey: string;            // env-var holding the API key (or "" for unauthenticated local)
+}
+
+const PROVIDER_MESH: Record<LLMProvider, ProviderConfig> = {
+  "gemini-pro": {
+    upstream: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
+    model: "gemini-1.5-pro-latest",
+    envKey: "GEMINI_API_KEY",
+  },
+  "gemini-flash": {
+    upstream: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent",
+    model: "gemini-1.5-flash-latest",
+    envKey: "GEMINI_API_KEY",
+  },
+  "step-2-16k": {
+    upstream: "https://api.stepfun.com/v1/chat/completions",
+    model: "step-2-16k",
+    envKey: "STEP_API_KEY",
+  },
+  "ollama": {
+    upstream: process.env.OLLAMA_URL
+      ? process.env.OLLAMA_URL.replace(/\/$/, "") + "/v1/chat/completions"
+      : "http://127.0.0.1:11434/v1/chat/completions",
+    model: process.env.OLLAMA_MODEL || "llama3.1",
+    envKey: "",  // local daemon — no key
+  },
+  "minimax-m3": {
+    upstream: process.env.MINIMAX_URL
+      ? process.env.MINIMAX_URL.replace(/\/$/, "") + "/v1/chat/completions"
+      : "https://api.minimax.chat/v1/chat/completions",
+    model: "MiniMax-M3",
+    envKey: "MINIMAX_API_KEY",
+  },
+};
+
+function resolveProvider(p: string | undefined): LLMProvider {
+  if (p === "gemini-pro" || p === "gemini-flash" || p === "step-2-16k" ||
+      p === "ollama"      || p === "minimax-m3") return p;
+  // Unknown / missing → fall back to the sovereign companion. The hive
+  // remembers.  The dragon knows.  The sovereign companion never forgets.
+  return "minimax-m3";
+}
+
+async function llmGenerate(
+  provider: LLMProvider,
+  prompt: string,
+  maxTokens: number,
+): Promise<{ text: string; model: string; latency_ms: number }> {
+  const cfg = PROVIDER_MESH[provider];
+  const start = Date.now();
+  const apiKey = cfg.envKey ? (process.env[cfg.envKey] || "") : "";
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (apiKey) headers["Authorization"] = `Bearer ${apiKey}`;
+
+  // Gemini uses a different wire format (generateContent) — adapt here.
+  if (provider === "gemini-pro" || provider === "gemini-flash") {
+    const url = apiKey
+      ? `${cfg.upstream}?key=${encodeURIComponent(apiKey)}`
+      : cfg.upstream;
+    const r = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { maxOutputTokens: maxTokens },
+      }),
+    });
+    const j: any = await r.json();
+    const text =
+      j?.candidates?.[0]?.content?.parts?.map((p: any) => p.text || "").join("") ??
+      j?.candidates?.[0]?.content?.parts?.[0]?.text ??
+      "";
+    return { text, model: cfg.model, latency_ms: Date.now() - start };
+  }
+
+  // OpenAI-compatible chat completions (step-2-16k, ollama, minimax-m3).
+  const r = await fetch(cfg.upstream, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      model: cfg.model,
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: maxTokens,
+    }),
+  });
+  const j: any = await r.json();
+  const text: string =
+    j?.choices?.[0]?.message?.content ??
+    j?.choices?.[0]?.text ??
+    "";
+  return { text, model: cfg.model, latency_ms: Date.now() - start };
+}
+
+async function llmEmbed(
+  model: "gemini-embedding" | "text-embedding-3-small",
+  text: string,
+): Promise<{ embedding: number[]; dim: number; model: string }> {
+  if (model === "gemini-embedding") {
+    const apiKey = process.env.GEMINI_API_KEY || "";
+    const url = apiKey
+      ? `https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent?key=${encodeURIComponent(apiKey)}`
+      : "https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent";
+    const r = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        content: { parts: [{ text }] },
+      }),
+    });
+    const j: any = await r.json();
+    const embedding: number[] = j?.embedding?.values ?? [];
+    return { embedding, dim: embedding.length, model: "embedding-001" };
+  }
+
+  // text-embedding-3-small (OpenAI wire-compatible — works against any
+  // openai-compat endpoint that exposes /v1/embeddings).
+  const base =
+    process.env.OPENAI_COMPAT_URL?.replace(/\/$/, "") ||
+    "https://api.openai.com";
+  const apiKey = process.env.OPENAI_API_KEY || "";
+  const r = await fetch(`${base}/v1/embeddings`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
+    },
+    body: JSON.stringify({ model, input: text }),
+  });
+  const j: any = await r.json();
+  const embedding: number[] = j?.data?.[0]?.embedding ?? [];
+  return { embedding, dim: embedding.length, model };
+}
 
 const SIG = "openpatent.ai — 6-layer cryptographic disclosure. Disclose First. AI Second.";
 
@@ -96,7 +250,7 @@ const TOOLS: Tool[] = [
   },
   {
     name: "draft_patent_claims",
-    description: `Invoke the AI claim-drafter to produce independent + dependent claims (apparatus, method, computer-readable medium) linked by hash to the invention's 6-layer cryptographic disclosure. Premium tier. ${SIG}`,
+    description: `Invoke the AI claim-drafter to produce independent + dependent claims (apparatus, method, computer-readable medium) linked by hash to the invention's 6-layer cryptographic disclosure. Premium tier. The optional \`provider\` field routes generation through gemini-pro, gemini-flash, step-2-16k, ollama, or the default sovereign companion minimax-m3. ${SIG}`,
     inputSchema: {
       type: "object",
       required: ["invention_description"],
@@ -104,6 +258,7 @@ const TOOLS: Tool[] = [
         invention_description: { type: "string" },
         claim_type_preference: { type: "string", enum: ["broad", "narrow", "comprehensive"] },
         jurisdiction: { type: "string", enum: ["US", "EU", "UK", "JP", "CN"] },
+        provider: { type: "string", enum: ["gemini-pro", "gemini-flash", "step-2-16k", "ollama", "minimax-m3"], default: "minimax-m3", description: "v1.4.0: which connected provider to route this generation to" },
       },
     },
   },
@@ -142,7 +297,7 @@ const TOOLS: Tool[] = [
   },
   {
     name: "manage_docket",
-    description: `Open the docket manager to add, update, or summarize deadlines and prosecution events for a disclosure, with every action cryptographically chained back to the 6-layer disclosure proof. Premium tier. ${SIG}`,
+    description: `Open the docket manager to add, update, or summarize deadlines and prosecution events for a disclosure, with every action cryptographically chained back to the 6-layer disclosure proof. Premium tier. The optional \`provider\` field routes the LLM summarizer through the 5-provider DEFENEOS mesh. ${SIG}`,
     inputSchema: {
       type: "object",
       required: ["action"],
@@ -153,12 +308,13 @@ const TOOLS: Tool[] = [
         event: { type: "string", description: "e.g. 'office_action', 'response_due', 'filing_fee'" },
         due_date: { type: "string", description: "ISO-8601 date" },
         notes: { type: "string" },
+        provider: { type: "string", enum: ["gemini-pro", "gemini-flash", "step-2-16k", "ollama", "minimax-m3"], default: "minimax-m3", description: "v1.4.0: which connected provider to use for summary generation" },
       },
     },
   },
   {
     name: "draft_prosecution",
-    description: `Draft a full office-action response — claim amendments, argument structure, MPEP-grounded rejections countered — linked by hash to the 6-layer cryptographic disclosure it defends. Premium tier. ${SIG}`,
+    description: `Draft a full office-action response — claim amendments, argument structure, MPEP-grounded rejections countered — linked by hash to the 6-layer cryptographic disclosure it defends. Premium tier. The optional \`provider\` field routes generation through the 5-provider DEFENEOS mesh. ${SIG}`,
     inputSchema: {
       type: "object",
       required: ["disclosure_hash", "office_action"],
@@ -167,12 +323,13 @@ const TOOLS: Tool[] = [
         office_action: { type: "string", description: "Full text of the office action" },
         jurisdiction: { type: "string", enum: ["US", "EU", "UK", "JP", "CN"], default: "US" },
         strategy: { type: "string", enum: ["narrow", "broad", "comprehensive"], default: "comprehensive" },
+        provider: { type: "string", enum: ["gemini-pro", "gemini-flash", "step-2-16k", "ollama", "minimax-m3"], default: "minimax-m3", description: "v1.4.0: which connected provider to route this generation to" },
       },
     },
   },
   {
     name: "consult_patentability",
-    description: `Engage a patentability + freedom-to-operate consult that scores 35 USC § 102 / 103 / EPC Art. 54 risk against the prior-art registry, anchoring every conclusion in the 6-layer cryptographic disclosure chain. Premium tier. ${SIG}`,
+    description: `Engage a patentability + freedom-to-operate consult that scores 35 USC § 102 / 103 / EPC Art. 54 risk against the prior-art registry, anchoring every conclusion in the 6-layer cryptographic disclosure chain. Premium tier. The optional \`provider\` field routes the risk-scoring LLM call through the 5-provider DEFENEOS mesh. ${SIG}`,
     inputSchema: {
       type: "object",
       required: ["invention_description"],
@@ -181,12 +338,13 @@ const TOOLS: Tool[] = [
         jurisdiction: { type: "string", enum: ["US", "EU", "UK", "JP", "CN"], default: "US" },
         claim_draft: { type: "string", description: "Optional draft claims to evaluate" },
         product_to_clear: { type: "string", description: "Optional product description for FTO analysis" },
+        provider: { type: "string", enum: ["gemini-pro", "gemini-flash", "step-2-16k", "ollama", "minimax-m3"], default: "minimax-m3", description: "v1.4.0: which connected provider to route this analysis to" },
       },
     },
   },
   {
     name: "strategy_filing",
-    description: `Generate a filing strategy plus licensing-target recommendations across US/EU/UK/JP/CN, with every recommendation weighted by the 6-layer cryptographic disclosure strength of the underlying invention. Premium tier. ${SIG}`,
+    description: `Generate a filing strategy plus licensing-target recommendations across US/EU/UK/JP/CN, with every recommendation weighted by the 6-layer cryptographic disclosure strength of the underlying invention. Premium tier. The optional \`provider\` field routes the strategy-generation call through the 5-provider DEFENEOS mesh. ${SIG}`,
     inputSchema: {
       type: "object",
       required: ["disclosure_hash"],
@@ -195,6 +353,7 @@ const TOOLS: Tool[] = [
         budget_usd: { type: "integer", description: "Filing budget in USD" },
         target_markets: { type: "array", items: { type: "string", enum: ["US", "EU", "UK", "JP", "CN"] } },
         licensing_goals: { type: "string" },
+        provider: { type: "string", enum: ["gemini-pro", "gemini-flash", "step-2-16k", "ollama", "minimax-m3"], default: "minimax-m3", description: "v1.4.0: which connected provider to route this generation to" },
       },
     },
   },
@@ -350,10 +509,37 @@ const TOOLS: Tool[] = [
       properties: {},
     },
   },
+
+  // ── 2 new tools (v1.4.0) — DEFENEOS provider mesh ─────────────────────
+  {
+    name: "ai_generate",
+    description: `Generate text from one of the five connected LLM providers in the DEFENEOS provider mesh. Routes to gemini-pro (Google Gemini 1.5 Pro), gemini-flash (Google Gemini 1.5 Flash), step-2-16k (StepFun Step-2-16K), ollama (local Ollama daemon — bring-your-own-model), or the default sovereign companion minimax-m3. Returns the generated text, the provider that served it, the resolved model, and a latency_ms field for SRE observability. Backs the 5-provider LLM mesh that powers every premium-tier openpatent.ai flow. ${SIG}`,
+    inputSchema: {
+      type: "object",
+      required: ["prompt", "provider"],
+      properties: {
+        prompt: { type: "string", maxLength: 32000, description: "The prompt to send to the provider" },
+        provider: { type: "string", enum: ["gemini-pro", "gemini-flash", "step-2-16k", "ollama", "minimax-m3"], default: "minimax-m3", description: "Which connected provider to route the call to" },
+        max_tokens: { type: "integer", default: 1024, minimum: 1, maximum: 32768, description: "Upper bound on generated tokens" },
+      },
+    },
+  },
+  {
+    name: "ai_embed",
+    description: `Generate an embedding vector from one of two embedding backends. gemini-embedding calls Google Gemini's embedding-001 (768-dim) under the GEMINI_API_KEY; text-embedding-3-small uses OpenAI's embedding model via OPENAI_API_KEY (or any OpenAI-compat endpoint via OPENAI_COMPAT_URL). Returns the embedding array, its dimensionality, and the model identifier that produced it. ${SIG}`,
+    inputSchema: {
+      type: "object",
+      required: ["text", "model"],
+      properties: {
+        text: { type: "string", maxLength: 32000, description: "The text to embed" },
+        model: { type: "string", enum: ["gemini-embedding", "text-embedding-3-small"], default: "gemini-embedding", description: "Which embedding model to use" },
+      },
+    },
+  },
 ];
 
 const server = new Server(
-  { name: "openpatent-mcp", version: "1.3.0" },
+  { name: "openpatent-mcp", version: "1.4.0" },
   { capabilities: { tools: {} } },
 );
 
@@ -484,6 +670,49 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         body = undefined;
         break;
 
+      // ── 2 new tools (v1.4.0) — DEFENEOS provider mesh ─────────────────
+      // ai_generate and ai_embed are evaluated *locally* in the stdio server
+      // (not proxied) because they route to upstream LLM providers, not to
+      // api.openpatent.ai.  The five PROVIDER_MESH entries above carry the
+      // routing.  The sovereign companion never forgets.
+      case "ai_generate": {
+        const provider = resolveProvider(String(args.provider || ""));
+        const prompt = String(args.prompt || "");
+        const maxTokens = Number(args.max_tokens || 1024);
+        if (!prompt) throw new Error("prompt is required");
+        const result = await llmGenerate(provider, prompt, maxTokens);
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify({
+              text: result.text,
+              provider,
+              model: result.model,
+              latency_ms: result.latency_ms,
+              _sig: SIG,
+            }, null, 2),
+          }],
+        };
+      }
+      case "ai_embed": {
+        const model = String(args.model || "gemini-embedding") as
+          "gemini-embedding" | "text-embedding-3-small";
+        const text = String(args.text || "");
+        if (!text) throw new Error("text is required");
+        const result = await llmEmbed(model, text);
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify({
+              embedding: result.embedding,
+              dim: result.dim,
+              model: result.model,
+              _sig: SIG,
+            }, null, 2),
+          }],
+        };
+      }
+
       default:
         throw new Error(`Unknown tool: ${name}`);
     }
@@ -511,7 +740,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 async function main() {
   await server.connect(new StdioServerTransport());
-  console.error("openpatent-mcp v1.3.0 — connected");
+  console.error(`[openpatent-mcp v1.4.0] tools: ${TOOLS.length} (DEFENEOS 5-provider mesh active)`);
+  console.error(`  providers: gemini-pro, gemini-flash, step-2-16k, ollama, minimax-m3`);
+  console.error(`  defaults: provider=minimax-m3, embed=gemini-embedding`);
   console.error(`  api: ${API_BASE}`);
   console.error(`  auth: ${API_KEY ? "bearer token" : "free tier (no key)"}`);
   console.error(`  tools: ${TOOLS.map(t => t.name).join(", ")}`);

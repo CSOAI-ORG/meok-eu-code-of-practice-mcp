@@ -133,7 +133,7 @@ def _pick_with_weight(profile: str, side: str, backend: str) -> str:
 # (right-cloud and health profile can also use the compliance-llm override)
 _PICK = {
     ("left", "local"):  "qwen3:0.6b",      # bench winner — private, fast, free
-    ("left", "cloud"):  "gemini-lite",     # cheap fast Gemini (flash-lite) when local isn't enough
+    ("left", "cloud"):  "kimi-k2.7-code", # KIMI K2.7-CODE: top-tier code-specialized, reasoning tokens, $0.00035/call
     ("right", "local"): "qwen3:4b",        # bigger local when offline
     # right brain = frontier on Nick's credit. Default to the VERIFIED-working Gemini model.
     ("right", "cloud"): os.environ.get("MEOK_RIGHT_MODEL", "gemini"),  # → gemini-flash-latest

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "meok-annex-iii-impact-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "Automated EU AI Act Annex III risk classification and impact assessment engine"
 readme = "README.md"
 license = {file = "LICENSE"}

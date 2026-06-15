@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "meok-eu-code-of-practice-mcp"
-version = "1.0.0"
+version = "1.0.1"
 description = "MCP wrapping C2PA + watermarking as an EU Code of Practice on AI content marking (draft 2, June 2026) ready two-layer attestation manifest with public verify URLs."
 readme = "README.md"
 license = { text = "MIT" }

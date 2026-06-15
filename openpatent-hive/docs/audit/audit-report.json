@@ -1,10 +1,10 @@
 {
-  "total_issues": 126,
+  "total_issues": 142,
   "by_severity": {
     "SECURITY": 0,
     "RELIABILITY": 0,
     "DOC": 7,
-    "WARN": 106,
+    "WARN": 122,
     "SOVEREIGNTY": 13
   },
   "critical_issues": 0,
@@ -737,9 +737,93 @@
     },
     {
       "severity": "WARN",
+      "file": "services/openpatent-ipcastle-mcp/src/index.ts",
+      "line": "6",
+      "message": "hardcoded external URL: * Proxies to: https://api.openpatent.ai and https://ipcastle.ai (white-label)"
+    },
+    {
+      "severity": "WARN",
+      "file": "services/openpatent-ipcastle-mcp/src/index.ts",
+      "line": "33",
+      "message": "hardcoded external URL: const IPCASTLE_BASE = process.env.IPCASTLE_BASE || \"https://ipcastle.ai\";"
+    },
+    {
+      "severity": "WARN",
+      "file": "services/openpatent-mcp/src/index.ts",
+      "line": "75",
+      "message": "hardcoded external URL: upstream: \"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pr"
+    },
+    {
+      "severity": "WARN",
+      "file": "services/openpatent-mcp/src/index.ts",
+      "line": "80",
+      "message": "hardcoded external URL: upstream: \"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-fl"
+    },
+    {
+      "severity": "WARN",
+      "file": "services/openpatent-mcp/src/index.ts",
+      "line": "85",
+      "message": "hardcoded external URL: upstream: \"https://api.stepfun.com/v1/chat/completions\","
+    },
+    {
+      "severity": "WARN",
+      "file": "services/openpatent-mcp/src/index.ts",
+      "line": "99",
+      "message": "hardcoded external URL: : \"https://api.minimax.chat/v1/chat/completions\","
+    },
+    {
+      "severity": "WARN",
+      "file": "services/openpatent-mcp/src/index.ts",
+      "line": "170",
+      "message": "hardcoded external URL: ? `https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedCo"
+    },
+    {
+      "severity": "WARN",
+      "file": "services/openpatent-mcp/src/index.ts",
+      "line": "171",
+      "message": "hardcoded external URL: : \"https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedCo"
+    },
+    {
+      "severity": "WARN",
+      "file": "services/openpatent-mcp/src/index.ts",
+      "line": "188",
+      "message": "hardcoded external URL: \"https://api.openai.com\";"
+    },
+    {
+      "severity": "WARN",
       "file": "services/landing-site/next-env.d.ts",
       "line": "5",
       "message": "hardcoded external URL: // see https://nextjs.org/docs/basic-features/typescript for more information."
+    },
+    {
+      "severity": "WARN",
+      "file": "services/openpatent-legal-mcp/src/index.ts",
+      "line": "7",
+      "message": "hardcoded external URL: *             https://legalof.ai (white-label landing)"
+    },
+    {
+      "severity": "WARN",
+      "file": "services/openpatent-legal-mcp/src/index.ts",
+      "line": "34",
+      "message": "hardcoded external URL: const LEGALOF_BASE = process.env.LEGALOF_BASE || \"https://legalof.ai\";"
+    },
+    {
+      "severity": "WARN",
+      "file": "services/openpatent-legal-mcp/src/index.ts",
+      "line": "293",
+      "message": "hardcoded external URL: calendar_invite_url: `https://legalof.ai/calendar/${args.disclosure_hash.slice(0"
+    },
+    {
+      "severity": "WARN",
+      "file": "services/openpatent-gaming-mcp/src/index.ts",
+      "line": "6",
+      "message": "hardcoded external URL: * Proxies to: https://api.openpatent.ai and https://harvi.ai (white-label)"
+    },
+    {
+      "severity": "WARN",
+      "file": "services/openpatent-gaming-mcp/src/index.ts",
+      "line": "33",
+      "message": "hardcoded external URL: const HARVI_BASE = process.env.HARVI_BASE || \"https://harvi.ai\";"
     },
     {
       "severity": "WARN",
@@ -761,8 +845,20 @@
     },
     {
       "severity": "WARN",
+      "file": "services/openpatent-sovereign-mcp/src/index.ts",
+      "line": "6",
+      "message": "hardcoded external URL: * Proxies to: https://api.openpatent.ai and https://sovereign-temple.ai"
+    },
+    {
+      "severity": "WARN",
+      "file": "services/openpatent-sovereign-mcp/src/index.ts",
+      "line": "33",
+      "message": "hardcoded external URL: const SOVEREIGN_BASE = process.env.SOVEREIGN_TEMPLE_BASE || \"https://sovereign-t"
+    },
+    {
+      "severity": "WARN",
       "file": "services/sovereign-temple-bft-mcp/src/index.ts",
-      "line": "181",
+      "line": "307",
       "message": "hardcoded external URL: return { content: [{ type: \"text\", text: JSON.stringify({ proposal_hash: args.pr"
     }
   ]

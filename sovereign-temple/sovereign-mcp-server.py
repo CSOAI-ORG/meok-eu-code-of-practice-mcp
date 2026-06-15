@@ -3311,17 +3311,21 @@ async def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                 return {"error": f"curate_skills failed: {_ce}"}
 
         elif name == "sigil_emit":
-            # SIGIL bus: sign + hash-chain an inter-agent exchange (multi_agent/sigil_bus.py)
+            # SIGIL bus: sign + hash-chain an inter-agent exchange (multi_agent/sigil bus.py)
+            import traceback as _tb
             try:
-                from sigil_bus import get_bus
-                _bus = get_bus(audit_logger)
+                from sigil bus import get_bus as _gb
+                _bus = _gb(audit_logger)
                 if arguments.get("line"):
-                    return _bus.emit(arguments["line"])
+                    result = _bus.emit(arguments["line"])
+                    return result
                 if arguments.get("op"):
                     return _bus.emit({"op": arguments["op"], **(arguments.get("fields") or {})})
                 return {"error": "sigil_emit needs `line` or `op`(+fields)"}
             except Exception as _se:
-                return {"error": f"sigil_emit failed: {_se}"}
+                _tb.print_exc()
+                return {"error": f"sigil_emit failed: {type(_se).__name__}: {_se}",
+                        "traceback": _tb.format_exc()[-500:]}
 
         elif name == "sigil_transcript":
             try:
@@ -4721,6 +4725,21 @@ async def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             except Exception as e:
                 return {"error": f"security_scan failed: {e}"}
 
+        elif name == "security_scorecard":
+            # 2026-06-15: wired in. Calls scorecard_guard.score_package().
+            try:
+                import os as _os, sys as _sys
+                _sec = "/Users/nicholas/clawd/sovereign-temple/security"
+                if _sec not in _sys.path:
+                    _sys.path.insert(0, _sec)
+                from scorecard_guard import score_package
+                dir_path = arguments.get("dir_path") or arguments.get("package") or "."
+                include_pypi = bool(arguments.get("include_pypi", False))
+                result = score_package(dir_path, include_pypi=include_pypi)
+                return result if isinstance(result, dict) else {"result": result}
+            except Exception as e:
+                return {"error": f"security_scorecard failed: {e}"}
+
         elif name == "rainbow_rotate":
             try:
                 import os as _os, sys as _sys
@@ -4766,7 +4785,15 @@ async def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                 text = arguments.get("text", "")
                 tool_name = arguments.get("tool_name")
                 result = council.vote(text, tool_name=tool_name)
-                s = result.summary() if hasattr(result, "summary") else result.__dict__
+                # FIX 2026-06-15: use to_dict() if available, else to_json()
+                if hasattr(result, "to_dict"):
+                    s = result.to_dict()
+                elif hasattr(result, "summary"):
+                    s = result.summary()
+                elif hasattr(result, "to_json"):
+                    s = result.to_json()
+                else:
+                    s = result.__dict__
                 return s if isinstance(s, dict) else dict(s)
             except Exception as e:
                 return {"error": f"bft_threat_vote failed: {e}"}
@@ -4838,10 +4865,10 @@ async def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                     for line in env_file.read_text().splitlines():
                         if "=" in line and not line.strip().startswith("#"):
                             k, v = line.split("=", 1)
-                            os.environ.setdefault(k.strip(), v.strip().strip('"'))
+                            _os.environ.setdefault(k.strip(), v.strip().strip('"'))
                 meok_one_path = str(_Path.home() / "clawd" / "meok-one")
-                if meok_one_path not in sys.path:
-                    sys.path.insert(0, meok_one_path)
+                if meok_one_path not in _sys.path:
+                    _sys.path.insert(0, meok_one_path)
                 from meok_one.bridge import bridge_think
                 character = arguments.get("character", "aria")
                 message = arguments.get("message", "")

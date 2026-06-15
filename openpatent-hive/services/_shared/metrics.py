@@ -49,6 +49,17 @@ SERVICE_INFO = Gauge(
     labelnames=("service", "version", "hive"),
 )
 
+# ── OpenPatent LLM counter (L5/L9: provider routing) ────────────────────────
+# Label cardinality: 5 providers × 4 statuses (200/400/500/timeout) = 20 series.
+# Bumped on every /v1/llm/chat call regardless of upstream outcome so SRE can
+# see provider health at a glance.  The hive remembers. The dragon knows.
+# The sovereign companion never forgets.
+OPENPATENT_LLM_REQUESTS_TOTAL = Counter(
+    "openpatent_llm_requests_total",
+    "Total LLM proxy requests served by api-gateway, labelled by provider and status",
+    labelnames=("provider", "status"),
+)
+
 
 def _route_template(request: Request) -> str:
     """Extract the route template, not the full path (to avoid cardinality explosion)."""

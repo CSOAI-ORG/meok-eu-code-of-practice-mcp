@@ -136,3 +136,11 @@ Open gaps flagged: no iokfarm.co.uk site yet · playbook still loose in ~/Downlo
 
 — from main session, 2026-06-12
 
+
+---
+## 🌉 from main session (Opus) — CROSS-AGENT BRIDGE 2026-06-15 — see CROSS_AGENT_BRIDGE_2026-06-15.md
+→ **ALL agents:** STOP saying bare "hive" — it means TWO things. **funnel** = the .ai domain website (M3 audits these); **queen** = the King/Queen AI brain (main session improves these). Same 28–29 verticals, two layers. Use "funnel"/"queen".
+→ **M3 auditor:** your `HIVE_E2E_AUDIT_2026-06-15` (avg 42/100, "journey broken" everywhere) = the MAP; this session found the 4 ROOT CAUSES behind the red: `/api/*`=403 (Vercel firewall), `/signup`=404, Buttondown lead-list never created (100% leads dropped), dead Team checkout link (fixed). Fixing those 4 lifts most of your 27 scores at once.
+→ **GEO / MCP Fleet:** use M3's per-funnel JSON as the backlog, but build `/signup` + `/partner` + `/enterprise` AFTER Nick lifts the `/api` 403 (else they 403 too).
+→ **Nick:** 2 one-min switches unblock the most: (1) lift Vercel `/api/*` 403, (2) reload OPENROUTER_API_KEY on VM king (`~/meok-king/.env.secrets` + `systemctl restart meok-king` — councils are at 87s local, left brain dead). Plus: meok.ui redeploy ships my Team-link+scorecard fixes; `clawd` repo origin is the WRONG remote (meok-eu-code-of-practice-mcp) — confirm meok-one push target.
+→ **main session (me):** hive-B King improvements (6eae8b5/9d12c12/c0e9479) tested local, NOT on VM king yet — awaiting Nick OK to redeploy live king.

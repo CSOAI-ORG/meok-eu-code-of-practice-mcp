@@ -38,7 +38,7 @@ SERVICE_CONFIGS = {
         # initialize returns 200 with proper JSON-RPC + serverInfo. venv recreated 05:21Z.
         # 2026-06-15 18:00Z: WORM_GUARD_ENFORCE=1 + SECURITY_BRAIN_ENFORCE=1 flipped on after Phase-1
         # log-only soak. SOV3 task task_f4e66284. W1+W2+W8 green; 4 SOV3 tools verified pass.
-        "start_cmd": "cd /Users/nicholas/clawd/sovereign-temple && PORT=3101 HOST=0.0.0.0 WORM_GUARD_ENFORCE=1 SECURITY_BRAIN_ENFORCE=1 SECURITY_BRAIN_VETO_PAYMENT=0 exec /Users/nicholas/clawd/sovereign-temple/.venv/bin/gunicorn sovereign-mcp-server:app --worker-class uvicorn.workers.UvicornWorker --workers 2 --bind 0.0.0.0:3101 --max-requests 1000 --max-requests-jitter 50 --timeout 120 --graceful-timeout 30 --access-logfile /tmp/sov3-access.log --error-logfile /tmp/sov3-error.log --log-level info",
+        "start_cmd": "cd /Users/nicholas/clawd/sovereign-temple && PORT=3101 HOST=0.0.0.0 WORM_GUARD_ENFORCE=1 SECURITY_BRAIN_ENFORCE=1 SECURITY_BRAIN_VETO_PAYMENT=0 OPENROUTER_API_KEY=***\",",
         "depends_on": ["postgres", "redis"],
         "health_endpoint": "http://localhost:3101/health",
     },

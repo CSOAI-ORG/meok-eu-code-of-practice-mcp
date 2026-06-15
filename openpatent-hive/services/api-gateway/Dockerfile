@@ -30,8 +30,14 @@ COPY services/api-gateway/rate_limit.py /opt/openpatent-api/
 COPY services/api-gateway/hive_stats.py /opt/openpatent-api/
 COPY services/api-gateway/ots_verifier.py /opt/openpatent-api/
 
-# Shared Prometheus metrics module
+# Shared Prometheus metrics module + sigil chain
 COPY services/_shared/metrics.py /opt/_shared/metrics.py
+# The shim (services/sigil.py) re-exports from services/_shared/sigil.py
+# We need both, with services/sigil.py landing at /opt/_shared/sigil.py
+# AND services/_shared/sigil.py landing at /opt/_shared/_shared/sigil.py
+COPY services/_shared/sigil.py /opt/_shared/_shared/sigil.py
+COPY services/_shared/sigil_chain.py /opt/_shared/_shared/sigil_chain.py
+COPY services/sigil.py /opt/_shared/sigil.py
 
 ENV PATENTMCP_URL=http://patentmcp:3210 \
     WORKER_URL=http://worker:3212 \
