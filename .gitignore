@@ -228,3 +228,16 @@ meok-skills/
 meok-slack-app/
 meok-teams-app/
 meok-vscode-extension/
+
+csoai-org-v2/.env.example
+
+meok-marketing/.env.example
+
+csoai-platform/.env
+
+csoai-platform/.env.example
+
+meok-oneos/.env.example
+
+# Rust build artifacts (accidentally tracked)
+solana-sbt/target/
