@@ -300,14 +300,24 @@ def queen(domain: str, message: str, brain: str = "council", tier: str | None = 
     # queen reads as a clean SME. Conservative: only when the reply OPENS with a greeting AND
     # substantial content (>40 chars) remains, so real answers are never mutilated.
     if brain != "council" and _reply:
-        _greet = re.compile(
-            r"^\s*(?:oh[,!.\s]+)?(?:hello|hi|hey|greetings|welcome)\b[^.!?]*[.!?]+\s*"
-            r"(?:(?:how are you|how're you|i'd love to|i'm curious|before we|hope you|"
-            r"what brings you)[^.!?]*[.!?]+\s*)*",
-            re.I)
-        _m = _greet.match(_reply)
-        if _m and len(_reply) - _m.end() > 40:
-            _reply = _reply[_m.end():].lstrip()
+        # Drop LEADING companion sentences (greeting / "how are you" / "I hope you…") up to
+        # the first substantive sentence, so the queen reads as an SME. Sentence-based (more
+        # robust than a prefix regex) and conservative: stops at the first non-companion
+        # sentence and only applies if >40 chars of real content remain.
+        _comp = re.compile(
+            r"\b(how are you|how're you|hope you|i'd love to|i'm curious|calm and kind|"
+            r"truly doing|truly hope|before we (?:dive|begin)|how can i (?:help|assist)|"
+            r"what brings you|warm(?:est)? (?:greetings|wishes))\b", re.I)
+        _hello = re.compile(r"^\s*(?:oh[,!.\s]+)?(?:hello|hi|hey|greetings|welcome)\b", re.I)
+        _parts = re.split(r"(?<=[.!?])\s+", _reply)
+        _drop = 0
+        for _s in _parts:
+            if _comp.search(_s) or _hello.match(_s):
+                _drop += 1
+            else:
+                break
+        if _drop and len(" ".join(_parts[_drop:])) > 40:
+            _reply = " ".join(_parts[_drop:]).lstrip()
 
     out = {
         "domain": domain,
