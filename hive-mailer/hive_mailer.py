@@ -11,7 +11,7 @@ Queue: ~/clawd/hive-mailer/queue.jsonl   {"to":..,"subject":..,"body":..,"status
 Log:   ~/clawd/hive-mailer/mailer.log
 """
 import json, os, random, time, urllib.request
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 
 HOME = Path(__file__).parent
@@ -76,22 +76,37 @@ def main():
         # a real "domain not verified" state. Only treat it as a hard failure
         # if 3 consecutive probes (30 min apart) all 403. Persist strike count
         # in HOME/.probe_strikes so we survive restarts.
+        # v2 (15 Jun 06:50Z): cap at 9 to prevent log spam ("strike 47/3") if Resend
+        # is genuinely down. Auto-decay to 0 every 24h so a recovered upstream
+        # doesn't keep us gated forever.
         STRIKES = HOME / ".probe_strikes"
+        STRIKE_TS = HOME / ".probe_strikes_ts"
         strikes = int(STRIKES.read_text()) if STRIKES.exists() else 0
+        if STRIKE_TS.exists():
+            try:
+                last = datetime.fromisoformat(STRIKE_TS.read_text().strip())
+                if (datetime.now() - last).total_seconds() > 86400:
+                    log(f"strike counter stale ({strikes}, {(datetime.now()-last).total_seconds()/3600:.0f}h old) — auto-resetting to 0")
+                    strikes = 0
+            except Exception:
+                strikes = 0  # corrupt timestamp file, reset
+        STRIKE_CAP = 9
 
         if not probe.get("id"):
-            strikes += 1
+            strikes = min(strikes + 1, STRIKE_CAP)
             STRIKES.write_text(str(strikes))
+            STRIKE_TS.write_text(datetime.now().isoformat())
             if strikes < 3:
                 log(f"probe 403 strike {strikes}/3 — assuming flap, proceeding")
                 # fall through to send
             else:
-                log(f"probe 403 strike {strikes}/3 — waiting")
+                log(f"probe 403 strike {strikes}/{STRIKE_CAP} (gate at 3) — waiting")
                 return
         else:
             if strikes:
                 log(f"probe recovered after {strikes} strikes — proceeding")
             STRIKES.write_text("0")
+            STRIKE_TS.write_text(datetime.now().isoformat())
             log(f"status flag={status} but probe SENT ({probe['id']}) — proceeding")
     sent_today = int(SENT_TODAY.read_text()) if SENT_TODAY.exists() else 0
     if sent_today >= DAILY_CAP:
