@@ -100,6 +100,39 @@
     </section>
 
     
+    <section class="max-w-6xl mx-auto px-6 py-16 border-y border-slate-800">
+      <div class="grid md:grid-cols-2 gap-10 items-center">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">Try <code class="text-gold font-mono">eu-ai-act-compliance-mcp.assess</code></h2>
+          <p class="text-slate-400 mb-6">No installation required. This simulates the MCP tool call and shows the kind of output you can surface inside Claude, Cursor, Kimi or any A2A client.</p>
+          <ul class="space-y-3 text-sm text-slate-400">
+            <li class="flex items-start gap-2"><span class="text-gold">✓</span> Open-source MCP server</li>
+            <li class="flex items-start gap-2"><span class="text-gold">✓</span> Local-first — no data leaves your machine</li>
+            <li class="flex items-start gap-2"><span class="text-gold">✓</span> Signed audit trail on Pro+</li>
+          </ul>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8">
+          <input id="mcp-input" type="text" class="w-full rounded-lg bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 focus:border-gold focus:outline-none" placeholder="Enter a sample input…">
+          <button onclick="runDemo()" class="mt-4 w-full px-5 py-3 rounded-lg bg-gold text-slate-950 font-bold hover:bg-gold-dark transition">Run eu-ai-act-compliance-mcp.assess</button>
+          <div id="mcp-output" class="mt-5 hidden rounded-xl bg-black/40 border border-slate-800 p-4 font-mono text-xs text-slate-300 whitespace-pre-wrap"></div>
+        </div>
+      </div>
+      <script>
+        function runDemo() {
+          var val = document.getElementById('mcp-input').value.trim();
+          var out = document.getElementById('mcp-output');
+          out.classList.remove('hidden');
+          if (!val) { out.textContent = 'Please enter a value first.'; return; }
+          out.innerHTML = '<span class="text-gold">→ Calling eu-ai-act-compliance-mcp.assess…</span>\n'
+            + 'argument: "' + val.replace(/"/g, '&quot;') + '"\n'
+            + 'status: ok\n'
+            + 'result_preview: Scan complete — SafetyOf processed your input in demo mode. Sign up to run it for real against your data.';
+        }
+      </script>
+    </section>
+
+
+    
     <section class="max-w-4xl mx-auto px-6 py-16 text-center">
       <h2 class="text-3xl md:text-4xl font-bold">Ready to make SafetyOf work for you?</h2>
       <p class="mt-4 text-slate-400">Start a free trial, request a demo, or apply to become a partner.</p>

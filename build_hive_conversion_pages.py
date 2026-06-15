@@ -332,6 +332,39 @@ def index_page(domain_key: str) -> str:
         </div>"""
         for m in cfg["mcps"]
     )
+    demo_tool = cfg["mcps"][0][0] if cfg.get("mcps") else f"{domain_key}-mcp.run"
+    demo_section = f"""
+    <section class="max-w-6xl mx-auto px-6 py-16 border-y border-slate-800">
+      <div class="grid md:grid-cols-2 gap-10 items-center">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">Try <code class="text-gold font-mono">{demo_tool}</code></h2>
+          <p class="text-slate-400 mb-6">No installation required. This simulates the MCP tool call and shows the kind of output you can surface inside Claude, Cursor, Kimi or any A2A client.</p>
+          <ul class="space-y-3 text-sm text-slate-400">
+            <li class="flex items-start gap-2"><span class="text-gold">✓</span> Open-source MCP server</li>
+            <li class="flex items-start gap-2"><span class="text-gold">✓</span> Local-first — no data leaves your machine</li>
+            <li class="flex items-start gap-2"><span class="text-gold">✓</span> Signed audit trail on Pro+</li>
+          </ul>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8">
+          <input id="mcp-input" type="text" class="w-full rounded-lg bg-slate-950 border border-slate-700 px-4 py-3 text-slate-100 focus:border-gold focus:outline-none" placeholder="Enter a sample input…">
+          <button onclick="runDemo()" class="mt-4 w-full px-5 py-3 rounded-lg bg-gold text-slate-950 font-bold hover:bg-gold-dark transition">Run {demo_tool}</button>
+          <div id="mcp-output" class="mt-5 hidden rounded-xl bg-black/40 border border-slate-800 p-4 font-mono text-xs text-slate-300 whitespace-pre-wrap"></div>
+        </div>
+      </div>
+      <script>
+        function runDemo() {{
+          var val = document.getElementById('mcp-input').value.trim();
+          var out = document.getElementById('mcp-output');
+          out.classList.remove('hidden');
+          if (!val) {{ out.textContent = 'Please enter a value first.'; return; }}
+          out.innerHTML = '<span class="text-gold">→ Calling {demo_tool}…</span>\\n'
+            + 'argument: "' + val.replace(/"/g, '&quot;') + '"\\n'
+            + 'status: ok\\n'
+            + 'result_preview: Scan complete — {cfg['name']} processed your input in demo mode. Sign up to run it for real against your data.';
+        }}
+      </script>
+    </section>
+"""
     body = f"""
     <section class="max-w-6xl mx-auto px-6 pt-16 pb-12 text-center">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-gold/30 bg-gold/10 text-gold text-xs font-semibold tracking-wide uppercase">
@@ -368,6 +401,8 @@ def index_page(domain_key: str) -> str:
         </div>
       </div>
     </section>
+
+    {demo_section}
 
     {cta_section(domain_key)}
     """

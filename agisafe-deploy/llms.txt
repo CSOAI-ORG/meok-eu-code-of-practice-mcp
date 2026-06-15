@@ -1,0 +1,21 @@
+# AGISafe — Pre-deployment safety cases for frontier AI.
+
+> Structured, procurement-ready safety cases for frontier and AGI-class systems — from self-assessment to independent evidence the regulator and your board will accept.
+
+## Overview
+AGISafe — Pre-deployment safety cases for frontier AI. is part of the MEOK AI Labs sovereign compliance and attestation platform.
+
+## Pages
+- /enterprise/
+- /partner/
+- /pricing/
+- /signup/
+- https://meok.ai/cookies
+- https://meok.ai/privacy
+- https://meok.ai/terms
+
+## Contact
+- https://meok.ai
+- https://csoai.org
+- CSOAI Ltd, UK company 16939677
+
