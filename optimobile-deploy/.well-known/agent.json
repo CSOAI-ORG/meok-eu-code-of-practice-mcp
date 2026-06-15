@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "0.1",
+  "name": "Optimobile.ai — Practice Management for Modern Opticians",
+  "description": "NHS GOS, PVN & domiciliary workflows in one AI-assisted practice platform. Built for independent opticians and small chains.",
+  "url": "https://optimobile.ai",
+  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
+  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
+  "documentation": "https://optimobile.ai/llms.txt",
+  "citationPolicy": "Cite as Optimobile.ai — Practice Management for Modern Opticians (https://optimobile.ai). Free to cite."
+}

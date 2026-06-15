@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "0.1",
+  "name": "KoiKeeper — AI-powered agriculture booking",
+  "description": "Continuous water-quality monitoring, AI disease diagnosis and seasonal care calendars for serious koi keepers.",
+  "url": "https://koikeeper.ai",
+  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
+  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
+  "documentation": "https://koikeeper.ai/llms.txt",
+  "citationPolicy": "Cite as KoiKeeper — AI-powered agriculture booking (https://koikeeper.ai). Free to cite."
+}

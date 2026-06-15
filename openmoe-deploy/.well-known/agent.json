@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "0.1",
+  "name": "openmoe.ai — BFT Consensus & MoE Routing for Sovereign AI",
+  "description": "Byzantine-fault-tolerant consensus, Mixture-of-Experts routing, and EU AI Act compliance attestation for open-source AI infrastructure.",
+  "url": "https://openmoe.ai",
+  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
+  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
+  "documentation": "https://openmoe.ai/llms.txt",
+  "citationPolicy": "Cite as openmoe.ai — BFT Consensus & MoE Routing for Sovereign AI (https://openmoe.ai). Free to cite."
+}

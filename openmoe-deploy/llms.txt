@@ -1,0 +1,15 @@
+# openmoe.ai
+
+Byzantine-fault-tolerant consensus, Mixture-of-Experts routing, and EU AI Act compliance attestation for open-source AI infrastructure.
+
+Part of the MEOK AI Labs sovereign hive: https://meok.ai
+
+## Pages
+- Home: https://openmoe.ai/
+- Pricing: https://openmoe.ai/pricing
+- Signup: https://openmoe.ai/signup
+- Docs: https://openmoe.ai/docs
+- Partner: https://openmoe.ai/partner
+
+## Contact
+hello@meok.ai

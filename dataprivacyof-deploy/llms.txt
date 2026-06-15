@@ -1,0 +1,20 @@
+# DataPrivacyOf.AI
+
+> GDPR & AI Privacy MCP — part of the MEOK AI Labs compliance hive.
+
+## MCP server
+- `gdpr-compliance-ai-mcp`
+- PyPI: https://pypi.org/project/gdpr-compliance-ai-mcp/
+
+## Pages
+- /pricing — tiered bundles (Starter £79, Pro £199, Enterprise)
+- /signup — self-service signup
+- /partner — GRC boutique / reseller programme
+- /enterprise — procurement and SLA page
+- /industry/finance.html — financial services landing page
+- /industry/legal.html — legal services landing page
+- /industry/healthcare.html — healthcare landing page
+
+## Contact
+- https://meok.ai
+- CSOAI Ltd, UK company 16939677

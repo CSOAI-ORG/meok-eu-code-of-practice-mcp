@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "0.1",
+  "name": "GrabHire — AI-powered construction booking",
+  "description": "From one-off grabs to full-site labour dispatch — instant quotes, compliant operatives, and same-day booking.",
+  "url": "https://grabhire.ai",
+  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
+  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
+  "documentation": "https://grabhire.ai/llms.txt",
+  "citationPolicy": "Cite as GrabHire — AI-powered construction booking (https://grabhire.ai). Free to cite."
+}

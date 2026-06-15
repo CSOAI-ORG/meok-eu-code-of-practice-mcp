@@ -1,0 +1,14 @@
+# landlaw.ai
+
+Instant guidance on planning permission, permitted development, boundary disputes, and land law — reviewed by UK solicitors.
+
+Part of the MEOK AI Labs sovereign hive: https://meok.ai
+
+## Pages
+- Home: https://landlaw.ai/
+- Pricing: https://landlaw.ai/pricing
+- Signup: https://landlaw.ai/signup
+- Partner: https://landlaw.ai/partner
+
+## Contact
+hello@meok.ai

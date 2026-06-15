@@ -1,0 +1,15 @@
+# commercialvehicle.ai
+
+Buy, sell, and manage commercial vehicles with AI-powered listings, compliance checks, and fleet telemetry.
+
+Part of the MEOK AI Labs sovereign hive: https://meok.ai
+
+## Pages
+- Home: https://commercialvehicle.ai/
+- Pricing: https://commercialvehicle.ai/pricing
+- Signup: https://commercialvehicle.ai/signup
+- Partner: https://commercialvehicle.ai/partner
+- Enterprise: https://commercialvehicle.ai/enterprise
+
+## Contact
+hello@meok.ai

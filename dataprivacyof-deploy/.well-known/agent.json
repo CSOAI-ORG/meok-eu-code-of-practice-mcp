@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "0.1",
+  "name": "DataPrivacyOf.AI — GDPR & AI Privacy MCP",
+  "description": "GDPR & AI Privacy MCP — free quick-scan, paid compliance bundles and MCP-powered automation from MEOK AI Labs.",
+  "url": "https://dataprivacyof.ai",
+  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
+  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
+  "documentation": "https://dataprivacyof.ai/llms.txt",
+  "citationPolicy": "Cite as DataPrivacyOf.AI — GDPR & AI Privacy MCP (https://dataprivacyof.ai). Free to cite."
+}

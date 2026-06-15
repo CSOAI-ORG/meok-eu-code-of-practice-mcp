@@ -1,0 +1,16 @@
+# cobolbridge.ai
+
+Reverse-engineer, refactor, and migrate COBOL, mainframe JCL, and RPG to cloud-native services. Trusted by banks, insurers, and government agencies.
+
+Part of the MEOK AI Labs sovereign hive: https://meok.ai
+
+## Pages
+- Home: https://cobolbridge.ai/
+- Pricing: https://cobolbridge.ai/pricing
+- Signup: https://cobolbridge.ai/signup
+- Partner: https://cobolbridge.ai/partner
+- Enterprise: https://cobolbridge.ai/enterprise
+- Demo: https://cobolbridge.ai/demo
+
+## Contact
+hello@meok.ai

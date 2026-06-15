@@ -253,7 +253,7 @@ def shell(domain_key: str, page: str, title: str, description: str, body: str) -
     .text-gold {{ color: {ACCENT}; }}
     .bg-gold {{ background-color: {ACCENT}; }}
     .border-gold {{ border-color: {ACCENT}; }}
-    .hover\:bg-gold-dark:hover {{ background-color: #b08d3d; }}
+    .hover\\:bg-gold-dark:hover {{ background-color: #b08d3d; }}
     .gradient-radial {{ background: radial-gradient(circle at 50% 0%, rgba(201,168,76,0.12), transparent 50%); }}
   </style>
 </head>
@@ -357,7 +357,7 @@ def index_page(domain_key: str) -> str:
         <div class="md:flex md:items-center md:justify-between gap-8">
           <div class="md:w-2/3">
             <h2 class="text-2xl md:text-3xl font-bold">Connect via MCP</h2>
-            <p class="mt-4 text-slate-400">{cfg['name']} exposes flagship tools as Model Context Protocol servers. Trigger quotes, bookings, diagnosis or water-quality checks from any MCP client.</p>
+            <p class="mt-4 text-slate-400">{cfg['name']} exposes its flagship tools as Model Context Protocol servers — call them directly from any MCP client, agent or workflow.</p>
           </div>
           <div class="md:w-1/3 mt-6 md:mt-0">
             <a href="/enterprise/" class="block text-center bg-gold text-slate-950 px-6 py-3 rounded-xl font-bold hover:bg-gold-dark transition">Request MCP access</a>
@@ -371,7 +371,7 @@ def index_page(domain_key: str) -> str:
 
     {cta_section(domain_key)}
     """
-    return shell(domain_key, "", f"{cfg['name']} — AI-powered {cfg['sector']} booking", cfg['sub'], body)
+    return shell(domain_key, "", f"{cfg['name']} — {cfg['hero']}", cfg['sub'], body)
 
 
 def pricing_page(domain_key: str) -> str:
@@ -549,7 +549,17 @@ def write_site(key: str):
     print(f"Wrote {base} ({len(pages)} pages)")
 
 
+# Merge in extra hive clusters (compliance / governance / verticals) authored
+# as separate modules so each cluster can be edited without touching this file.
+for _mod in ("hive_extra_compliance", "hive_extra_governance", "hive_extra_verticals"):
+    try:
+        _m = __import__(_mod)
+        DOMAINS.update(_m.DOMAINS_EXTRA)
+    except Exception as _e:  # noqa: BLE001
+        print(f"WARN: could not load {_mod}: {_e}")
+
+
 if __name__ == "__main__":
     for key in DOMAINS:
         write_site(key)
-    print("Done. Ready for deployment.")
+    print(f"Done. {len(DOMAINS)} hive sites generated. Ready for deployment.")
