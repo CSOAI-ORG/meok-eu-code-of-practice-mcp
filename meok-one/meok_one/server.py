@@ -236,6 +236,17 @@ class Handler(BaseHTTPRequestHandler):
                 return p["sub"]
         return (body or {}).get("user_id", "web")
 
+    def _authed(self):
+        """Token gate for the tool/API surface (/mcp, /api/king, /api/queen). Defaults OPEN
+        (current localhost behaviour) so nothing breaks; when MEOK_KING_TOKEN is set in the
+        env, those endpoints REQUIRE `Authorization: Bearer <token>`. This makes the king
+        SAFE to expose (tunnel/relay for Hermes) without leaving it wide open."""
+        import os as _os
+        tok = _os.environ.get("MEOK_KING_TOKEN", "").strip()
+        if not tok:
+            return True  # no token configured -> open (localhost-only today)
+        return self.headers.get("Authorization", "") == f"Bearer {tok}"
+
     def _json(self, code, obj):
         body = json.dumps(obj).encode()
         self.send_response(code)
@@ -313,6 +324,10 @@ class Handler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
         qs = parse_qs(urlparse(self.path).query)
         reg = default()
+        # Token gate on the king API surface (no-op until MEOK_KING_TOKEN is set); HTML
+        # pages (/, /os, /constellation, …) stay public.
+        if (path.startswith("/api/king") or path.startswith("/api/queen")) and not self._authed():
+            return self._json(403, {"error": "forbidden: king token required"})
         if path == "/api/mcp/tools":
             from . import mcp_bridge as _mb
             return self._json(200, _mb.list_tools())
@@ -743,6 +758,10 @@ class Handler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
         b = self._body()
         uid = self._uid(b)   # cross-device identity (Bearer token → user_id; else 'web')
+        # Token gate on the tool/king surface (no-op until MEOK_KING_TOKEN is set).
+        if (path == "/mcp" or path.startswith("/api/king") or path.startswith("/api/queen")) \
+                and not self._authed():
+            return self._json(403, {"error": "forbidden: king token required"})
         try:
             # ---- /mcp : the KING as a real MCP server (JSON-RPC: initialize/tools/list/
             #      tools/call). Exposes king_ask / queen / list_hives so any MCP client can
