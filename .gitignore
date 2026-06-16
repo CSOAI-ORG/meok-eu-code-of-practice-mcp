@@ -255,3 +255,6 @@ csoai-master/
 .hive/data/
 .hive/tasks/
 .hive/logs/
+
+# External submodule / dependency
+openmoe/

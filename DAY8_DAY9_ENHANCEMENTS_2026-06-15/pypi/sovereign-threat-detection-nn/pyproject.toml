@@ -5,9 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "sovereign-threat-detection-nn"
 version = "0.1.0"
-description = "Threat detection NN - MEOK Sovereign Substrate SOV3"
+description = "Sovereign sovereign-threat-detection-nn"
 requires-python = ">=3.9"
 license = {text = "CC0-1.0"}
 
-[tool.setuptools.package_data]
-"*" = ["*.pkl"]
+[tool.setuptools]
+packages = ["sovereign-threat-detection-nn"]
+
+[tool.setuptools.package-data]
+sovereign-threat-detection-nn = ["*.pkl"]
