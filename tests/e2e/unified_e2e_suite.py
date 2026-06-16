@@ -1062,6 +1062,26 @@ class E2ERunner:
             assert "csoai_mcp_servers_total" in body, f"missing mcp_servers metric"
             return f"Prometheus: {len(body.split(chr(10)))} lines"
 
+
+        async def search_check():
+            """Day 14 BLOCK 7: /search across 348 servers."""
+            code, body = await self.client.request("GET", f"{base}/search?q=care&limit=5")
+            assert code == 200, f"status={code}"
+            assert "results" in body, f"no results: {list(body.keys())}"
+            return f"q=care: {body.get('total', '?')} matches"
+
+        async def search_by_tier():
+            code, body = await self.client.request("GET", f"{base}/search?tier=hvp&limit=3")
+            assert code == 200, f"status={code}"
+            return f"tier=hvp: {body.get('total', '?')} matches"
+
+        async def webhook_test_check():
+            """Day 14 BLOCK 5: /webhook/test for Stripe dashboard testing."""
+            code, body = await self.client.request("POST", f"{base}/webhook/test?customer_email=day14e2e@meok.ai&amount_gbp=199&kind=tier&item_id=pro")
+            assert code == 200, f"status={code}"
+            assert body.get("test") is True, f"not test response: {body}"
+            return f"webhook_test: {body.get('webhook_response', {}).get('recorded', '?')}"
+
         async def admin_check():
             """Day 13 BLOCK 5: admin dashboard — returns the full in-memory state."""
             code, body = await self.client.request("GET", f"{base}/admin")
@@ -1089,6 +1109,9 @@ class E2ERunner:
         await self.run_test(group, "/readyz", readyz_check, target=base)
         await self.run_test(group, "/metrics", metrics_check, target=base)
         await self.run_test(group, "/admin", admin_check, target=base)
+        await self.run_test(group, "/search?q=care", search_check, target=base)
+        await self.run_test(group, "/search?tier=hvp", search_by_tier, target=base)
+        await self.run_test(group, "/webhook/test", webhook_test_check, target=base)
 
     # ═══════════════════════════════════════════════════════════════════════════
     # MAIN ORCHESTRATOR
