@@ -96,6 +96,9 @@ sensors:
     - "_archive"
     - "dist"
     - ".next"
+    - ".hive/logs"
+    - ".hive/tasks"
+    - ".hive/data"
 
 # Quality gates
 quality:

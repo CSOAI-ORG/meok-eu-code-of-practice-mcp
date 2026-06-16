@@ -66,12 +66,25 @@ def find_placeholders(root: Path, patterns: list[str], ignore_dirs: set[str] | N
         ".eot", ".db", ".sqlite", ".sqlite3", ".pyc", ".pyo", ".so", ".dylib", ".dll",
         ".exe", ".bin", ".dat", ".pickle", ".pkl", ".npy", ".npz", ".onnx", ".pt",
     }
-    for p in root.rglob("*"):
-        if p.is_dir() or any(part in ignore for part in p.parts):
+    max_size = 5 * 1024 * 1024  # 5 MB
+
+    # Prefer tracked files for speed; fall back to filesystem walk.
+    files: list[Path] = []
+    git_ls = run("git ls-files", root)
+    if git_ls.returncode == 0 and git_ls.stdout.strip():
+        files = [root / line.strip() for line in git_ls.stdout.splitlines() if line.strip()]
+    else:
+        files = [p for p in root.rglob("*") if p.is_file()]
+
+    for p in files:
+        if any(part in ignore for part in p.parts):
             continue
         if p.suffix.lower() in binary_exts:
             continue
         try:
+            size = p.stat().st_size
+            if size > max_size:
+                continue
             text = p.read_text(encoding="utf-8", errors="ignore")
         except Exception:
             continue
