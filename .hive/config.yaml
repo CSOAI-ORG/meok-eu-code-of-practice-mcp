@@ -66,6 +66,13 @@ services:
     working_dir: "/Users/nicholas/clawd/.hive/scripts"
     env: {}
 
+  - name: "X402_MCP_SERVER"
+    port: 3950
+    url: "http://127.0.0.1:3950/health"
+    restart_command: "/usr/bin/python3 /Users/nicholas/clawd/.hive/scripts/x402_mcp_server.py"
+    working_dir: "/Users/nicholas/clawd/.hive/scripts"
+    env: {}
+
 # Task ingestion sources
 sensors:
   blocker_files:

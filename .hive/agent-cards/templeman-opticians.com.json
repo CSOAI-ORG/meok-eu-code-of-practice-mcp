@@ -1,0 +1,34 @@
+{
+  "agent_card": {
+    "name": "templeman-opticians.com",
+    "version": "1.0.0",
+    "signature_scheme": "ed25519",
+    "public_key": "X1gDHyPRj/6YJSsKuWYxF6uswGVnDTxsPyGO2IchSZI=",
+    "capabilities": [
+      "templeman-opticians_lookup",
+      "templeman-opticians_book",
+      "templeman-opticians_verify"
+    ],
+    "pheromones": [
+      "trail",
+      "mark",
+      "guard"
+    ],
+    "caste": "worker",
+    "payment": {
+      "x402": true,
+      "ap2": true,
+      "ucp": true,
+      "acp": true
+    },
+    "mcp_servers": [
+      "https://templeman-opticians.com/mcp/pricing",
+      "https://templeman-opticians.com/mcp/availability",
+      "https://templeman-opticians.com/mcp/booking"
+    ],
+    "a2a_endpoint": "https://templeman-opticians.com/a2a",
+    "issuer": "CSOAI Hive",
+    "issued_at": "2026-06-16T09:35:49.679770+00:00"
+  },
+  "signature": "gBss6v0NUuibE0dZHUMmUGfyMEsC62sVWa+oQGIFvkPTpHK51hTb/+DfkiXcdsz4qKvYok1a6X+7tbdbRXP4Cw=="
+}

@@ -92,6 +92,17 @@
       <ul id="secret-list"></ul>
     </div>
     <div class="panel">
+      <h2>Env Readiness</h2>
+      <div class="metric"><span>Keys ready</span><span id="env-ready" class="ok">-</span></div>
+      <div class="metric"><span>Blocked</span><span id="env-blocked" class="err">-</span></div>
+      <ul id="env-list"></ul>
+    </div>
+    <div class="panel">
+      <h2>Agent Cards</h2>
+      <div class="metric"><span>Cards generated</span><span id="agent-cards">-</span></div>
+      <div class="metric"><span>Public key</span><span id="agent-pubkey" class="ts">-</span></div>
+    </div>
+    <div class="panel">
       <h2>Recent Events</h2>
       <ul id="recent-events"></ul>
     </div>
@@ -197,6 +208,29 @@
       });
     }
 
+    async function loadEnvReadiness() {
+      const data = await fetchJSON(ROOT + "/logs/env_readiness_report.json");
+      if (!data) return;
+      document.getElementById("env-ready").textContent = (data.ready || []).length;
+      document.getElementById("env-blocked").textContent = (data.blocked || []).length;
+      const list = document.getElementById("env-list");
+      list.innerHTML = "";
+      (data.keys || []).forEach(k => {
+        const li = document.createElement("li");
+        const cls = ["env", "file"].includes(k.status) ? "ok" : "err";
+        const loc = k.location ? ` (${k.location})` : "";
+        li.innerHTML = `<span class="${cls}">${k.status}</span> ${k.key}${loc}`;
+        list.appendChild(li);
+      });
+    }
+
+    async function loadAgentCards() {
+      const data = await fetchJSON(ROOT + "/logs/agent_cards.json");
+      if (!data) return;
+      document.getElementById("agent-cards").textContent = (data.cards || []).length;
+      document.getElementById("agent-pubkey").textContent = (data.public_key || "").slice(0, 16) + "…";
+    }
+
     async function loadSecrets() {
       const data = await fetchJSON(ROOT + "/logs/secrets_inventory.json");
       if (!data) return;
@@ -254,7 +288,11 @@
     }
 
     async function loadAll() {
-      await Promise.all([loadHiveMode(), loadQuality(), loadHealer(), loadTasks(), loadPublish(), loadFleet(), loadSecrets(), loadEvents()]);
+      await Promise.all([
+        loadHiveMode(), loadQuality(), loadHealer(), loadTasks(),
+        loadPublish(), loadFleet(), loadSecrets(), loadEnvReadiness(),
+        loadAgentCards(), loadEvents()
+      ]);
     }
 
     loadAll();

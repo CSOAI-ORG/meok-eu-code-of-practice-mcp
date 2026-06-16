@@ -1,0 +1,34 @@
+{
+  "agent_card": {
+    "name": "safetyof.ai",
+    "version": "1.0.0",
+    "signature_scheme": "ed25519",
+    "public_key": "X1gDHyPRj/6YJSsKuWYxF6uswGVnDTxsPyGO2IchSZI=",
+    "capabilities": [
+      "safetyof_lookup",
+      "safetyof_book",
+      "safetyof_verify"
+    ],
+    "pheromones": [
+      "trail",
+      "mark",
+      "guard"
+    ],
+    "caste": "worker",
+    "payment": {
+      "x402": true,
+      "ap2": true,
+      "ucp": true,
+      "acp": true
+    },
+    "mcp_servers": [
+      "https://safetyof.ai/mcp/pricing",
+      "https://safetyof.ai/mcp/availability",
+      "https://safetyof.ai/mcp/booking"
+    ],
+    "a2a_endpoint": "https://safetyof.ai/a2a",
+    "issuer": "CSOAI Hive",
+    "issued_at": "2026-06-16T09:35:49.679244+00:00"
+  },
+  "signature": "GwdBQCDWZBt7gQKoWOxI2U7m4vqfLkIo5S85vrAixTVV50V5wp1LNkVeg1DGU/6Tvbgj8mHtGL7pTnjotCTGDA=="
+}
