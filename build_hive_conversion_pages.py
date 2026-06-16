@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Generate conversion-page static sites for Construction + Agriculture hives."""
 import json
+import urllib.parse
 from pathlib import Path
 
 ROOT = Path("/Users/nicholas/clawd")
@@ -217,66 +218,114 @@ DOMAINS = {
 }
 
 
-def shell(domain_key: str, page: str, title: str, description: str, body: str) -> str:
-    cfg = DOMAINS[domain_key]
-    domain = cfg["domain"]
-    name = cfg["name"]
-    nav_links = "".join(
-        f'<a href="/{p}/" class="text-sm font-medium text-slate-300 hover:text-gold transition">{p.capitalize()}</a>'
-        for p in ["pricing", "partner", "enterprise", "signup"]
-    )
-    return f"""<!doctype html>
-<html lang="en">
+# Per-sector identity: (accent, accent-2 for gradients, "r,g,b" glow for shadows/mesh).
+# Drives the Tailwind `gold` token per domain so all 5 pages re-theme with zero body edits.
+SECTOR_THEMES = {
+    "construction": ("#f59e0b", "#fb923c", "245,158,11"),   # amber → orange
+    "agriculture":  ("#10b981", "#34d399", "16,185,129"),   # emerald
+    "compliance":   ("#c9a84c", "#e0c068", "201,168,76"),   # brand gold
+    "governance":   ("#818cf8", "#a5b4fc", "129,140,248"),  # indigo
+    "developer":    ("#22d3ee", "#67e8f9", "34,211,238"),   # cyan
+    "automotive":   ("#fb7185", "#fda4af", "251,113,133"),  # rose
+    "healthcare":   ("#2dd4bf", "#5eead4", "45,212,191"),   # teal
+    "legal":        ("#a78bfa", "#c4b5fd", "167,139,250"),  # violet
+}
+
+
+def theme_for(cfg: dict):
+    return SECTOR_THEMES.get(cfg.get("sector", ""), SECTOR_THEMES["compliance"])
+
+
+# Static head/CSS/JS design system. Tokens are %%…%%-replaced (not f-string) so CSS
+# braces stay literal and unescaped. Tailwind CDN is kept (bodies use its utilities),
+# but the `gold`/`accent2` tokens + this style layer give per-sector identity, real
+# type (Inter), gradient-mesh hero, gradient buttons, card elevation and scroll-reveal.
+SHELL_TEMPLATE = """<!doctype html>
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{title}</title>
-  <meta name="description" content="{description}">
-  <link rel="canonical" href="https://{domain}/{page}">
+  <title>%%TITLE%%</title>
+  <meta name="description" content="%%DESC%%">
+  <link rel="canonical" href="https://%%DOMAIN%%/%%PAGE%%">
+  <meta name="theme-color" content="%%ACCENT%%">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="%%TITLE%%">
+  <meta property="og:description" content="%%DESC%%">
+  <meta property="og:url" content="https://%%DOMAIN%%/%%PAGE%%">
+  <meta property="og:site_name" content="%%NAME%%.ai">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="%%TITLE%%">
+  <meta name="twitter:description" content="%%DESC%%">
+  <link rel="icon" href="data:image/svg+xml,%%FAVICON%%">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = {{
-      theme: {{
-        extend: {{
-          colors: {{
-            gold: '{ACCENT}',
-            slate: {{
-              950: '#0b0f19',
-              900: '#0f172a',
-              850: '#111827',
-            }}
-          }}
-        }}
-      }}
-    }}
+    tailwind.config = {
+      theme: { extend: {
+        colors: {
+          gold: '%%ACCENT%%',
+          accent2: '%%ACCENT2%%',
+          slate: { 950: '#070b14', 900: '#0f172a', 850: '#111827' }
+        },
+        fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] }
+      } }
+    }
   </script>
   <style>
-    .text-gold {{ color: {ACCENT}; }}
-    .bg-gold {{ background-color: {ACCENT}; }}
-    .border-gold {{ border-color: {ACCENT}; }}
-    .hover\\:bg-gold-dark:hover {{ background-color: #b08d3d; }}
-    .gradient-radial {{ background: radial-gradient(circle at 50% 0%, rgba(201,168,76,0.12), transparent 50%); }}
+    :root { --accent: %%ACCENT%%; --accent2: %%ACCENT2%%; --glow: %%GLOW%%; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; letter-spacing: -0.011em; }
+    ::selection { background: rgba(var(--glow), 0.30); color: #fff; }
+    h1, h2, h3 { letter-spacing: -0.025em; }
+    h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1.05; }
+    .text-gold { color: var(--accent); }
+    .border-gold { border-color: var(--accent); }
+    .border-gold\\/40 { border-color: rgba(var(--glow), 0.40) !important; }
+    .bg-gold { background-image: linear-gradient(135deg, var(--accent), var(--accent2)) !important; box-shadow: 0 10px 28px -10px rgba(var(--glow), 0.6); }
+    a.bg-gold, button.bg-gold { transition: transform .2s ease, filter .2s ease, box-shadow .2s ease; }
+    a.bg-gold:hover, button.bg-gold:hover { transform: translateY(-2px); filter: brightness(1.06); box-shadow: 0 16px 36px -12px rgba(var(--glow), 0.75); }
+    .gradient-radial {
+      background:
+        radial-gradient(60rem 38rem at 50% -12%, rgba(var(--glow), 0.18), transparent 60%),
+        radial-gradient(42rem 30rem at 88% 6%, rgba(var(--glow), 0.10), transparent 55%),
+        radial-gradient(34rem 30rem at 6% 22%, rgba(255,255,255,0.03), transparent 55%);
+    }
+    nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); background: rgba(7,11,20,0.72); transition: box-shadow .25s ease; }
+    .rounded-2xl { transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+    .rounded-2xl:hover { transform: translateY(-3px); box-shadow: 0 20px 44px -26px rgba(var(--glow), 0.55); }
+    .eyebrow { display: inline-flex; align-items: center; gap: .5rem; padding: .35rem .85rem; border-radius: 999px;
+      font-size: .76rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+      color: var(--accent); background: rgba(var(--glow), 0.10); border: 1px solid rgba(var(--glow), 0.28); }
+    .has-js section { opacity: 0; transform: translateY(18px); }
+    .has-js section.seen { opacity: 1; transform: none; transition: opacity .6s ease, transform .6s ease; }
+    @media (prefers-reduced-motion: reduce) {
+      .has-js section { opacity: 1 !important; transform: none !important; }
+      html { scroll-behavior: auto; }
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased">
   <div class="gradient-radial">
     <nav class="border-b border-slate-800">
       <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="/" class="text-2xl font-extrabold tracking-tight">{name}<span class="text-gold">.ai</span></a>
+        <a href="/" class="text-2xl font-extrabold tracking-tight">%%NAME%%<span class="text-gold">.ai</span></a>
         <div class="hidden md:flex items-center gap-6">
-          {nav_links}
-          <a href="/signup/" class="bg-gold text-slate-950 px-4 py-2 rounded-lg font-semibold hover:bg-gold-dark transition">Get started</a>
+          %%NAVLINKS%%
+          <a href="/signup/" class="bg-gold text-slate-950 px-4 py-2 rounded-lg font-semibold">Get started</a>
         </div>
         <a href="/signup/" class="md:hidden bg-gold text-slate-950 px-3 py-1.5 rounded-lg font-semibold text-sm">Start</a>
       </div>
     </nav>
 
-    {body}
+    %%BODY%%
 
     <footer class="border-t border-slate-800 mt-20">
       <div class="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-3 gap-8 text-sm text-slate-400">
         <div>
-          <p class="text-lg font-bold text-slate-100">{name}<span class="text-gold">.ai</span></p>
+          <p class="text-lg font-bold text-slate-100">%%NAME%%<span class="text-gold">.ai</span></p>
           <p class="mt-2">Part of MEOK AI Labs — CSOAI Ltd, UK 16939677.</p>
         </div>
         <div class="flex flex-col gap-2">
@@ -294,13 +343,53 @@ def shell(domain_key: str, page: str, title: str, description: str, body: str) -
         <a href="https://meok.ai/privacy" class="hover:text-gold">Privacy</a>
         <a href="https://meok.ai/terms" class="hover:text-gold">Terms</a>
         <a href="https://meok.ai/cookies" class="hover:text-gold">Cookies</a>
-        <span>© 2026 {name}.ai</span>
+        <span>© 2026 %%NAME%%.ai</span>
       </div>
     </footer>
   </div>
+  <script>
+    document.documentElement.classList.add('has-js');
+    (function () {
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('seen'); io.unobserve(e.target); } });
+      }, { threshold: 0.08 });
+      document.querySelectorAll('section').forEach(function (s) { io.observe(s); });
+      var nav = document.querySelector('nav');
+      if (nav) addEventListener('scroll', function () {
+        nav.style.boxShadow = scrollY > 8 ? '0 1px 0 rgba(255,255,255,0.06)' : 'none';
+      }, { passive: true });
+    })();
+  </script>
 </body>
 </html>
 """
+
+
+def shell(domain_key: str, page: str, title: str, description: str, body: str) -> str:
+    cfg = DOMAINS[domain_key]
+    domain = cfg["domain"]
+    name = cfg["name"]
+    accent, accent2, glow = theme_for(cfg)
+    nav_links = "".join(
+        f'<a href="/{p}/" class="text-sm font-medium text-slate-300 hover:text-gold transition">{p.capitalize()}</a>'
+        for p in ["pricing", "partner", "enterprise", "signup"]
+    )
+    svg = (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">'
+        f'<rect width="64" height="64" rx="14" fill="{accent}"/>'
+        f'<text x="32" y="45" font-family="Inter,Arial,sans-serif" font-size="38" '
+        f'font-weight="800" text-anchor="middle" fill="#070b14">{name[0]}</text></svg>'
+    )
+    favicon = urllib.parse.quote(svg, safe="")
+    html = SHELL_TEMPLATE
+    for token, value in (
+        ("%%FAVICON%%", favicon), ("%%NAVLINKS%%", nav_links), ("%%BODY%%", body),
+        ("%%TITLE%%", title), ("%%DESC%%", description), ("%%DOMAIN%%", domain),
+        ("%%PAGE%%", page), ("%%NAME%%", name),
+        ("%%ACCENT2%%", accent2), ("%%ACCENT%%", accent), ("%%GLOW%%", glow),
+    ):
+        html = html.replace(token, value)
+    return html
 
 
 def cta_section(domain_key: str, primary_text: str = "Get started", secondary_text: str = "Talk to sales") -> str:
