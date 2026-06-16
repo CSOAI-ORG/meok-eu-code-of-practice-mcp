@@ -28,10 +28,19 @@ from __future__ import annotations
 
 import json
 import os
+import ssl
 import time
 import urllib.request
 
 from . import verifier as V
+
+# Python 3.14 ships no CA bundle → HTTPS urllib fails SSL verify. Use certifi so cloud
+# generation + the billing-rail metering call actually reach their endpoints.
+try:
+    import certifi
+    _SSL = ssl.create_default_context(cafile=certifi.where())
+except Exception:  # noqa: BLE001
+    _SSL = None
 
 _OLLAMA = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
 # qwen2.5:3b proven to give clean VERIFIED-CORRECT grounded answers (right article +
@@ -45,6 +54,22 @@ _DEFAULT_CHECKS = ["citations_wellformed", "citation_correct", "no_refusal"]
 # Cloud (OpenRouter) for sub-10s answers when a key is present; else local Ollama.
 _OR_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 _OR_MODEL = os.environ.get("MEOK_POC_OR_MODEL", "google/gemini-2.0-flash-001")
+_ATT_API = os.environ.get("MEOK_ATTESTATION_API", "https://meok-attestation-api.vercel.app")
+
+
+def _check_access(api_key: str) -> dict:
+    """Stripe-gate /verified via the LIVE attestation billing rails: POST the key to the
+    attestation API's metering (the registry-gated _meter_check shipped earlier) — Pro
+    keys = unlimited, free metered, forged/unknown capped. Fail-open if the API is
+    unreachable (never break a local demo)."""
+    try:
+        body = json.dumps({"api_key": api_key or "", "tool": "verified"}).encode()
+        req = urllib.request.Request(f"{_ATT_API}/verify", data=body,
+                                     headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=8, context=_SSL) as r:
+            return json.loads(r.read().decode())
+    except Exception:  # noqa: BLE001
+        return {"allowed": True, "tier": "local-unmetered", "note": "billing API unreachable"}
 
 
 def _generate(prompt: str, temperature: float, timeout: int = 90) -> str:
@@ -57,7 +82,7 @@ def _generate(prompt: str, temperature: float, timeout: int = 90) -> str:
             req = urllib.request.Request("https://openrouter.ai/api/v1/chat/completions",
                                          data=body, headers={"Authorization": f"Bearer {_OR_KEY}",
                                          "Content-Type": "application/json"})
-            with urllib.request.urlopen(req, timeout=min(timeout, 40)) as r:
+            with urllib.request.urlopen(req, timeout=min(timeout, 40), context=_SSL) as r:
                 d = json.loads(r.read().decode())
             return d["choices"][0]["message"]["content"]
         except Exception:  # noqa: BLE001 — fall through to local
@@ -194,7 +219,25 @@ def serve(port: int = 8088):
             q = (body.get("question") or "").strip()
             if not q:
                 return self._send(400, {"error": "question required"})
-            self._send(200, verified_answer(q, n=int(body.get("n", 4))))
+            # Stripe gate (live billing rails): validate + meter the API key.
+            api_key = self.headers.get("X-API-Key", "") or body.get("api_key", "")
+            access = _check_access(api_key)
+            if not access.get("allowed", True):
+                return self._send(402, {"error": "Daily limit reached for your tier.",
+                                        "tier": access.get("tier"), "used": access.get("used"),
+                                        "limit": access.get("limit"),
+                                        "upgrade_url": access.get("upgrade_url",
+                                                                   "https://meok.ai/pricing")})
+            tier = access.get("tier", "free")
+            # Free/anon tier capped at n=1; Pro (validated) gets the full best-of-N.
+            req_n = int(body.get("n", 4))
+            n = req_n if tier in ("pro", "enterprise", "local-unmetered") else 1
+            out = verified_answer(q, n=n)
+            out["tier"] = tier
+            if n < req_n:
+                out["upgrade"] = {"message": "Free tier returns 1 candidate. Pro runs verifier-gated "
+                                  "best-of-N for higher verified accuracy.", "url": "https://meok.ai/pricing"}
+            self._send(200, out)
 
         def log_message(self, *a):  # quiet
             pass
