@@ -245,3 +245,7 @@ openpatent-hive/scripts/loadkeys.sh
 openpatent-hive/scripts/loadkeys.local.sh
 **/loadkeys.sh
 **/loadkeys.local.sh
+_m2_import/
+csoai-master/node_modules/
+csoai-dashboard-master/
+csoai-master/
