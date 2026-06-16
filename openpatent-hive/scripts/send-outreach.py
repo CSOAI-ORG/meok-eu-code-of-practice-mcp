@@ -173,12 +173,15 @@ def _footer(recipient: Recipient) -> str:
 
 def _body(segment: int, recipient: Recipient) -> tuple:
     """Return (subject, body) for a given segment + recipient."""
+    # CSV persona keys use hyphens (e.g. "ip-boutique"); internal dicts use
+    # underscores. Normalize so a CSV row addresses the right persona.
+    persona_key = (recipient.persona or "").replace("-", "_") or "solo_inventor"
     tier_cta = PERSONA_TIER_CTA.get(
-        recipient.persona, PERSONA_TIER_CTA["solo_inventor"]
+        persona_key, PERSONA_TIER_CTA["solo_inventor"]
     )
     fname = recipient.first_name or "there"
     company = recipient.company or "your team"
-    tone = PERSONA_TONE_PREFIX.get(recipient.persona, "friend")
+    tone = PERSONA_TONE_PREFIX.get(persona_key, "friend")
 
     # We embed tier_cta where it earns the most signal:
     #   segment 2 (value prop) — leads with the tier

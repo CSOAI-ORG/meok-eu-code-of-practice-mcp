@@ -1,9 +1,9 @@
-# PRESS RELEASE — DRAFT v0.1
+# PRESS RELEASE — DRAFT v0.2 (Nemesis-aligned, 16 Jun 2026)
 
 **For:** PressList-1076 Campaign 1: Media & Politicians (when list is loaded)
 **Embargo:** Until EU Code of Practice on AI content marking finalises (expected late June 2026)
-**Brand:** "EU Code-of-Practice-ready" / "EU AI Act compliance, signed and verified"
-**Lead hook:** FEAST numbers (East-First pattern + the 2 Aug 2026 cliff)
+**Brand:** "EU Code-of-Practice-ready" / "EU AI Act compliance, signed and verified" / "Nemesis wedge — first sovereign OLM deployment"
+**Lead hook:** FEAST numbers (East-First pattern + the 2 Aug 2026 cliff) + Nemesis architecture (sovereign OLM roadmap)
 
 ---
 
@@ -12,7 +12,7 @@
 **A — The FEAST frame (lead with the prediction):**
 > **MEOK AI Labs Ships First Open-Source EU Code-of-Practice-Ready AI Compliance Suite — 48 Days Before the Article 50 Cliff**
 >
-> Three new MCP servers give developers Ed25519-signed, offline-verifiable compliance for the EU AI Act's 2 August transparency obligations, the Digital Omnibus Art 5(1)(f) gambling prohibition, and the Annex III high-risk classification engine — all MIT-licensed, all free.
+> Three new MCP servers give developers Ed25519-signed, offline-verifiable compliance for the EU AI Act's 2 August transparency obligations, the Digital Omnibus Art 5(1)(f) gambling prohibition, and the Annex III high-risk classification engine — all MIT-licensed, all free. First deployment of the Nemesis sovereign OLM architecture's 33-agent BFT council as a 3-agent vertical wedge.
 
 **B — The 1-number frame (lead with TAM):**
 > **The EU's $50B AI Compliance Market Just Got Its First Open-Source Stack**

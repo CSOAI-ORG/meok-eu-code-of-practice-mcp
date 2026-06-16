@@ -46,8 +46,9 @@ keywords = ["meok", "sov3", "sovereign", "neural", "compliance"]
 packages = ["{pkg_name}"]
 """
     (pkg_dir / "pyproject.toml").write_text(pyproject)
-    (pkg_dir / f"{pkg_name}" / "__init__.py").mkdir(parents=True, exist_ok=True)
-    (pkg_dir / f"{pkg_name}" / "__init__.py").write_text(f'"""{desc}"""\n__version__ = "0.1.0"\n')
+    (pkg_dir / pkg_name / "__init__.py").mkdir(parents=True, exist_ok=True)
+    init_path = pkg_dir / pkg_name / "__init__.py"
+    init_path.write_text(f'"""{desc}"""\n__version__ = "0.1.0"\n')
     (pkg_dir / "README.md").write_text(f"# {pkg_name}\n\n{desc}\n\nMEOK Sovereign Substrate SOV3\n")
     print(f"  PACKAGED: {pkg_name} ({src_file.stat().st_size} bytes)")
 
