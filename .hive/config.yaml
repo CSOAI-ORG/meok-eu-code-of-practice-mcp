@@ -130,6 +130,30 @@ quality:
     - "csoai-platform/.env"
     - "csoai-org/api/prices.js"
 
+  placeholder_ignore_files:
+    - ".hive/config.yaml"
+    - "*.env.example"
+    - "*.env.local.example"
+    - "*.env.dev.example"
+    - "*.env.test"
+    - "*.env.prod.template"
+    - "*.env.production.local"
+    - "DELBOY_MODE.md"
+    - "PBFT_MOE_ROADMAP.md"
+    - "_TABS/_inventory/mcp_registry*.json"
+    - "revenue/n8n-workflows/N8N_SETUP_GUIDE.md"
+    - "lovable-sites/tr8-plant-hire-hub/README.md"
+    - "mcp-marketplace/_template/homebrew/*.rb"
+    - "meok/.github/workflows/ci.yml"
+    - "sovereign-temple/legion-omega/dragon-council/k8s/dragon-fleet.yml"
+    - "scripts/fix_n8n_workflows.py"
+    - "openpatent-hive/api/postman-collection.json"
+    - "BLOCKER_INVENTORY_*.md"
+    - "EMPIRE_AUDIT_*.md"
+    - "KING_DOWN_AUDIT_*.md"
+    - "QUALITY_MANAGEMENT_PLAN_*.md"
+    - "revenue/MULTI_PHASE_ACTION_PLAN_*.md"
+
 # Test fleet — suites the fleet manager runs and aggregates
 test_fleet:
   report: ".hive/logs/test_fleet_report.json"

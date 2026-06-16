@@ -31,7 +31,7 @@
       "position": [400, 300],
       "credentials": {
         "postgres": {
-          "id": "REPLACE_WITH_POSTGRES_CRED_ID",
+          "id": """",
           "name": "Templeman PMS DB"
         }
       }
@@ -74,7 +74,7 @@
       "position": [800, 300],
       "credentials": {
         "anthropicApi": {
-          "id": "REPLACE_WITH_ANTHROPIC_CRED_ID",
+          "id": """",
           "name": "Anthropic Claude"
         }
       }
@@ -92,7 +92,7 @@
       "position": [1000, 200],
       "credentials": {
         "twilioApi": {
-          "id": "REPLACE_WITH_TWILIO_CRED_ID",
+          "id": """",
           "name": "Twilio Templeman"
         }
       }
@@ -112,7 +112,7 @@
       "position": [1000, 400],
       "credentials": {
         "smtp": {
-          "id": "REPLACE_WITH_SMTP_CRED_ID",
+          "id": """",
           "name": "Templeman SMTP"
         }
       }
@@ -129,7 +129,7 @@
       "position": [1200, 300],
       "credentials": {
         "postgres": {
-          "id": "REPLACE_WITH_POSTGRES_CRED_ID",
+          "id": """",
           "name": "Templeman PMS DB"
         }
       }

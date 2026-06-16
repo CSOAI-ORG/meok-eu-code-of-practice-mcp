@@ -126,7 +126,7 @@ All phases complete when:
 - Expert weights auto-calibrate from real outcomes
 - Multiple councils can federate for complex cross-domain decisions
 - Total test coverage >200 tests, all passing
-- No `whsec_placeholder` or broken API keys in production config
+- No `""` or broken API keys in production config
 
 ---
 

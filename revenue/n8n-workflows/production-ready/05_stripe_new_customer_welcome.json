@@ -19,7 +19,7 @@
       ],
       "credentials": {
         "stripeApi": {
-          "id": "REPLACE_WITH_STRIPE_CRED_ID",
+          "id": """",
           "name": "Stripe Live"
         }
       }

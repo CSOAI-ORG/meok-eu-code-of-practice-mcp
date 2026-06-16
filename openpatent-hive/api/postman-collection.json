@@ -8,7 +8,7 @@
   "variable": [
     {"key": "base_url", "value": "https://api.openpatent.ai", "type": "string"},
     {"key": "did", "value": "did:key:z6MkiExampleReplaceWithRealDID", "type": "string"},
-    {"key": "api_key", "value": "REPLACE_WITH_PREMIUM_OR_ENTERPRISE_KEY", "type": "string"},
+    {"key": "api_key", "value": """", "type": "string"},
     {"key": "tier", "value": "defensive", "type": "string"}
   ],
   "auth": {

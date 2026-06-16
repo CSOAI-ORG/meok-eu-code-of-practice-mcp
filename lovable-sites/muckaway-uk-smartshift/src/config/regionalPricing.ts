@@ -274,50 +274,50 @@ export const STRIPE_PRICE_IDS: Record<string, Record<string, string>> = {
     enterprise: 'price_1SghQYLToiah1qKAt2tNQ7Ex'
   },
   CNY: {
-    starter: 'price_cny_starter_placeholder',
-    professional: 'price_cny_professional_placeholder',
-    enterprise: 'price_cny_enterprise_placeholder'
+    starter: '0',
+    professional: '0',
+    enterprise: '0'
   },
   MXN: {
-    starter: 'price_mxn_starter_placeholder',
-    professional: 'price_mxn_professional_placeholder',
-    enterprise: 'price_mxn_enterprise_placeholder'
+    starter: '0',
+    professional: '0',
+    enterprise: '0'
   },
   JPY: {
-    starter: 'price_jpy_starter_placeholder',
-    professional: 'price_jpy_professional_placeholder',
-    enterprise: 'price_jpy_enterprise_placeholder'
+    starter: '0',
+    professional: '0',
+    enterprise: '0'
   },
   // Southeast Asia
   MYR: {
-    starter: 'price_myr_starter_placeholder',
-    professional: 'price_myr_professional_placeholder',
-    enterprise: 'price_myr_enterprise_placeholder'
+    starter: '0',
+    professional: '0',
+    enterprise: '0'
   },
   IDR: {
-    starter: 'price_idr_starter_placeholder',
-    professional: 'price_idr_professional_placeholder',
-    enterprise: 'price_idr_enterprise_placeholder'
+    starter: '0',
+    professional: '0',
+    enterprise: '0'
   },
   PHP: {
-    starter: 'price_php_starter_placeholder',
-    professional: 'price_php_professional_placeholder',
-    enterprise: 'price_php_enterprise_placeholder'
+    starter: '0',
+    professional: '0',
+    enterprise: '0'
   },
   THB: {
-    starter: 'price_thb_starter_placeholder',
-    professional: 'price_thb_professional_placeholder',
-    enterprise: 'price_thb_enterprise_placeholder'
+    starter: '0',
+    professional: '0',
+    enterprise: '0'
   },
   VND: {
-    starter: 'price_vnd_starter_placeholder',
-    professional: 'price_vnd_professional_placeholder',
-    enterprise: 'price_vnd_enterprise_placeholder'
+    starter: '0',
+    professional: '0',
+    enterprise: '0'
   },
   SAR: {
-    starter: 'price_sar_starter_placeholder',
-    professional: 'price_sar_professional_placeholder',
-    enterprise: 'price_sar_enterprise_placeholder'
+    starter: '0',
+    professional: '0',
+    enterprise: '0'
   }
 };
 

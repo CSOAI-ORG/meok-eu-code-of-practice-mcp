@@ -38,7 +38,7 @@
       ],
       "credentials": {
         "googleOAuth2Api": {
-          "id": "REPLACE_WITH_GOOGLE_OAUTH_ID",
+          "id": """",
           "name": "Google My Business \u2014 Templeman"
         }
       }
@@ -88,7 +88,7 @@
       ],
       "credentials": {
         "anthropicApi": {
-          "id": "REPLACE_WITH_ANTHROPIC_CRED_ID",
+          "id": """",
           "name": "Anthropic Claude"
         }
       }
@@ -110,7 +110,7 @@
       ],
       "credentials": {
         "smtp": {
-          "id": "REPLACE_WITH_SMTP_CRED_ID",
+          "id": """",
           "name": "iokfarm SMTP"
         }
       }

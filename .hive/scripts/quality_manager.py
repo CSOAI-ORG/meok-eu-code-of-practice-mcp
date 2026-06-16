@@ -7,6 +7,7 @@ test suites, scans for placeholder/secrets patterns, and writes
 """
 from __future__ import annotations
 
+import fnmatch
 import json
 import os
 import re
@@ -55,7 +56,7 @@ def run_tests(path: Path, tests: list[str]) -> str:
     return "PASS" if r.returncode == 0 else "FAIL"
 
 
-def find_placeholders(root: Path, patterns: list[str], ignore_dirs: set[str] | None = None) -> list[dict[str, Any]]:
+def find_placeholders(root: Path, patterns: list[str], ignore_dirs: set[str] | None = None, ignore_files: list[str] | None = None) -> list[dict[str, Any]]:
     hits = []
     ignore = {".git", "node_modules", ".venv", "venv", "__pycache__", "dist", ".next"}
     if ignore_dirs:
@@ -67,6 +68,13 @@ def find_placeholders(root: Path, patterns: list[str], ignore_dirs: set[str] | N
         ".exe", ".bin", ".dat", ".pickle", ".pkl", ".npy", ".npz", ".onnx", ".pt",
     }
     max_size = 5 * 1024 * 1024  # 5 MB
+    ignore_file_patterns = ignore_files or []
+
+    def _ignored_file(rel: str) -> bool:
+        for pat in ignore_file_patterns:
+            if fnmatch.fnmatch(rel, pat) or fnmatch.fnmatch(Path(rel).name, pat):
+                return True
+        return False
 
     # Prefer tracked files for speed; fall back to filesystem walk.
     files: list[Path] = []
@@ -78,6 +86,9 @@ def find_placeholders(root: Path, patterns: list[str], ignore_dirs: set[str] | N
 
     for p in files:
         if any(part in ignore for part in p.parts):
+            continue
+        rel = str(p.relative_to(root))
+        if _ignored_file(rel):
             continue
         if p.suffix.lower() in binary_exts:
             continue
@@ -165,6 +176,7 @@ def main() -> None:
     repos = quality.get("repos", [])
     placeholder_patterns = quality.get("secret_patterns", [r"REPLACE_WITH_"])
     ignore_dirs = set(sensors.get("ignore_dirs", []))
+    ignore_files = quality.get("placeholder_ignore_files", [])
     e2e = load_e2e_report()
     fleet = load_test_fleet_report()
 
@@ -178,7 +190,7 @@ def main() -> None:
             continue
         dirty = git_dirty(path)
         tests = run_tests(path, repo.get("tests", []))
-        repo_placeholders = find_placeholders(path, placeholder_patterns, ignore_dirs)
+        repo_placeholders = find_placeholders(path, placeholder_patterns, ignore_dirs, ignore_files)
         grade = grade_repo(dirty, tests, len(repo_placeholders), repo.get("max_dirty_files", 10), e2e["pass_rate"])
         report["repos"].append({
             "name": name,
@@ -190,7 +202,7 @@ def main() -> None:
         })
         print(f"  {name}: grade={grade} dirty={dirty} tests={tests} placeholders={len(repo_placeholders)}")
 
-    report["placeholders"] = find_placeholders(ROOT, placeholder_patterns, ignore_dirs)
+    report["placeholders"] = find_placeholders(ROOT, placeholder_patterns, ignore_dirs, ignore_files)
     if report["placeholders"]:
         print(f"  Total placeholders found: {len(report['placeholders'])}")
         for h in report["placeholders"][:5]:

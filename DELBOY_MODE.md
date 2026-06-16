@@ -338,7 +338,7 @@ POST /v1/revenue/council/deliberate   # Revenue council decision request
 ## 7. IMPLEMENTATION ROADMAP
 
 ### Phase 0: Foundation (Week 1)
-- [ ] Fix Stripe webhook secret (`whsec_placeholder`)
+- [ ] Fix Stripe webhook secret (`""`)
 - [ ] Fix Namecheap API key for domain management
 - [ ] Set up Qdrant collection for revenue events
 - [ ] Create `RevenueEvent` dataclass and ingestion pipeline
