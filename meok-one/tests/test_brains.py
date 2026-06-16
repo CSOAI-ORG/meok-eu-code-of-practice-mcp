@@ -8,7 +8,7 @@ from meok_one.brains import brains, think, _safe, _BRAIN_DEFAULT_MODEL  # noqa: 
 def test_left_brain_is_local_private_free():
     b = brains("pro")["left"]
     assert b["private"] is True and b["cost"] == "free"
-    assert _BRAIN_DEFAULT_MODEL["left"] == "qwen3:0.6b"  # the bench-proven cleanest
+    assert _BRAIN_DEFAULT_MODEL["left"] == "meok-sov3"  # sovereign local care model
 
 
 def test_right_brain_is_cloud():
