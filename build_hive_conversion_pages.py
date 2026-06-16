@@ -365,6 +365,56 @@ SHELL_TEMPLATE = """<!doctype html>
 """
 
 
+def jsonld_blocks(cfg: dict, page: str, title: str, description: str) -> str:
+    """Build Organization + FAQPage JSON-LD for a page.
+
+    Uses only variables the generator already has on every domain config
+    (name, domain, features). FAQPage is derived from the domain's feature
+    list (title → question, description → answer); if a domain somehow has
+    no features, only the Organization block is emitted. Returns a string of
+    one or two <script type="application/ld+json"> blocks ready to drop in
+    just before </head>. json.dumps keeps it valid + properly escaped.
+    """
+    domain = cfg["domain"]
+    name = cfg["name"]
+    page_path = f"/{page}" if page else "/"
+    org = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": f"{name}.ai",
+        "url": f"https://{domain}",
+        "logo": f"https://{domain}/favicon.svg",
+        "description": description,
+    }
+    blocks = [
+        '<script type="application/ld+json">'
+        + json.dumps(org, ensure_ascii=False)
+        + "</script>"
+    ]
+    features = cfg.get("features") or []
+    if features:
+        faq = {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "url": f"https://{domain}{page_path}",
+            "name": title,
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": str(f[0]),
+                    "acceptedAnswer": {"@type": "Answer", "text": str(f[1])},
+                }
+                for f in features
+            ],
+        }
+        blocks.append(
+            '<script type="application/ld+json">'
+            + json.dumps(faq, ensure_ascii=False)
+            + "</script>"
+        )
+    return "\n  ".join(blocks)
+
+
 def shell(domain_key: str, page: str, title: str, description: str, body: str) -> str:
     cfg = DOMAINS[domain_key]
     domain = cfg["domain"]
@@ -389,6 +439,13 @@ def shell(domain_key: str, page: str, title: str, description: str, body: str) -
         ("%%ACCENT2%%", accent2), ("%%ACCENT%%", accent), ("%%GLOW%%", glow),
     ):
         html = html.replace(token, value)
+    # Inject Organization + FAQPage JSON-LD just before </head>. Idempotency
+    # guard: skip if any ld+json is already present so re-runs / future template
+    # edits never double-inject. This is what stops the SEO/AEO regression where
+    # regenerating pages used to strip the schema.
+    if "application/ld+json" not in html:
+        ld = jsonld_blocks(cfg, page, title, description)
+        html = html.replace("</head>", f"  {ld}\n</head>", 1)
     return html
 
 

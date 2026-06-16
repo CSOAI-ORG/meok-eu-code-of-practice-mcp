@@ -159,6 +159,24 @@
 
 ---
 
+---
+
+## 8. FLEET_SCORE (PyPI flagship MCPs, 15 Jun 2026)
+
+| Package | Version | Last upload | Status |
+|---------|---------|-------------|--------|
+| `eu-ai-act-compliance-mcp` | **1.8.14** | 2026-06-15T05:01:24 (today) | 🟢 **PUBLISHED TODAY** |
+| `dora-compliance-mcp` | 1.4.14 | 2026-06-13T09:04:02 | 🟢 live |
+| `nis2-compliance-mcp` | 1.3.10 | (recent) | 🟢 live |
+| `meok-eu-code-of-practice-mcp` | 1.0.1 | (recent) | 🟢 live |
+| `gdpr-compliance-ai`, `iso-27001-ai`, `iso-42001-ai`, `care-membrane`, `proofof-ai`, `meok-eu-ai-act-compliance-mcp`, `meok-annex-iii-impact-mcp` | (PyPI 404) | n/a | 🟡 **needs name verify** (likely `meok-X-mcp` in marketplace but `X-ai` / `X-mcp` in PyPI) |
+
+**Score: 4/11 live, 1 published today (eu-ai-act-compliance-mcp v1.8.14, 41.8KB), 7 need PyPI name verification.**
+
+**The fix for the 7 "err" packages:** `ls /Users/nicholas/clawd/mcp-marketplace/ | grep -E "gdpr|iso|care|proofof|annex-iii|meok-eu-ai-act"` to find the canonical names, then `curl https://pypi.org/pypi/<correct-name>/json` to verify, then `twine upload` if missing. Estimated 30 min for the 7 missing.
+
+---
+
 **JEEVES, signing off the daily status. 🫡**
 
 **The dragon flies sovereign. The 3 keystrokes unlock the next £199/mo customer.**

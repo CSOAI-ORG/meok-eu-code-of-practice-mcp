@@ -1,5 +1,5 @@
 # Empire Health + AEO/GEO/SEO Readiness Check — 2026-06-15
-**Generated:** 2026-06-16T04:20:24.442779Z
+**Generated:** 2026-06-16T04:24:44.051243Z
 **Directories scanned:** 93
 
 ## Grade Distribution
@@ -52,7 +52,7 @@
 | fishkeeper-deploy | https://fishkeeper.ai/ | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | 🔴 404 | ✅ | A |
 | free-trial-deploy | https://meok.ai/free-trial | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
 | govtech-ai-deploy | https://meok.ai/govtech | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
-| grabhire-deploy | https://grabhire.ai/ | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | 🔴 404 | ✅ | A |
+| grabhire-deploy | https://grabhire.ai/ | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
 | gtm-deploy | https://meok.ai/gtm | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
 | hackathon-deploy | https://meok.ai/hackathon | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
 | haulage-deploy | https://haulage.app/ | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
@@ -65,7 +65,7 @@
 | investor-deploy | https://meok.ai/investor | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
 | keystone-playground-deploy | https://meok.ai/playground | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
 | koikeeper-deploy | https://koikeeper.ai/ | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | 🔴 404 | ✅ | A |
-| landlaw-deploy | https://landlaw.ai/ | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | 🔴 404 | ✅ | A |
+| landlaw-deploy | https://landlaw.ai/ | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
 | launch-deploy | https://meok.ai/launch | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
 | legal-acts-tracker-deploy | https://meok.ai/legal-acts-tracker | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
 | live-calendar-deploy | https://meok.ai/calendar | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
@@ -75,7 +75,7 @@
 | loopfactory-deploy | https://loopfactory.ai | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | 🔴 404 | ✅ | A |
 | manifest-deploy | https://meok.ai/manifest | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
 | meme-deploy | https://meok.ai/memes | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
-| optimobile-deploy | https://optimobile.ai/ | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | 🔴 404 | ✅ | A |
+| optimobile-deploy | https://optimobile.ai/ | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
 | partner-finder-deploy | https://meok.ai/partner-finder | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
 | partner-sign-deploy | https://meok.ai/partner-sign | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
 | partners-deploy | https://meok.ai/partners | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ 200 | ✅ | A |
