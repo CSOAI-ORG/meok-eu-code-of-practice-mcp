@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSOAI Hive Dashboard</title>
+  <style>
+    :root { --bg:#0b0c10; --panel:#1f2833; --text:#c5c6c7; --accent:#66fcf1; --warn:#f7b731; --err:#eb4d4b; --ok:#6ab04c; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background:var(--bg); color:var(--text); line-height:1.5; }
+    header { padding:1.5rem 2rem; border-bottom:1px solid #333; display:flex; align-items:center; justify-content:space-between; }
+    h1 { margin:0; font-size:1.4rem; color:var(--accent); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:1rem; padding:1.5rem 2rem; }
+    .panel { background:var(--panel); border-radius:8px; padding:1rem; border:1px solid #333; }
+    .panel h2 { margin:0 0 .75rem; font-size:1rem; color:var(--accent); }
+    .metric { display:flex; justify-content:space-between; padding:.35rem 0; border-bottom:1px solid #333; }
+    .metric:last-child { border-bottom:none; }
+    .grade { font-size:2rem; font-weight:bold; }
+    .grade.A { color:var(--ok); }
+    .grade.B { color:#badc58; }
+    .grade.C { color:var(--warn); }
+    .grade.D { color:#e67e22; }
+    .grade.F { color:var(--err); }
+    .ok { color:var(--ok); }
+    .warn { color:var(--warn); }
+    .err { color:var(--err); }
+    ul { list-style:none; padding:0; margin:0; max-height:220px; overflow:auto; }
+    li { padding:.25rem 0; border-bottom:1px solid #2a2a2a; font-size:.85rem; }
+    li:last-child { border-bottom:none; }
+    .ts { color:#888; font-size:.75rem; }
+    .badge { display:inline-block; padding:.1rem .4rem; border-radius:4px; font-size:.7rem; text-transform:uppercase; }
+    .badge.P0 { background:var(--err); color:#fff; }
+    .badge.P1 { background:var(--warn); color:#000; }
+    .badge.P2 { background:#3498db; color:#fff; }
+    .badge.P3 { background:#95a5a6; color:#000; }
+    .refresh { cursor:pointer; background:var(--panel); border:1px solid var(--accent); color:var(--accent); padding:.4rem .8rem; border-radius:4px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🐝 CSOAI Hive Dashboard</h1>
+    <button class="refresh" onclick="loadAll()">Refresh</button>
+  </header>
+  <div class="grid">
+    <div class="panel">
+      <h2>Overall Quality</h2>
+      <div id="overall-grade" class="grade">-</div>
+      <div class="metric"><span>Dirty files</span><span id="overall-dirty">-</span></div>
+      <div class="metric"><span>Placeholders</span><span id="overall-placeholders">-</span></div>
+      <div class="metric"><span>E2E pass rate</span><span id="overall-e2e">-</span></div>
+      <div class="metric"><span>Last updated</span><span id="quality-ts" class="ts">-</span></div>
+    </div>
+    <div class="panel">
+      <h2>Repo Grades</h2>
+      <ul id="repo-grades"></ul>
+    </div>
+    <div class="panel">
+      <h2>Service Health</h2>
+      <ul id="service-health"></ul>
+    </div>
+    <div class="panel">
+      <h2>Task Queue</h2>
+      <div class="metric"><span>Total tasks</span><span id="task-total">-</span></div>
+      <div class="metric"><span>P0 tasks</span><span id="task-p0" class="err">-</span></div>
+      <ul id="task-list"></ul>
+    </div>
+    <div class="panel">
+      <h2>Publish Queue</h2>
+      <div class="metric"><span>Staged posts</span><span id="publish-total">-</span></div>
+      <div class="metric"><span>Pending</span><span id="publish-pending">-</span></div>
+      <ul id="publish-list"></ul>
+    </div>
+    <div class="panel">
+      <h2>Recent Events</h2>
+      <ul id="recent-events"></ul>
+    </div>
+  </div>
+
+  <script>
+    const ROOT = ".."; // dashboard is served from .hive/dashboard/
+
+    async function fetchText(path) {
+      try { const r = await fetch(path); return r.ok ? await r.text() : ""; } catch { return ""; }
+    }
+    async function fetchJSON(path) {
+      try { const r = await fetch(path); return r.ok ? await r.json() : null; } catch { return null; }
+    }
+
+    function setGrade(id, grade) {
+      const el = document.getElementById(id);
+      el.textContent = grade;
+      el.className = "grade " + (grade || "");
+    }
+
+    async function loadQuality() {
+      const data = await fetchJSON(ROOT + "/logs/quality_report.json");
+      if (!data) return;
+      setGrade("overall-grade", data.overall?.grade);
+      document.getElementById("overall-dirty").textContent = data.overall?.dirty ?? "-";
+      document.getElementById("overall-placeholders").textContent = data.overall?.placeholders ?? "-";
+      document.getElementById("overall-e2e").textContent = (data.overall?.e2e_pass_rate ?? 0).toFixed(2);
+      document.getElementById("quality-ts").textContent = data.ts ? new Date(data.ts).toLocaleString() : "-";
+
+      const list = document.getElementById("repo-grades");
+      list.innerHTML = "";
+      (data.repos || []).forEach(r => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span class="grade ${r.grade}">${r.grade}</span> ${r.name} <span class="ts">dirty=${r.dirty} placeholders=${r.placeholders}</span>`;
+        list.appendChild(li);
+      });
+    }
+
+    async function loadHealer() {
+      const text = await fetchText(ROOT + "/logs/healer.log");
+      const lines = text.trim().split("\n").filter(l => l.includes(":")).slice(-20).reverse();
+      const list = document.getElementById("service-health");
+      list.innerHTML = "";
+      const seen = new Set();
+      for (const line of lines) {
+        const m = line.match(/\](.+?):\s*(OK|DOWN|restarting)/);
+        if (!m) continue;
+        const name = m[1].trim();
+        const status = m[2];
+        if (seen.has(name)) continue;
+        seen.add(name);
+        const li = document.createElement("li");
+        const cls = status === "OK" ? "ok" : (status === "DOWN" ? "err" : "warn");
+        li.innerHTML = `<span class="${cls}">${status}</span> ${name}`;
+        list.appendChild(li);
+      }
+    }
+
+    async function loadTasks() {
+      const data = await fetchJSON(ROOT + "/tasks/queue.json");
+      if (!data) return;
+      const tasks = data.tasks || [];
+      document.getElementById("task-total").textContent = tasks.length;
+      const p0 = tasks.filter(t => t.priority === "P0");
+      document.getElementById("task-p0").textContent = p0.length;
+
+      const list = document.getElementById("task-list");
+      list.innerHTML = "";
+      tasks.slice(0, 10).forEach(t => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span class="badge ${t.priority}">${t.priority}</span> <span class="badge">${t.router}</span> ${t.body.substring(0, 80)}…`;
+        list.appendChild(li);
+      });
+    }
+
+    async function loadPublish() {
+      const text = await fetchText(ROOT + "/tasks/publish_queue.jsonl");
+      const entries = text.trim().split("\n").filter(Boolean).map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+      document.getElementById("publish-total").textContent = entries.length;
+      const pending = entries.filter(e => e.status === "pending" || e.status === "dry_run").length;
+      document.getElementById("publish-pending").textContent = pending;
+
+      const list = document.getElementById("publish-list");
+      list.innerHTML = "";
+      entries.slice(0, 8).forEach(e => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span class="badge">${e.status}</span> ${e.title?.substring(0, 60) || e.id} <span class="ts">${e.platforms?.join(",")}</span>`;
+        list.appendChild(li);
+      });
+    }
+
+    async function loadEvents() {
+      const [healer, notifier, publish] = await Promise.all([
+        fetchText(ROOT + "/logs/healer.log"),
+        fetchText(ROOT + "/logs/notifier.log"),
+        fetchText(ROOT + "/logs/publish_manager.log"),
+      ]);
+      const events = [];
+      [healer, notifier, publish].forEach((text, i) => {
+        const src = ["healer", "notifier", "publish"][i];
+        text.trim().split("\n").slice(-8).forEach(l => events.push({ src, line: l }));
+      });
+      events.sort((a, b) => a.line.localeCompare(b.line)).reverse();
+
+      const list = document.getElementById("recent-events");
+      list.innerHTML = "";
+      events.slice(0, 15).forEach(e => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span class="ts">[${e.src}]</span> ${e.line.replace(/^\[[^\]]+\]\s*/, "").substring(0, 90)}`;
+        list.appendChild(li);
+      });
+    }
+
+    async function loadAll() {
+      await Promise.all([loadQuality(), loadHealer(), loadTasks(), loadPublish(), loadEvents()]);
+    }
+
+    loadAll();
+    setInterval(loadAll, 30000);
+  </script>
+</body>
+</html>

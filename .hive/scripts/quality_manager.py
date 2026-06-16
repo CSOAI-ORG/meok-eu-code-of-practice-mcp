@@ -91,7 +91,7 @@ def find_placeholders(root: Path, patterns: list[str], ignore_dirs: set[str] | N
     return hits
 
 
-def grade_repo(dirty: int, tests: str, placeholders: int, max_dirty: int) -> str:
+def grade_repo(dirty: int, tests: str, placeholders: int, max_dirty: int, e2e_pass_rate: float = 1.0) -> str:
     score = 100
     if dirty > max_dirty * 5:
         score -= 30
@@ -104,6 +104,12 @@ def grade_repo(dirty: int, tests: str, placeholders: int, max_dirty: int) -> str
     elif tests == "SKIP":
         score -= 0
     score -= min(30, 10 * placeholders)
+    if e2e_pass_rate < 0.5:
+        score -= 30
+    elif e2e_pass_rate < 0.8:
+        score -= 15
+    elif e2e_pass_rate < 1.0:
+        score -= 5
     if score >= 90:
         return "A"
     if score >= 80:
@@ -115,6 +121,20 @@ def grade_repo(dirty: int, tests: str, placeholders: int, max_dirty: int) -> str
     return "F"
 
 
+def load_e2e_report() -> dict[str, Any]:
+    path = ROOT / "tests" / "e2e" / "e2e_report.json"
+    if not path.exists():
+        return {"total": 0, "passed": 0, "failed": 0, "skipped": 0, "pass_rate": 0.0}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        total = data.get("total", 0)
+        passed = data.get("passed", 0)
+        data["pass_rate"] = passed / total if total else 0.0
+        return data
+    except Exception:
+        return {"total": 0, "passed": 0, "failed": 0, "skipped": 0, "pass_rate": 0.0}
+
+
 def main() -> None:
     config = load_config()
     quality = config.get("quality", {})
@@ -122,6 +142,7 @@ def main() -> None:
     repos = quality.get("repos", [])
     placeholder_patterns = quality.get("secret_patterns", [r"REPLACE_WITH_"])
     ignore_dirs = set(sensors.get("ignore_dirs", []))
+    e2e = load_e2e_report()
 
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     report: dict[str, Any] = {"ts": datetime.now(timezone.utc).isoformat(), "repos": [], "placeholders": []}
@@ -134,7 +155,7 @@ def main() -> None:
         dirty = git_dirty(path)
         tests = run_tests(path, repo.get("tests", []))
         repo_placeholders = find_placeholders(path, placeholder_patterns, ignore_dirs)
-        grade = grade_repo(dirty, tests, len(repo_placeholders), repo.get("max_dirty_files", 10))
+        grade = grade_repo(dirty, tests, len(repo_placeholders), repo.get("max_dirty_files", 10), e2e["pass_rate"])
         report["repos"].append({
             "name": name,
             "path": str(path),
@@ -154,8 +175,9 @@ def main() -> None:
     overall_dirty = sum(r["dirty"] for r in report["repos"])
     any_fail = any(r["tests"] == "FAIL" for r in report["repos"])
     total_placeholders = len(report["placeholders"])
-    overall_grade = grade_repo(overall_dirty, "FAIL" if any_fail else "PASS", total_placeholders, 25)
-    report["overall"] = {"grade": overall_grade, "dirty": overall_dirty, "placeholders": total_placeholders}
+    overall_grade = grade_repo(overall_dirty, "FAIL" if any_fail else "PASS", total_placeholders, 25, e2e["pass_rate"])
+    report["e2e"] = e2e
+    report["overall"] = {"grade": overall_grade, "dirty": overall_dirty, "placeholders": total_placeholders, "e2e_pass_rate": e2e["pass_rate"]}
 
     REPORT.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(f"Overall grade: {overall_grade}")
