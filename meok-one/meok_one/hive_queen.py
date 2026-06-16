@@ -297,7 +297,8 @@ def _ground_with_tool(domain: str, message: str, cfg: dict) -> "tuple[str, dict]
 def queen(domain: str, message: str, brain: str = "council", tier: str | None = None,
           user_id: str = "anon", govern: bool = True, do_gossip: bool = False,
           quorum: int = 3, roster: "list | None" = None,
-          tools: bool = False, verify=None, n: int = 1, task: "dict | None" = None) -> dict:
+          tools: bool = False, verify=None, n: int = 1, task: "dict | None" = None,
+          patent: bool = False) -> dict:
     """Ask a hive's queen.
 
     brain:
@@ -404,6 +405,14 @@ def queen(domain: str, message: str, brain: str = "council", tier: str | None = 
     out["honey"] = honey
     if do_gossip:
         out["gossiped"] = gossip(honey)
+    # openpatent.ai: operating within the hive patents the work — capture a substantive
+    # answer as a tamper-evident, SIGIL-anchored invention disclosure (opt-in).
+    if patent:
+        try:
+            from . import openpatent
+            out["patent"] = openpatent.auto_capture(out, hive=domain)
+        except Exception as e:  # noqa: BLE001
+            out["patent"] = {"error": f"{type(e).__name__}: {e}"}
     return out
 
 
