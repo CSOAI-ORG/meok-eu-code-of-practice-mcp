@@ -1,33 +1,85 @@
 {
-  "activated": [],
-  "dormant": [
-    "aria",
+  "ts": "2026-06-16T05:00:00Z",
+  "total": 27,
+  "activated": [
     "marcus",
-    "luna",
-    "kai",
-    "sage",
-    "ember",
-    "nova",
-    "river",
     "atlas",
-    "iris",
-    "zephyr",
+    "kai",
     "rex",
-    "echo",
-    "flux",
     "sol",
-    "nyx",
-    "quinn",
-    "terra",
-    "pixel",
     "titan",
-    "mochi",
-    "cipher",
     "vox",
+    "ember",
+    "aria",
+    "river",
+    "mochi",
+    "quinn",
+    "luna",
+    "nova",
+    "iris",
+    "flux",
+    "pixel",
+    "cipher",
+    "terra",
+    "atlas",
+    "luna",
+    "iris",
+    "rex",
+    "sage",
     "dusk",
+    "nyx",
+    "zephyr",
     "ananda",
     "gabriel",
     "shanti"
   ],
-  "ts": "2026-06-15T17:00:00Z"
+  "dormant": [],
+  "by_archetype": {
+    "challenger": [
+      "marcus",
+      "atlas",
+      "kai",
+      "rex",
+      "sol",
+      "titan",
+      "vox",
+      "ember"
+    ],
+    "nurturer": [
+      "aria",
+      "river",
+      "mochi",
+      "quinn"
+    ],
+    "explorer": [
+      "luna",
+      "nova",
+      "iris",
+      "flux",
+      "pixel",
+      "cipher",
+      "terra"
+    ],
+    "strategist": [
+      "atlas"
+    ],
+    "creator": [
+      "luna",
+      "iris"
+    ],
+    "guardian": [
+      "rex"
+    ],
+    "sage": [
+      "sage",
+      "dusk",
+      "nyx",
+      "zephyr"
+    ],
+    "seeker": [
+      "ananda",
+      "gabriel",
+      "shanti"
+    ]
+  }
 }

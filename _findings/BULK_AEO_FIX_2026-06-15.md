@@ -29,14 +29,14 @@
 | case-industries-deploy | skipped | no index.html |
 | case-studies-deploy | skipped | no index.html |
 | cert-lookup-deploy | ok | all AEO files present |
-| changelog-deploy | generated | meta-description (base=https://meok.ai/changelog) |
+| changelog-deploy | ok | all AEO files present |
 | clock-embed-deploy | ok | all AEO files present |
 | cobolbridge-deploy | ok | all AEO files present |
 | commercialvehicle-deploy | ok | all AEO files present |
 | compare-deploy | ok | all AEO files present |
 | compliance-dash-deploy | ok | all AEO files present |
-| contact-deploy | generated | meta-description (base=https://meok.ai/contact) |
-| cookie-deploy | generated | meta-description (base=https://meok.ai/cookie) |
+| contact-deploy | ok | all AEO files present |
+| cookie-deploy | ok | all AEO files present |
 | cs-submit-deploy | ok | all AEO files present |
 | customers-deploy | ok | all AEO files present |
 | data-residency-deploy | ok | all AEO files present |
@@ -51,11 +51,11 @@
 | free-trial-deploy | ok | all AEO files present |
 | govtech-ai-deploy | ok | all AEO files present |
 | grabhire-deploy | ok | all AEO files present |
-| gtm-deploy | generated | meta-description (base=https://meok.ai/gtm) |
+| gtm-deploy | ok | all AEO files present |
 | hackathon-deploy | ok | all AEO files present |
 | haulage-deploy | ok | all AEO files present |
 | healthtech-ai-deploy | ok | all AEO files present |
-| help-deploy | generated | meta-description (base=https://meok.ai/help) |
+| help-deploy | ok | all AEO files present |
 | hive-deploy | ok | all AEO files present |
 | indexnow-deploy | skipped | no index.html |
 | industries-deploy | ok | all AEO files present |
@@ -90,11 +90,11 @@
 | press-deploy | ok | all AEO files present |
 | pricing-deploy | ok | all AEO files present |
 | pricing-vs-big4-deploy | ok | all AEO files present |
-| privacy-deploy | generated | meta-description (base=https://meok.ai/privacy) |
+| privacy-deploy | ok | all AEO files present |
 | regtech-ai-deploy | ok | all AEO files present |
-| roadmap-deploy | generated | meta-description (base=https://meok.ai/roadmap) |
+| roadmap-deploy | ok | all AEO files present |
 | safetyof-deploy | ok | all AEO files present |
-| security-deploy | generated | meta-description (base=https://meok.ai/security) |
+| security-deploy | ok | all AEO files present |
 | sitemap-index-deploy | ok | all AEO files present |
 | socialmediamanager-deploy | ok | all AEO files present |
 | sov3-deploy | skipped | no index.html |
@@ -102,8 +102,8 @@
 | suicidestop-deploy | ok | all AEO files present |
 | supplier-portal-deploy | ok | all AEO files present |
 | support-deploy | ok | all AEO files present |
-| terms-deploy | generated | meta-description (base=https://meok.ai/terms) |
-| thanks-deploy | generated | meta-description (base=https://thanks-deploy.vercel.app) |
+| terms-deploy | ok | all AEO files present |
+| thanks-deploy | ok | all AEO files present |
 | transparency-deploy | ok | all AEO files present |
 | transparencyof-deploy | ok | all AEO files present |
 | wowmcp-deploy | ok | all AEO files present |
