@@ -122,22 +122,18 @@ Nemesis architecture (1363-line master spec, 8 cross-dimensional insights):
 
 ---
 
-## Slide 9: The Ask
+**The ask:**
 
-**£2-5M equity at market terms.**
-
-Use of funds:
+**£1M seed equity at market terms** (reduced from £2-5M after BFT council audit, Lens 3). Use of funds:
 - **£500K** — 12-month Nemesis training run (Mamba-3 + MoE + GRPO, 8× H100 rental)
-- **£500K** — 2-3 senior ML engineers (Nemesis Layer 1 middleware: GWT + FEP + SomaticMarker)
-- **£500K** — 1 senior BFT systems engineer (council voting, HMAC audit, EU AI Act Article 12 compliance)
-- **£500K** — GTM + regulatory affairs (UK gov + EU + Gulf)
-- **£1M-3M** — sovereign data center (London, UK-sovereign compute) + TEE integration (Intel TDX)
+- **£300K** — 2-3 senior ML engineers (Nemesis Layer 1 middleware: GWT + FEP + SomaticMarker)
+- **£100K** — 1 senior BFT systems engineer (council voting, HMAC audit, EU AI Act Article 12 compliance)
+- **£50K** — GTM + regulatory affairs (UK gov + EU + Gulf)
+- **£50K** — sovereign data center (London, UK-sovereign compute) + TEE integration (Intel TDX)
 
-**Milestones (12 months):**
-- M1 (3 mo): 7B active / 47B total Nemesis checkpoint
-- M2 (6 mo): Full 33-agent BFT council operational in production
-- M3 (9 mo): EU AI Act Article 12 audit trail certified
-- M4 (12 mo): First sovereign data center in London, TEE-secured inference
+**Milestone (12 months):** 10 paying customers + first £100K ARR (Article 50 Watermarking Kit, Audit-Prep Bundle, EU AI Act Compliance-as-a-Service)
+
+**Note on IP (BFT Lens 4):** The 8 Nemesis cross-dimensional insights will be **published as defensive prior art** (arXiv + GitHub) rather than patented. This blocks competitors from claiming the same insights while keeping the implementation trade secrets.
 
 ---
 
