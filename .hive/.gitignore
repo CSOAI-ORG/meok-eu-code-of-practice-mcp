@@ -3,7 +3,10 @@ logs/
 tasks/queue.json
 tasks/pending.jsonl
 tasks/completed.jsonl
+tasks/publish_queue.jsonl
 healer_state.json
+**/__pycache__/
+**/*.pyc
 
 # Keep source definitions
 !config.yaml

@@ -113,9 +113,44 @@ quality:
     - "csoai-platform/.env"
     - "csoai-org/api/prices.js"
 
-# Notification channels (future)
+# Notification channels
 notifications:
-  enabled: false
-  discord: ""
-  slack: ""
-  email: ""
+  dry_run: true              # Set to false to send real emails/webhooks
+  macos: false               # macOS Notification Center alerts
+  email:
+    enabled: true
+    host: "mail.privateemail.com"
+    port: 587
+    user: "nicholas@csoai.org"
+    password: ""             # Falls back to SMTP_PASSWORD env var
+    from: "nicholas@csoai.org"
+    to: ["nicholas@csoai.org"]
+  discord:
+    enabled: false
+    webhook_url: ""
+  slack:
+    enabled: false
+    webhook_url: ""
+  webhook:
+    enabled: false
+    url: ""
+    payload: {}
+
+# Publish-loop configuration
+publish_loop:
+  enabled: true
+  dry_run: true              # Set to false to publish real posts
+  sources:
+    - "csoai-org/READY_TO_POST.txt"
+    - "csoai-org/SOCIAL_BLITZ.md"
+  queue: ".hive/tasks/publish_queue.jsonl"
+  platforms:
+    - linkedin
+    - twitter
+    - reddit
+  buffer:
+    enabled: false
+    access_token: ""         # BUFFER_ACCESS_TOKEN env var overrides
+  webbridge:
+    enabled: true            # Attempt WebBridge if extension is connected
+    url: "http://127.0.0.1:31337"  # Kimi WebBridge daemon

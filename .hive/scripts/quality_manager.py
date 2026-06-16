@@ -15,6 +15,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from hive_notify import notify
+
 ROOT = Path(os.environ.get("HIVE_ROOT", "/Users/nicholas/clawd"))
 CONFIG = ROOT / ".hive" / "config.yaml"
 LOG_DIR = ROOT / ".hive" / "logs"
@@ -157,6 +159,20 @@ def main() -> None:
 
     REPORT.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(f"Overall grade: {overall_grade}")
+
+    if overall_grade not in ("A", "B"):
+        notify(
+            f"Quality grade dropped to {overall_grade}",
+            f"Overall empire quality is {overall_grade}.\nDirty files: {overall_dirty}\nPlaceholders: {total_placeholders}\nSee {REPORT}",
+            level="warning",
+        )
+    for r in report["repos"]:
+        if r["tests"] == "FAIL":
+            notify(
+                f"Test failure in {r['name']}",
+                f"Test suite failed for {r['name']} ({r['path']}).",
+                level="error",
+            )
 
 
 if __name__ == "__main__":

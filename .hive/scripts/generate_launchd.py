@@ -89,6 +89,7 @@ def main() -> None:
         ("hive-sensor", script_dir / "hive_sensor.py", 900),
         ("service-healer", script_dir / "service_healer.py", 300),
         ("quality-manager", script_dir / "quality_manager.py", 3600),
+        ("publish-manager", script_dir / "publish_manager.py", 1800),
     ]
     for name, script, interval in jobs:
         label = f"ai.csoai.{name}"

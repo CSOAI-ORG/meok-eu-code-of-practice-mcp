@@ -13,6 +13,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from hive_notify import notify
+
 ROOT = Path(os.environ.get("HIVE_ROOT", "/Users/nicholas/clawd"))
 CONFIG = ROOT / ".hive" / "config.yaml"
 QUEUE = ROOT / ".hive" / "tasks" / "queue.json"
@@ -132,6 +134,16 @@ def main() -> None:
     print(f"Hive Sensor: scanned {len(patterns)} patterns | found {len(queue['tasks'])} tasks")
     print(f"  by router: {by_router}")
     print(f"  by priority: {by_prio}")
+
+    p0_count = by_prio.get("P0", 0)
+    if p0_count:
+        p0_tasks = [t for t in queue["tasks"] if t["priority"] == "P0"][:5]
+        body = "\n".join(f"- [{t['router']}] {t['body'][:120]}" for t in p0_tasks)
+        notify(
+            f"Sensor found {p0_count} P0 tasks",
+            f"Top P0 items requiring immediate attention:\n{body}",
+            level="error",
+        )
 
 
 if __name__ == "__main__":
