@@ -975,6 +975,52 @@ class E2ERunner:
             assert body.get("stripe_link") == "https://buy.stripe.com/eVq14p1BWcMO4c59mE8k91T"
             return f"tier={body.get('purchase_id')}, Pro £199/mo"
 
+        async def stripe_webhook_tier():
+            """Simulate a real Stripe checkout.session.completed event hitting /webhook/stripe.
+            The mock mode records the event into the in-memory store."""
+            webhook_payload = {
+                "type": "checkout.session.completed",
+                "id": f"evt_e2e_{int(time.time())}",
+                "data": {
+                    "object": {
+                        "amount_total": 19900,
+                        "currency": "gbp",
+                        "customer_details": {"email": "e2e-stripe-webhook@meok.ai"},
+                        "metadata": {"kind": "tier", "item_id": "pro"},
+                    }
+                },
+            }
+            code, body = await self.client.request("POST", f"{base}/webhook/stripe", webhook_payload)
+            assert code == 200, f"webhook status={code}"
+            assert body.get("received") is True
+            return f"webhook: tier recorded, {body.get('amount')} {body.get('mode', '?')}"
+
+        async def stripe_webhook_pack():
+            webhook_payload = {
+                "type": "checkout.session.completed",
+                "id": f"evt_e2e_pack_{int(time.time())}",
+                "data": {
+                    "object": {
+                        "amount_total": 99900,
+                        "currency": "gbp",
+                        "customer_details": {"email": "e2e-pack-stripe@meok.ai"},
+                        "metadata": {"kind": "pack", "item_id": "pack_eu_ai_act"},
+                    }
+                },
+            }
+            code, body = await self.client.request("POST", f"{base}/webhook/stripe", webhook_payload)
+            assert code == 200, f"webhook status={code}"
+            assert body.get("received") is True
+            return f"webhook: pack recorded, {body.get('amount')} {body.get('mode', '?')}"
+
+        async def analytics_tracks_webhook():
+            code, body = await self.client.request("GET", f"{base}/analytics")
+            assert code == 200, f"status={code}"
+            # Mock-mode webhooks should have added at least 1 tier + 1 pack
+            assert body.get("total_tiers_sold", 0) >= 1, f"no tier recorded from webhook"
+            assert body.get("total_packs_sold", 0) >= 1, f"no pack recorded from webhook"
+            return f"analytics: {body.get('total_revenue_gbp')} total"
+
         await self.run_test(group, "/api", api_info, target=base)
         await self.run_test(group, "/servers", list_servers, target=base)
         await self.run_test(group, "/packs", list_packs, target=base)
@@ -985,6 +1031,9 @@ class E2ERunner:
         await self.run_test(group, "POST /subscribe (enterprise)", subscribe_enterprise, target=base)
         await self.run_test(group, "POST /purchase/pack (EU AI Act)", purchase_eu_pack, target=base)
         await self.run_test(group, "POST /purchase/tier (Pro)", purchase_pro_tier, target=base)
+        await self.run_test(group, "POST /webhook/stripe (tier)", stripe_webhook_tier, target=base)
+        await self.run_test(group, "POST /webhook/stripe (pack)", stripe_webhook_pack, target=base)
+        await self.run_test(group, "/analytics (after webhook)", analytics_tracks_webhook, target=base)
 
     # ═══════════════════════════════════════════════════════════════════════════
     # MAIN ORCHESTRATOR
