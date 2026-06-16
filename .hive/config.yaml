@@ -59,6 +59,13 @@ services:
     working_dir: ""
     env: {}
 
+  - name: "PHEROMONE_ROUTER"
+    port: 3900
+    url: "http://127.0.0.1:3900/health"
+    restart_command: "/usr/bin/python3 /Users/nicholas/clawd/.hive/scripts/pheromone_router.py"
+    working_dir: "/Users/nicholas/clawd/.hive/scripts"
+    env: {}
+
 # Task ingestion sources
 sensors:
   blocker_files:

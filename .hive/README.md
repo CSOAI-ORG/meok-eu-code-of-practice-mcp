@@ -57,6 +57,8 @@ python3 .hive/scripts/publish_manager.py
 python3 .hive/scripts/remediation_generator.py
 python3 .hive/scripts/test_fleet_manager.py
 python3 .hive/scripts/secrets_inventory.py
+python3 .hive/scripts/quorum_sensor.py
+curl -X POST http://127.0.0.1:3900/emit -H "Content-Type: application/json" -d '{"channel":"mcp.queen.gold","agent_id":"sigil","payload":{}}'
 python3 .hive/scripts/hive_notify.py "Test" "Hello from Hive"
 ```
 

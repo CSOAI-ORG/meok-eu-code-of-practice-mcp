@@ -43,6 +43,14 @@
   </header>
   <div class="grid">
     <div class="panel">
+      <h2>Hive Mode</h2>
+      <div id="hive-mode" class="grade">-</div>
+      <div class="metric"><span>Alarm (60m)</span><span id="mode-alarm">-</span></div>
+      <div class="metric"><span>Trail (60m)</span><span id="mode-trail">-</span></div>
+      <div class="metric"><span>Queen (60m)</span><span id="mode-queen">-</span></div>
+      <div class="metric"><span>Last sensed</span><span id="mode-ts" class="ts">-</span></div>
+    </div>
+    <div class="panel">
       <h2>Overall Quality</h2>
       <div id="overall-grade" class="grade">-</div>
       <div class="metric"><span>Dirty files</span><span id="overall-dirty">-</span></div>
@@ -103,6 +111,19 @@
       const el = document.getElementById(id);
       el.textContent = grade;
       el.className = "grade " + (grade || "");
+    }
+
+    async function loadHiveMode() {
+      const data = await fetchJSON(ROOT + "/logs/hive_mode.json");
+      if (!data) return;
+      const el = document.getElementById("hive-mode");
+      el.textContent = data.mode || "-";
+      el.className = "grade " + (data.mode || "");
+      document.getElementById("mode-ts").textContent = data.ts ? new Date(data.ts).toLocaleString() : "-";
+      const d = data.densities || {};
+      document.getElementById("mode-alarm").textContent = d["mcp.alarm.red"] || 0;
+      document.getElementById("mode-trail").textContent = d["mcp.trail.green"] || 0;
+      document.getElementById("mode-queen").textContent = d["mcp.queen.gold"] || 0;
     }
 
     async function loadQuality() {
@@ -233,7 +254,7 @@
     }
 
     async function loadAll() {
-      await Promise.all([loadQuality(), loadHealer(), loadTasks(), loadPublish(), loadFleet(), loadSecrets(), loadEvents()]);
+      await Promise.all([loadHiveMode(), loadQuality(), loadHealer(), loadTasks(), loadPublish(), loadFleet(), loadSecrets(), loadEvents()]);
     }
 
     loadAll();
