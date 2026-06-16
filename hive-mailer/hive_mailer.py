@@ -40,6 +40,50 @@ def parse_email(raw):
     m = _EMAIL_RE.search(raw)
     return m.group(0).lower() if m else None
 
+# ── Deliverability guard (added 2026-06-16) ──────────────────────────────
+# Bounces on guessed/placeholder addresses hurt sender reputation, and on a
+# domain whose Resend send-gate already flaps that's the wrong direction.
+# Reject reserved/placeholder addresses BEFORE they ship, and never re-send
+# to an address we've already seen bounce.
+_RESERVED_DOMAINS = {
+    "example.com", "example.org", "example.net", "example.edu",
+    "test.com", "domain.com", "email.com", "sample.com", "company.com",
+    "yourcompany.com", "acme.com", "mycompany.com", "localhost",
+}
+_RESERVED_TLDS = (".example", ".invalid", ".test", ".local", ".localhost")
+_PLACEHOLDER_LOCALPARTS = {
+    "name", "firstname", "first.last", "first", "last", "you", "your",
+    "email", "test", "example", "user", "username", "contact-name",
+    "name.surname", "firstname.lastname", "yourname",
+}
+SUPPRESS = HOME / ".suppressed"  # one bounced/blocked email per line
+
+def load_suppressed():
+    if not SUPPRESS.exists():
+        return set()
+    return {l.strip().lower() for l in SUPPRESS.read_text().splitlines() if l.strip() and not l.startswith("#")}
+
+def suppress(email, reason=""):
+    with SUPPRESS.open("a") as f:
+        f.write(f"{email.lower()}\n")
+    log(f"SUPPRESSED {email} ({reason})")
+
+def is_sendable(email):
+    """Return (ok, reason). Reject placeholders/reserved domains so we don't
+    burn reputation on addresses that will bounce or were never real."""
+    if not email or "@" not in email:
+        return False, "no @"
+    local, _, domain = email.rpartition("@")
+    domain = domain.lower()
+    local = local.lower()
+    if domain in _RESERVED_DOMAINS or domain.endswith(_RESERVED_TLDS):
+        return False, f"reserved/placeholder domain ({domain})"
+    if "." not in domain:
+        return False, "domain has no TLD"
+    if local in _PLACEHOLDER_LOCALPARTS:
+        return False, f"placeholder localpart ({local})"
+    return True, ""
+
 def log(m):
     line = f"{time.strftime('%F %T')} {m}"
     LOG.open("a").write(line + "\n")
@@ -110,9 +154,15 @@ def main():
         STRIKE_CAP = 9
 
         if not probe.get("id"):
+            prev = strikes
             strikes = min(strikes + 1, STRIKE_CAP)
             STRIKES.write_text(str(strikes))
-            STRIKE_TS.write_text(datetime.now().isoformat())
+            # Only stamp the timestamp on the FIRST strike, so the 24h auto-decay
+            # window measures from when flapping BEGAN — not from the last run.
+            # (Bug fixed 2026-06-16: rewriting TS every run pinned the counter at
+            # the cap forever and gated all sends, even after the gate cleared.)
+            if prev == 0:
+                STRIKE_TS.write_text(datetime.now().isoformat())
             if strikes < 3:
                 log(f"probe 403 strike {strikes}/3 — assuming flap, proceeding")
                 # fall through to send
@@ -133,6 +183,7 @@ def main():
         log("no queue file")
         return
     rows = [json.loads(l) for l in QUEUE.read_text().splitlines() if l.strip()]
+    suppressed = load_suppressed()
     budget = DAILY_CAP - sent_today
     n = 0
     for row in rows:
@@ -142,6 +193,19 @@ def main():
         if not clean_to:
             row["status"] = "skipped"; row["error"] = "no parseable email in `to` field"
             log(f"SKIP → {row.get('to','?')!r}: no parseable email")
+            QUEUE.write_text("\n".join(json.dumps(x) for x in rows) + "\n")
+            continue
+        # Deliverability guard — never ship to placeholders/reserved domains.
+        ok, why = is_sendable(clean_to)
+        if not ok:
+            row["status"] = "skipped_invalid"; row["error"] = why
+            log(f"SKIP → {clean_to}: {why}")
+            QUEUE.write_text("\n".join(json.dumps(x) for x in rows) + "\n")
+            continue
+        # Suppression list — addresses that previously bounced/were blocked.
+        if clean_to in suppressed:
+            row["status"] = "skipped_suppressed"; row["error"] = "on suppression list (prior bounce)"
+            log(f"SKIP → {clean_to}: suppressed")
             QUEUE.write_text("\n".join(json.dumps(x) for x in rows) + "\n")
             continue
         r = api("POST", "/emails", key, {
