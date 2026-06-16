@@ -135,6 +135,16 @@ def load_e2e_report() -> dict[str, Any]:
         return {"total": 0, "passed": 0, "failed": 0, "skipped": 0, "pass_rate": 0.0}
 
 
+def load_test_fleet_report() -> dict[str, Any]:
+    path = ROOT / ".hive" / "logs" / "test_fleet_report.json"
+    if not path.exists():
+        return {"summary": {"suites_total": 0, "suites_passed": 0, "pass_rate": 0.0}}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {"summary": {"suites_total": 0, "suites_passed": 0, "pass_rate": 0.0}}
+
+
 def main() -> None:
     config = load_config()
     quality = config.get("quality", {})
@@ -143,6 +153,7 @@ def main() -> None:
     placeholder_patterns = quality.get("secret_patterns", [r"REPLACE_WITH_"])
     ignore_dirs = set(sensors.get("ignore_dirs", []))
     e2e = load_e2e_report()
+    fleet = load_test_fleet_report()
 
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     report: dict[str, Any] = {"ts": datetime.now(timezone.utc).isoformat(), "repos": [], "placeholders": []}
@@ -175,9 +186,23 @@ def main() -> None:
     overall_dirty = sum(r["dirty"] for r in report["repos"])
     any_fail = any(r["tests"] == "FAIL" for r in report["repos"])
     total_placeholders = len(report["placeholders"])
-    overall_grade = grade_repo(overall_dirty, "FAIL" if any_fail else "PASS", total_placeholders, 25, e2e["pass_rate"])
+    fleet_summary = fleet.get("summary", {})
+    combined_pass_rate = (
+        (e2e["pass_rate"] + fleet_summary.get("pass_rate", 0.0)) / 2
+        if e2e["pass_rate"] and fleet_summary.get("pass_rate")
+        else max(e2e["pass_rate"], fleet_summary.get("pass_rate", 0.0))
+    )
+    overall_grade = grade_repo(overall_dirty, "FAIL" if any_fail else "PASS", total_placeholders, 25, combined_pass_rate)
     report["e2e"] = e2e
-    report["overall"] = {"grade": overall_grade, "dirty": overall_dirty, "placeholders": total_placeholders, "e2e_pass_rate": e2e["pass_rate"]}
+    report["test_fleet"] = fleet
+    report["overall"] = {
+        "grade": overall_grade,
+        "dirty": overall_dirty,
+        "placeholders": total_placeholders,
+        "e2e_pass_rate": e2e["pass_rate"],
+        "fleet_pass_rate": fleet_summary.get("pass_rate", 0.0),
+        "fleet_suites": f"{fleet_summary.get('suites_passed', 0)}/{fleet_summary.get('suites_total', 0)}",
+    }
 
     REPORT.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(f"Overall grade: {overall_grade}")

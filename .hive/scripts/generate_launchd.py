@@ -91,6 +91,7 @@ def main() -> None:
         ("quality-manager", script_dir / "quality_manager.py", 3600),
         ("publish-manager", script_dir / "publish_manager.py", 1800),
         ("remediation-generator", script_dir / "remediation_generator.py", 21600),
+        ("test-fleet-manager", script_dir / "test_fleet_manager.py", 86400),
     ]
     for name, script, interval in jobs:
         label = f"ai.csoai.{name}"

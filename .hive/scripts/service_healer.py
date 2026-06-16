@@ -23,8 +23,8 @@ CONFIG = ROOT / ".hive" / "config.yaml"
 LOG = ROOT / ".hive" / "logs" / "healer.log"
 STATE = ROOT / ".hive" / "healer_state.json"
 
-STRIKES_BEFORE_RESTART = 2
-RESTART_COOLDOWN_SECONDS = 30
+STRIKES_BEFORE_RESTART = 3
+RESTART_COOLDOWN_SECONDS = 60
 
 
 def load_config() -> dict[str, Any]:

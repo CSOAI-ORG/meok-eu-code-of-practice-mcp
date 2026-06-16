@@ -55,6 +55,12 @@
       <ul id="repo-grades"></ul>
     </div>
     <div class="panel">
+      <h2>Test Fleet</h2>
+      <div class="metric"><span>Suites passed</span><span id="fleet-suites">-</span></div>
+      <div class="metric"><span>Pass rate</span><span id="fleet-rate">-</span></div>
+      <ul id="fleet-suites-list"></ul>
+    </div>
+    <div class="panel">
       <h2>Service Health</h2>
       <ul id="service-health"></ul>
     </div>
@@ -163,6 +169,23 @@
       });
     }
 
+    async function loadFleet() {
+      const data = await fetchJSON(ROOT + "/logs/test_fleet_report.json");
+      if (!data) return;
+      const summary = data.summary || {};
+      document.getElementById("fleet-suites").textContent = `${summary.suites_passed || 0}/${summary.suites_total || 0}`;
+      document.getElementById("fleet-rate").textContent = (summary.pass_rate || 0).toFixed(2);
+
+      const list = document.getElementById("fleet-suites-list");
+      list.innerHTML = "";
+      (data.suites || []).forEach(s => {
+        const li = document.createElement("li");
+        const cls = s.status === "PASS" ? "ok" : (s.status === "FAIL" ? "err" : "warn");
+        li.innerHTML = `<span class="${cls}">${s.status}</span> ${s.name} <span class="ts">${s.passed}/${s.total}</span>`;
+        list.appendChild(li);
+      });
+    }
+
     async function loadEvents() {
       const [healer, notifier, publish] = await Promise.all([
         fetchText(ROOT + "/logs/healer.log"),
@@ -186,7 +209,7 @@
     }
 
     async function loadAll() {
-      await Promise.all([loadQuality(), loadHealer(), loadTasks(), loadPublish(), loadEvents()]);
+      await Promise.all([loadQuality(), loadHealer(), loadTasks(), loadPublish(), loadFleet(), loadEvents()]);
     }
 
     loadAll();
