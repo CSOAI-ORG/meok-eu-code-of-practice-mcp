@@ -1,21 +1,27 @@
-# ASISecurity — Pre-deployment security evidence for frontier AI.
+# AsiSecurity — asisecurity.ai
 
-> Red-team results, threat models and hardening evidence for frontier and ASI-class systems — packaged as the security evidence pack regulators and customers demand.
+> Cybersecurity AI
 
-## Overview
-ASISecurity — Pre-deployment security evidence for frontier AI. is part of the MEOK AI Labs sovereign compliance and attestation platform.
+## Pricing
+- Free: £0/mo (5-min scorecard)
+- Pro: £29/mo (full Cybersecurity AI, MCP access)
+- Enterprise: £199/mo (multi-entity, SSO, API quotas)
+- One-time: Article 50 Kit £999, Watchdog Cert £4,950
 
-## Pages
-- /enterprise/
-- /partner/
-- /pricing/
-- /signup/
-- https://meok.ai/cookies
-- https://meok.ai/privacy
-- https://meok.ai/terms
+## Stripe
+- Sovereign £29: https://buy.stripe.com/9B67sNeoIcMObEx56o8k91S
+- Pro £199: https://buy.stripe.com/eVq14p1BWcMO4c59mE8k91T
+
+## MCP server
+- Endpoint: https://asisecurity.ai/mcp
+- Tools: cybersecurity-ai-mcp, owasp-agentic-mcp
+
+## EU AI Act
+- Article 50 (transparency): 2 Aug 2026 cliff
+- Article 51 (post-market monitoring): ongoing
+- Watchdog Cert add-on: signed Ed25519+HMAC-SHA256 attestation
 
 ## Contact
 - https://meok.ai
-- https://csoai.org
 - CSOAI Ltd, UK company 16939677
-
+- MEOK AI Labs sovereign substrate

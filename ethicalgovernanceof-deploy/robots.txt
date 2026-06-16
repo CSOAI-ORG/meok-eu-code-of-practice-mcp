@@ -1,3 +1,7 @@
 User-agent: *
 Allow: /
 Sitemap: https://ethicalgovernanceof.ai/sitemap.xml
+
+# Added 2026-06-16 D21 AEO: CCBot allowed
+User-agent: CCBot
+Allow: /

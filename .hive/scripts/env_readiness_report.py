@@ -14,8 +14,18 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 ROOT = Path(os.environ.get("HIVE_ROOT", "/Users/nicholas/clawd"))
+CONFIG = ROOT / ".hive" / "config.yaml"
 REPORT = ROOT / ".hive" / "logs" / "env_readiness_report.json"
+
+
+def load_config() -> dict[str, Any]:
+    try:
+        return yaml.safe_load(CONFIG.read_text(encoding="utf-8")) or {}
+    except Exception:
+        return {}
 
 REQUIRED = [
     {"key": "MEOK_MASTER_API_KEY", "blocks": "Stripe checkout, Pro keystone, 4 paywalled MCPs, attestation Pro tier", "sensitive": True},
@@ -67,6 +77,11 @@ def is_placeholder(value: str) -> bool:
 
 
 def main() -> None:
+    config = load_config()
+    publish_cfg = config.get("publish_loop", {})
+    buffer_enabled = publish_cfg.get("buffer", {}).get("enabled", False)
+    webbridge_enabled = publish_cfg.get("webbridge", {}).get("enabled", False)
+
     env_files = find_env_files(ROOT)
     all_values: dict[str, list[str]] = defaultdict(list)
     for path in env_files:
@@ -92,6 +107,10 @@ def main() -> None:
             status = "placeholder"
             location = file_hits[0][0]
 
+        # Buffer is optional if Buffer integration is disabled or WebBridge is enabled.
+        if key == "BUFFER_ACCESS_TOKEN" and (not buffer_enabled or webbridge_enabled) and status in ("missing", "placeholder"):
+            status = "optional"
+
         results.append({**req, "status": status, "location": location})
 
     report = {
@@ -99,6 +118,7 @@ def main() -> None:
         "env_files_scanned": len(env_files),
         "keys": results,
         "blocked": [r["key"] for r in results if r["status"] in ("missing", "placeholder")],
+        "optional": [r["key"] for r in results if r["status"] == "optional"],
         "ready": [r["key"] for r in results if r["status"] in ("env", "file")],
     }
 
@@ -109,7 +129,7 @@ def main() -> None:
     if report["blocked"]:
         print("Blocked:", ", ".join(report["blocked"]))
     for r in results:
-        icon = "✅" if r["status"] in ("env", "file") else "❌"
+        icon = "✅" if r["status"] in ("env", "file") else ("⚪" if r["status"] == "optional" else "❌")
         print(f"  {icon} {r['key']}: {r['status']} ({r['location'] or 'nowhere'})")
 
 

@@ -123,6 +123,7 @@ def main() -> None:
         ("affiliate-tracker", script_dir / "affiliate_tracker.py", 86400),
         ("cc0-harvester", script_dir / "cc0_harvester.py", 604800),
         ("grant-application-bot", script_dir / "grant_application_bot.py", 604800),
+        ("data-budget-guard", script_dir / "data_budget_guard.py", 86400),
     ]
     for name, script, interval in jobs:
         label = f"ai.csoai.{name}"

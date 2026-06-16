@@ -259,3 +259,7 @@ csoai-master/
 # External submodule / dependency
 openmoe/
 openmoe
+
+# Generated deploy outputs
+*-deploy/
+hive-mailer/.probe_strikes*

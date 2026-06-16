@@ -16,6 +16,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from data_budget_guard import enforce
+
 ROOT = Path("/Users/nicholas/clawd")
 OUT_DIR = ROOT / ".hive" / "data" / "government"
 REPORT = ROOT / ".hive" / "logs" / "government_data_downloads.json"
@@ -146,6 +148,7 @@ def main() -> None:
     }, indent=2), encoding="utf-8")
 
     print(f"\nReport written to {REPORT}")
+    enforce()
 
 
 if __name__ == "__main__":

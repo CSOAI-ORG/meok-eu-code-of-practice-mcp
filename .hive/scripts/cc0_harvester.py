@@ -14,6 +14,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from data_budget_guard import enforce
+
 ROOT = Path("/Users/nicholas/clawd")
 OUT_DIR = ROOT / ".hive" / "data" / "cc0"
 REPORT = ROOT / ".hive" / "logs" / "cc0_harvester.json"
@@ -128,6 +130,7 @@ def main() -> None:
         "failed": sum(1 for r in results if r["status"] != "ok"),
     }, indent=2), encoding="utf-8")
     print(f"\nReport: {REPORT}")
+    enforce()
 
 
 if __name__ == "__main__":

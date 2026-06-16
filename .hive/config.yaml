@@ -221,3 +221,13 @@ publish_loop:
   webbridge:
     enabled: true            # Attempt WebBridge if extension is connected
     url: "http://127.0.0.1:31337"  # Kimi WebBridge daemon
+
+# Data-harvester policy
+# Guards disk budget for downloaded CC0 / government / synthetic datasets.
+data_policy:
+  budget_gb: 10
+  path: ".hive/data/"
+  retention_days: 30
+  offload_to_s3: false
+  s3_bucket: ""              # e.g. csoai-hive-datasets
+  s3_prefix: "harvested/"
