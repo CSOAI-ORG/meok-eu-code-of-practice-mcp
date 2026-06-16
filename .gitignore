@@ -250,3 +250,8 @@ csoai-master/node_modules/
 csoai-dashboard-master/
 csoai-master/
 .env.local
+
+# Hive runtime data
+.hive/data/
+.hive/tasks/
+.hive/logs/
