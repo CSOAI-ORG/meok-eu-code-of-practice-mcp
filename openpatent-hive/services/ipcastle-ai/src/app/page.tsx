@@ -8,7 +8,17 @@ import Link from "next/link";
 
 const COLOR = "#0d1f2d";
 const ACCENT = "#4ecdc4";
-const CTA = "https://api.openpatent.ai/v1/disclosure?tier=premium&white_label=ipcastle";
+// L11 — Stripe Checkout links (DEFONEOS mythic voice).
+// 5 tiers, each CTAs the dragon's gate. The hive remembers who pays.
+const CHECKOUT_BASE = "https://api.openpatent.ai/v1/checkout";
+const WL = "ipcastle";
+const CTA = {
+  starter:    `${CHECKOUT_BASE}/starter?white_label=${WL}`,
+  defensive:  `${CHECKOUT_BASE}/defensive?white_label=${WL}`,
+  full:       `${CHECKOUT_BASE}/full?white_label=${WL}`,
+  premium:    `${CHECKOUT_BASE}/premium?white_label=${WL}`,
+  enterprise: `${CHECKOUT_BASE}/enterprise?white_label=${WL}`,
+};
 
 const STATS = [
   { v: "33", l: "BFT council agents per review" },
@@ -37,11 +47,11 @@ const FEATURES = [
 ];
 
 const PRICING = [
-  { tier: "In-House IP", price: "$999", desc: "10 disclosures / month" },
-  { tier: "IP Boutique", price: "$2,499", desc: "100 disclosures / month" },
-  { tier: "Big Law", price: "$4,999", desc: "Unlimited + BFT council" },
-  { tier: "Patent Pool", price: "Custom", desc: "Multi-party coordination" },
-  { tier: "Enterprise", price: "$4,999/mo", desc: "Sovereign VM + BFT" },
+  { tier: "In-House IP", slug: "full", price: "$999", desc: "10 disclosures / month" },
+  { tier: "IP Boutique", slug: "premium", price: "$2,499", desc: "100 disclosures / month" },
+  { tier: "Big Law", slug: "enterprise", price: "$4,999", desc: "Unlimited + BFT council" },
+  { tier: "Patent Pool", slug: "enterprise", price: "Custom", desc: "Multi-party coordination" },
+  { tier: "Enterprise", slug: "enterprise", price: "$4,999/mo", desc: "Sovereign VM + BFT" },
 ];
 
 function Header() {
@@ -55,7 +65,7 @@ function Header() {
           <a href="#features" style={{ color: "#fff", textDecoration: "none", opacity: 0.9 }}>Features</a>
           <a href="#pricing" style={{ color: "#fff", textDecoration: "none", opacity: 0.9 }}>Pricing</a>
           <a href="https://openpatent.ai/docs" style={{ color: "#fff", textDecoration: "none", opacity: 0.9 }}>Doctrine</a>
-          <a href={CTA} style={{ color: "#000", background: ACCENT, padding: "6px 14px", borderRadius: 4, textDecoration: "none", fontWeight: 600 }}>Defend IP →</a>
+          <a href={CTA.premium} style={{ color: "#000", background: ACCENT, padding: "6px 14px", borderRadius: 4, textDecoration: "none", fontWeight: 600 }}>Defend IP →</a>
         </nav>
       </div>
     </header>
@@ -98,7 +108,7 @@ export default function Page() {
               IP law firms, in-house IP teams, and patent pools use ipcastle.ai for high-volume defensive disclosure, BFT-reviewed claims, and audit-grade chain-of-custody. The dragon guards the perimeter; the hive remembers every claim.
             </p>
             <div style={{ display: "flex", gap: 12, marginTop: 30, flexWrap: "wrap" }}>
-              <a href={CTA} style={{ background: ACCENT, color: "#000", padding: "14px 24px", borderRadius: 6, textDecoration: "none", fontWeight: 600 }}>
+              <a href={CTA.premium} style={{ background: ACCENT, color: "#000", padding: "14px 24px", borderRadius: 6, textDecoration: "none", fontWeight: 600 }}>
                 Defend your castle →
               </a>
               <a href="#features" style={{ border: "1px solid #fff", color: "#fff", padding: "14px 24px", borderRadius: 6, textDecoration: "none" }}>
@@ -149,11 +159,14 @@ export default function Page() {
                   <div style={{ fontSize: 13, color: "#666", textTransform: "uppercase", letterSpacing: 0.5 }}>{p.tier}</div>
                   <div style={{ fontSize: 28, fontWeight: 700, color: COLOR, margin: "8px 0" }}>{p.price}</div>
                   <div style={{ fontSize: 13, color: "#666" }}>{p.desc}</div>
+                  <a href={CTA[p.slug as keyof typeof CTA] || CTA.enterprise} style={{ display: "inline-block", marginTop: 12, background: p.tier === "Big Law" ? ACCENT : "#fff", color: p.tier === "Big Law" ? "#000" : COLOR, border: `1px solid ${ACCENT}`, padding: "8px 14px", borderRadius: 4, textDecoration: "none", fontSize: 13, fontWeight: 600 }}>
+                    Buy {p.tier} →
+                  </a>
                 </div>
               ))}
             </div>
             <div style={{ textAlign: "center", marginTop: 30 }}>
-              <a href={CTA} style={{ background: ACCENT, color: "#000", padding: "14px 28px", borderRadius: 6, textDecoration: "none", fontWeight: 600 }}>
+              <a href={CTA.full} style={{ background: ACCENT, color: "#000", padding: "14px 28px", borderRadius: 6, textDecoration: "none", fontWeight: 600 }}>
                 Start at $999 with BFT council →
               </a>
             </div>

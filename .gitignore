@@ -241,3 +241,7 @@ meok-oneos/.env.example
 
 # Rust build artifacts (accidentally tracked)
 solana-sbt/target/
+openpatent-hive/scripts/loadkeys.sh
+openpatent-hive/scripts/loadkeys.local.sh
+**/loadkeys.sh
+**/loadkeys.local.sh

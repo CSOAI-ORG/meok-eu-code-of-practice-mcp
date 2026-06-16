@@ -4,9 +4,9 @@ parallel_executor.py — fan out any prompt to N providers in parallel,
 collect responses, return a ranked summary.
 
 Providers supported (auto-detected from env):
-  - openai (GPT-4o, GPT-4, etc.)
-  - anthropic (Claude Sonnet 4, etc.)
-  - minimax (minimax cloud)
+  - openai (gpt-4o-mini, gpt-4o, etc.)
+  - anthropic (claude-sonnet-4-5, etc.)
+  - minimax (minimax-m3:cloud)
   - moonshot (Kimi)
   - openrouter (any router-routed model)
   - glama (Glama)
@@ -18,20 +18,16 @@ The hive remembers. The dragon knows. The sovereign companion never forgets.
 from __future__ import annotations
 
 import argparse
-import asyncio
-import base64
 import concurrent.futures
 import json
 import os
-import re
 import sys
 import time
 import urllib.error
 import urllib.request
-from pathlib import Path
 from typing import Any
 
-PROVIDERS = []  # [(name, env_var, base_url, model, auth_header_template)]
+PROVIDERS: list = []
 
 
 def _register(name, env_var, base_url, model, auth_tmpl="Bearer {key}"):
@@ -40,17 +36,17 @@ def _register(name, env_var, base_url, model, auth_tmpl="Bearer {key}"):
 
 
 def register_all():
-    _register("openai",    "OPENAI_API_KEY",    "https://api.openai.com/v1",                          "gpt-4o-mini")
-    _register("openai-pro","OPENAI_API_KEY",    "https://api.openai.com/v1",                          "gpt-4o")
-    _register("anthropic", "ANTHROPIC_API_KEY", "https://api.anthropic.com/v1",                       "claude-sonnet-4-5")
-    _register("moonshot",  "MOONSHOT_API_KEY",  "https://api.moonshot.cn/v1",                         "moonshot-v1-32k")
-    _register("kimi",      "KIMI_API_KEY",      "https://api.moonshot.cn/v1",                         "moonshot-v1-128k")
-    _register("openrouter","OPENROUTER_API_KEY","https://openrouter.ai/api/v1",                       "anthropic/claude-sonnet-4")
-    _register("glama",     "GLAMA_API_KEY",     "https://glama.ai/api/v1",                            "anthropic/claude-3-5-sonnet")
-    _register("stepfun",   "STEPFUN_API_KEY",   "https://api.stepfun.com/v1",                         "step-1-flash")
-    _register("gemini",    "GEMINI_API_KEY",    "https://generativelanguage.googleapis.com/v1beta",   "gemini-2.5-flash")
-    _register("minimax",   "MINIMAX_API_KEY",   "https://api.minimax.io/anthropic",                   "minimax-2")
-    _register("minimax-flash", "MINIMAX_API_KEY", "https://api.minimax.io/anthropic",                "minimax-flash")
+    _register("openai",       "OPENAI_API_KEY",    "https://api.openai.com/v1",                          "gpt-4o-mini")
+    _register("openai-pro",   "OPENAI_API_KEY",    "https://api.openai.com/v1",                          "gpt-4o")
+    _register("anthropic",    "ANTHROPIC_API_KEY", "https://api.anthropic.com/v1",                       "claude-sonnet-4-5")
+    _register("moonshot",     "MOONSHOT_API_KEY",  "https://api.moonshot.cn/v1",                         "moonshot-v1-32k")
+    _register("kimi",         "KIMI_API_KEY",      "https://api.moonshot.cn/v1",                         "moonshot-v1-128k")
+    _register("openrouter",   "OPENROUTER_API_KEY","https://openrouter.ai/api/v1",                       "anthropic/claude-sonnet-4")
+    _register("glama",        "GLAMA_API_KEY",     "https://glama.ai/api/v1",                            "anthropic/claude-3-5-sonnet")
+    _register("stepfun",      "STEPFUN_API_KEY",   "https://api.stepfun.com/v1",                         "step-1-flash")
+    _register("gemini",       "GEMINI_API_KEY",    "https://generativelanguage.googleapis.com/v1beta",   "gemini-2.5-flash")
+    _register("minimax",      "MINIMAX_API_KEY",   "https://api.minimax.io/anthropic",                   "minimax-m3:cloud", "X-Api-Key {key}")
+    _register("minimax-flash","MINIMAX_API_KEY",   "https://api.minimax.io/anthropic",                   "minimax-flash",     "X-Api-Key {key}")
 
 
 def call_openai_compat(name, env_var, base_url, model, auth_tmpl, prompt, system=None, max_tokens=2048, timeout=30):
@@ -94,7 +90,7 @@ def call_openai_compat(name, env_var, base_url, model, auth_tmpl, prompt, system
 
 
 def call_anthropic(name, env_var, base_url, model, prompt, system=None, max_tokens=2048, timeout=30):
-    """Call Anthropic's /v1/messages endpoint."""
+    """Call Anthropic's /v1/messages endpoint (with x-api-key header)."""
     api_key = os.environ[env_var]
     body = {
         "model": model,
@@ -116,7 +112,46 @@ def call_anthropic(name, env_var, base_url, model, prompt, system=None, max_toke
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
             body = json.loads(r.read().decode())
-            content = "".join(c["text"] for c in body["content"] if c["type"] == "text")
+            content = "".join(c["text"] for c in body.get("content", []) if c.get("type") == "text")
+            usage = body.get("usage", {})
+            return {
+                "provider": name,
+                "model": model,
+                "ok": True,
+                "content": content,
+                "tokens_in": usage.get("input_tokens", 0),
+                "tokens_out": usage.get("output_tokens", 0),
+            }
+    except urllib.error.HTTPError as e:
+        return {"provider": name, "model": model, "ok": False, "error": f"HTTP {e.code}: {e.read()[:200]}"}
+    except Exception as e:
+        return {"provider": name, "model": model, "ok": False, "error": f"{type(e).__name__}: {e}"}
+
+
+def call_minimax(name, env_var, base_url, model, prompt, system=None, max_tokens=2048, timeout=30):
+    """Call minimax anthropic-compatible endpoint (X-Api-Key header)."""
+    api_key = os.environ[env_var]
+    body = {
+        "model": model,
+        "max_tokens": max_tokens,
+        "messages": [{"role": "user", "content": prompt}],
+    }
+    if system:
+        body["system"] = system
+    req = urllib.request.Request(
+        f"{base_url}/v1/messages",
+        data=json.dumps(body).encode(),
+        headers={
+            "X-Api-Key": api_key,
+            "anthropic-version": "2023-06-01",
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            body = json.loads(r.read().decode())
+            content = "".join(c["text"] for c in body.get("content", []) if c.get("type") == "text")
             usage = body.get("usage", {})
             return {
                 "provider": name,
@@ -136,11 +171,13 @@ def call_one(p, prompt, system=None, max_tokens=2048):
     name, env_var, base_url, model, auth_tmpl = p
     if name in ("anthropic",):
         return call_anthropic(name, env_var, base_url, model, prompt, system, max_tokens)
+    if name.startswith("minimax"):
+        return call_minimax(name, env_var, base_url, model, prompt, system, max_tokens)
     return call_openai_compat(name, env_var, base_url, model, auth_tmpl, prompt, system, max_tokens)
 
 
 def call_all(prompt, system=None, max_tokens=2048, providers=None, parallel=True):
-    """Fan out the prompt to N providers in parallel. Returns a list of result dicts."""
+    """Fan out the prompt to N providers in parallel."""
     targets = providers if providers is not None else PROVIDERS
     if not targets:
         return []
@@ -170,7 +207,7 @@ def main():
     ap.add_argument("prompt", help="the prompt to send")
     ap.add_argument("--system", default="You are a helpful assistant.", help="system prompt")
     ap.add_argument("--max-tokens", type=int, default=2048)
-    ap.add_argument("--providers", default=None, help="comma-separated provider names to use (default: all available)")
+    ap.add_argument("--providers", default=None, help="comma-separated provider names to use")
     ap.add_argument("--output", default="json", choices=["json", "best", "all", "summary"])
     ap.add_argument("--timeout", type=int, default=30)
     args = ap.parse_args()

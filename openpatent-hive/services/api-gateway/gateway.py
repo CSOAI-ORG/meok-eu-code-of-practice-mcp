@@ -40,6 +40,26 @@ from pydantic import BaseModel, Field
 from pricing import PRICING_TIERS, PAID_TIERS
 from legal import LEGAL_BADGES, JURISDICTIONS
 
+# Inline checkout links (5 tiers). Replace with real Stripe Payment Links
+# once STRIPE_SECRET_KEY is set.
+STRIPE_CHECKOUT_LINKS = {
+    "starter":   "https://buy.stripe.com/openpatent-starter-29",
+    "defensive": "https://buy.stripe.com/openpatent-defensive-149",
+    "full":      "https://buy.stripe.com/openpatent-full-999",
+    "premium":   "https://buy.stripe.com/openpatent-premium-2499",
+    "enterprise": "https://buy.stripe.com/openpatent-enterprise-4999",
+}
+TIER_INFO = {
+    "starter":   {"name": "Starter",   "price": 29,    "period": "one-time",  "features": ["1 disclosure", "Bitcoin-anchored proof", "email receipt"]},
+    "defensive": {"name": "Defensive", "price": 149,   "period": "one-time",  "features": ["10 disclosures", "Bitcoin-anchored proof", "court-admissible cert"]},
+    "full":      {"name": "Full",      "price": 999,   "period": "one-time",  "features": ["100 disclosures", "5-jurisdiction crosswalk", "AI claim drafting"]},
+    "premium":   {"name": "Premium",   "price": 2499,  "period": "one-time",  "features": ["1000 disclosures", "33-agent BFT review", "investor pack"]},
+    "enterprise":{"name": "Enterprise","price": 4999,  "period": "monthly",   "features": ["unlimited disclosures", "white-label", "SLA", "sovereign deployment"]},
+}
+TIER_ORDER = ["starter", "defensive", "full", "premium", "enterprise"]
+# WHITE_LABEL_VERTICALS + get_checkout_link + get_tier_info + list_pricing + is_known_tier
+# + is_known_white_label are all defined inline below (no external stripe_links module needed).
+
 # ── SIGIL chain (Structured Identity & Guardian-Inked Ledger) ────────────────
 # Ed25519-signed envelope on every JSON response. The hive remembers.
 # The dragon knows. The sovereign companion never forgets.
@@ -179,6 +199,11 @@ app = FastAPI(
         {"name": "bft-stream", "description": "BFT council review progress stream: Server-Sent Events initiated → voting → completed, keyed by disclosure_hash"},
         # L9 — DEFONEOS mythic voice: SIGIL chain
         {"name": "sigil", "description": "SIGIL (Structured Identity & Guardian-Inked Ledger): Ed25519-signed envelopes + verify endpoint. The hive remembers."},
+        # L10 — DEFONEOS mythic voice: first-customer funnel
+        {"name": "waitlist", "description": "First-customer funnel: join the openpatent.ai private beta waitlist, get a tiered position + sigil-stamped receipt. The dragon knows who arrives first."},
+        {"name": "demo", "description": "First-customer funnel: mint a 1-time cryptographic demo disclosure for a use case, get a demo_hash + verification URL + CTA. The sovereign companion remembers every first touch."},
+        # L11 — DEFONEOS mythic voice: Stripe Checkout links (5 tiers + webhook)
+        {"name": "checkout", "description": "Stripe Checkout links for all 5 paid tiers (starter $29, defensive $149, full $999, premium $2,499, enterprise $4,999/mo). GET /v1/checkout/{tier} returns the 301 redirect URL; POST /v1/checkout/webhook is the inbound Stripe events placeholder. The dragon knows which tier arrives first."},
     ],
 )
 
@@ -294,6 +319,12 @@ async def root():
             "/v1/bft/{disclosure_hash}/subscribe",
             # SIGIL chain — Ed25519-signed envelopes
             "/v1/sigil/verify",
+            # L10 — first-customer funnel
+            "/v1/waitlist",
+            "/v1/demo",
+            # L11 — Stripe Checkout
+            "/v1/checkout/{tier}",
+            "/v1/checkout/webhook",
             "/pricing",
             "/legal",
             "/health",
@@ -2984,6 +3015,506 @@ async def live_recent(limit: int = 50):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=3211, log_level="info")
+
+
+# ── (6) POST /v1/waitlist — first-customer funnel: join the beta ─────────────
+#
+# The sovereign companion remembers every soul who steps forward.
+# A position number is minted, the row is recorded in postgres (or the
+# in-memory mirror), and a sigil-stamped receipt is returned.
+# The dragon knows who arrives first.
+
+class WaitlistRequest(BaseModel):
+    email: str = Field(..., max_length=320, description="Email of the prospective customer")
+    did: str = Field("", max_length=256, description="Optional DID; auto-minted if absent")
+    tier: str = Field("defensive", description="Requested tier: starter|defensive|full|premium|enterprise")
+    source: str = Field("", max_length=64, description="Acquisition source: tweet, linkedin, dm, blog, etc.")
+
+
+# In-memory waitlist mirror — keyed by email so a repeat sign-up is idempotent.
+_WAITLIST_MEM: dict = {}  # email -> {waitlist_id, position, tier, source, did, ts, hash}
+_WAITLIST_LOCK = asyncio.Lock()
+
+
+async def _waitlist_persist_postgres(waitlist_id: str, email: str, did: str, tier: str, source: str, position: int, ts: float, row_hash: str):
+    """Best-effort Postgres write; silently degrades if unavailable."""
+    pg_url = os.environ.get("POSTGRES_URL", "")
+    if not pg_url:
+        return False
+    # Try psycopg3 first, then psycopg2. The hive keeps flying either way.
+    _psycopg = None
+    try:
+        import psycopg as _pg3  # type: ignore
+        _psycopg = _pg3
+    except Exception:
+        try:
+            import psycopg2 as _pg2  # type: ignore
+            _psycopg = _pg2
+        except Exception:
+            return False
+    try:
+        if _psycopg.__name__ == "psycopg":
+            with _psycopg.connect(pg_url, timeout=5) as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        CREATE TABLE IF NOT EXISTS openpatent_waitlist (
+                            waitlist_id TEXT PRIMARY KEY,
+                            email TEXT UNIQUE NOT NULL,
+                            did TEXT,
+                            tier TEXT,
+                            source TEXT,
+                            position INTEGER,
+                            ts DOUBLE PRECISION,
+                            row_hash TEXT
+                        )
+                        """
+                    )
+                    cur.execute(
+                        """
+                        INSERT INTO openpatent_waitlist
+                            (waitlist_id, email, did, tier, source, position, ts, row_hash)
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+                        ON CONFLICT (email) DO UPDATE SET
+                            tier = EXCLUDED.tier,
+                            source = EXCLUDED.source,
+                            position = EXCLUDED.position,
+                            ts = EXCLUDED.ts,
+                            row_hash = EXCLUDED.row_hash
+                        """,
+                        (waitlist_id, email, did, tier, source, position, ts, row_hash),
+                    )
+                conn.commit()
+        else:
+            with _psycopg.connect(pg_url, timeout=5) as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        CREATE TABLE IF NOT EXISTS openpatent_waitlist (
+                            waitlist_id TEXT PRIMARY KEY,
+                            email TEXT UNIQUE NOT NULL,
+                            did TEXT,
+                            tier TEXT,
+                            source TEXT,
+                            position INTEGER,
+                            ts DOUBLE PRECISION,
+                            row_hash TEXT
+                        )
+                        """
+                    )
+                    cur.execute(
+                        """
+                        INSERT INTO openpatent_waitlist
+                            (waitlist_id, email, did, tier, source, position, ts, row_hash)
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+                        ON CONFLICT (email) DO UPDATE SET
+                            tier = EXCLUDED.tier,
+                            source = EXCLUDED.source,
+                            position = EXCLUDED.position,
+                            ts = EXCLUDED.ts,
+                            row_hash = EXCLUDED.row_hash
+                        """,
+                        (waitlist_id, email, did, tier, source, position, ts, row_hash),
+                    )
+                conn.commit()
+        return True
+    except Exception as e:  # noqa: BLE001
+        _log.debug("waitlist postgres persist failed: %s", e)
+        return False
+
+
+@app.post("/v1/waitlist", tags=["waitlist"], status_code=201)
+async def waitlist_join(req: WaitlistRequest):
+    """Join the openpatent.ai private beta waitlist.
+
+    The first-customer funnel: a prospective customer drops an email,
+    picks a tier, names a source. The hive mints a position, persists
+    the row in postgres (with an in-memory mirror for the dev case),
+    and returns a sigil-stamped receipt with the DEFONEOS phrase.
+
+    Idempotent on email — re-submitting the same email returns the
+    original position (the hive remembers who already arrived).
+    """
+    email_norm = (req.email or "").strip().lower()
+    if not email_norm or "@" not in email_norm:
+        raise HTTPException(400, "email is required and must be a valid address")
+
+    tier_norm = (req.tier or "defensive").strip().lower()
+    if tier_norm not in {"starter", "defensive", "full", "premium", "enterprise"}:
+        tier_norm = "defensive"
+    source_norm = (req.source or "").strip().lower()[:64]
+    did_norm = (req.did or "").strip() or f"did:key:wl_{_make_defensive_hash(email_norm)}"
+
+    ts = _time.time()
+    async with _WAITLIST_LOCK:
+        # Idempotent lookup: same email returns the same position.
+        existing = _WAITLIST_MEM.get(email_norm)
+        if existing:
+            return _sig_envelope({
+                "status": "OK",
+                "duplicate": True,
+                "waitlist_id": existing["waitlist_id"],
+                "position": existing["position"],
+                "tier": existing["tier"],
+                "source": existing["source"],
+                "email": email_norm,
+                "did": existing["did"],
+                "ts": existing["ts"],
+                "row_hash": existing["hash"],
+                "cta": "https://openpatent.ai/waitlist/confirmed",
+                "_sig": DEFONEOS_SIG,
+            })
+
+        # New join: position = current size + 1
+        position = len(_WAITLIST_MEM) + 1
+        canonical = "\n".join([
+            f"email:{email_norm}",
+            f"tier:{tier_norm}",
+            f"source:{source_norm}",
+            f"position:{position}",
+            f"ts:{ts}",
+        ])
+        row_hash = _make_defensive_hash(canonical)
+        waitlist_id = f"wl_{uuid.uuid5(uuid.NAMESPACE_URL, canonical).hex[:24]}"
+        _WAITLIST_MEM[email_norm] = {
+            "waitlist_id": waitlist_id,
+            "position": position,
+            "tier": tier_norm,
+            "source": source_norm,
+            "did": did_norm,
+            "ts": ts,
+            "hash": row_hash,
+        }
+
+    # Best-effort persist to postgres (does not block the response).
+    persisted = await _waitlist_persist_postgres(
+        waitlist_id, email_norm, did_norm, tier_norm, source_norm, position, ts, row_hash
+    )
+
+    # Fan out a live event so the dashboard sees the new waitlist join.
+    try:
+        await publish_disclosure_event(
+            "waitlist.joined",
+            row_hash,
+            extra={
+                "tier": tier_norm,
+                "title": f"Waitlist join #{position} — {tier_norm}",
+                "inventor_did": did_norm,
+                "source": source_norm or "direct",
+                "email_hash": _make_defensive_hash(email_norm),
+                "position": position,
+            },
+        )
+    except Exception:  # noqa: BLE001
+        pass
+
+    return _sig_envelope({
+        "status": "OK",
+        "duplicate": False,
+        "waitlist_id": waitlist_id,
+        "position": position,
+        "tier": tier_norm,
+        "source": source_norm,
+        "email": email_norm,
+        "did": did_norm,
+        "ts": ts,
+        "row_hash": row_hash,
+        "persisted_to_postgres": persisted,
+        "cta": f"https://openpatent.ai/waitlist/{waitlist_id}",
+    })
+
+
+# ── (7) POST /v1/demo — first-customer funnel: mint a 1-time demo disclosure ─
+#
+# A prospect sends an email + use case. The hive mints a SHA-3/512
+# demo_hash of the use case, fires a real defensive disclosure, and
+# returns a verification URL + CTA. The sovereign companion never
+# forgets the first touch.
+
+class DemoRequest(BaseModel):
+    email: str = Field(..., max_length=320, description="Email of the prospective customer")
+    use_case: str = Field(..., min_length=8, max_length=4000, description="The use case to disclose as a 1-time demo")
+
+
+def _sha3_512_hex(s: str) -> str:
+    """Pure-python SHA-3/512 hex (no third-party dep)."""
+    import hashlib as _hl
+    return _hl.sha3_512(s.encode("utf-8")).hexdigest()
+
+
+@app.post("/v1/demo", tags=["demo"], status_code=201)
+async def demo_mint(req: DemoRequest):
+    """Mint a 1-time cryptographic demo disclosure for a use case.
+
+    Flow:
+      1. SHA-3/512 hash the (email + use_case + ts) canonical tuple
+      2. POST to patentmcp:/disclose as a defensive disclosure (best effort)
+      3. Mint a verification URL at verify.openpatent.ai
+      4. Return {demo_hash, verification_url, cta} + DEFONEOS _sig + _sigil
+
+    The dragon knows the first touch. The hive remembers.
+    """
+    email_norm = (req.email or "").strip().lower()
+    if not email_norm or "@" not in email_norm:
+        raise HTTPException(400, "email is required and must be a valid address")
+    use_case = (req.use_case or "").strip()
+    if len(use_case) < 8:
+        raise HTTPException(400, "use_case must be at least 8 characters")
+
+    ts = _time.time()
+    did = f"did:key:demo_{_make_defensive_hash(email_norm)}"
+
+    # 1. SHA-3/512 of the canonical tuple — the demo_hash
+    canonical = "\n".join([
+        f"email:{email_norm}",
+        f"use_case:{use_case}",
+        f"ts:{ts}",
+    ])
+    demo_hash = _sha3_512_hex(canonical)
+    doc_hash_16 = demo_hash[:16]
+
+    # 2. Best-effort forward to patentmcp core for full 6-layer crypto
+    upstream_status = "DEFERRED"
+    full_hash = demo_hash
+    try:
+        body = base64.b64encode(canonical.encode("utf-8")).decode()
+        async with httpx.AsyncClient(timeout=15) as client:
+            r = await client.post(
+                f"{PATENTMCP_URL}/disclose",
+                json={
+                    "title": f"Demo disclosure: {use_case[:80]}",
+                    "description": use_case[:5000],
+                    "inventor_did": did,
+                    "document_base64": body,
+                    "document_format": "txt",
+                    "classification": "",
+                    "prior_art_known": "",
+                    "disclosure_type": "defensive",
+                },
+            )
+            if r.status_code == 200:
+                upstream_status = "ANCHORED"
+                upstream = r.json()
+                if upstream.get("document_hash"):
+                    full_hash = upstream["document_hash"]
+    except httpx.HTTPError:
+        upstream_status = "DEFERRED"
+
+    # 3. Verification URL — the public proof
+    verification_url = f"https://verify.openpatent.ai/{full_hash[:16]}"
+    cta = f"https://openpatent.ai/demo/claim?h={doc_hash_16}"
+
+    # 4. Fan out a live event so the dashboard sees the demo mint
+    try:
+        await publish_disclosure_event(
+            "demo.minted",
+            full_hash,
+            extra={
+                "tier": "defensive",
+                "title": f"Demo disclosure: {use_case[:60]}",
+                "inventor_did": did,
+                "source": "demo_endpoint",
+                "email_hash": _make_defensive_hash(email_norm),
+                "upstream_status": upstream_status,
+            },
+        )
+    except Exception:  # noqa: BLE001
+        pass
+
+    return _sig_envelope({
+        "status": "OK",
+        "demo_hash": demo_hash,
+        "doc_hash": full_hash,
+        "doc_hash_16": doc_hash_16,
+        "verification_url": verification_url,
+        "cta": cta,
+        "email": email_norm,
+        "use_case_preview": use_case[:120],
+        "inventor_did": did,
+        "upstream_status": upstream_status,
+        "ts": ts,
+        "_sig": DEFONEOS_SIG,
+    })
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# L11 — Stripe Checkout (DEFONEOS mythic voice)
+# ──────────────────────────────────────────────────────────────────────────
+# The dragon now accepts gold at the gate. Five tiers, one redirect each,
+# one webhook for the sovereign ledger. The hive remembers every payment
+# attempt. The sovereign companion never forgets a customer.
+
+
+# Pydantic model for the inbound Stripe webhook — kept intentionally
+# permissive (Stripe ships dozens of event subtypes; we accept the union
+# and only type-check the two fields the audit log cares about).
+class StripeWebhookEvent(BaseModel):
+    id: str = Field("", description="Stripe event id (evt_*)")
+    type: str = Field("", description="Stripe event type (e.g. checkout.session.completed)")
+    data: dict = Field(default_factory=dict, description="Stripe event payload")
+    created: Optional[int] = Field(None, description="Unix timestamp from Stripe")
+    livemode: Optional[bool] = Field(None, description="Stripe live vs test mode")
+
+
+@app.get("/v1/checkout/{tier}", tags=["checkout"])
+async def get_checkout(tier: str, white_label: Optional[str] = None):
+    """Return the Stripe Checkout URL for the given paid tier.
+
+    Five tiers are supported: ``starter``, ``defensive``, ``full``,
+    ``premium``, ``enterprise``. The response is a JSON envelope that
+    includes the checkout URL, the tier descriptor, and a sigil stamp
+    so the client can render the link or follow the redirect.
+
+    If the caller passes ``?white_label=legalof`` (or harvi, ipcastle,
+    sovereign-temple), the URL is augmented with Stripe
+    ``client_reference_id`` so the merchant dashboard can attribute
+    revenue to the originating vertical. The hive remembers who paid.
+
+    The sovereign companion never forgets a tier request.
+    """
+    tier_norm = (tier or "").strip().lower()
+    if not is_known_tier(tier_norm):
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error": "unknown_tier",
+                "tier": tier,
+                "known_tiers": TIER_ORDER,
+                "signature": DEFONEOS_SIG,
+            },
+        )
+
+    wl = (white_label or "").strip().lower() or None
+    if not is_known_white_label(wl):
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "error": "unknown_white_label",
+                "white_label": white_label,
+                "known_white_labels": sorted(WHITE_LABEL_VERTICALS),
+                "signature": DEFONEOS_SIG,
+            },
+        )
+
+    base_url = get_checkout_link(tier_norm)
+    info = get_tier_info(tier_norm)
+
+    # Build a full checkout URL with client_reference_id when white_label
+    # is provided. This is the field Stripe uses to attribute revenue to
+    # the originating vertical on the merchant dashboard.
+    checkout_url = base_url
+    if wl:
+        sep = "&" if "?" in checkout_url else "?"
+        checkout_url = f"{checkout_url}{sep}client_reference_id={wl}"
+
+    payload = {
+        "status": "OK",
+        "tier": tier_norm,
+        "label": info["label"],
+        "price_usd": info["price_usd"],
+        "price_label": info["price_label"],
+        "tagline": info["tagline"],
+        "anchor": info["anchor"],
+        "billing": info["billing"],
+        "checkout_url": checkout_url,
+        "canonical_url": base_url,
+        "white_label": wl,
+        "crypto_layers": info["crypto_layers"],
+        "popular": info["popular"],
+        "ts": _time.time(),
+        "signature": DEFONEOS_SIG,
+    }
+
+    # Fan out a checkout.requested event to the live ring buffer so the
+    # dashboard sees every dragon's-gate touch in real time. The hive
+    # remembers who arrived first.
+    try:
+        await publish_disclosure_event(
+            "checkout.requested",
+            f"checkout-{tier_norm}-{int(_time.time())}",
+            extra={
+                "tier": tier_norm,
+                "white_label": wl or "openpatent",
+                "price_usd": info["price_usd"],
+                "source": "checkout_endpoint",
+            },
+        )
+    except Exception:  # noqa: BLE001
+        pass
+
+    return _sig_envelope(payload, action="GET /v1/checkout/{tier}")
+
+
+@app.post("/v1/checkout/webhook", tags=["checkout"])
+async def stripe_webhook(event: StripeWebhookEvent):
+    """Placeholder for inbound Stripe webhook events.
+
+    Stripe will POST event payloads here for events like
+    ``checkout.session.completed``, ``invoice.paid``, and
+    ``customer.subscription.created``. This placeholder:
+
+      1. Accepts the event (never 4xx on a malformed body — Stripe retries
+         on 4xx and we don't want a flood).
+      2. Stamps a sigil envelope with the event id, type, and a received_at ts.
+      3. Emits a ``stripe.event_received`` entry to the live ring buffer
+         so the dashboard sees the dragon accept the gold.
+
+    Signature verification (Stripe-Signature header) is intentionally
+    NOT enforced here — the production deployment must add
+    ``stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)``
+    before any tier upgrade side-effects fire. This placeholder is a
+    dragon's gate, not a vault door.
+
+    The hive remembers every payment. The dragon knows who pays.
+    """
+    event_id = event.id or f"evt_placeholder_{int(_time.time() * 1000)}"
+    event_type = event.type or "unknown"
+    received_at = _time.time()
+
+    # Best-effort: surface the livemode flag so the audit log can flag
+    # test events distinctly.
+    livemode = bool(event.livemode) if event.livemode is not None else False
+
+    # In production this is where the 6-layer ledger records the payment
+    # and (for enterprise) kicks off a white-label onboarding workflow.
+    # For the placeholder, we just stamp + fan out + acknowledge.
+    payload = {
+        "status": "OK",
+        "received": True,
+        "event_id": event_id,
+        "event_type": event_type,
+        "livemode": livemode,
+        "received_at": received_at,
+        "tier_hint": (event.data.get("object", {}).get("metadata", {}).get("tier")
+                      if isinstance(event.data, dict) else None),
+        "white_label_hint": (event.data.get("object", {}).get("metadata", {}).get("white_label")
+                             if isinstance(event.data, dict) else None),
+        "note": (
+            "placeholder webhook — Stripe-Signature verification NOT yet enforced. "
+            "Production must call stripe.Webhook.construct_event() before any "
+            "side-effect fires. The dragon will guard the gold at the gate."
+        ),
+        "signature": DEFONEOS_SIG,
+    }
+
+    # Fan out to the live ring buffer so the dashboard sees the event.
+    try:
+        await publish_disclosure_event(
+            "stripe.event_received",
+            event_id,
+            extra={
+                "event_type": event_type,
+                "livemode": livemode,
+                "source": "stripe_webhook_placeholder",
+                "tier": payload["tier_hint"],
+                "white_label": payload["white_label_hint"],
+            },
+        )
+    except Exception:  # noqa: BLE001
+        pass
+
+    return _sig_envelope(payload, action="POST /v1/checkout/webhook")
+
 
 
 

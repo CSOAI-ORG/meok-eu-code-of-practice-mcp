@@ -8,7 +8,17 @@ import Link from "next/link";
 
 const COLOR = "#2a1140";
 const ACCENT = "#ff5a87";
-const CTA = "https://api.openpatent.ai/v1/disclosure?tier=starter&white_label=harvi";
+// L11 — Stripe Checkout links (DEFONEOS mythic voice).
+// 5 tiers, each CTAs the dragon's gate. The hive remembers who pays.
+const CHECKOUT_BASE = "https://api.openpatent.ai/v1/checkout";
+const WL = "harvi";
+const CTA = {
+  starter:    `${CHECKOUT_BASE}/starter?white_label=${WL}`,
+  defensive:  `${CHECKOUT_BASE}/defensive?white_label=${WL}`,
+  full:       `${CHECKOUT_BASE}/full?white_label=${WL}`,
+  premium:    `${CHECKOUT_BASE}/premium?white_label=${WL}`,
+  enterprise: `${CHECKOUT_BASE}/enterprise?white_label=${WL}`,
+};
 
 const STATS = [
   { v: "$10", l: "per disclosure (starter)" },
@@ -37,11 +47,11 @@ const FEATURES = [
 ];
 
 const PRICING = [
-  { tier: "Solo Dev", price: "$10", desc: "1 disclosure" },
-  { tier: "Indie Studio", price: "$149", desc: "10 disclosures / month" },
-  { tier: "AAA Studio", price: "$2,499", desc: "Unlimited disclosures" },
-  { tier: "Publisher", price: "$4,999", desc: "Multi-studio" },
-  { tier: "Enterprise", price: "$4,999/mo", desc: "Sub-licensing + BFT" },
+  { tier: "Solo Dev", slug: "starter", price: "$29", desc: "1 disclosure" },
+  { tier: "Indie Studio", slug: "defensive", price: "$149", desc: "10 disclosures / month" },
+  { tier: "AAA Studio", slug: "premium", price: "$2,499", desc: "Unlimited disclosures" },
+  { tier: "Publisher", slug: "premium", price: "$4,999", desc: "Multi-studio" },
+  { tier: "Enterprise", slug: "enterprise", price: "$4,999/mo", desc: "Sub-licensing + BFT" },
 ];
 
 function Header() {
@@ -55,7 +65,7 @@ function Header() {
           <a href="#features" style={{ color: "#fff", textDecoration: "none", opacity: 0.9 }}>Features</a>
           <a href="#pricing" style={{ color: "#fff", textDecoration: "none", opacity: 0.9 }}>Pricing</a>
           <a href="https://openpatent.ai/docs" style={{ color: "#fff", textDecoration: "none", opacity: 0.9 }}>Doctrine</a>
-          <a href={CTA} style={{ color: "#000", background: ACCENT, padding: "6px 14px", borderRadius: 4, textDecoration: "none", fontWeight: 600 }}>Disclose →</a>
+          <a href={CTA.starter} style={{ color: "#000", background: ACCENT, padding: "6px 14px", borderRadius: 4, textDecoration: "none", fontWeight: 600 }}>Disclose →</a>
         </nav>
       </div>
     </header>
@@ -98,8 +108,8 @@ export default function Page() {
               Game devs, modders, and indie studios use harvi.ai to timestamp novel mechanics, level designs, and procedural generation algorithms. Court-admissible in 10+ jurisdictions. 30s from idea to chain.
             </p>
             <div style={{ display: "flex", gap: 12, marginTop: 30, flexWrap: "wrap" }}>
-              <a href={CTA} style={{ background: ACCENT, color: "#000", padding: "14px 24px", borderRadius: 6, textDecoration: "none", fontWeight: 600 }}>
-                Disclose a mechanic →
+              <a href={CTA.defensive} style={{ background: ACCENT, color: "#000", padding: "14px 24px", borderRadius: 6, textDecoration: "none", fontWeight: 600 }}>
+                Disclose a novel mechanic →
               </a>
               <a href="#features" style={{ border: "1px solid #fff", color: "#fff", padding: "14px 24px", borderRadius: 6, textDecoration: "none" }}>
                 See the pack
@@ -149,12 +159,15 @@ export default function Page() {
                   <div style={{ fontSize: 13, color: "#666", textTransform: "uppercase", letterSpacing: 0.5 }}>{p.tier}</div>
                   <div style={{ fontSize: 28, fontWeight: 700, color: COLOR, margin: "8px 0" }}>{p.price}</div>
                   <div style={{ fontSize: 13, color: "#666" }}>{p.desc}</div>
+                  <a href={CTA[p.slug as keyof typeof CTA] || CTA.starter} style={{ display: "inline-block", marginTop: 12, background: p.tier === "AAA Studio" ? ACCENT : "#fff", color: p.tier === "AAA Studio" ? "#000" : COLOR, border: `1px solid ${ACCENT}`, padding: "8px 14px", borderRadius: 4, textDecoration: "none", fontSize: 13, fontWeight: 600 }}>
+                    Buy {p.tier} →
+                  </a>
                 </div>
               ))}
             </div>
             <div style={{ textAlign: "center", marginTop: 30 }}>
-              <a href={CTA} style={{ background: ACCENT, color: "#000", padding: "14px 28px", borderRadius: 6, textDecoration: "none", fontWeight: 600 }}>
-                Start a $10 disclosure →
+              <a href={CTA.defensive} style={{ background: ACCENT, color: "#000", padding: "14px 28px", borderRadius: 6, textDecoration: "none", fontWeight: 600 }}>
+                Start a $149 disclosure →
               </a>
             </div>
           </div>

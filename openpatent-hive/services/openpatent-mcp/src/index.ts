@@ -34,6 +34,8 @@
  *   get_network_uptime    — 24h uptime per hive service (v1.3.0)
  *   ai_generate           — generate text via a connected LLM provider (v1.4.0)
  *   ai_embed              — generate an embedding vector (v1.4.0)
+ *   get_checkout_link      — Stripe Checkout URL for a tier (+ optional white_label) (v1.5.0)
+ *   list_pricing           — full pricing matrix with checkout URLs (v1.5.0)
  *
  * v1.4.0 — DEFENEOS provider mesh:
  *   The openpatent-mcp stdio server now drives a 5-provider LLM mesh:
@@ -536,10 +538,34 @@ const TOOLS: Tool[] = [
       },
     },
   },
+
+  // ── 2 new tools (v1.5.0) — DEFONEOS mythic voice: Stripe Checkout ─────
+  {
+    name: "get_checkout_link",
+    description: `Return the Stripe Checkout URL for an OpenPatent.ai sovereign-hive pricing tier (starter $29, defensive $149, full $999, premium $2,499, enterprise $4,999/mo), with optional white_label attribution (legalof, harvi, ipcastle, sovereign-temple). Each link is a single-shot Payment Link that the dragon stamps with the client_reference_id of the originating vertical. Backs every /v1/checkout/{tier} CTA on openpatent.ai and the 4 white-label landings. ${SIG}`,
+    inputSchema: {
+      type: "object",
+      required: ["tier"],
+      properties: {
+        tier: { type: "string", enum: ["starter", "defensive", "full", "premium", "enterprise"], description: "Which paid tier to mint a checkout link for" },
+        white_label: { type: "string", enum: ["legalof", "harvi", "ipcastle", "sovereign-temple", "openpatent"], description: "Optional white-label vertical slug for revenue attribution" },
+      },
+    },
+  },
+  {
+    name: "list_pricing",
+    description: `List the OpenPatent.ai sovereign hive pricing matrix with embedded Stripe Checkout URLs — every tier (starter, defensive, full, premium, enterprise), its 6-layer cryptographic disclosure coverage, BFT council access, anchor strategy, and per-tier price + billing cycle. Returns the canonical pricing table that the Stripe-checkout-enabled landing page renders. ${SIG}`,
+    inputSchema: {
+      type: "object",
+      properties: {
+        include_checkout_urls: { type: "boolean", default: true, description: "Include the per-tier Stripe Checkout URL in the response" },
+      },
+    },
+  },
 ];
 
 const server = new Server(
-  { name: "openpatent-mcp", version: "1.4.0" },
+  { name: "openpatent-mcp", version: "1.5.0" },
   { capabilities: { tools: {} } },
 );
 
@@ -713,6 +739,51 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
 
+      // ── 2 new tools (v1.5.0) — DEFONEOS mythic voice: Stripe Checkout ─
+      case "get_checkout_link": {
+        // GET /v1/checkout/{tier}?white_label=...
+        // The dragon stamps the gate. The hive remembers who paid.
+        const co_tier = String(args.tier || "").trim().toLowerCase();
+        if (!co_tier) throw new Error("tier is required");
+        const wl = args.white_label ? String(args.white_label).trim().toLowerCase() : "";
+        const qs = wl ? `?white_label=${encodeURIComponent(wl)}` : "";
+        const r2 = await fetch(`${API_BASE}/v1/checkout/${encodeURIComponent(co_tier)}${qs}`, {
+          method: "GET",
+          headers,
+        } as RequestInit);
+        const raw = await r2.text();
+        let parsed: any;
+        try { parsed = JSON.parse(raw); } catch { parsed = { raw }; }
+        return {
+          content: [{ type: "text", text: JSON.stringify(parsed, null, 2) }],
+          isError: !r2.ok,
+        };
+      }
+      case "list_pricing": {
+        // GET /pricing — the canonical tier matrix that backs every
+        // Stripe Checkout CTA on the landing pages.
+        const includeUrls = args.include_checkout_urls !== false; // default true
+        const r2 = await fetch(`${API_BASE}/pricing`, {
+          method: "GET",
+          headers,
+        } as RequestInit);
+        const raw = await r2.text();
+        let parsed: any;
+        try { parsed = JSON.parse(raw); } catch { parsed = { raw }; }
+        // Strip the checkout_url field if the caller asked for a lean view.
+        if (!includeUrls && parsed && typeof parsed === "object") {
+          for (const k of Object.keys(parsed)) {
+            if (parsed[k] && typeof parsed[k] === "object" && "checkout_url" in parsed[k]) {
+              delete parsed[k].checkout_url;
+            }
+          }
+        }
+        return {
+          content: [{ type: "text", text: JSON.stringify(parsed, null, 2) }],
+          isError: !r2.ok,
+        };
+      }
+
       default:
         throw new Error(`Unknown tool: ${name}`);
     }
@@ -740,7 +811,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 async function main() {
   await server.connect(new StdioServerTransport());
-  console.error(`[openpatent-mcp v1.4.0] tools: ${TOOLS.length} (DEFENEOS 5-provider mesh active)`);
+  console.error(`[openpatent-mcp v1.5.0] tools: ${TOOLS.length} (DEFENEOS 5-provider mesh + Stripe Checkout active)`);
   console.error(`  providers: gemini-pro, gemini-flash, step-2-16k, ollama, minimax-m3`);
   console.error(`  defaults: provider=minimax-m3, embed=gemini-embedding`);
   console.error(`  api: ${API_BASE}`);

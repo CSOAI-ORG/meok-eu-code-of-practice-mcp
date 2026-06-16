@@ -10,7 +10,7 @@ Flow each run:
 Queue: ~/clawd/hive-mailer/queue.jsonl   {"to":..,"subject":..,"body":..,"status":"queued"}
 Log:   ~/clawd/hive-mailer/mailer.log
 """
-import json, os, random, time, urllib.request
+import json, os, random, re, time, urllib.request
 from datetime import date, datetime
 from pathlib import Path
 
@@ -22,6 +22,23 @@ DAILY_CAP = 25
 DOMAIN_ID = "3f47ef69-527d-4f65-9266-2c2a9fa985f0"  # mail.meok.ai in Resend
 FROM = "Nick Templeman <hello@mail.meok.ai>"
 REPLY_TO = "nicholas@meok.ai"
+
+# Extract a clean email from rows where the operator left annotations
+# like "press@ico.org.uk (or relevant contact)" or
+# "lloyds.com (press office, or AIDataScience@lloyds.com)".
+# First RFC-ish match wins; if none, return None so caller can skip.
+_EMAIL_RE = re.compile(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
+
+def parse_email(raw):
+    if not raw:
+        return None
+    raw = raw.strip()
+    # If it's already clean, return it
+    if _EMAIL_RE.fullmatch(raw):
+        return raw.lower()
+    # Otherwise pick the first email-shaped substring
+    m = _EMAIL_RE.search(raw)
+    return m.group(0).lower() if m else None
 
 def log(m):
     line = f"{time.strftime('%F %T')} {m}"
@@ -121,20 +138,27 @@ def main():
     for row in rows:
         if row.get("status") != "queued" or budget <= 0:
             continue
+        clean_to = parse_email(row.get("to"))
+        if not clean_to:
+            row["status"] = "skipped"; row["error"] = "no parseable email in `to` field"
+            log(f"SKIP → {row.get('to','?')!r}: no parseable email")
+            QUEUE.write_text("\n".join(json.dumps(x) for x in rows) + "\n")
+            continue
         r = api("POST", "/emails", key, {
-            "from": FROM, "to": [row["to"]], "reply_to": REPLY_TO,
+            "from": FROM, "to": [clean_to], "reply_to": REPLY_TO,
             "subject": row["subject"], "text": row["body"],
         })
         if r.get("id"):
             row["status"] = "sent"; row["resend_id"] = r["id"]; row["sent_at"] = time.strftime("%F %T")
+            row["sent_to"] = clean_to  # record the actually-used address
             n += 1; budget -= 1
-            log(f"SENT → {row['to']} ({r['id']})")
+            log(f"SENT → {clean_to} ({r['id']})")
             QUEUE.write_text("\n".join(json.dumps(x) for x in rows) + "\n")
             SENT_TODAY.write_text(str(sent_today + n))
             time.sleep(random.randint(45, 90))
         else:
             row["status"] = "error"; row["error"] = str(r)[:150]
-            log(f"FAIL → {row['to']}: {str(r)[:120]}")
+            log(f"FAIL → {clean_to}: {str(r)[:120]}")
             QUEUE.write_text("\n".join(json.dumps(x) for x in rows) + "\n")
     log(f"run complete — {n} sent this run")
 

@@ -16,6 +16,10 @@ const DOMAINS = [
   "sovereign", "hydro", "biosensing", "emergence", "substrate",
 ];
 
+// L11 — Stripe Checkout links (DEFONEOS mythic voice).
+// Sovereign deployments are enterprise tier only; the dragon guards the gate.
+const ENTERPRISE_CTA = "https://api.openpatent.ai/v1/checkout/enterprise?white_label=sovereign-temple";
+
 export default function Page() {
   return (
     <html lang="en">
@@ -46,7 +50,7 @@ export default function Page() {
                 Governments, defense agencies, and regulated industries run openpatent.ai on their own sovereign VMs. The 6-layer proof + 33-agent BFT council = cryptographic sovereignty over your IP.
               </p>
               <div style={{ display: "flex", gap: 12, marginTop: 30 }}>
-                <a href="https://api.openpatent.ai/v1/disclosure?tier=enterprise&white_label=sovereign-temple" style={{ background: "#d4af37", color: "#0a0a0a", padding: "12px 32px", borderRadius: 6, textDecoration: "none", fontWeight: 600 }}>
+                <a href={ENTERPRISE_CTA} style={{ background: "#d4af37", color: "#0a0a0a", padding: "12px 32px", borderRadius: 6, textDecoration: "none", fontWeight: 600 }}>
                   Get sovereign deployment →
                 </a>
                 <a href="https://github.com/CSOAI-ORG/patentmcp" style={{ border: "1px solid #d4af37", color: "#d4af37", padding: "12px 32px", borderRadius: 6, textDecoration: "none" }}>

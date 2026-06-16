@@ -9,7 +9,17 @@ import Link from "next/link";
 
 const COLOR = "#1a3a52";
 const ACCENT = "#c9a14a";
-const CTA = "https://api.openpatent.ai/v1/disclosure?tier=premium&white_label=legalof";
+// L11 — Stripe Checkout links (DEFONEOS mythic voice).
+// 5 tiers, each CTAs the dragon's gate. The hive remembers who pays.
+const CHECKOUT_BASE = "https://api.openpatent.ai/v1/checkout";
+const WL = "legalof";
+const CTA = {
+  starter:    `${CHECKOUT_BASE}/starter?white_label=${WL}`,
+  defensive:  `${CHECKOUT_BASE}/defensive?white_label=${WL}`,
+  full:       `${CHECKOUT_BASE}/full?white_label=${WL}`,
+  premium:    `${CHECKOUT_BASE}/premium?white_label=${WL}`,
+  enterprise: `${CHECKOUT_BASE}/enterprise?white_label=${WL}`,
+};
 
 const STATS = [
   { v: "10+", l: "jurisdictions cited" },
@@ -56,7 +66,7 @@ function Header() {
           <a href="#features" style={{ color: "#fff", textDecoration: "none", opacity: 0.9 }}>Features</a>
           <a href="#pricing" style={{ color: "#fff", textDecoration: "none", opacity: 0.9 }}>Pricing</a>
           <a href="https://openpatent.ai/docs" style={{ color: "#fff", textDecoration: "none", opacity: 0.9 }}>Doctrine</a>
-          <a href={CTA} style={{ color: "#000", background: ACCENT, padding: "6px 14px", borderRadius: 4, textDecoration: "none", fontWeight: 600 }}>File now →</a>
+          <a href={CTA.defensive} style={{ color: "#000", background: ACCENT, padding: "6px 14px", borderRadius: 4, textDecoration: "none", fontWeight: 600 }}>File now →</a>
         </nav>
       </div>
     </header>
@@ -99,7 +109,7 @@ export default function Page() {
               Patent attorneys use legalof.ai to prove client prior art in 10+ jurisdictions. Same-day filing. $149 per disclosure. Bitcoin-anchored proof. The dragon guards the docket; the hive remembers every claim.
             </p>
             <div style={{ display: "flex", gap: 12, marginTop: 30, flexWrap: "wrap" }}>
-              <a href={CTA} style={{ background: ACCENT, color: "#000", padding: "14px 24px", borderRadius: 6, textDecoration: "none", fontWeight: 600 }}>
+              <a href={CTA.defensive} style={{ background: ACCENT, color: "#000", padding: "14px 24px", borderRadius: 6, textDecoration: "none", fontWeight: 600 }}>
                 File a defensive disclosure →
               </a>
               <a href="#features" style={{ border: "1px solid #fff", color: "#fff", padding: "14px 24px", borderRadius: 6, textDecoration: "none" }}>
@@ -145,16 +155,23 @@ export default function Page() {
               Five tiers. PAYG through sovereign support.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
-              {PRICING.map((p) => (
+              {PRICING.map((p) => {
+                const slug = p.tier.toLowerCase();
+                const href = CTA[slug as keyof typeof CTA] || CTA.defensive;
+                return (
                 <div key={p.tier} style={{ background: "#fff", padding: 20, border: `1px solid ${p.tier === "Premium" ? ACCENT : "#e0e0e0"}`, borderRadius: 8, textAlign: "center", boxShadow: p.tier === "Premium" ? `0 0 0 2px ${ACCENT}22` : "none" }}>
                   <div style={{ fontSize: 13, color: "#666", textTransform: "uppercase", letterSpacing: 0.5 }}>{p.tier}</div>
                   <div style={{ fontSize: 28, fontWeight: 700, color: COLOR, margin: "8px 0" }}>{p.price}</div>
                   <div style={{ fontSize: 13, color: "#666" }}>{p.desc}</div>
+                  <a href={href} style={{ display: "inline-block", marginTop: 12, background: p.tier === "Premium" ? ACCENT : "#fff", color: p.tier === "Premium" ? "#000" : COLOR, border: `1px solid ${ACCENT}`, padding: "8px 14px", borderRadius: 4, textDecoration: "none", fontSize: 13, fontWeight: 600 }}>
+                    Buy {p.tier} →
+                  </a>
                 </div>
-              ))}
+                );
+              })}
             </div>
             <div style={{ textAlign: "center", marginTop: 30 }}>
-              <a href={CTA} style={{ background: ACCENT, color: "#000", padding: "14px 28px", borderRadius: 6, textDecoration: "none", fontWeight: 600 }}>
+              <a href={CTA.defensive} style={{ background: ACCENT, color: "#000", padding: "14px 28px", borderRadius: 6, textDecoration: "none", fontWeight: 600 }}>
                 Start a $149 defensive disclosure →
               </a>
             </div>

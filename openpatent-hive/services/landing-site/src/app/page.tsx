@@ -42,8 +42,8 @@ export default function Home() {
             <em>Then</em> you use AI to refine it.
           </p>
           <div className="cta-row">
-            <a className="btn btn-primary" href="#disclose">
-              Disclose your first invention — $10
+            <a className="btn btn-primary" href="https://api.openpatent.ai/v1/checkout/defensive">
+              Disclose your first invention — $149
             </a>
             <a className="btn btn-secondary" href="#how">
               How it works
@@ -191,6 +191,9 @@ export default function Home() {
                 <li>C2PA Content Credential</li>
                 <li>Registry entry (1yr)</li>
               </ul>
+              <a className="btn btn-primary" style={{ marginTop: 14, display: "inline-block" }} href="https://api.openpatent.ai/v1/checkout/starter">
+                Get Starter →
+              </a>
             </div>
             <div className="price-card featured">
               <h3>Defensive</h3>
@@ -202,6 +205,9 @@ export default function Home() {
                 <li>Polygon secondary anchor</li>
                 <li>Priority support</li>
               </ul>
+              <a className="btn btn-primary" style={{ marginTop: 14, display: "inline-block" }} href="https://api.openpatent.ai/v1/checkout/defensive">
+                Get Defensive →
+              </a>
             </div>
             <div className="price-card">
               <h3>Full</h3>
@@ -213,6 +219,9 @@ export default function Home() {
                 <li>AI-assisted claim drafting</li>
                 <li>Expedited Bitcoin confirmation</li>
               </ul>
+              <a className="btn btn-primary" style={{ marginTop: 14, display: "inline-block" }} href="https://api.openpatent.ai/v1/checkout/full">
+                Get Full →
+              </a>
             </div>
             <div className="price-card">
               <h3>Premium</h3>
@@ -224,6 +233,9 @@ export default function Home() {
                 <li>IPFS pinning</li>
                 <li>IP.com publication</li>
               </ul>
+              <a className="btn btn-primary" style={{ marginTop: 14, display: "inline-block" }} href="https://api.openpatent.ai/v1/checkout/premium">
+                Get Premium →
+              </a>
             </div>
           </div>
         </div>

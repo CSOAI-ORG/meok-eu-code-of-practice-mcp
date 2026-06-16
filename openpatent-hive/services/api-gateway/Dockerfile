@@ -21,6 +21,7 @@ RUN pip install --no-cache-dir \
     prometheus-client>=0.19.0
 
 # Core service code
+COPY services/api-gateway/stripe_links.py /opt/openpatent-api/
 COPY services/api-gateway/gateway.py /opt/openpatent-api/
 COPY services/api-gateway/pricing.py /opt/openpatent-api/
 COPY services/api-gateway/legal.py /opt/openpatent-api/

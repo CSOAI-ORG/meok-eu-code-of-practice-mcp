@@ -36,7 +36,7 @@
   "rewrites": [
     {
       "source": "/.well-known/mcp-server",
-      "destination": "/.well-known/mcp-server.txt"
+      "destination": "/.well-known/mcp-server.json"
     }
   ]
 }

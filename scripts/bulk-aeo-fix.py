@@ -8,6 +8,7 @@ never overwrites existing files.
 import os
 import re
 import html
+import json
 from pathlib import Path
 from xml.sax.saxutils import escape
 
@@ -129,10 +130,70 @@ def write_sitemap(path: Path, meta: dict, base: str) -> bool:
     return True
 
 
+def write_openapi(path: Path, meta: dict, base: str) -> bool:
+    if path.exists():
+        return False
+    api = {
+        "openapi": "3.0.0",
+        "info": {
+            "title": meta["title"],
+            "version": "1.0.0",
+            "description": meta["description"],
+            "contact": {"url": "https://meok.ai"},
+        },
+        "servers": [{"url": base.rstrip("/")}],
+        "paths": {
+            "/": {
+                "get": {
+                    "summary": "Landing page",
+                    "responses": {"200": {"description": "HTML landing page"}}
+                }
+            },
+            "/llms.txt": {
+                "get": {
+                    "summary": "LLM discovery file",
+                    "responses": {"200": {"description": "text/plain LLM context"}}
+                }
+            },
+            "/robots.txt": {
+                "get": {
+                    "summary": "Robots discovery file",
+                    "responses": {"200": {"description": "text/plain robots rules"}}
+                }
+            },
+            "/sitemap.xml": {
+                "get": {
+                    "summary": "Sitemap",
+                    "responses": {"200": {"description": "application/xml sitemap"}}
+                }
+            },
+        },
+    }
+    path.write_text(json.dumps(api, indent=2), encoding="utf-8")
+    return True
+
+def ensure_meta(index: Path, meta: dict) -> bool:
+    text = index.read_text(encoding="utf-8", errors="ignore")
+    if re.search(r'<meta[^>]+name=["\']description["\']', text, re.I):
+        return False
+    desc = html.escape(meta.get("description", meta["title"]))[:160]
+    tag = f'<meta name="description" content="{desc}">\n'
+    # Insert after </title> if present, else after <head>
+    m = re.search(r'(</title>)', text, re.I)
+    if m:
+        pos = m.end()
+    else:
+        m = re.search(r'(<head[^>]*>)', text, re.I)
+        pos = m.end() if m else 0
+    new_text = text[:pos] + "\n" + tag + text[pos:]
+    index.write_text(new_text, encoding="utf-8")
+    return True
+
+
 def main():
     findings = []
     total_dirs = 0
-    generated = {"llms.txt": 0, "robots.txt": 0, "sitemap.xml": 0}
+    generated = {"llms.txt": 0, "robots.txt": 0, "sitemap.xml": 0, "openapi.json": 0}
     for deploy_dir in sorted(BASE.glob("*-deploy")):
         if not deploy_dir.is_dir():
             continue
@@ -153,6 +214,11 @@ def main():
         if write_sitemap(deploy_dir / "sitemap.xml", meta, base):
             generated["sitemap.xml"] += 1
             changes.append("sitemap.xml")
+        if write_openapi(deploy_dir / "openapi.json", meta, base):
+            generated["openapi.json"] += 1
+            changes.append("openapi.json")
+        if ensure_meta(index, meta):
+            changes.append("meta-description")
         if changes:
             findings.append((deploy_dir.name, "generated", ", ".join(changes) + f" (base={base})"))
         else:
@@ -164,6 +230,7 @@ def main():
 - `llms.txt` generated: {generated['llms.txt']}
 - `robots.txt` generated: {generated['robots.txt']}
 - `sitemap.xml` generated: {generated['sitemap.xml']}
+- `openapi.json` generated: {generated['openapi.json']}
 
 ## Per-directory actions
 

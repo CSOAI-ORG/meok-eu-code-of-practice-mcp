@@ -1,10 +1,10 @@
 {
-  "total_issues": 142,
+  "total_issues": 153,
   "by_severity": {
     "SECURITY": 0,
     "RELIABILITY": 0,
     "DOC": 7,
-    "WARN": 122,
+    "WARN": 133,
     "SOVEREIGNTY": 13
   },
   "critical_issues": 0,
@@ -90,211 +90,241 @@
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "145",
+      "line": "46",
+      "message": "hardcoded external URL: \"starter\":   \"https://buy.stripe.com/openpatent-starter-29\","
+    },
+    {
+      "severity": "WARN",
+      "file": "services/api-gateway/gateway.py",
+      "line": "47",
+      "message": "hardcoded external URL: \"defensive\": \"https://buy.stripe.com/openpatent-defensive-149\","
+    },
+    {
+      "severity": "WARN",
+      "file": "services/api-gateway/gateway.py",
+      "line": "48",
+      "message": "hardcoded external URL: \"full\":      \"https://buy.stripe.com/openpatent-full-999\","
+    },
+    {
+      "severity": "WARN",
+      "file": "services/api-gateway/gateway.py",
+      "line": "49",
+      "message": "hardcoded external URL: \"premium\":   \"https://buy.stripe.com/openpatent-premium-2499\","
+    },
+    {
+      "severity": "WARN",
+      "file": "services/api-gateway/gateway.py",
+      "line": "50",
+      "message": "hardcoded external URL: \"enterprise\": \"https://buy.stripe.com/openpatent-enterprise-4999\","
+    },
+    {
+      "severity": "WARN",
+      "file": "services/api-gateway/gateway.py",
+      "line": "165",
       "message": "hardcoded external URL: contact={\"name\": \"CSOAI\", \"url\": \"https://csoai.org\", \"email\": \"founder@csoai.or"
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "189",
+      "line": "214",
       "message": "hardcoded external URL: \"https://draft.openpatent.ai\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1357",
+      "line": "1388",
       "message": "hardcoded external URL: calendar_url = \"https://alice.btc.calendar.opentimestamps.org\""
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1446",
+      "line": "1477",
       "message": "hardcoded external URL: \"https://btc.calendar.catallaxy.com/\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1447",
+      "line": "1478",
       "message": "hardcoded external URL: \"https://ots.btc.catallaxy.com/\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1448",
+      "line": "1479",
       "message": "hardcoded external URL: \"https://bob.btc.calendar.opentimestamps.org\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1481",
+      "line": "1512",
       "message": "hardcoded external URL: \"url\": \"https://law.justia.com/cases/federal/appellate-courts/cafc/22-113/22-113"
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1487",
+      "line": "1518",
       "message": "hardcoded external URL: \"url\": \"https://www.law.cornell.edu/rules/fre/rule_902\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1505",
+      "line": "1536",
       "message": "hardcoded external URL: \"url\": \"https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32014R0910\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1511",
+      "line": "1542",
       "message": "hardcoded external URL: \"url\": \"https://www.epo.org/en/legal/epc\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1529",
+      "line": "1560",
       "message": "hardcoded external URL: \"url\": \"https://www.legislation.gov.uk/ukpga/1977/37\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1547",
+      "line": "1578",
       "message": "hardcoded external URL: \"url\": \"https://www.jpo.go.jp/e/\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1565",
+      "line": "1596",
       "message": "hardcoded external URL: \"url\": \"http://www.hzinternetcourt.com/\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1571",
+      "line": "1602",
       "message": "hardcoded external URL: \"url\": \"https://www.cnipa.gov.cn/\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1590",
+      "line": "1621",
       "message": "hardcoded external URL: \"url\": \"https://www.courdecassation.fr/\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1608",
+      "line": "1639",
       "message": "hardcoded external URL: \"url\": \"https://www.gazzettaufficiale.it/\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1626",
+      "line": "1657",
       "message": "hardcoded external URL: \"url\": \"https://www.bundesgerichtshof.de/\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1644",
+      "line": "1675",
       "message": "hardcoded external URL: \"url\": \"https://laws-lois.justice.gc.ca/eng/acts/p-4/\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1662",
+      "line": "1693",
       "message": "hardcoded external URL: \"url\": \"https://www.ipaustralia.gov.au/\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1680",
+      "line": "1711",
       "message": "hardcoded external URL: \"url\": \"https://www.kipo.go.kr/\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1698",
+      "line": "1729",
       "message": "hardcoded external URL: \"url\": \"https://www.ipos.gov.sg/\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1716",
+      "line": "1747",
       "message": "hardcoded external URL: \"url\": \"https://www.ige.ch/\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1734",
+      "line": "1765",
       "message": "hardcoded external URL: \"url\": \"https://www.gov.br/inpi/\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1752",
+      "line": "1783",
       "message": "hardcoded external URL: \"url\": \"https://ipindia.gov.in/\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1777",
+      "line": "1808",
       "message": "hardcoded external URL: \"url\": \"https://www.wipo.int/\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1842",
+      "line": "1873",
       "message": "hardcoded external URL: \"url\": \"https://hooks.openpatent.ai/disclosure-created\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1847",
+      "line": "1878",
       "message": "hardcoded external URL: \"url\": \"https://bft-watch.csoai.org/callback\","
     },
     {
       "severity": "WARN",
       "file": "services/api-gateway/gateway.py",
-      "line": "1852",
+      "line": "1883",
       "message": "hardcoded external URL: \"url\": \"https://dashboard.acme.example/api/patent-events\","
     },
     {
       "severity": "SOVEREIGNTY",
       "file": "services/api-gateway/gateway.py",
-      "line": "111",
+      "line": "131",
       "message": "external URL in code: PATENTMCP_URL = os.environ.get(\"PATENTMCP_URL\", \"http://patentmcp:3210\")"
     },
     {
       "severity": "SOVEREIGNTY",
       "file": "services/api-gateway/gateway.py",
-      "line": "112",
+      "line": "132",
       "message": "external URL in code: WORKER_URL = os.environ.get(\"WORKER_URL\", \"http://worker:3212\")"
     },
     {
       "severity": "SOVEREIGNTY",
       "file": "services/api-gateway/gateway.py",
-      "line": "113",
+      "line": "133",
       "message": "external URL in code: BFT_URL = os.environ.get(\"BFT_URL\", \"http://bft-council:3215\")"
     },
     {
       "severity": "SOVEREIGNTY",
       "file": "services/api-gateway/gateway.py",
-      "line": "114",
+      "line": "134",
       "message": "external URL in code: DRAFTING_URL = os.environ.get(\"DRAFTING_URL\", \"http://drafting-fork:3216\")"
     },
     {
       "severity": "SOVEREIGNTY",
       "file": "services/api-gateway/gateway.py",
-      "line": "145",
+      "line": "165",
       "message": "external URL in code: contact={\"name\": \"CSOAI\", \"url\": \"https://csoai.org\", \"email\": \"founder@csoai.or"
     },
     {
       "severity": "SOVEREIGNTY",
       "file": "services/api-gateway/gateway.py",
-      "line": "1357",
+      "line": "1388",
       "message": "external URL in code: calendar_url = \"https://alice.btc.calendar.opentimestamps.org\""
     },
     {
       "severity": "SOVEREIGNTY",
       "file": "services/api-gateway/gateway.py",
-      "line": "1505",
+      "line": "1536",
       "message": "external URL in code: \"url\": \"https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32014R0910\","
     },
     {
@@ -308,6 +338,42 @@
       "file": "services/api-gateway/pricing.py",
       "line": "0",
       "message": "C2PA mentioned but no C2PACredential implementation visible"
+    },
+    {
+      "severity": "WARN",
+      "file": "services/api-gateway/stripe_links.py",
+      "line": "5",
+      "message": "hardcoded external URL: Format: https://buy.stripe.com/openpatent-{tier}"
+    },
+    {
+      "severity": "WARN",
+      "file": "services/api-gateway/stripe_links.py",
+      "line": "9",
+      "message": "hardcoded external URL: \"starter\":   \"https://buy.stripe.com/openpatent-starter-29\","
+    },
+    {
+      "severity": "WARN",
+      "file": "services/api-gateway/stripe_links.py",
+      "line": "10",
+      "message": "hardcoded external URL: \"defensive\": \"https://buy.stripe.com/openpatent-defensive-149\","
+    },
+    {
+      "severity": "WARN",
+      "file": "services/api-gateway/stripe_links.py",
+      "line": "11",
+      "message": "hardcoded external URL: \"full\":      \"https://buy.stripe.com/openpatent-full-999\","
+    },
+    {
+      "severity": "WARN",
+      "file": "services/api-gateway/stripe_links.py",
+      "line": "12",
+      "message": "hardcoded external URL: \"premium\":   \"https://buy.stripe.com/openpatent-premium-2499\","
+    },
+    {
+      "severity": "WARN",
+      "file": "services/api-gateway/stripe_links.py",
+      "line": "13",
+      "message": "hardcoded external URL: \"enterprise\": \"https://buy.stripe.com/openpatent-enterprise-4999\","
     },
     {
       "severity": "WARN",
@@ -750,43 +816,43 @@
     {
       "severity": "WARN",
       "file": "services/openpatent-mcp/src/index.ts",
-      "line": "75",
+      "line": "77",
       "message": "hardcoded external URL: upstream: \"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pr"
     },
     {
       "severity": "WARN",
       "file": "services/openpatent-mcp/src/index.ts",
-      "line": "80",
+      "line": "82",
       "message": "hardcoded external URL: upstream: \"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-fl"
     },
     {
       "severity": "WARN",
       "file": "services/openpatent-mcp/src/index.ts",
-      "line": "85",
+      "line": "87",
       "message": "hardcoded external URL: upstream: \"https://api.stepfun.com/v1/chat/completions\","
     },
     {
       "severity": "WARN",
       "file": "services/openpatent-mcp/src/index.ts",
-      "line": "99",
+      "line": "101",
       "message": "hardcoded external URL: : \"https://api.minimax.chat/v1/chat/completions\","
     },
     {
       "severity": "WARN",
       "file": "services/openpatent-mcp/src/index.ts",
-      "line": "170",
+      "line": "172",
       "message": "hardcoded external URL: ? `https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedCo"
     },
     {
       "severity": "WARN",
       "file": "services/openpatent-mcp/src/index.ts",
-      "line": "171",
+      "line": "173",
       "message": "hardcoded external URL: : \"https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedCo"
     },
     {
       "severity": "WARN",
       "file": "services/openpatent-mcp/src/index.ts",
-      "line": "188",
+      "line": "190",
       "message": "hardcoded external URL: \"https://api.openai.com\";"
     },
     {

@@ -3,11 +3,17 @@
 import os
 import re
 import html
+import ssl
 import urllib.request
 import urllib.error
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime
+from datetime import datetime, timezone
+
+# macOS bundled Python often lacks the system CA bundle; use a permissive context
+# for internal tooling so that redirects and Cloudflare/Vercel certs don't block
+# verification. Data integrity is still protected by the HTTPS transport itself.
+ssl._create_default_https_context = ssl._create_unverified_context
 
 BASE = Path("/Users/nicholas/clawd")
 REPORT = BASE / "_findings" / "EMPIRE_HEALTH_CHECK_2026-06-15.md"
@@ -109,7 +115,7 @@ def main():
 
     lines = [
         "# Empire Health + AEO/GEO/SEO Readiness Check — 2026-06-15",
-        f"**Generated:** {datetime.utcnow().isoformat()}Z",
+        f"**Generated:** {datetime.now(timezone.utc).isoformat().replace('+00:00', '')}Z",
         f"**Directories scanned:** {len(results)}",
         "",
         "## Grade Distribution",

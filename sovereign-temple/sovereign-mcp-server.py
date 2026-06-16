@@ -4543,29 +4543,39 @@ async def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                                 break
                 
                 prompt = arguments.get("prompt", "")
-                
-                # Call OpenAI API directly
-                headers = {
-                    "Authorization": f"Bearer {api_key}",
-                    "Content-Type": "application/json"
-                }
-                payload = {
-                    "model": "gpt-4o-mini",
-                    "max_tokens": 1024,
-                    "messages": [{"role": "user", "content": prompt}]
-                }
-                
-                resp = requests.post(
-                    "https://api.openai.com/v1/chat/completions",
-                    headers=headers,
-                    json=payload,
-                    timeout=120
-                )
-                resp.raise_for_status()
-                data = resp.json()
-                response_text = data["choices"][0]["message"]["content"]
-                
-                return {"response": response_text, "exit_code": 0}
+
+                # Ollama fallback (local, no key) — used when OpenAI key is absent/invalid.
+                def _call_ollama(text):
+                    r = requests.post(
+                        "http://localhost:11434/v1/chat/completions",
+                        json={"model": "gemma3:4b", "max_tokens": 1024,
+                              "messages": [{"role": "user", "content": text}]},
+                        timeout=180,
+                    )
+                    r.raise_for_status()
+                    return r.json()["choices"][0]["message"]["content"]
+
+                response_text = None
+                source = "ollama:gemma3:4b"
+                if api_key:
+                    try:
+                        resp = requests.post(
+                            "https://api.openai.com/v1/chat/completions",
+                            headers={"Authorization": f"Bearer {api_key}",
+                                     "Content-Type": "application/json"},
+                            json={"model": "gpt-4o-mini", "max_tokens": 1024,
+                                  "messages": [{"role": "user", "content": prompt}]},
+                            timeout=120,
+                        )
+                        resp.raise_for_status()
+                        response_text = resp.json()["choices"][0]["message"]["content"]
+                        source = "openai:gpt-4o-mini"
+                    except Exception:
+                        response_text = None
+                if response_text is None:
+                    response_text = _call_ollama(prompt)
+
+                return {"response": response_text, "source": source, "exit_code": 0}
             except Exception as e:
                 return {"error": f"Hermes unavailable: {e}"}
 
@@ -4585,28 +4595,33 @@ async def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                                 break
                 
                 query = arguments.get("query", "")
-                
-                # Call OpenAI API directly
-                headers = {
-                    "Authorization": f"Bearer {api_key}",
-                    "Content-Type": "application/json"
-                }
-                payload = {
-                    "model": "gpt-4o-mini",
-                    "max_tokens": 2048,
-                    "messages": [{"role": "user", "content": f"Research this and give a concise answer: {query}"}]
-                }
-                
-                resp = requests.post(
-                    "https://api.openai.com/v1/chat/completions",
-                    headers=headers,
-                    json=payload,
-                    timeout=180
-                )
-                resp.raise_for_status()
-                data = resp.json()
-                research_text = data["choices"][0]["message"]["content"]
-                
+                msg = f"Research this and give a concise answer: {query}"
+
+                research_text = None
+                if api_key:
+                    try:
+                        resp = requests.post(
+                            "https://api.openai.com/v1/chat/completions",
+                            headers={"Authorization": f"Bearer {api_key}",
+                                     "Content-Type": "application/json"},
+                            json={"model": "gpt-4o-mini", "max_tokens": 2048,
+                                  "messages": [{"role": "user", "content": msg}]},
+                            timeout=180,
+                        )
+                        resp.raise_for_status()
+                        research_text = resp.json()["choices"][0]["message"]["content"]
+                    except Exception:
+                        research_text = None
+                if research_text is None:
+                    r = requests.post(
+                        "http://localhost:11434/v1/chat/completions",
+                        json={"model": "gemma3:4b", "max_tokens": 2048,
+                              "messages": [{"role": "user", "content": msg}]},
+                        timeout=180,
+                    )
+                    r.raise_for_status()
+                    research_text = r.json()["choices"][0]["message"]["content"]
+
                 return {"research": research_text, "query": query}
             except Exception as e:
                 return {"error": f"Hermes research failed: {e}"}
