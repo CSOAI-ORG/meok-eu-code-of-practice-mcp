@@ -139,10 +139,55 @@ def attestation_verifies(text: str, task: dict) -> "tuple[float, str]":
         return (0.5, f"{cert} unverifiable (offline)")
 
 
+# ── factual citation grounding (the market-ready truth gate) ────────────────
+# Authoritative answer-key for high-value compliance topics. `citations_wellformed`
+# only checks a citation is PRESENT; this checks it's the RIGHT one. Curated from the
+# regulations themselves — the seed of what the MEOK compliance-MCP corpus serves at scale.
+# topic -> (question-trigger regex, required reference regex, human label)
+_FACTS = [
+    ("ai_transparency",
+     re.compile(r"transparen|watermark|ai[- ]?generated content|deepfake|chatbot disclos|synthetic (?:content|media)", re.I),
+     re.compile(r"article\s*50|art\.?\s*50", re.I), "EU AI Act Article 50"),
+    ("high_risk",
+     re.compile(r"high[- ]?risk|credit[- ]?scor|annex\s*iii|biometric|recruitment ai", re.I),
+     re.compile(r"annex\s*iii|article\s*6|art\.?\s*6", re.I), "EU AI Act Annex III / Art 6"),
+    ("prohibited",
+     re.compile(r"prohibit|unacceptable risk|banned (?:ai|practice)|social scoring", re.I),
+     re.compile(r"article\s*5|art\.?\s*5", re.I), "EU AI Act Article 5"),
+    ("logging",
+     re.compile(r"record[- ]?keep|audit log|logging obligation|traceabilit", re.I),
+     re.compile(r"article\s*12|art\.?\s*12", re.I), "EU AI Act Article 12"),
+    ("human_oversight",
+     re.compile(r"human oversight", re.I),
+     re.compile(r"article\s*14|art\.?\s*14", re.I), "EU AI Act Article 14"),
+]
+
+
+def citation_correct(text: str, task: dict) -> "tuple[float, str]":
+    """Truth gate: when the QUESTION is about a known compliance topic, does the
+    ANSWER cite the CORRECT article? Neutral (1.0) for topics not in the answer-key —
+    we never penalise what we can't authoritatively check. This is the verifier that
+    catches a confident-but-wrong "Article 19" — the difference between structural and
+    factual verification, and where MEOK's regulation corpus is the moat."""
+    q = (task.get("question") or task.get("prompt") or "")
+    if not q:
+        return (1.0, "no question to ground against")
+    body = text or ""
+    relevant = [(label, ref) for _, qre, ref, label in _FACTS if qre.search(q)]
+    if not relevant:
+        return (1.0, "topic not in answer-key (not penalised)")
+    hits = [label for label, ref in relevant if ref.search(body)]
+    frac = len(hits) / len(relevant)
+    if frac == 1.0:
+        return (1.0, f"correctly cites {', '.join(hits)}")
+    missing = [label for label, ref in relevant if not ref.search(body)]
+    return (frac, f"WRONG/MISSING citation — expected {', '.join(missing)}")
+
+
 CHECKS: "dict[str, Verifier]" = {
     "json_valid": json_valid, "schema_keys": schema_keys,
-    "citations_wellformed": citations_wellformed, "no_refusal": no_refusal,
-    "attestation_verifies": attestation_verifies,
+    "citations_wellformed": citations_wellformed, "citation_correct": citation_correct,
+    "no_refusal": no_refusal, "attestation_verifies": attestation_verifies,
 }
 
 
