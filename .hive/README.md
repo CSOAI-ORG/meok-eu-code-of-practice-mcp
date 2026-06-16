@@ -35,6 +35,12 @@ self-healing automation layer for the CSOAI/SOV3/MEOK ONE empire.
 | **Investor Warmup Tracker** (`capital_ascension/investor_warmup_tracker.py`) | Tracks strategic program applications and warm-intro templates. | Weekly |
 | **Pitch Deck Generator** (`capital_ascension/pitch_deck_generator.py`) | Generates Series A pitch deck markdown. | Weekly |
 | **Investor CRM** (`capital_ascension/investor_crm.py`) | Seeds investor blitz target list CSV. | Weekly |
+| **Wave 8 Orchestrator** (`wave8/wave8_orchestrator.py`) | Offensive intelligence: Horus, Mamba-3, DAO, RobotMCP, gaming compliance. | Weekly |
+| **Horus OSINT** (`wave8/horus_osint.py`) | Parallel competitor monitoring and intel reports. | Weekly |
+| **Mamba-3 Readiness** (`wave8/mamba3_readiness.py`) | Model manifest and migration plan for swarm brain upgrade. | Weekly |
+| **DAO Scaffold** (`wave8/dao_scaffold.py`) | DAO constitution, TreasuryGPT, Proposal Evaluation specs. | Weekly |
+| **RobotMCP Bridge** (`wave8/robotmcp_bridge.py`) | ROS 2 / Omniverse MCP bridge spec and client skeleton. | Weekly |
+| **Meok Gaming Compliance** (`wave8/meok_gaming_compliance.py`) | India OGRAI gaming compliance MCP server spec. | Weekly |
 | **Dashboard** (`dashboard/index.html`) | Static web UI for service health, quality grades, task queue, test fleet, secrets, and publish queue. | http://localhost:3800/.hive/dashboard/ |
 
 ## Layout
@@ -60,14 +66,21 @@ self-healing automation layer for the CSOAI/SOV3/MEOK ONE empire.
 │   ├── affiliate_tracker.py         # Referral tracking
 │   ├── data_budget_guard.py         # Dataset disk guard
 │   ├── day_orchestrator.py          # Full-day auto sequence
-│   └── capital_ascension/           # Series A fundraising artifacts
-│       ├── capital_ascension_orchestrator.py
-│       ├── data_moat_dossier.py
-│       ├── provisional_patent_drafter.py
-│       ├── loi_generator.py
-│       ├── investor_warmup_tracker.py
-│       ├── pitch_deck_generator.py
-│       └── investor_crm.py
+│   ├── capital_ascension/           # Series A fundraising artifacts
+│   │   ├── capital_ascension_orchestrator.py
+│   │   ├── data_moat_dossier.py
+│   │   ├── provisional_patent_drafter.py
+│   │   ├── loi_generator.py
+│   │   ├── investor_warmup_tracker.py
+│   │   ├── pitch_deck_generator.py
+│   │   └── investor_crm.py
+│   └── wave8/                       # Offensive intelligence & Mamba-3 ascension
+│       ├── wave8_orchestrator.py
+│       ├── horus_osint.py
+│       ├── mamba3_readiness.py
+│       ├── dao_scaffold.py
+│       ├── robotmcp_bridge.py
+│       └── meok_gaming_compliance.py
 ├── launchd/
 │   └── ai.csoai.*.plist     # launchd agent definitions
 ├── dashboard/
@@ -81,6 +94,7 @@ self-healing automation layer for the CSOAI/SOV3/MEOK ONE empire.
     ├── grants/              # Grant drafts
     ├── auto_mode_schedule.md # Full-day auto-mode cadence
     ├── capital_ascension/   # Series A artifacts (dossier, pitch deck, LOIs)
+    ├── wave8/               # Offensive intelligence, DAO, RobotMCP, gaming compliance
     └── affiliates.jsonl     # Referral ledger
 ```
 

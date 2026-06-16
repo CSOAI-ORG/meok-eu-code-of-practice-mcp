@@ -136,6 +136,14 @@
       <ul id="cap-list"></ul>
     </div>
     <div class="panel">
+      <h2>Wave 8 Offensive</h2>
+      <div class="metric"><span>Horus targets</span><span id="w8-horus">-</span></div>
+      <div class="metric"><span>Mamba local</span><span id="w8-mamba">-</span></div>
+      <div class="metric"><span>Wave 8 steps</span><span id="w8-steps">-</span></div>
+      <div class="metric"><span>Last run</span><span id="w8-ts" class="ts">-</span></div>
+      <ul id="w8-list"></ul>
+    </div>
+    <div class="panel">
       <h2>Recent Events</h2>
       <ul id="recent-events"></ul>
     </div>
@@ -407,12 +415,38 @@
       });
     }
 
+    async function loadWave8() {
+      const horus = await fetchJSON(ROOT + "/logs/horus_osint.json");
+      const mamba = await fetchJSON(ROOT + "/logs/mamba3_readiness.json");
+      const orch = await fetchJSON(ROOT + "/logs/wave8_orchestrator.json");
+      document.getElementById("w8-horus").textContent = horus ? horus.targets_scanned : "-";
+      document.getElementById("w8-mamba").textContent = mamba ? `${mamba.models.filter(m => m.available).length}/${mamba.models.length}` : "-";
+      document.getElementById("w8-steps").textContent = orch ? `${orch.ok}/${orch.total}` : "-";
+      document.getElementById("w8-ts").textContent = orch?.ts ? new Date(orch.ts).toLocaleString() : "-";
+
+      const list = document.getElementById("w8-list");
+      list.innerHTML = "";
+      const items = [
+        ["Wave 8 plan", "tasks/wave8/WAVE_8_PLAN.md"],
+        ["Horus report", "tasks/wave8/horus_reports/"],
+        ["Mamba readiness", "tasks/wave8/MAMBA3_READINESS.md"],
+        ["DAO constitution", "tasks/wave8/dao/DAO_CONSTITUTION.md"],
+        ["RobotMCP bridge", "tasks/wave8/robotmcp/RobotMCP_ARCHITECTURE.md"],
+        ["Gaming compliance", "tasks/wave8/gaming_compliance/OGRAI_COMPLIANCE_SPEC.md"],
+      ];
+      items.forEach(([label, path]) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${ROOT}/${path}" target="_blank" style="color:var(--accent);">${label}</a>`;
+        list.appendChild(li);
+      });
+    }
+
     async function loadAll() {
       await Promise.all([
         loadHiveMode(), loadQuality(), loadHealer(), loadTasks(),
         loadPublish(), loadFleet(), loadSecrets(), loadEnvReadiness(),
         loadAgentCards(), loadGrants(), loadSynthetic(), loadAffiliates(),
-        loadHarvesters(), loadCapital(), loadEvents()
+        loadHarvesters(), loadCapital(), loadWave8(), loadEvents()
       ]);
     }
 
