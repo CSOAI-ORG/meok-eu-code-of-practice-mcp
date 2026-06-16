@@ -1075,6 +1075,33 @@ class E2ERunner:
             assert code == 200, f"status={code}"
             return f"tier=hvp: {body.get('total', '?')} matches"
 
+
+        async def partner_check():
+            """Day 16 BLOCK 1: /partner reseller program."""
+            code, body = await self.client.request("GET", f"{base}/partner")
+            assert code == 200, f"status={code}"
+            assert body.get("total_partners", 0) >= 1, f"no partners"
+            return f"partners: {body.get('total_partners')}"
+
+        async def partner_detail_check():
+            code, body = await self.client.request("GET", f"{base}/partner/grc-whitelabel")
+            assert code == 200, f"status={code}"
+            assert body.get("code") == "GRCWL30", f"wrong partner: {body}"
+            return f"GRCWL30: {body.get('discount_pct')}% off"
+
+        async def recommend_check():
+            """Day 16 BLOCK 4: /recommend server recommendations."""
+            code, body = await self.client.request("GET", f"{base}/recommend")
+            assert code == 200, f"status={code}"
+            assert "available_use_cases" in body, f"missing use cases"
+            return f"use cases: {len(body.get('available_use_cases', []))}"
+
+        async def recommend_health_check():
+            code, body = await self.client.request("GET", f"{base}/recommend?use_case=eu-ai-act-high-risk-health")
+            assert code == 200, f"status={code}"
+            assert "enriched_servers" in body, f"missing enriched_servers"
+            return f"health: {len(body.get('enriched_servers', []))} servers"
+
         async def webhook_test_check():
             """Day 14 BLOCK 5: /webhook/test for Stripe dashboard testing."""
             code, body = await self.client.request("POST", f"{base}/webhook/test?customer_email=day14e2e@meok.ai&amount_gbp=199&kind=tier&item_id=pro")
@@ -1112,6 +1139,10 @@ class E2ERunner:
         await self.run_test(group, "/search?q=care", search_check, target=base)
         await self.run_test(group, "/search?tier=hvp", search_by_tier, target=base)
         await self.run_test(group, "/webhook/test", webhook_test_check, target=base)
+        await self.run_test(group, "/partner", partner_check, target=base)
+        await self.run_test(group, "/partner/grc-whitelabel", partner_detail_check, target=base)
+        await self.run_test(group, "/recommend", recommend_check, target=base)
+        await self.run_test(group, "/recommend?use_case=health", recommend_health_check, target=base)
 
     # ═══════════════════════════════════════════════════════════════════════════
     # MAIN ORCHESTRATOR
