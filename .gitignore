@@ -249,3 +249,4 @@ _m2_import/
 csoai-master/node_modules/
 csoai-dashboard-master/
 csoai-master/
+.env.local

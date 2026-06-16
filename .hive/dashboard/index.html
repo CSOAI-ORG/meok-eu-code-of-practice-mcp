@@ -103,6 +103,31 @@
       <div class="metric"><span>Public key</span><span id="agent-pubkey" class="ts">-</span></div>
     </div>
     <div class="panel">
+      <h2>Funding & Grants</h2>
+      <div class="metric"><span>Drafts</span><span id="grant-drafts">-</span></div>
+      <div class="metric"><span>Pipeline ask</span><span id="grant-ask">-</span></div>
+      <ul id="grant-list"></ul>
+    </div>
+    <div class="panel">
+      <h2>Synthetic Data</h2>
+      <div class="metric"><span>Records</span><span id="synth-count">-</span></div>
+      <div class="metric"><span>Latest file</span><span id="synth-file" class="ts">-</span></div>
+      <ul id="synth-list"></ul>
+    </div>
+    <div class="panel">
+      <h2>Affiliate Revenue</h2>
+      <div class="metric"><span>Partners</span><span id="aff-partners">-</span></div>
+      <div class="metric"><span>Signups</span><span id="aff-signups">-</span></div>
+      <div class="metric"><span>Revenue</span><span id="aff-revenue">-</span></div>
+      <ul id="aff-list"></ul>
+    </div>
+    <div class="panel">
+      <h2>Data Harvesters</h2>
+      <div class="metric"><span>CC0 OK</span><span id="cc0-ok">-</span></div>
+      <div class="metric"><span>Gov OK</span><span id="gov-ok">-</span></div>
+      <ul id="harvest-list"></ul>
+    </div>
+    <div class="panel">
       <h2>Recent Events</h2>
       <ul id="recent-events"></ul>
     </div>
@@ -287,11 +312,74 @@
       });
     }
 
+    async function loadGrants() {
+      const data = await fetchJSON(ROOT + "/logs/grant_application_bot.json");
+      if (!data) return;
+      document.getElementById("grant-drafts").textContent = data.total_drafts || 0;
+      document.getElementById("grant-ask").textContent = "£" + (data.total_ask_gbp || 0).toLocaleString();
+      const list = document.getElementById("grant-list");
+      list.innerHTML = "";
+      (data.drafts || []).forEach(d => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span class="badge">${d.status}</span> ${d.scheme} <span class="ts">£${d.ask_gbp?.toLocaleString()} · ${d.deadline}</span>`;
+        list.appendChild(li);
+      });
+    }
+
+    async function loadSynthetic() {
+      const data = await fetchJSON(ROOT + "/logs/synthetic_factory.json");
+      if (!data) return;
+      document.getElementById("synth-count").textContent = (data.count || 0).toLocaleString();
+      document.getElementById("synth-file").textContent = (data.path || "").split("/").pop();
+      const list = document.getElementById("synth-list");
+      list.innerHTML = "";
+      Object.entries(data.by_type || {}).forEach(([type, count]) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span class="ok">${count}</span> ${type}`;
+        list.appendChild(li);
+      });
+    }
+
+    async function loadAffiliates() {
+      const data = await fetchJSON(ROOT + "/logs/affiliate_tracker.json");
+      if (!data) return;
+      document.getElementById("aff-partners").textContent = data.new_partners || 0;
+      document.getElementById("aff-signups").textContent = (data.total_signups || 0).toLocaleString();
+      document.getElementById("aff-revenue").textContent = "£" + (data.total_revenue_gbp || 0).toLocaleString();
+      const list = document.getElementById("aff-list");
+      list.innerHTML = "";
+      Object.entries(data.by_vertical || {}).forEach(([v, s]) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span class="ok">${s.partners}</span> ${v} <span class="ts">£${Math.round(s.revenue_gbp)}</span>`;
+        list.appendChild(li);
+      });
+    }
+
+    async function loadHarvesters() {
+      const cc0 = await fetchJSON(ROOT + "/logs/cc0_harvester.json");
+      const gov = await fetchJSON(ROOT + "/logs/government_data_downloads.json");
+      document.getElementById("cc0-ok").textContent = cc0?.ok ?? "-";
+      document.getElementById("gov-ok").textContent = gov?.ok ?? "-";
+      const list = document.getElementById("harvest-list");
+      list.innerHTML = "";
+      const push = (items) => {
+        (items || []).forEach(i => {
+          const li = document.createElement("li");
+          const cls = i.status === "ok" ? "ok" : "err";
+          li.innerHTML = `<span class="${cls}">${i.status}</span> ${i.name} <span class="ts">${i.mb ?? 0} MB</span>`;
+          list.appendChild(li);
+        });
+      };
+      push(cc0?.sources);
+      push(gov?.datasets);
+    }
+
     async function loadAll() {
       await Promise.all([
         loadHiveMode(), loadQuality(), loadHealer(), loadTasks(),
         loadPublish(), loadFleet(), loadSecrets(), loadEnvReadiness(),
-        loadAgentCards(), loadEvents()
+        loadAgentCards(), loadGrants(), loadSynthetic(), loadAffiliates(),
+        loadHarvesters(), loadEvents()
       ]);
     }
 

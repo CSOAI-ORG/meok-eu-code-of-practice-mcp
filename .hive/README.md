@@ -15,6 +15,16 @@ self-healing automation layer for the CSOAI/SOV3/MEOK ONE empire.
 | **Remediation Generator** (`remediation_generator.py`) | Converts quality, E2E, and domain audit findings into `.hive/tasks/TODO_remediation.md`. | Every 6 h |
 | **Test Fleet Manager** (`test_fleet_manager.py`) | Runs configured test suites (E2E, pytest) and aggregates pass/fail into a JSON report. | Daily |
 | **Secrets Inventory** (`secrets_inventory.py`) | Scans `.env*` files for placeholders and missing required secrets. | Every 6 h |
+| **Pheromone Router** (`pheromone_router.py`) | HTTP broker for swarm signals across 8 channels; used by quorum sensor and dashboard. | Always on port 3900 |
+| **Quorum Sensor** (`quorum_sensor.py`) | Reads pheromone density and decides hive mode: construction / war / migration / regicide. | Every 5 min |
+| **x402 MCP Server** (`x402_mcp_server.py`) | MCP-style HTTP server that charges per tool call via HTTP 402 + payment proof. | Always on port 3950 |
+| **Agent Card Generator** (`agent_card_generator.py`) | Generates Ed25519-signed A2A Agent Cards for CSOAI domains. | Daily |
+| **Nano-Creator Seeder** (`nano_creator_seeder.py`) | Generates outreach targets and DM templates for nano-creator seeding. | Daily |
+| **Synthetic Data Factory** (`synthetic_data_factory.py`) | Produces labelled synthetic training corpora for construction, aquaculture, logistics. | Daily |
+| **CC0 Harvester** (`cc0_harvester.py`) | Downloads public-domain / CC0 datasets for training and enrichment. | Weekly |
+| **Government Data Downloader** (`government_data_downloader.py`) | Harvests UK open-government datasets (Land Registry, Companies House, DfT, OS). | Weekly |
+| **Grant Application Bot** (`grant_application_bot.py`) | Drafts and tracks grant applications against live opportunities. | Weekly |
+| **Affiliate Tracker** (`affiliate_tracker.py`) | Seeds and tracks referral codes across CSOAI domains. | Daily |
 | **Dashboard** (`dashboard/index.html`) | Static web UI for service health, quality grades, task queue, test fleet, secrets, and publish queue. | http://localhost:3800/.hive/dashboard/ |
 
 ## Layout
@@ -23,19 +33,33 @@ self-healing automation layer for the CSOAI/SOV3/MEOK ONE empire.
 .hive/
 ├── config.yaml              # Single source of truth for services, sensors, quality gates
 ├── scripts/
-│   ├── generate_launchd.py  # Render launchd plists from config.yaml
-│   ├── load_launchd.py      # Install and load agents
-│   ├── hive_sensor.py       # Task/signal sensor
-│   ├── service_healer.py    # Service health & restart
-│   └── quality_manager.py   # Quality grading
+│   ├── generate_launchd.py          # Render launchd plists from config.yaml
+│   ├── load_launchd.py              # Install and load agents
+│   ├── hive_sensor.py               # Task/signal sensor
+│   ├── service_healer.py            # Service health & restart
+│   ├── quality_manager.py           # Quality grading
+│   ├── pheromone_router.py          # Swarm signal broker
+│   ├── quorum_sensor.py             # Hive mode logic
+│   ├── x402_mcp_server.py           # Paid tool gateway
+│   ├── agent_card_generator.py      # A2A Agent Cards
+│   ├── nano_creator_seeder.py       # Creator seeding
+│   ├── synthetic_data_factory.py    # Synthetic training data
+│   ├── cc0_harvester.py             # CC0 dataset harvester
+│   ├── government_data_downloader.py # UK gov open data
+│   ├── grant_application_bot.py     # Grant drafts
+│   └── affiliate_tracker.py         # Referral tracking
 ├── launchd/
 │   └── ai.csoai.*.plist     # launchd agent definitions
 ├── dashboard/
 │   └── index.html           # Static Hive dashboard
 ├── logs/                    # Runtime logs (gitignored)
+├── data/                    # Harvested/synthetic datasets (gitignored)
 └── tasks/                   # Runtime task queues (gitignored)
     ├── publish_queue.jsonl  # Staged social posts
-    └── TODO_remediation.md  # Auto-generated remediation tasks
+    ├── TODO_remediation.md  # Auto-generated remediation tasks
+    ├── seeding/             # Creator outreach targets
+    ├── grants/              # Grant drafts
+    └── affiliates.jsonl     # Referral ledger
 ```
 
 ## Quick start
@@ -62,6 +86,12 @@ curl -X POST http://127.0.0.1:3900/emit -H "Content-Type: application/json" -d '
 python3 .hive/scripts/x402_mcp_server.py  # port 3950
 python3 .hive/scripts/agent_card_generator.py
 python3 .hive/scripts/env_readiness_report.py
+python3 .hive/scripts/nano_creator_seeder.py
+python3 .hive/scripts/synthetic_data_factory.py --count 1000
+python3 .hive/scripts/cc0_harvester.py --dry-run
+python3 .hive/scripts/government_data_downloader.py --dry-run
+python3 .hive/scripts/grant_application_bot.py
+python3 .hive/scripts/affiliate_tracker.py
 python3 .hive/scripts/hive_notify.py "Test" "Hello from Hive"
 ```
 

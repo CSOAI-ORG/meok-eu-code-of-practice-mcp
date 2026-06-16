@@ -117,6 +117,12 @@ def main() -> None:
         ("quorum-sensor", script_dir / "quorum_sensor.py", 300),
         ("agent-card-generator", script_dir / "agent_card_generator.py", 86400),
         ("env-readiness-report", script_dir / "env_readiness_report.py", 21600),
+        ("nano-creator-seeder", script_dir / "nano_creator_seeder.py", 86400),
+        ("government-data-downloader", script_dir / "government_data_downloader.py", 604800),
+        ("synthetic-data-factory", script_dir / "synthetic_data_factory.py", 86400),
+        ("affiliate-tracker", script_dir / "affiliate_tracker.py", 86400),
+        ("cc0-harvester", script_dir / "cc0_harvester.py", 604800),
+        ("grant-application-bot", script_dir / "grant_application_bot.py", 604800),
     ]
     for name, script, interval in jobs:
         label = f"ai.csoai.{name}"
