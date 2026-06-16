@@ -1021,6 +1021,27 @@ class E2ERunner:
             assert body.get("total_packs_sold", 0) >= 1, f"no pack recorded from webhook"
             return f"analytics: {body.get('total_revenue_gbp')} total"
 
+        async def healthz_check():
+            code, body = await self.client.request("GET", f"{base}/healthz")
+            assert code == 200, f"status={code}"
+            assert body.get("status") == "alive", f"unexpected: {body}"
+            return f"alive @ {body.get('ts', '?')}"
+
+        async def readyz_check():
+            code, body = await self.client.request("GET", f"{base}/readyz")
+            assert code == 200, f"status={code}"
+            assert body.get("status") == "ready", f"unexpected: {body}"
+            assert body.get("db_reachable") is True, f"DB not reachable: {body}"
+            return f"ready: {body.get('mcp_servers')} servers, {body.get('tiers')} tiers, {body.get('sectors')} sectors"
+
+        async def metrics_check():
+            code, body = await self.client.request("GET", f"{base}/metrics")
+            assert code == 200, f"status={code}"
+            # Prometheus text format starts with # HELP
+            assert "# HELP" in body, f"not prometheus format: {body[:100]}"
+            assert "csoai_mcp_servers_total" in body, f"missing mcp_servers metric"
+            return f"Prometheus: {len(body.split(chr(10)))} lines"
+
         await self.run_test(group, "/api", api_info, target=base)
         await self.run_test(group, "/servers", list_servers, target=base)
         await self.run_test(group, "/packs", list_packs, target=base)
@@ -1034,6 +1055,9 @@ class E2ERunner:
         await self.run_test(group, "POST /webhook/stripe (tier)", stripe_webhook_tier, target=base)
         await self.run_test(group, "POST /webhook/stripe (pack)", stripe_webhook_pack, target=base)
         await self.run_test(group, "/analytics (after webhook)", analytics_tracks_webhook, target=base)
+        await self.run_test(group, "/healthz", healthz_check, target=base)
+        await self.run_test(group, "/readyz", readyz_check, target=base)
+        await self.run_test(group, "/metrics", metrics_check, target=base)
 
     # ═══════════════════════════════════════════════════════════════════════════
     # MAIN ORCHESTRATOR
