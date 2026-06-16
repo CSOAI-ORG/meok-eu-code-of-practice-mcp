@@ -84,11 +84,20 @@ def verified_answer(question: str, n: int = 4, checks: "list | None" = None,
     # the right regulation topic (the factual truth gate).
     task = {**(task or {}), "expect_citations": True, "question": question}
     verify = V.make_verifier(checks)
+    # MOAT: ground generation in MEOK's authoritative regulation KB so the model cites
+    # the RIGHT article (Art 50, not a guess). This is what turns "catches wrong answers"
+    # into "serves verified-correct answers". Seed of the compliance-MCP corpus.
+    try:
+        from .regulation_kb import ground
+        grounding, grounded_topics = ground(question)
+    except Exception:  # noqa: BLE001
+        grounding, grounded_topics = "", []
+    prompt = grounding + question
     # Diverse temperatures so best-of-N sees real variation (not N identical samples).
     temps = [0.2, 0.5, 0.8, 1.0]
     cands = []
     for i in range(max(1, n)):
-        text = _generate(question, temps[i % len(temps)])
+        text = _generate(prompt, temps[i % len(temps)])
         score, reason = verify(text, task)
         cands.append({"i": i, "text": text, "score": round(score, 4), "reason": reason})
     cands.sort(key=lambda c: c["score"], reverse=True)
@@ -115,6 +124,7 @@ def verified_answer(question: str, n: int = 4, checks: "list | None" = None,
         "reason": best["reason"],
         "checks": checks,
         "candidates_tried": n,
+        "grounded_in": grounded_topics,     # MOAT: which regulation topics grounded generation
         "all_scores": [c["score"] for c in cands],
         "lift_vs_first": lift,
         "self_improving": lift > 0,           # the verifier recovered a better answer
