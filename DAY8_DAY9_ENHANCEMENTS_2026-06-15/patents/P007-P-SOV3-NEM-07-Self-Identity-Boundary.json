@@ -7,7 +7,7 @@
   "charter_reference": "2.7",
   "risk_tier": 2,
   "filing_date": "2026-06-15",
-  "filing_authority": "MEOK Sovereign Substrate (SOV3) — IP-First AI Operating System",
+  "filing_authority": "MEOK Sovereign Substrate (SOV3) \u2014 IP-First AI Operating System",
   "inventors": [
     "Nicholas Templeman",
     "Claude Opus 4.8 (sub-agent, SOV3:bridge_think profile=power)",
@@ -51,8 +51,18 @@
     "false_positive_rate_pct": 0.4
   },
   "commercial_value_usd": 2200000,
-  "tags": ["autopoiesis", "self-identity", "worm-guard", "hive-patterns", "redteam", "sovereign-ai", "nemesis", "safety"],
+  "tags": [
+    "autopoiesis",
+    "self-identity",
+    "worm-guard",
+    "hive-patterns",
+    "redteam",
+    "sovereign-ai",
+    "nemesis",
+    "safety"
+  ],
   "filing_fee_usd": 50,
   "sov3_task_id": null,
-  "sov3_task_seed": "Self-Identity-Boundary-Autopoietic-Defense"
+  "sov3_task_seed": "Self-Identity-Boundary-Autopoietic-Defense",
+  "commercial_value": 2200000
 }

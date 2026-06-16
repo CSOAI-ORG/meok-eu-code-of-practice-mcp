@@ -7,7 +7,7 @@
   "charter_reference": "11.4",
   "risk_tier": 1,
   "filing_date": "2026-06-15",
-  "filing_authority": "MEOK Sovereign Substrate (SOV3) — IP-First AI Operating System",
+  "filing_authority": "MEOK Sovereign Substrate (SOV3) \u2014 IP-First AI Operating System",
   "inventors": [
     "Nicholas Templeman",
     "Claude Opus 4.8 (sub-agent, SOV3:bridge_think profile=power)",
@@ -21,7 +21,7 @@
   "claims": [
     {
       "claim_num": 1,
-      "claim": "A method comprising: (a) receiving a user query at a BFT council of N>=33 nodes; (b) each node computing an independent expert-affinity score against K available experts; (c) nodes broadcasting affinity vectors via signed ballots; (d) quorum (>=22/33) reaching consensus on the routing weight vector w ∈ R^K; (e) dispatching the query to the top-k experts weighted by w; (f) returning the aggregated response with a quorum-attested audit trail."
+      "claim": "A method comprising: (a) receiving a user query at a BFT council of N>=33 nodes; (b) each node computing an independent expert-affinity score against K available experts; (c) nodes broadcasting affinity vectors via signed ballots; (d) quorum (>=22/33) reaching consensus on the routing weight vector w \u2208 R^K; (e) dispatching the query to the top-k experts weighted by w; (f) returning the aggregated response with a quorum-attested audit trail."
     },
     {
       "claim_num": 2,
@@ -50,8 +50,17 @@
     "uptime_30d_pct": 99.97
   },
   "commercial_value_usd": 1200000,
-  "tags": ["bft", "moe", "router", "consensus", "audit-trail", "sovereign-ai", "nemesis"],
+  "tags": [
+    "bft",
+    "moe",
+    "router",
+    "consensus",
+    "audit-trail",
+    "sovereign-ai",
+    "nemesis"
+  ],
   "filing_fee_usd": 50,
   "sov3_task_id": null,
-  "sov3_task_seed": "BFT-Council-as-MoE-Router"
+  "sov3_task_seed": "BFT-Council-as-MoE-Router",
+  "commercial_value": 1200000
 }
