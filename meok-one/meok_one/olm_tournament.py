@@ -42,6 +42,8 @@ from typing import Optional
 from . import olm as _olm
 from . import horus as _horus
 from . import sigil as _sigil
+from . import verifier as _verifier
+
 
 # ---- config -----------------------------------------------------------------
 
@@ -311,25 +313,34 @@ def run_tournament(user_id: str, character_id: str,
         rep_before = _draft(character_id, p["prompt"], before_ctx, model=model)
         rep_after = _draft(character_id, p["prompt"], after_ctx, model=model)
 
-        # 2) Horus-audit both
+        # 2) Verifier-score both (the L6 keystone gate)
+        care_verifier = _verifier.make_verifier(["json_valid", "citations_wellformed", "no_refusal"])
+        v_score_before, v_reason_before = care_verifier(rep_before, p)
+        v_score_after, v_reason_after = care_verifier(rep_after, p)
+
+        # 3) Horus-audit both (for VETO safety gate only)
         aud_before = _horus.audit(rep_before, user_message=p["prompt"],
                                   character=character_id, model=model, parallel=4)
         aud_after = _horus.audit(rep_after, user_message=p["prompt"],
                                  character=character_id, model=model, parallel=4)
 
-        # 3) judge
+        # 4) judge (model-based comparison for care quality)
         j = _judge_one(character_id, p["prompt"], rep_before, rep_after, model=model)
 
-        # 4) accumulate
+        # 5) accumulate (verifier-first, then Horus VETO, then judge)
+        # Verifier-based scoring (primary signal)
+        verifier_before_delta = v_score_after - v_score_before
+        # Judge-based (subjective care comparison)
         winner = j["winner"]
         if winner == "b":  # B is the AFTER (per _judge_one ordering)
             after_wins += 1
+        # Horus VETO tracking (safety gate)
         if aud_before["verdict"] == "VETO" and aud_after["verdict"] != "VETO":
             veto_removed += 1
         elif aud_after["verdict"] == "VETO" and aud_before["verdict"] != "VETO":
             veto_added += 1
+        # Judge care-score delta
         if j["score_a"] is not None and j["score_b"] is not None:
-            # B - A: positive = AFTER (B) scored higher
             care_delta_sum += (j["score_b"] - j["score_a"])
             care_delta_n += 1
 
@@ -338,11 +349,15 @@ def run_tournament(user_id: str, character_id: str,
             "before": {"reply": rep_before[:300], "verdict": aud_before["verdict"],
                        "n_lenses": aud_before["n_lenses"],
                        "n_available": aud_before["n_available"],
-                       "vetoes": aud_before["vetoes"], "latency_s": aud_before["latency_s"]},
+                       "vetoes": aud_before["vetoes"], "latency_s": aud_before["latency_s"],
+                       "verifier_score": round(v_score_before, 3),
+                       "verifier_reason": v_reason_before},
             "after":  {"reply": rep_after[:300],  "verdict": aud_after["verdict"],
                        "n_lenses": aud_after["n_lenses"],
                        "n_available": aud_after["n_available"],
-                       "vetoes": aud_after["vetoes"], "latency_s": aud_after["latency_s"]},
+                       "vetoes": aud_after["vetoes"], "latency_s": aud_after["latency_s"],
+                       "verifier_score": round(v_score_after, 3),
+                       "verifier_reason": v_reason_after},
             "judge": j,
             "winner_is_after": winner == "b",
         })
@@ -351,6 +366,10 @@ def run_tournament(user_id: str, character_id: str,
     after_win_rate = round(after_wins / max(total, 1), 3)
     p_value = _sign_test_p(after_wins, total)
     avg_care_delta = round(care_delta_sum / max(care_delta_n, 1), 3) if care_delta_n else None
+    # Verifier aggregate
+    verifier_scores_sum = sum(r["after"]["verifier_score"] - r["before"]["verifier_score"]
+                              for r in rows if r["after"]["verifier_score"] is not None)
+    avg_verifier_lift = round(verifier_scores_sum / max(total, 1), 3)
 
     # ---- BFT GATE: a "more caring" buffer that adds VETOs is disqualified ----
     gate = "PASS"
@@ -380,6 +399,8 @@ def run_tournament(user_id: str, character_id: str,
         "after_win_rate": after_win_rate,
         "p_value_sign_test": p_value,
         "avg_care_score_delta_b_minus_a": avg_care_delta,
+        "avg_verifier_lift": avg_verifier_lift,
+        "verifier_keystone": "L6_gate",
         "veto_added": veto_added, "veto_removed": veto_removed,
         "gate": gate, "gate_reasons": gate_reasons,
         "rows": rows,
@@ -389,10 +410,10 @@ def run_tournament(user_id: str, character_id: str,
     try:
         care_summary = (f"olm_tournament: after_wins={after_wins}/{total} "
                         f"veto_added={veto_added} veto_removed={veto_removed} "
-                        f"gate={gate}")
+                        f"gate={gate} verifier_lift={avg_verifier_lift}")
         _sigil.record({"op": "C", "subject": f"{user_id}:{character_id}",
                        "score": round(after_win_rate, 3),
-                       "dims": [_AUDIT_TAG, "care", "tournament", gate.lower()]})
+                       "dims": [_AUDIT_TAG, "care", f"verifier_lift={avg_verifier_lift}", gate.lower()]})
     except Exception:
         pass  # SIGIL is best-effort — the JSON is the real artifact
 
