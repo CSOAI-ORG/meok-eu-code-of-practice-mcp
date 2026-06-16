@@ -163,25 +163,47 @@ _FACTS = [
 ]
 
 
+def _art_ref_regex(article: str) -> "re.Pattern":
+    """Build a 'does the answer cite this?' check from a KB article string like
+    'Article 50' / 'Annex III (classified via Article 6)' / 'Articles 43 & 47-48'."""
+    nums = re.findall(r"\d+", article)
+    annex = re.findall(r"annex\s*([ivxlc]+)", article, re.I)
+    alts = []
+    for ninit in nums:
+        alts.append(rf"art(?:icle)?\.?\s*{ninit}\b")
+    for a in annex:
+        alts.append(rf"annex\s*{a}\b")
+    # framework name as a fallback citation (e.g. GDPR, DORA, NIS2, ISO 42001)
+    fw = re.search(r"\b(GDPR|DORA|NIS ?2|ISO[/ ]?IEC? ?42001)\b", article, re.I)
+    if fw:
+        alts.append(re.escape(fw.group(0)).replace(r"\ ", r"\s?"))
+    return re.compile("|".join(alts) if alts else r"$^", re.I)
+
+
 def citation_correct(text: str, task: dict) -> "tuple[float, str]":
-    """Truth gate: when the QUESTION is about a known compliance topic, does the
-    ANSWER cite the CORRECT article? Neutral (1.0) for topics not in the answer-key —
-    we never penalise what we can't authoritatively check. This is the verifier that
-    catches a confident-but-wrong "Article 19" — the difference between structural and
-    factual verification, and where MEOK's regulation corpus is the moat."""
+    """Truth gate: when the QUESTION is about a known compliance topic (from the MEOK
+    regulation_kb — the single source of truth), does the ANSWER cite the CORRECT
+    article? Neutral (1.0) for topics not in the KB — never penalise what we can't
+    authoritatively check. Catches a confident-but-wrong "Article 19": structural vs
+    FACTUAL verification, and where MEOK's regulation corpus is the moat."""
     q = (task.get("question") or task.get("prompt") or "")
     if not q:
         return (1.0, "no question to ground against")
     body = text or ""
-    relevant = [(label, ref) for _, qre, ref, label in _FACTS if qre.search(q)]
+    try:
+        from .regulation_kb import KB
+        relevant = [(v["article"], _art_ref_regex(v["article"]))
+                    for v in KB.values() if re.search(v["triggers"], q, re.I)]
+    except Exception:  # noqa: BLE001 — fall back to the legacy inline facts
+        relevant = [(label, ref) for _, qre, ref, label in _FACTS if qre.search(q)]
     if not relevant:
         return (1.0, "topic not in answer-key (not penalised)")
     hits = [label for label, ref in relevant if ref.search(body)]
     frac = len(hits) / len(relevant)
     if frac == 1.0:
-        return (1.0, f"correctly cites {', '.join(hits)}")
+        return (1.0, f"correctly cites {', '.join(sorted(set(hits)))}")
     missing = [label for label, ref in relevant if not ref.search(body)]
-    return (frac, f"WRONG/MISSING citation — expected {', '.join(missing)}")
+    return (frac, f"WRONG/MISSING citation — expected {', '.join(sorted(set(missing)))}")
 
 
 CHECKS: "dict[str, Verifier]" = {

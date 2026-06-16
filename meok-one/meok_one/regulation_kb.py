@@ -119,6 +119,65 @@ KB = {
         "obligation": "Cybersecurity risk-management measures + 24h/72h incident reporting for "
                       "essential and important entities; management liability.",
     },
+    "conformity": {
+        "triggers": r"conformity assess|ce mark|notified body|declaration of conformity",
+        "article": "Articles 43 & 47-48", "framework": "EU AI Act",
+        "title": "Conformity assessment + CE marking",
+        "date": "applies 2 August 2026 (high-risk)",
+        "obligation": "High-risk AI must undergo conformity assessment (internal control or "
+                      "notified body per Annex VI/VII), bear CE marking, and carry an EU "
+                      "declaration of conformity before market placement.",
+    },
+    "fria": {
+        "triggers": r"fundamental rights impact|fria|rights assessment",
+        "article": "Article 27", "framework": "EU AI Act",
+        "title": "Fundamental Rights Impact Assessment (FRIA)",
+        "date": "applies 2 August 2026",
+        "obligation": "Deployers that are public bodies or provide public services (and some "
+                      "private deployers) must perform a FRIA before deploying high-risk AI.",
+    },
+    "incident": {
+        "triggers": r"incident report|serious incident|malfunction report",
+        "article": "Article 73", "framework": "EU AI Act",
+        "title": "Reporting of serious incidents",
+        "date": "applies 2 August 2026 (high-risk)",
+        "obligation": "Providers must report serious incidents to the market-surveillance "
+                      "authority without undue delay (generally ≤15 days; ≤2-10 days if severe).",
+    },
+    "registration": {
+        "triggers": r"eu database|register(ed|ing)? (?:the |a )?(?:system|ai)|annex viii",
+        "article": "Articles 49 & 71", "framework": "EU AI Act",
+        "title": "Registration in the EU database",
+        "date": "applies 2 August 2026 (high-risk)",
+        "obligation": "High-risk AI (and certain deployers) must register in the EU public "
+                      "database before/within deployment.",
+    },
+    "penalties": {
+        "triggers": r"penalt|fine|sanction|how much.*(?:fine|penalt)",
+        "article": "Article 99", "framework": "EU AI Act",
+        "title": "Penalties",
+        "date": "applies from 2 August 2025/2026",
+        "obligation": "Up to €35m or 7% of global turnover for prohibited-practice breaches; "
+                      "€15m / 3% for other high-risk breaches; €7.5m / 1% for supplying "
+                      "incorrect information.",
+    },
+    "gdpr": {
+        "triggers": r"\bgdpr\b|data protection|personal data|dpia|data subject|lawful basis",
+        "article": "GDPR (Reg. 2016/679)", "framework": "GDPR",
+        "title": "General Data Protection Regulation",
+        "date": "in force since 25 May 2018",
+        "obligation": "Lawful basis for processing, data-subject rights, DPIA for high-risk "
+                      "processing, 72h breach notification, privacy-by-design. Stacks with the "
+                      "AI Act for AI that processes personal data.",
+    },
+    "iso42001": {
+        "triggers": r"iso ?42001|ai management system|aims\b",
+        "article": "ISO/IEC 42001:2023", "framework": "ISO 42001",
+        "title": "AI Management System (AIMS) standard",
+        "date": "published December 2023",
+        "obligation": "Certifiable management-system standard for responsible AI governance — "
+                      "the ISO route to demonstrate AI Act organisational controls.",
+    },
 }
 
 
