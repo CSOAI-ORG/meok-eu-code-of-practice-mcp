@@ -24,7 +24,7 @@ KB = {
         "triggers": r"transparen|watermark|ai[- ]?generated|deepfake|chatbot|synthetic (?:content|media)|disclos",
         "article": "Article 50", "framework": "EU AI Act (Reg. 2024/1689)",
         "title": "Transparency obligations for providers and deployers of certain AI systems",
-        "date": "applies 2 August 2026",
+        "date": "applies 2 December 2026 (delayed from 2 Aug 2026 by the Digital Omnibus, May 2026)",
         "obligation": "AI systems that interact with humans, or generate synthetic audio/image/"
                       "video/text, must disclose AI involvement and mark outputs as artificially "
                       "generated in a machine-readable way (deepfakes + AI text labelled).",
@@ -33,7 +33,7 @@ KB = {
         "triggers": r"high[- ]?risk|credit[- ]?scor|annex\s*iii|biometric|recruitment|hiring ai|essential service",
         "article": "Annex III (classified via Article 6)", "framework": "EU AI Act",
         "title": "High-risk AI systems classification",
-        "date": "high-risk obligations apply 2 August 2026 (Annex III) / 2 August 2027 (Annex I)",
+        "date": "Annex III high-risk applies 2 December 2027; Annex I (embedded) 2 August 2028 (post-Digital-Omnibus)",
         "obligation": "Annex III lists high-risk uses (biometrics, critical infrastructure, "
                       "education, employment, essential services incl. credit scoring, law "
                       "enforcement, migration, justice). Triggers Arts 9-15 obligations.",
@@ -51,7 +51,7 @@ KB = {
         "triggers": r"risk management system|risk register|risk assessment",
         "article": "Article 9", "framework": "EU AI Act",
         "title": "Risk management system",
-        "date": "applies 2 August 2026 (high-risk)",
+        "date": "applies 2 December 2027 (Annex III high-risk; delayed by Digital Omnibus, May 2026)",
         "obligation": "Establish, document and maintain a continuous risk-management system "
                       "across the high-risk AI lifecycle.",
     },
@@ -59,7 +59,7 @@ KB = {
         "triggers": r"data governance|training data|dataset quality|data quality",
         "article": "Article 10", "framework": "EU AI Act",
         "title": "Data and data governance",
-        "date": "applies 2 August 2026 (high-risk)",
+        "date": "applies 2 December 2027 (Annex III high-risk; delayed by Digital Omnibus, May 2026)",
         "obligation": "Training/validation/test datasets must meet quality criteria: relevant, "
                       "representative, error-free as far as possible, examined for bias.",
     },
@@ -67,7 +67,7 @@ KB = {
         "triggers": r"record[- ]?keep|audit log|logging|traceabilit|event log",
         "article": "Article 12", "framework": "EU AI Act",
         "title": "Record-keeping (automatic logging)",
-        "date": "applies 2 August 2026 (high-risk)",
+        "date": "applies 2 December 2027 (Annex III high-risk; delayed by Digital Omnibus, May 2026)",
         "obligation": "High-risk AI must automatically record events (logs) over its lifetime "
                       "to ensure traceability — the basis for tamper-evident audit trails.",
     },
@@ -75,7 +75,7 @@ KB = {
         "triggers": r"instructions for use|inform deployer|transparency to (?:deployer|user)",
         "article": "Article 13", "framework": "EU AI Act",
         "title": "Transparency and provision of information to deployers",
-        "date": "applies 2 August 2026 (high-risk)",
+        "date": "applies 2 December 2027 (Annex III high-risk; delayed by Digital Omnibus, May 2026)",
         "obligation": "High-risk AI must come with clear instructions for use enabling deployers "
                       "to interpret output and use it appropriately.",
     },
@@ -83,7 +83,7 @@ KB = {
         "triggers": r"human oversight|human in the loop|human review",
         "article": "Article 14", "framework": "EU AI Act",
         "title": "Human oversight",
-        "date": "applies 2 August 2026 (high-risk)",
+        "date": "applies 2 December 2027 (Annex III high-risk; delayed by Digital Omnibus, May 2026)",
         "obligation": "High-risk AI must be designed for effective human oversight — the ability "
                       "to monitor, intervene, and override.",
     },
@@ -91,7 +91,7 @@ KB = {
         "triggers": r"accuracy|robustness|cybersecurity|resilience to attack",
         "article": "Article 15", "framework": "EU AI Act",
         "title": "Accuracy, robustness and cybersecurity",
-        "date": "applies 2 August 2026 (high-risk)",
+        "date": "applies 2 December 2027 (Annex III high-risk; delayed by Digital Omnibus, May 2026)",
         "obligation": "High-risk AI must achieve appropriate accuracy, robustness and "
                       "cybersecurity, resilient to errors and adversarial manipulation.",
     },
@@ -123,7 +123,7 @@ KB = {
         "triggers": r"conformity assess|ce mark|notified body|declaration of conformity",
         "article": "Articles 43 & 47-48", "framework": "EU AI Act",
         "title": "Conformity assessment + CE marking",
-        "date": "applies 2 August 2026 (high-risk)",
+        "date": "applies 2 December 2027 (Annex III high-risk; delayed by Digital Omnibus, May 2026)",
         "obligation": "High-risk AI must undergo conformity assessment (internal control or "
                       "notified body per Annex VI/VII), bear CE marking, and carry an EU "
                       "declaration of conformity before market placement.",
@@ -132,7 +132,7 @@ KB = {
         "triggers": r"fundamental rights impact|fria|rights assessment",
         "article": "Article 27", "framework": "EU AI Act",
         "title": "Fundamental Rights Impact Assessment (FRIA)",
-        "date": "applies 2 August 2026",
+        "date": "applies 2 December 2027 (Annex III high-risk; delayed by Digital Omnibus, May 2026)",
         "obligation": "Deployers that are public bodies or provide public services (and some "
                       "private deployers) must perform a FRIA before deploying high-risk AI.",
     },
@@ -140,7 +140,7 @@ KB = {
         "triggers": r"incident report|serious incident|malfunction report",
         "article": "Article 73", "framework": "EU AI Act",
         "title": "Reporting of serious incidents",
-        "date": "applies 2 August 2026 (high-risk)",
+        "date": "applies 2 December 2027 (Annex III high-risk; delayed by Digital Omnibus, May 2026)",
         "obligation": "Providers must report serious incidents to the market-surveillance "
                       "authority without undue delay (generally ≤15 days; ≤2-10 days if severe).",
     },
@@ -148,7 +148,7 @@ KB = {
         "triggers": r"eu database|register(ed|ing)? (?:the |a )?(?:system|ai)|annex viii",
         "article": "Articles 49 & 71", "framework": "EU AI Act",
         "title": "Registration in the EU database",
-        "date": "applies 2 August 2026 (high-risk)",
+        "date": "applies 2 December 2027 (Annex III high-risk; delayed by Digital Omnibus, May 2026)",
         "obligation": "High-risk AI (and certain deployers) must register in the EU public "
                       "database before/within deployment.",
     },
