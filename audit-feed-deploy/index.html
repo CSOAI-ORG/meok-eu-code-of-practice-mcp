@@ -16,6 +16,8 @@
     .feed .cert { color: #f59e0b; }
     .feed .ok { color: #22c55e; }
   </style>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Live Audit Feed", "url": "https://meok.ai/audit-feed", "description": "Live MEOK audit feed. Real-time Article 50 signatures + DORA audits + UK AI Bill readiness. Sovereign UK. CSOAI Ltd, UK 16939677."}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is Recent sign events (from the keystone)?", "acceptedAnswer": {"@type": "Answer", "text": "This feed shows the most recent 10 sign events from the MEOK keystone. Refresh every 60 seconds. Each event is an Ed25519-signed JSON-LD attestation with a public verify URL."}}, {"@type": "Question", "name": "How to verify any cert_id?", "acceptedAnswer": {"@type": "Answer", "text": "Paste the cert_id into cert-lookup-deploy.vercel.app to get the signed JSON-LD payload. Or run locally:"}}]}</script>
 </head>
 <body>
   <h1>Live Audit Feed</h1>
