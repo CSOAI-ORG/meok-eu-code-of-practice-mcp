@@ -148,6 +148,7 @@ quality:
     - "sovereign-temple/legion-omega/dragon-council/k8s/dragon-fleet.yml"
     - "scripts/fix_n8n_workflows.py"
     - "openpatent-hive/api/postman-collection.json"
+    - ".hive/scripts/placeholder_cleanup.py"
     - "BLOCKER_INVENTORY_*.md"
     - "EMPIRE_AUDIT_*.md"
     - "KING_DOWN_AUDIT_*.md"
