@@ -1,0 +1,121 @@
+# CSOAI Hive Configuration
+# The autonomic nervous system for the empire
+
+hive:
+  name: "CSOAI Hive"
+  root: "/Users/nicholas/clawd"
+  log_level: "INFO"
+  task_ttl_hours: 168  # Tasks expire after 7 days if not done
+
+# Services to health-check and heal
+services:
+  - name: "SOV3"
+    port: 3101
+    url: "http://127.0.0.1:3101/health"
+    restart_command: "cd /Users/nicholas/clawd/sovereign-temple && /Users/nicholas/clawd/sovereign-temple/.venv/bin/gunicorn sovereign-mcp-server:app --worker-class uvicorn.workers.UvicornWorker --workers 2 --bind 127.0.0.1:3101 --max-requests 1000 --max-requests-jitter 50 --timeout 120 --graceful-timeout 30 --access-logfile /tmp/sov3-access.log --error-logfile /tmp/sov3-error.log --log-level info"
+    working_dir: "/Users/nicholas/clawd/sovereign-temple"
+    env: {}
+
+  - name: "MEOK_UI"
+    port: 3000
+    url: "http://127.0.0.1:3000/"
+    restart_command: "cd /Users/nicholas/clawd/meok/ui && /usr/bin/python3 -m http.server 3000"
+    working_dir: "/Users/nicholas/clawd/meok/ui"
+    env: {}
+
+  - name: "MEOK_MCP"
+    port: 3102
+    url: "http://127.0.0.1:3102/"
+    restart_command: "/Users/nicholas/clawd/sovereign-temple/.venv/bin/python3 -m meok.mcp.server"
+    working_dir: "/Users/nicholas/clawd"
+    env:
+      MEOK_MCP__PORT: "3102"
+
+  - name: "MEOK_API"
+    port: 3200
+    url: "http://127.0.0.1:3200/health"
+    restart_command: "cd /Users/nicholas/clawd/meok && /opt/homebrew/Cellar/python@3.11/3.11.15/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python -m uvicorn api.server:app --host 0.0.0.0 --port 3200"
+    working_dir: "/Users/nicholas/clawd/meok"
+    env: {}
+
+  - name: "CSOAI_MCP_MONETIZATION"
+    port: 3400
+    url: "http://127.0.0.1:3400/"
+    restart_command: "cd /Users/nicholas/clawd/csoai-mcp-monetization && /Users/nicholas/clawd/csoai-mcp-monetization/venv/bin/uvicorn api.index:app --host 127.0.0.1 --port 3400 --workers 2 --log-level info"
+    working_dir: "/Users/nicholas/clawd/csoai-mcp-monetization"
+    env: {}
+
+  - name: "HINDSIGHT"
+    port: 8765
+    url: "http://127.0.0.1:8765/"
+    restart_command: ""
+    working_dir: ""
+    env: {}
+
+  - name: "FARM_VISION"
+    port: 8888
+    url: "http://127.0.0.1:8888/"
+    restart_command: ""
+    working_dir: ""
+    env: {}
+
+# Task ingestion sources
+sensors:
+  blocker_files:
+    - "BLOCKER_INVENTORY_*.md"
+    - "**/*BLOCKER*.md"
+  todo_files:
+    - "**/*TODO*.md"
+    - "**/*todo*.md"
+  quality_files:
+    - "QUALITY_MANAGEMENT_PLAN_*.md"
+    - "**/*QUALITY*.md"
+  post_files:
+    - "csoai-org/READY_TO_POST.txt"
+    - "csoai-org/SOCIAL_BLITZ.md"
+  ignore_dirs:
+    - "node_modules"
+    - ".venv"
+    - "venv"
+    - "__pycache__"
+    - ".git"
+    - "_archive"
+    - "dist"
+    - ".next"
+
+# Quality gates
+quality:
+  repos:
+    - path: "/Users/nicholas/clawd"
+      name: "clawd-root"
+      tests: []
+      max_dirty_files: 10
+    - path: "/Users/nicholas/clawd/meok-one"
+      name: "meok-one"
+      tests: ["pytest", "tests/"]
+      max_dirty_files: 5
+    - path: "/Users/nicholas/clawd/sovereign-temple"
+      name: "sovereign-temple"
+      tests: []
+      max_dirty_files: 10
+    - path: "/Users/nicholas/clawd/meok-compliance-gateway"
+      name: "meok-compliance-gateway"
+      tests: []
+      max_dirty_files: 5
+
+  secret_patterns:
+    - "REPLACE_WITH_[A-Z_]+"
+    - "price_[a-z0-9_]*_placeholder"
+    - "pk_(live|test)_placeholder"
+    - "whsec_placeholder"
+
+  placeholder_files:
+    - "csoai-platform/.env"
+    - "csoai-org/api/prices.js"
+
+# Notification channels (future)
+notifications:
+  enabled: false
+  discord: ""
+  slack: ""
+  email: ""

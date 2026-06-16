@@ -1,0 +1,13 @@
+# Hive runtime outputs — do not commit
+logs/
+tasks/queue.json
+tasks/pending.jsonl
+tasks/completed.jsonl
+healer_state.json
+
+# Keep source definitions
+!config.yaml
+!scripts/
+!scripts/**
+!launchd/
+!launchd/**

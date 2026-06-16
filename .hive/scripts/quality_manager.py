@@ -1,0 +1,163 @@
+#!/usr/bin/env python3
+"""quality_manager.py — grade repo health and emit a JSON quality report.
+
+Reads quality configuration from .hive/config.yaml, checks git dirty state, runs
+test suites, scans for placeholder/secrets patterns, and writes
+.hive/logs/quality_report.json.
+"""
+from __future__ import annotations
+
+import json
+import os
+import re
+import subprocess
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(os.environ.get("HIVE_ROOT", "/Users/nicholas/clawd"))
+CONFIG = ROOT / ".hive" / "config.yaml"
+LOG_DIR = ROOT / ".hive" / "logs"
+REPORT = LOG_DIR / "quality_report.json"
+
+
+def load_config() -> dict[str, Any]:
+    try:
+        import yaml
+
+        return yaml.safe_load(CONFIG.read_text(encoding="utf-8")) or {}
+    except Exception:
+        return {}
+
+
+def run(cmd: str, cwd: Path, timeout: int = 120) -> subprocess.CompletedProcess[str]:
+    try:
+        return subprocess.run(cmd, shell=True, cwd=cwd, capture_output=True, text=True, timeout=timeout)
+    except Exception as e:
+        return subprocess.CompletedProcess(args=cmd, returncode=-1, stdout="", stderr=str(e))
+
+
+def git_dirty(path: Path) -> int:
+    """Count dirty files under the given path (repo-relative)."""
+    if not (path / "..").exists():
+        return 0
+    r = run("git status --short .", path)
+    return len([l for l in r.stdout.splitlines() if l.strip()])
+
+
+def run_tests(path: Path, tests: list[str]) -> str:
+    if not tests:
+        return "SKIP"
+    cmd = " ".join(str(t) for t in tests)
+    r = run(cmd, path, timeout=180)
+    return "PASS" if r.returncode == 0 else "FAIL"
+
+
+def find_placeholders(root: Path, patterns: list[str], ignore_dirs: set[str] | None = None) -> list[dict[str, Any]]:
+    hits = []
+    ignore = {".git", "node_modules", ".venv", "venv", "__pycache__", "dist", ".next"}
+    if ignore_dirs:
+        ignore.update(ignore_dirs)
+    binary_exts = {
+        ".png", ".jpg", ".jpeg", ".gif", ".svg", ".ico", ".pdf", ".zip", ".tar", ".gz",
+        ".mp3", ".mp4", ".mov", ".avi", ".webm", ".woff", ".woff2", ".ttf", ".otf",
+        ".eot", ".db", ".sqlite", ".sqlite3", ".pyc", ".pyo", ".so", ".dylib", ".dll",
+        ".exe", ".bin", ".dat", ".pickle", ".pkl", ".npy", ".npz", ".onnx", ".pt",
+    }
+    for p in root.rglob("*"):
+        if p.is_dir() or any(part in ignore for part in p.parts):
+            continue
+        if p.suffix.lower() in binary_exts:
+            continue
+        try:
+            text = p.read_text(encoding="utf-8", errors="ignore")
+        except Exception:
+            continue
+        # Skip files that are mostly binary garbage
+        if "\x00" in text[:8192]:
+            continue
+        for pat in patterns:
+            try:
+                for m in re.finditer(pat, text):
+                    hits.append({
+                        "file": str(p.relative_to(root)),
+                        "line": text[: m.start()].count("\n") + 1,
+                        "pattern": pat,
+                    })
+            except re.error:
+                continue
+    return hits
+
+
+def grade_repo(dirty: int, tests: str, placeholders: int, max_dirty: int) -> str:
+    score = 100
+    if dirty > max_dirty * 5:
+        score -= 30
+    elif dirty > max_dirty * 2:
+        score -= 15
+    elif dirty > 0:
+        score -= 5
+    if tests == "FAIL":
+        score -= 25
+    elif tests == "SKIP":
+        score -= 0
+    score -= min(30, 10 * placeholders)
+    if score >= 90:
+        return "A"
+    if score >= 80:
+        return "B"
+    if score >= 70:
+        return "C"
+    if score >= 60:
+        return "D"
+    return "F"
+
+
+def main() -> None:
+    config = load_config()
+    quality = config.get("quality", {})
+    sensors = config.get("sensors", {})
+    repos = quality.get("repos", [])
+    placeholder_patterns = quality.get("secret_patterns", [r"REPLACE_WITH_"])
+    ignore_dirs = set(sensors.get("ignore_dirs", []))
+
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    report: dict[str, Any] = {"ts": datetime.now(timezone.utc).isoformat(), "repos": [], "placeholders": []}
+
+    for repo in repos:
+        path = Path(repo["path"])
+        name = repo.get("name", path.name)
+        if not path.exists():
+            continue
+        dirty = git_dirty(path)
+        tests = run_tests(path, repo.get("tests", []))
+        repo_placeholders = find_placeholders(path, placeholder_patterns, ignore_dirs)
+        grade = grade_repo(dirty, tests, len(repo_placeholders), repo.get("max_dirty_files", 10))
+        report["repos"].append({
+            "name": name,
+            "path": str(path),
+            "dirty": dirty,
+            "tests": tests,
+            "placeholders": len(repo_placeholders),
+            "grade": grade,
+        })
+        print(f"  {name}: grade={grade} dirty={dirty} tests={tests} placeholders={len(repo_placeholders)}")
+
+    report["placeholders"] = find_placeholders(ROOT, placeholder_patterns, ignore_dirs)
+    if report["placeholders"]:
+        print(f"  Total placeholders found: {len(report['placeholders'])}")
+        for h in report["placeholders"][:5]:
+            print(f"    {h['file']}:{h['line']} pattern={h['pattern']}")
+
+    overall_dirty = sum(r["dirty"] for r in report["repos"])
+    any_fail = any(r["tests"] == "FAIL" for r in report["repos"])
+    total_placeholders = len(report["placeholders"])
+    overall_grade = grade_repo(overall_dirty, "FAIL" if any_fail else "PASS", total_placeholders, 25)
+    report["overall"] = {"grade": overall_grade, "dirty": overall_dirty, "placeholders": total_placeholders}
+
+    REPORT.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    print(f"Overall grade: {overall_grade}")
+
+
+if __name__ == "__main__":
+    main()
