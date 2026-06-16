@@ -71,11 +71,29 @@ def write_plist(path: Path, data: dict[str, Any]) -> None:
         plistlib.dump(data, f)
 
 
+def dashboard_plist() -> dict[str, Any]:
+    label = "ai.csoai.hive-dashboard"
+    return {
+        "Label": label,
+        "ProgramArguments": ["/usr/bin/python3", "-m", "http.server", "3800"],
+        "WorkingDirectory": str(ROOT),
+        "RunAtLoad": True,
+        "KeepAlive": True,
+        "StandardOutPath": str(ROOT / ".hive" / "logs" / f"{label}.stdout.log"),
+        "StandardErrorPath": str(ROOT / ".hive" / "logs" / f"{label}.stderr.log"),
+    }
+
+
 def main() -> None:
     config = load_config()
     LAUNCHD_DIR.mkdir(parents=True, exist_ok=True)
 
     written = []
+    # Dashboard server keepalive
+    dp = LAUNCHD_DIR / "ai.csoai.hive-dashboard.plist"
+    write_plist(dp, dashboard_plist())
+    written.append(dp.name)
+
     for svc in config.get("services", []):
         if not svc.get("restart_command"):
             continue
@@ -92,6 +110,7 @@ def main() -> None:
         ("publish-manager", script_dir / "publish_manager.py", 1800),
         ("remediation-generator", script_dir / "remediation_generator.py", 21600),
         ("test-fleet-manager", script_dir / "test_fleet_manager.py", 86400),
+        ("secrets-inventory", script_dir / "secrets_inventory.py", 21600),
     ]
     for name, script, interval in jobs:
         label = f"ai.csoai.{name}"

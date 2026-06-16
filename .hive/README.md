@@ -14,7 +14,8 @@ self-healing automation layer for the CSOAI/SOV3/MEOK ONE empire.
 | **Notifier** (`hive_notify.py`) | Shared notification dispatcher used by all agents: email (SMTP), Discord, Slack, generic webhook, macOS alerts. | On demand |
 | **Remediation Generator** (`remediation_generator.py`) | Converts quality, E2E, and domain audit findings into `.hive/tasks/TODO_remediation.md`. | Every 6 h |
 | **Test Fleet Manager** (`test_fleet_manager.py`) | Runs configured test suites (E2E, pytest) and aggregates pass/fail into a JSON report. | Daily |
-| **Dashboard** (`dashboard/index.html`) | Static web UI for service health, quality grades, task queue, test fleet, and publish queue. | Served on demand |
+| **Secrets Inventory** (`secrets_inventory.py`) | Scans `.env*` files for placeholders and missing required secrets. | Every 6 h |
+| **Dashboard** (`dashboard/index.html`) | Static web UI for service health, quality grades, task queue, test fleet, secrets, and publish queue. | http://localhost:3800/.hive/dashboard/ |
 
 ## Layout
 
@@ -55,6 +56,7 @@ python3 .hive/scripts/quality_manager.py
 python3 .hive/scripts/publish_manager.py
 python3 .hive/scripts/remediation_generator.py
 python3 .hive/scripts/test_fleet_manager.py
+python3 .hive/scripts/secrets_inventory.py
 python3 .hive/scripts/hive_notify.py "Test" "Hello from Hive"
 ```
 
