@@ -34,7 +34,9 @@ import urllib.request
 from . import verifier as V
 
 _OLLAMA = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
-_MODEL = os.environ.get("MEOK_POC_MODEL", "llama3.2:3b")
+# qwen2.5:3b proven to give clean VERIFIED-CORRECT grounded answers (right article +
+# date, no hedge) on the free local path — 2026-06-16. gemma3:4b also works.
+_MODEL = os.environ.get("MEOK_POC_MODEL", "qwen2.5:3b")
 
 # The default external check-set: structural (citations present, no refusal) PLUS the
 # factual truth gate (citation_correct) — the market-ready differentiator.
