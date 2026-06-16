@@ -167,6 +167,73 @@ def verify_ledger() -> dict:
             "latest": rows[-1]["disclosure_id"] if rows else None}
 
 
+def _llm(prompt: str, timeout: int = 90) -> str:
+    """Local generation for the self-serve flow (VM Ollama, cloud-free)."""
+    import os, urllib.request
+    payload = {"model": os.environ.get("OPENPATENT_MODEL", "qwen2.5:3b"),
+               "prompt": prompt, "stream": False, "options": {"num_predict": 500, "temperature": 0.3}}
+    try:
+        req = urllib.request.Request(os.environ.get("OLLAMA_HOST", "http://localhost:11434") + "/api/generate",
+                                     data=json.dumps(payload).encode(),
+                                     headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return json.loads(r.read().decode()).get("response", "")
+    except Exception as e:  # noqa: BLE001
+        return f"[generation unavailable: {type(e).__name__}]"
+
+
+def selfserve_disclose(description: str, inventor: str = "", tier: str = "free") -> dict:
+    """SELF-SERVE defensive publication (2026-06-16). The $0-entry IP product:
+    a user describes an invention in plain English → the engine expands it into a
+    patent-style enabling disclosure with claims → records it as a tamper-evident,
+    timestamped disclosure → returns a Prior Art Certificate.
+
+    Turns openpatent.ai into the default first-stop for startup IP protection
+    (defensive-publication grade) — capturing inventors BEFORE they spend $20K on a
+    filing. Tiers: free (SIGIL anchor), pro ($99, proofof.ai attestation), enterprise.
+    """
+    prompt = (
+        "You are a patent drafter. Expand this invention into a structured defensive "
+        "publication. Output EXACTLY this format:\n"
+        "TITLE: <one-line title>\n"
+        "FIELD: <technical field>\n"
+        "DISCLOSURE: <2-3 sentence enabling disclosure in patent style — how it works, "
+        "specific enough that a skilled person could build it>\n"
+        "CLAIMS: <3 numbered claims, each one line>\n\n"
+        f"Invention: {description}")
+    raw = _llm(prompt)
+    # parse the structured output (best-effort; fall back to raw)
+    import re
+    def _field(tag, default=""):
+        m = re.search(rf"{tag}:\s*(.+?)(?=\n[A-Z]+:|\Z)", raw, re.S)
+        return m.group(1).strip() if m else default
+    title = _field("TITLE", description[:70])
+    field = _field("FIELD")
+    body = _field("DISCLOSURE", description)
+    claims_raw = _field("CLAIMS")
+    claims = [c.strip(" -") for c in re.split(r"\n|\d+\.", claims_raw) if len(c.strip(" -.")) > 8][:5]
+
+    content = (f"FIELD: {field}\n\nENABLING DISCLOSURE: {body}\n\nORIGINAL DESCRIPTION: {description}")
+    d = disclose(title, content, hive="openpatent", inventors=[inventor or "self-serve"],
+                 claims=claims, kind="defensive-publication",
+                 attest=(tier in ("pro", "enterprise")))
+    integ = verify_ledger()
+    d["prior_art_certificate"] = {
+        "certificate": f"PRIOR-ART-{d['disclosure_id']}",
+        "title": title, "field": field,
+        "established_utc": d["conceived_utc"],
+        "fingerprint_sha256": d["content_fingerprint_sha256"],
+        "sigil_receipt": d["sigil_receipt"],
+        "chain_position": f"{integ.get('chain_records_verified')} records, intact={integ.get('chain_intact')}",
+        "tier": tier,
+        "grade": "Defensive publication — establishes prior art + conception date. "
+                 "Prevents others from patenting this. NOT a granted patent.",
+        "next_step": ("Free: SIGIL-anchored (this). Pro (£99): + proofof.ai public cert + "
+                      "IP.com registration. Enterprise (£499): + attorney review."),
+    }
+    return d
+
+
 def render_registry_html() -> str:
     """Render the IP ledger as a public openpatent.ai registry page — the proof that
     the hive patents its own work. Static, deployable, every entry independently
