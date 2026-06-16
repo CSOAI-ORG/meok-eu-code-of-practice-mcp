@@ -25,6 +25,9 @@ self-healing automation layer for the CSOAI/SOV3/MEOK ONE empire.
 | **Government Data Downloader** (`government_data_downloader.py`) | Harvests UK open-government datasets (Land Registry, Companies House, DfT, OS). | Weekly |
 | **Grant Application Bot** (`grant_application_bot.py`) | Drafts and tracks grant applications against live opportunities. | Weekly |
 | **Affiliate Tracker** (`affiliate_tracker.py`) | Seeds and tracks referral codes across CSOAI domains. | Daily |
+| **Data Budget Guard** (`data_budget_guard.py`) | Enforces disk budget and retention for harvested datasets. | Daily |
+| **Day Orchestrator** (`day_orchestrator.py`) | Runs the full-day auto-mode sequence in order with logging. | Manual / daily sprint |
+| **Placeholder Cleanup** (`placeholder_cleanup.py`) | Replaces placeholder tokens in tracked files with safe defaults. | On demand |
 | **Dashboard** (`dashboard/index.html`) | Static web UI for service health, quality grades, task queue, test fleet, secrets, and publish queue. | http://localhost:3800/.hive/dashboard/ |
 
 ## Layout
@@ -47,7 +50,9 @@ self-healing automation layer for the CSOAI/SOV3/MEOK ONE empire.
 │   ├── cc0_harvester.py             # CC0 dataset harvester
 │   ├── government_data_downloader.py # UK gov open data
 │   ├── grant_application_bot.py     # Grant drafts
-│   └── affiliate_tracker.py         # Referral tracking
+│   ├── affiliate_tracker.py         # Referral tracking
+│   ├── data_budget_guard.py         # Dataset disk guard
+│   └── day_orchestrator.py          # Full-day auto sequence
 ├── launchd/
 │   └── ai.csoai.*.plist     # launchd agent definitions
 ├── dashboard/
@@ -59,6 +64,7 @@ self-healing automation layer for the CSOAI/SOV3/MEOK ONE empire.
     ├── TODO_remediation.md  # Auto-generated remediation tasks
     ├── seeding/             # Creator outreach targets
     ├── grants/              # Grant drafts
+    ├── auto_mode_schedule.md # Full-day auto-mode cadence
     └── affiliates.jsonl     # Referral ledger
 ```
 
@@ -92,6 +98,8 @@ python3 .hive/scripts/cc0_harvester.py --dry-run
 python3 .hive/scripts/government_data_downloader.py --dry-run
 python3 .hive/scripts/grant_application_bot.py
 python3 .hive/scripts/affiliate_tracker.py
+python3 .hive/scripts/data_budget_guard.py
+python3 .hive/scripts/day_orchestrator.py
 python3 .hive/scripts/hive_notify.py "Test" "Hello from Hive"
 ```
 
