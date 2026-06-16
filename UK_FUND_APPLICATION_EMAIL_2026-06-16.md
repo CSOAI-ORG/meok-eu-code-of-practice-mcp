@@ -13,7 +13,7 @@ I'm writing to express CSOAI's interest in the £500M Sovereign AI Fund, announc
 
 **The 60-second pitch:**
 
-CSOAI is the sovereign AI compliance substrate for the British AI industry. The company has:
+CSOAI is the **sovereign AI compliance substrate** for the British AI industry. The company has:
 - A **live production substrate** (5 sovereign services running on a dedicated GCP VM, 100 sovereign agents, 3 EU AI Act MCPs shipping, 68 tests passing)
 - A **patent-grade architecture** (the Nemesis sovereign OLM design — Mamba-3 + MoE + BFT council governance — 1363-line master spec, 8 cross-dimensional insights)
 - **Owned distribution** (24 .ai domain SEO channels across the MEOK / proofof / csoai / cobol-bridge portfolio)
