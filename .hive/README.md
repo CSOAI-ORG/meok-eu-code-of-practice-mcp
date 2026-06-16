@@ -28,6 +28,13 @@ self-healing automation layer for the CSOAI/SOV3/MEOK ONE empire.
 | **Data Budget Guard** (`data_budget_guard.py`) | Enforces disk budget and retention for harvested datasets. | Daily |
 | **Day Orchestrator** (`day_orchestrator.py`) | Runs the full-day auto-mode sequence in order with logging. | Manual / daily sprint |
 | **Placeholder Cleanup** (`placeholder_cleanup.py`) | Replaces placeholder tokens in tracked files with safe defaults. | On demand |
+| **Capital Ascension Orchestrator** (`capital_ascension/capital_ascension_orchestrator.py`) | Regenerates Series A investor materials weekly. | Weekly |
+| **Data Moat Dossier** (`capital_ascension/data_moat_dossier.py`) | Catalogues datasets and scores the data moat. | Weekly |
+| **Provisional Patent Drafter** (`capital_ascension/provisional_patent_drafter.py`) | Renders provisional patent applications from patent JSONs. | Weekly |
+| **LOI Generator** (`capital_ascension/loi_generator.py`) | Generates enterprise pilot LOI templates. | Weekly |
+| **Investor Warmup Tracker** (`capital_ascension/investor_warmup_tracker.py`) | Tracks strategic program applications and warm-intro templates. | Weekly |
+| **Pitch Deck Generator** (`capital_ascension/pitch_deck_generator.py`) | Generates Series A pitch deck markdown. | Weekly |
+| **Investor CRM** (`capital_ascension/investor_crm.py`) | Seeds investor blitz target list CSV. | Weekly |
 | **Dashboard** (`dashboard/index.html`) | Static web UI for service health, quality grades, task queue, test fleet, secrets, and publish queue. | http://localhost:3800/.hive/dashboard/ |
 
 ## Layout
@@ -52,7 +59,15 @@ self-healing automation layer for the CSOAI/SOV3/MEOK ONE empire.
 │   ├── grant_application_bot.py     # Grant drafts
 │   ├── affiliate_tracker.py         # Referral tracking
 │   ├── data_budget_guard.py         # Dataset disk guard
-│   └── day_orchestrator.py          # Full-day auto sequence
+│   ├── day_orchestrator.py          # Full-day auto sequence
+│   └── capital_ascension/           # Series A fundraising artifacts
+│       ├── capital_ascension_orchestrator.py
+│       ├── data_moat_dossier.py
+│       ├── provisional_patent_drafter.py
+│       ├── loi_generator.py
+│       ├── investor_warmup_tracker.py
+│       ├── pitch_deck_generator.py
+│       └── investor_crm.py
 ├── launchd/
 │   └── ai.csoai.*.plist     # launchd agent definitions
 ├── dashboard/
@@ -65,6 +80,7 @@ self-healing automation layer for the CSOAI/SOV3/MEOK ONE empire.
     ├── seeding/             # Creator outreach targets
     ├── grants/              # Grant drafts
     ├── auto_mode_schedule.md # Full-day auto-mode cadence
+    ├── capital_ascension/   # Series A artifacts (dossier, pitch deck, LOIs)
     └── affiliates.jsonl     # Referral ledger
 ```
 

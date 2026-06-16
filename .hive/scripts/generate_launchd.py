@@ -124,6 +124,7 @@ def main() -> None:
         ("cc0-harvester", script_dir / "cc0_harvester.py", 604800),
         ("grant-application-bot", script_dir / "grant_application_bot.py", 604800),
         ("data-budget-guard", script_dir / "data_budget_guard.py", 86400),
+        ("capital-ascension-orchestrator", script_dir / "capital_ascension" / "capital_ascension_orchestrator.py", 604800),
     ]
     for name, script, interval in jobs:
         label = f"ai.csoai.{name}"

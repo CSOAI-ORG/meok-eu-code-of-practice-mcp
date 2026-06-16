@@ -128,6 +128,14 @@
       <ul id="harvest-list"></ul>
     </div>
     <div class="panel">
+      <h2>Capital Ascension</h2>
+      <div class="metric"><span>Data moat</span><span id="cap-moat">-</span></div>
+      <div class="metric"><span>LOI value</span><span id="cap-loi">-</span></div>
+      <div class="metric"><span>Investor targets</span><span id="cap-targets">-</span></div>
+      <div class="metric"><span>Last run</span><span id="cap-ts" class="ts">-</span></div>
+      <ul id="cap-list"></ul>
+    </div>
+    <div class="panel">
       <h2>Recent Events</h2>
       <ul id="recent-events"></ul>
     </div>
@@ -374,12 +382,37 @@
       push(gov?.datasets);
     }
 
+    async function loadCapital() {
+      const moat = await fetchJSON(ROOT + "/logs/data_moat_dossier.json");
+      const loi = await fetchJSON(ROOT + "/logs/loi_generator.json");
+      const crm = await fetchJSON(ROOT + "/logs/investor_crm.json");
+      const orch = await fetchJSON(ROOT + "/logs/capital_ascension_orchestrator.json");
+      document.getElementById("cap-moat").textContent = moat ? `${moat.totals.gb} GB` : "-";
+      document.getElementById("cap-loi").textContent = loi ? "£" + loi.total_value_gbp.toLocaleString() : "-";
+      document.getElementById("cap-targets").textContent = crm ? crm.total_targets : "-";
+      document.getElementById("cap-ts").textContent = orch?.ts ? new Date(orch.ts).toLocaleString() : "-";
+
+      const list = document.getElementById("cap-list");
+      list.innerHTML = "";
+      const items = [
+        ["Pitch deck", "tasks/capital_ascension/SERIES_A_PITCH_DECK.md"],
+        ["Data dossier", "tasks/capital_ascension/DATA_MOAT_DOSSIER.md"],
+        ["Investor tracker", "tasks/capital_ascension/investors/STRATEGIC_INVESTOR_TRACKER.md"],
+        ["Investor CRM", "tasks/capital_ascension/investors/investor_blitz_crm.csv"],
+      ];
+      items.forEach(([label, path]) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${ROOT}/${path}" target="_blank" style="color:var(--accent);">${label}</a>`;
+        list.appendChild(li);
+      });
+    }
+
     async function loadAll() {
       await Promise.all([
         loadHiveMode(), loadQuality(), loadHealer(), loadTasks(),
         loadPublish(), loadFleet(), loadSecrets(), loadEnvReadiness(),
         loadAgentCards(), loadGrants(), loadSynthetic(), loadAffiliates(),
-        loadHarvesters(), loadEvents()
+        loadHarvesters(), loadCapital(), loadEvents()
       ]);
     }
 
