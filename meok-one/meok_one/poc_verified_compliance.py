@@ -158,8 +158,54 @@ def demo() -> dict:
             "claim": "Every answer externally verified + audit-logged; verified-best of N returned."}
 
 
+def serve(port: int = 8088):
+    """Expose the verified-compliance loop as a product endpoint:
+        POST /verified  {"question": "...", "n": 4}  -> verified-correct answer + audit
+        GET  /health
+    Self-contained (stdlib http.server). The deployable surface — same loop, same audit
+    chain. (Cloud/Vercel version needs a valid OPENROUTER/OPENAI key; this runs local.)"""
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    class H(BaseHTTPRequestHandler):
+        def _send(self, code, obj):
+            b = json.dumps(obj, default=str).encode()
+            self.send_response(code)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Content-Length", str(len(b)))
+            self.end_headers(); self.wfile.write(b)
+
+        def do_GET(self):
+            if self.path.startswith("/health"):
+                return self._send(200, {"status": "ok", "service": "meok-verified-compliance",
+                                        "model": _MODEL, "backend": "cloud" if _OR_KEY else "local"})
+            self._send(404, {"error": "POST /verified {question}"})
+
+        def do_POST(self):
+            if not self.path.startswith("/verified"):
+                return self._send(404, {"error": "POST /verified {question}"})
+            try:
+                ln = int(self.headers.get("Content-Length", "0") or 0)
+                body = json.loads(self.rfile.read(ln) or b"{}")
+            except Exception:
+                return self._send(400, {"error": "invalid JSON"})
+            q = (body.get("question") or "").strip()
+            if not q:
+                return self._send(400, {"error": "question required"})
+            self._send(200, verified_answer(q, n=int(body.get("n", 4))))
+
+        def log_message(self, *a):  # quiet
+            pass
+
+    srv = HTTPServer(("0.0.0.0", port), H)
+    print(f"MEOK Verified Compliance serving on :{port}  (POST /verified, GET /health)")
+    srv.serve_forever()
+
+
 def _cli():
     import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "serve":
+        return serve(int(sys.argv[2]) if len(sys.argv) > 2 else 8088)
     if len(sys.argv) > 1 and sys.argv[1] == "demo":
         print(json.dumps(demo(), indent=2, default=str)); return
     q = sys.argv[1] if len(sys.argv) > 1 else (
