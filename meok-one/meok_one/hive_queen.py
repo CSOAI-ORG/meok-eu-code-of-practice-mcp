@@ -223,9 +223,81 @@ def gossip(honey: dict) -> dict:
     return {"sigil": rec["line"], "receipt": rec["receipt"], "delivery": delivery}
 
 
+def _clean_reply(reply: str, cfg: dict, brain: str) -> str:
+    """Strip a leaked character-name prefix + (for non-council) a leading companion
+    greeting, so the queen reads as a clean domain SME. (Extracted 2026-06-16 so the
+    best-of-N path cleans every candidate identically.)"""
+    _reply = reply or ""
+    _nm = re.escape(cfg.get("character", "").strip().capitalize())
+    if _nm:
+        _reply = re.sub(rf"^\s*(As\s+{_nm}[,:]|{_nm}\s*[:\-—])\s*", "", _reply, count=1, flags=re.I)
+    if brain != "council" and _reply:
+        _comp = re.compile(
+            r"\b(how are you|how're you|hope you|i'd love to|i'm curious|calm and kind|"
+            r"truly doing|truly hope|before we (?:dive|begin)|how can i (?:help|assist)|"
+            r"what brings you|warm(?:est)? (?:greetings|wishes))\b", re.I)
+        _hello = re.compile(r"^\s*(?:oh[,!.\s]+)?(?:hello|hi|hey|greetings|welcome)\b", re.I)
+        _parts = re.split(r"(?<=[.!?])\s+", _reply)
+        _drop = 0
+        for _s in _parts:
+            if _comp.search(_s) or _hello.match(_s):
+                _drop += 1
+            else:
+                break
+        if _drop and len(" ".join(_parts[_drop:])) > 40:
+            _reply = " ".join(_parts[_drop:]).lstrip()
+    return _reply
+
+
+def _ground_with_tool(domain: str, message: str, cfg: dict) -> "tuple[str, dict]":
+    """Level-0 (2026-06-16): the queen ACTUALLY CALLS a tool through the safe gateway,
+    instead of only string-interpolating tool names into the prompt (the #1 audit gap).
+
+    Every call goes through tunnels.safe_call → tool_gateway: read-tier auto-executes,
+    write needs a human confirm, prohibited is refused — and each call is SIGIL-audited.
+    We try the hive's own declared tools first; whatever executes is injected as grounding.
+    Returns (context_string, audit). Best-effort — never blocks the answer.
+    """
+    declared = cfg.get("tools") or []
+    grounded, audit = [], {"attempted": [], "executed": [], "needs_confirm": [], "unavailable": []}
+    # Try the hive's declared domain tools (read-tier ones auto-execute through the gateway).
+    for tool in declared[:3]:
+        if gw.classify(tool) != "read":
+            audit["needs_confirm"].append(tool)
+            continue
+        audit["attempted"].append(tool)
+        try:
+            res = tunnels.safe_call(tool, {"query": message})
+        except Exception as e:  # noqa: BLE001
+            audit["unavailable"].append(f"{tool}:{type(e).__name__}")
+            continue
+        if res.get("executed"):
+            audit["executed"].append(tool)
+            grounded.append(f"{tool}: {json.dumps(res.get('result'))[:300]}")
+        else:
+            audit["unavailable"].append(tool)
+    # If no domain tool was live, ground on a live SOV3 read tool so the path is PROVEN
+    # end-to-end (and the answer gets real context), not just wired-but-untested.
+    if not grounded:
+        for fallback in ("get_unified_context", "query_memories"):
+            try:
+                res = tunnels.safe_call(fallback, {"query": message, "limit": 3})
+                audit["attempted"].append(fallback)
+                if res.get("executed"):
+                    audit["executed"].append(fallback)
+                    grounded.append(f"{fallback}: {json.dumps(res.get('result'))[:300]}")
+                    break
+                audit["unavailable"].append(fallback)
+            except Exception:  # noqa: BLE001
+                audit["unavailable"].append(fallback)
+    ctx = ("[Grounded via live tool call(s):\n- " + "\n- ".join(grounded) + "]\n\n") if grounded else ""
+    return ctx, audit
+
+
 def queen(domain: str, message: str, brain: str = "council", tier: str | None = None,
           user_id: str = "anon", govern: bool = True, do_gossip: bool = False,
-          quorum: int = 3, roster: "list | None" = None) -> dict:
+          quorum: int = 3, roster: "list | None" = None,
+          tools: bool = False, verify=None, n: int = 1, task: "dict | None" = None) -> dict:
     """Ask a hive's queen.
 
     brain:
@@ -266,58 +338,54 @@ def queen(domain: str, message: str, brain: str = "council", tier: str | None = 
                   + "]\n\n") if prior else ""
     framed = recall_ctx + message
 
-    if brain == "council":
-        # Pad the roster to the quorum by cycling the available local models so the
-        # council genuinely fills its seats (roster[0]=companion, rest=expert lenses).
-        full = [roster[i % len(roster)] for i in range(quorum)]
-        # Cloud (OpenRouter) lenses parallelise freely → fire them all at once with a
-        # tight deadline; local Ollama would serialise, so cap workers when no key.
-        _cloud = bool(os.environ.get("OPENROUTER_API_KEY"))
-        r = sovereign_council(char, framed, tier=tier, quorum=quorum, roster=full,
-                              max_workers=(quorum if _cloud else 2),
-                              deadline_s=(35.0 if _cloud else 120.0),
-                              system_override=expert_sys)
-        r["governance"] = f"sovereign_council · BFT-of-MoEs · quorum={quorum} · roster={roster}"
+    # ── Level-0 tool grounding: the queen actually CALLS its tools via the safe gateway ──
+    tool_audit = None
+    if tools:
+        tool_ctx, tool_audit = _ground_with_tool(domain, message, cfg)
+        framed = tool_ctx + framed
+
+    def _one(seed: int) -> "tuple[str, dict]":
+        """One full generation (council or single-brain), cleaned. seed>0 nudges a
+        fresh angle so best-of-N sees genuine diversity, not N identical samples."""
+        seeded = framed if seed == 0 else (
+            f"{framed}\n\n[variant {seed}: answer afresh from a different angle; stay precise + factual.]")
+        if brain == "council":
+            full = [roster[i % len(roster)] for i in range(quorum)]
+            _cloud = bool(os.environ.get("OPENROUTER_API_KEY"))
+            rr = sovereign_council(char, seeded, tier=tier, quorum=quorum, roster=full,
+                                   max_workers=(quorum if _cloud else 2),
+                                   deadline_s=(35.0 if _cloud else 120.0),
+                                   system_override=expert_sys)
+            rr["governance"] = f"sovereign_council · BFT-of-MoEs · quorum={quorum} · roster={roster}"
+        else:
+            rr = think(char, seeded, brain=brain, tier=tier, user_id=user_id, system_override=expert_sys)
+            rr["governance"] = f"sovereign-wrapped · brain={brain} · SME"
+        return _clean_reply(rr.get("reply") or "", cfg, brain), rr
+
+    # ── verifier-gated best-of-N: an EXTERNAL gate (verifier.py) picks the best of N ──
+    # This is the test-time half of real self-improvement — it provably helps when the
+    # verifier is stronger than the generator (a deterministic check always is).
+    verifier = None
+    if verify is not None:
+        from .verifier import make_verifier
+        verifier = verify if callable(verify) else make_verifier(verify)
+    verifier_info = None
+    if verifier is not None and (n or 1) > 1:
+        scored = []
+        for i in range(n):
+            _txt, _rr = _one(i)
+            _sc, _why = verifier(_txt, task or {})
+            scored.append((_sc, _why, _txt, _rr))
+        scored.sort(key=lambda x: x[0], reverse=True)
+        _sc, _why, _reply, r = scored[0]
+        _all = [round(s, 4) for s, _, _, _ in scored]
+        verifier_info = {"best_score": round(_sc, 4), "reason": _why, "n": n,
+                         "scores": _all, "lift_vs_worst": round(_all[0] - _all[-1], 4)}
     else:
-        # Pass the hive's domain-expert identity so left/right/both answer as the SME too
-        # (not just council) — otherwise a vertical hive's fast brain replies as the generic
-        # care companion. Safety gate is unchanged (override LEADS, persona/safety still follow).
-        r = think(char, framed, brain=brain, tier=tier, user_id=user_id, system_override=expert_sys)
-        r["governance"] = f"sovereign-wrapped · brain={brain} · SME"
-
-    # Strip any leaked character-name prefix (e.g. "Aria:" / "As Aria, ") so the queen
-    # presents cleanly as the domain expert, not the underlying companion character.
-    _reply = r.get("reply") or ""
-    _nm = re.escape(cfg.get("character", "").strip().capitalize())
-    if _nm:
-        # Only strip a TRUE persona prefix — the "As Aria," or "Aria:" forms — never a bare
-        # space (so "Sage advice…" / "Kai and…" aren't mutilated when the name is a real word).
-        _reply = re.sub(rf"^\s*(As\s+{_nm}[,:]|{_nm}\s*[:\-—])\s*", "", _reply, count=1, flags=re.I)
-
-    # SME mode (left/right/both go through think() with the expert override) — the persona
-    # can still prepend a warm companion greeting before the expert content ("Hello there!
-    # How are you today? To answer your question…"). Strip a leading greeting sentence so the
-    # queen reads as a clean SME. Conservative: only when the reply OPENS with a greeting AND
-    # substantial content (>40 chars) remains, so real answers are never mutilated.
-    if brain != "council" and _reply:
-        # Drop LEADING companion sentences (greeting / "how are you" / "I hope you…") up to
-        # the first substantive sentence, so the queen reads as an SME. Sentence-based (more
-        # robust than a prefix regex) and conservative: stops at the first non-companion
-        # sentence and only applies if >40 chars of real content remain.
-        _comp = re.compile(
-            r"\b(how are you|how're you|hope you|i'd love to|i'm curious|calm and kind|"
-            r"truly doing|truly hope|before we (?:dive|begin)|how can i (?:help|assist)|"
-            r"what brings you|warm(?:est)? (?:greetings|wishes))\b", re.I)
-        _hello = re.compile(r"^\s*(?:oh[,!.\s]+)?(?:hello|hi|hey|greetings|welcome)\b", re.I)
-        _parts = re.split(r"(?<=[.!?])\s+", _reply)
-        _drop = 0
-        for _s in _parts:
-            if _comp.search(_s) or _hello.match(_s):
-                _drop += 1
-            else:
-                break
-        if _drop and len(" ".join(_parts[_drop:])) > 40:
-            _reply = " ".join(_parts[_drop:]).lstrip()
+        _reply, r = _one(0)
+        if verifier is not None:
+            _sc, _why = verifier(_reply, task or {})
+            verifier_info = {"best_score": round(_sc, 4), "reason": _why, "n": 1, "scores": [round(_sc, 4)]}
 
     out = {
         "domain": domain,
@@ -329,6 +397,8 @@ def queen(domain: str, message: str, brain: str = "council", tier: str | None = 
         "brain": r.get("brain", brain),
         "engine": r.get("engine"),
         "governance": r.get("governance"),
+        "tool_grounding": tool_audit,      # Level-0: which tools the queen actually CALLED
+        "verifier": verifier_info,         # Level-0: external best-of-N gate score
     }
     honey = _honey(domain, message, out)
     out["honey"] = honey
