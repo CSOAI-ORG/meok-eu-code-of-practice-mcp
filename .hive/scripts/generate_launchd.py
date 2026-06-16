@@ -52,11 +52,14 @@ def service_plist(svc: dict[str, Any]) -> dict[str, Any]:
     return plist
 
 
+PYTHON = "/Users/nicholas/clawd/sovereign-temple/.venv/bin/python3"
+
+
 def automation_plist(name: str, script: Path, interval: int) -> dict[str, Any]:
     label = f"ai.csoai.{name}"
     return {
         "Label": label,
-        "ProgramArguments": ["/usr/bin/python3", str(script)],
+        "ProgramArguments": [PYTHON, str(script)],
         "WorkingDirectory": str(ROOT),
         "RunAtLoad": True,
         "StartInterval": interval,
