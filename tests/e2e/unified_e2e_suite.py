@@ -1123,6 +1123,33 @@ class E2ERunner:
             assert body.get("discounted_price_gbp") < body.get("original_price_gbp"), f"no discount: {body}"
             return f"PARTNERLABS25: £{body.get('original_price_gbp')} → £{body.get('discounted_price_gbp')}"
 
+
+        async def revenue_check():
+            """Day 18 BLOCK 3: /revenue live tracking."""
+            code, body = await self.client.request("GET", f"{base}/revenue")
+            assert code == 200, f"status={code}"
+            assert "total_revenue_gbp" in body, f"missing total: {list(body.keys())}"
+            assert "by_kind" in body, f"missing by_kind"
+            assert "by_day" in body, f"missing by_day"
+            assert "arr_potential_gbp" in body, f"missing arr"
+            return f"revenue: £{body['total_revenue_gbp']}, ARR: £{body['arr_potential_gbp']}"
+
+        async def discover_check():
+            """Day 18 BLOCK 5: /api/discover for AI agents."""
+            code, body = await self.client.request("GET", f"{base}/api/discover")
+            assert code == 200, f"status={code}"
+            assert body.get("manifest_version") == "1.0", f"wrong manifest version: {body.get('manifest_version')}"
+            assert body.get("total_servers") >= 300, f"too few servers: {body.get('total_servers')}"
+            assert len(body.get("recommended_servers", [])) >= 1, f"no recommended"
+            return f"discover: {body.get('total_servers')} servers, {len(body.get('recommended_servers', []))} recs"
+
+        async def recommend_extra_check():
+            """Day 18 BLOCK 5: /recommend returns at least 3 use cases."""
+            code, body = await self.client.request("GET", f"{base}/recommend?use_case=startup-mvp")
+            assert code == 200, f"status={code}"
+            assert "enriched_servers" in body, f"missing enriched_servers"
+            return f"startup-mvp: {len(body.get('enriched_servers', []))} servers"
+
         async def coupon_invalid_check():
             code, body = await self.client.request("GET", f"{base}/coupon?code=BOGUS_CODE")
             assert code == 200, f"status={code}"
@@ -1180,6 +1207,9 @@ class E2ERunner:
         await self.run_test(group, "/customer with purchase", customer_with_purchase_check, target=base)
         await self.run_test(group, "/coupon (valid)", coupon_check, target=base)
         await self.run_test(group, "/coupon (invalid)", coupon_invalid_check, target=base)
+        await self.run_test(group, "/revenue", revenue_check, target=base)
+        await self.run_test(group, "/api/discover", discover_check, target=base)
+        await self.run_test(group, "/recommend?use_case=startup-mvp", recommend_extra_check, target=base)
 
     # ═══════════════════════════════════════════════════════════════════════════
     # MAIN ORCHESTRATOR
