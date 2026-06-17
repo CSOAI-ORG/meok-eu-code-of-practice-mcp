@@ -20,7 +20,7 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 
-SOV3 = "http://localhost:3101"
+SOV3 = "http://127.0.0.1:3101"
 SOV3_MCP = f"{SOV3}/mcp"
 
 

@@ -28,7 +28,7 @@ services=(
 
 for svc in "${services[@]}"; do
     IFS=':' read -r name port <<< "$svc"
-    if curl -s "http://localhost:$port/api/health" > /dev/null 2>&1 || curl -s "http://localhost:$port/health" > /dev/null 2>&1; then
+    if curl -s "http://127.0.0.1:$port/api/health" > /dev/null 2>&1 || curl -s "http://127.0.0.1:$port/health" > /dev/null 2>&1; then
         echo "✅ $name ($port)"
     else
         echo "❌ $name ($port)"

@@ -53,8 +53,16 @@ check_meok_ui() {
 }
 
 check_sov3() {
-  local code=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 15 http://localhost:3101/health 2>/dev/null)
-  [[ "$code" == "200" ]]
+  # SOV3 is an SSE-transport MCP server: a GET /health hangs (no such route) and
+  # always returned 000 — which made the guardian FALSE-KILL a healthy King
+  # (2026-06-17 outage). Probe with a real JSON-RPC POST instead; fall back to a
+  # bare TCP-listen check so a slow-booting server is never killed mid-startup.
+  curl -s --max-time 8 -X POST http://127.0.0.1:3101/mcp \
+    -H 'Content-Type: application/json' \
+    -H 'Accept: application/json, text/event-stream' \
+    -d '{"jsonrpc":"2.0","id":"hc","method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"guardian","version":"1"}}}' \
+    2>/dev/null | grep -q '"result"' && return 0
+  lsof -nP -iTCP:3101 -sTCP:LISTEN >/dev/null 2>&1
 }
 
 check_meok_mcp() {
@@ -109,15 +117,12 @@ wait_for_port_listen() {  # return 0 once port $1 IS listening, within $2 second
 }
 
 restart_sov3() {
-  log "[RESTART] SOV3 (3101)"
-  # 1. Graceful TERM on the old master; wait up to 10s for the port to free.
-  #    Only SIGKILL as a last resort. This avoids the Errno-48 collision.
-  pkill -TERM -f "sovereign-mcp-server" 2>/dev/null || true
-  wait_for_port_free 3101 10 || { pkill -9 -f "sovereign-mcp-server" 2>/dev/null || true; sleep 1; }
-  # 2. Launch exactly ONE instance, bound to localhost (safe default).
-  cd /Users/nicholas/clawd/sovereign-temple && HOST=127.0.0.1 nohup bash run-production.sh >> /tmp/sov3.log 2>&1 &
-  echo $! > /tmp/sov3.pid
-  # 3. Wait for the actual bind; give up cleanly instead of hammering forever.
+  log "[RESTART] SOV3 (3101) via launchd keeper"
+  # SOV3 is owned by a single launchd KeepAlive agent (com.meok.sov3-gunicorn).
+  # Spawning a raw gunicorn here (the old behaviour) double-bound :3101 against
+  # launchd's instance -> Errno 48 storm -> the 2026-06-17 outage. Always recover
+  # through launchctl so exactly one owner exists; never hand-spawn a competitor.
+  launchctl kickstart -k "gui/$(id -u)/com.meok.sov3-gunicorn" 2>/dev/null || true
   if wait_for_port_listen 3101 25; then
     log "[OK] SOV3 listening on 3101"
   else
