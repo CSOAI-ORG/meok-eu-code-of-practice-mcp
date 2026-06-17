@@ -1096,6 +1096,39 @@ class E2ERunner:
             assert "available_use_cases" in body, f"missing use cases"
             return f"use cases: {len(body.get('available_use_cases', []))}"
 
+
+        async def customer_check():
+            """Day 17 BLOCK 3: /customer/{email} lookup."""
+            code, body = await self.client.request("GET", f"{base}/customer/test@meok.ai")
+            assert code == 200, f"status={code}"
+            assert body.get("email") == "test@meok.ai"
+            return f"customer: found={body.get('found')}"
+
+        async def customer_with_purchase_check():
+            """Day 17 BLOCK 3: /customer lookup returns purchases."""
+            # First make a purchase, then look it up
+            await self.client.request("POST", f"{base}/purchase/tier", {"tier_id": "pro", "customer_email": "day17e2e@meok.ai"})
+            code, body = await self.client.request("GET", f"{base}/customer/day17e2e@meok.ai")
+            assert code == 200, f"status={code}"
+            assert body.get("found") is True, f"not found: {body}"
+            assert body["summary"]["total_tiers"] >= 1, f"no tiers: {body['summary']}"
+            return f"day17e2e: {body['summary']}"
+
+        async def coupon_check():
+            """Day 17 BLOCK 5: /coupon partner code validation."""
+            code, body = await self.client.request("GET", f"{base}/coupon?code=PARTNERLABS25&item_type=tier&item_id=pro")
+            assert code == 200, f"status={code}"
+            assert body.get("valid") is True, f"not valid: {body}"
+            assert body.get("discount_pct") == 25, f"wrong discount: {body}"
+            assert body.get("discounted_price_gbp") < body.get("original_price_gbp"), f"no discount: {body}"
+            return f"PARTNERLABS25: £{body.get('original_price_gbp')} → £{body.get('discounted_price_gbp')}"
+
+        async def coupon_invalid_check():
+            code, body = await self.client.request("GET", f"{base}/coupon?code=BOGUS_CODE")
+            assert code == 200, f"status={code}"
+            assert body.get("valid") is False, f"should be invalid: {body}"
+            return f"BOGUS_CODE: {body.get('error')}"
+
         async def recommend_health_check():
             code, body = await self.client.request("GET", f"{base}/recommend?use_case=eu-ai-act-high-risk-health")
             assert code == 200, f"status={code}"
@@ -1143,6 +1176,10 @@ class E2ERunner:
         await self.run_test(group, "/partner/grc-whitelabel", partner_detail_check, target=base)
         await self.run_test(group, "/recommend", recommend_check, target=base)
         await self.run_test(group, "/recommend?use_case=health", recommend_health_check, target=base)
+        await self.run_test(group, "/customer/{email}", customer_check, target=base)
+        await self.run_test(group, "/customer with purchase", customer_with_purchase_check, target=base)
+        await self.run_test(group, "/coupon (valid)", coupon_check, target=base)
+        await self.run_test(group, "/coupon (invalid)", coupon_invalid_check, target=base)
 
     # ═══════════════════════════════════════════════════════════════════════════
     # MAIN ORCHESTRATOR
