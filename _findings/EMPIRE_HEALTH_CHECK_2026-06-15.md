@@ -1,14 +1,14 @@
 # Empire Health + AEO/GEO/SEO Readiness Check — 2026-06-15
-**Generated:** 2026-06-16T04:24:44.051243Z
-**Directories scanned:** 93
+**Generated:** 2026-06-17T03:58:04.152340Z
+**Directories scanned:** 96
 
 ## Grade Distribution
 
 - **A:** 86
 - **B:** 2
 - **C:** 2
-- **D:** 0
-- **F:** 3
+- **D:** 2
+- **F:** 4
 
 ## Detailed Results
 
@@ -104,6 +104,9 @@
 | transparencyof-deploy | https://transparencyof.ai/ | ✅ 200 | ✅ 200 | ✅ 200 | 🔴 404 | 🔴 404 | ✅ | B |
 | muckaway-deploy | https://muckaway.ai/ | ✅ 200 | 🔴 404 | ✅ 200 | 🔴 404 | 🔴 404 | ✅ | C |
 | planthire-deploy | https://planthire.ai/ | ✅ 200 | 🔴 404 | ✅ 200 | 🔴 404 | 🔴 404 | ✅ | C |
+| agent-network-deploy | https://agent-network-deploy.vercel.app | ✅ 200 | 🔴 404 | 🔴 404 | 🔴 404 | 🔴 404 | ❌ | D |
+| openpatent-ai-deploy | https://openpatent-ai-deploy.vercel.app | ✅ 200 | 🔴 404 | 🔴 404 | 🔴 404 | 🔴 404 | ❌ | D |
+| for-regulators-deploy | https://meok.ai/for-regulators | 🔴 404 | ❌ ERR | ❌ ERR | ❌ ERR | ❌ ERR | ✅ | F |
 | openmoe-deploy | https://openmoe.ai/ | 🔴 404 | ❌ ERR | ❌ ERR | ❌ ERR | ❌ ERR | ✅ | F |
 | socialmediamanager-deploy | https://socialmediamanager.ai | ❌ ERR | ❌ ERR | ❌ ERR | ❌ ERR | ❌ ERR | ✅ | F |
 | wowmcp-deploy | https://wowmcp.ai | ❌ ERR | ❌ ERR | ❌ ERR | ❌ ERR | ❌ ERR | ✅ | F |

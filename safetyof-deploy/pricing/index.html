@@ -4,196 +4,172 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pricing — SafetyOf</title>
-  <meta name="description" content="Transparent pricing for safetyof.ai. 3 tiers (Free, Pro, Enterprise) with EU AI Act compliance baked in. Stripe-checkout in 30 seconds.">
+  <meta name="description" content="Transparent pricing for SafetyOf.ai. Instant quotes, flexible tiers and enterprise procurement.">
   <link rel="canonical" href="https://safetyof.ai/pricing">
   <meta name="theme-color" content="#c9a84c">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Pricing — SafetyOf">
-  <meta property="og:description" content="Transparent pricing for safetyof.ai. EU AI Act compliance in 3 tiers.">
+  <meta property="og:description" content="Transparent pricing for SafetyOf.ai. Instant quotes, flexible tiers and enterprise procurement.">
   <meta property="og:url" content="https://safetyof.ai/pricing">
   <meta property="og:site_name" content="SafetyOf.ai">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Pricing — SafetyOf">
-  <meta name="twitter:description" content="EU AI Act compliance in 3 tiers.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2064%2064%22%3E%3Crect%20width=%2264%22%20height=%2264%22%20rx=%2214%22%20fill=%22%23c9a84c%22/%3E%3Ctext%20x=%2232%22%20y=%2245%22%20font-family=%22Inter%2CArial%2Csans-serif%22%20font-size=%2238%22%20font-weight=%22800%22%20text-anchor=%22middle%22%20fill=%22%23070b14%22%3ES%3C/text%3E%3C/svg%3E">
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {"@type": "Question", "name": "What is included in the Free tier?", "acceptedAnswer": {"@type": "Answer", "text": "5-minute AI Safety Posture Score scorecard, top-3 gap summary, email PDF report. No credit card required."}},
-      {"@type": "Question", "name": "What's the difference between Pro and Enterprise?", "acceptedAnswer": {"@type": "Answer", "text": "Pro is per-entity, single sign-on, unlimited re-scans. Enterprise adds multi-entity, SSO/SLA, auditor-ready exports, and MCP access."}},
-      {"@type": "Question", "name": "How does this relate to the EU AI Act?", "acceptedAnswer": {"@type": "Answer", "text": "Every tier maps to the EU AI Act 2 Aug 2026 cliff. The Watchdog Cert add-on (£4,950) issues a signed Ed25519+HMAC-SHA256 attestation for the regulator."}},
-      {"@type": "Question", "name": "Can I cancel anytime?", "acceptedAnswer": {"@type": "Answer", "text": "Yes — Pro and Enterprise are month-to-month, no annual lock-in. The Article 50 Kit is a one-time purchase."}},
-      {"@type": "Question", "name": "Who pays for the MCP server?", "acceptedAnswer": {"@type": "Answer", "text": "Pro and Enterprise include MCP access. Free users can read our public agent card at llms.txt."}}
-    ]
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "SafetyOf",
-    "applicationCategory": "BusinessApplication",
-    "operatingSystem": "Web, MCP, API",
-    "offers": [
-      {"@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "GBP", "description": "5-minute scorecard + email PDF"},
-      {"@type": "Offer", "name": "Pro", "price": "29", "priceCurrency": "GBP", "description": "Full AI Safety Posture Score with unlimited re-scans and EU AI Act Article 50 mapping"},
-      {"@type": "Offer", "name": "Enterprise", "price": "199", "priceCurrency": "GBP", "description": "Multi-entity + MCP + Watchdog Cert eligible"},
-      {"@type": "Offer", "name": "Watchdog Cert", "price": "4950", "priceCurrency": "GBP", "description": "One-time, signed Ed25519+HMAC-SHA256 attestation"}
-    ],
-    "featureList": ["EU AI Act mapping", "MCP server", "Audit trail", "Evidence vault"]
-  }
-  </script>
+  <meta name="twitter:description" content="Transparent pricing for SafetyOf.ai. Instant quotes, flexible tiers and enterprise procurement.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23c9a84c%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2245%22%20font-family%3D%22Inter%2CArial%2Csans-serif%22%20font-size%3D%2238%22%20font-weight%3D%22800%22%20text-anchor%3D%22middle%22%20fill%3D%22%23070b14%22%3ES%3C%2Ftext%3E%3C%2Fsvg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: {
+          gold: '#c9a84c',
+          accent2: '#e0c068',
+          slate: { 950: '#070b14', 900: '#0f172a', 850: '#111827' }
+        },
+        fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] }
+      } }
+    }
+  </script>
   <style>
     :root { --accent: #c9a84c; --accent2: #e0c068; --glow: 201,168,76; }
+    html { scroll-behavior: smooth; }
     body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; letter-spacing: -0.011em; }
+    ::selection { background: rgba(var(--glow), 0.30); color: #fff; }
     h1, h2, h3 { letter-spacing: -0.025em; }
     h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1.05; }
     .text-gold { color: var(--accent); }
+    .border-gold { border-color: var(--accent); }
+    .border-gold\/40 { border-color: rgba(var(--glow), 0.40) !important; }
     .bg-gold { background-image: linear-gradient(135deg, var(--accent), var(--accent2)) !important; box-shadow: 0 10px 28px -10px rgba(var(--glow), 0.6); }
     a.bg-gold, button.bg-gold { transition: transform .2s ease, filter .2s ease, box-shadow .2s ease; }
-    a.bg-gold:hover, button.bg-gold:hover { transform: translateY(-2px); filter: brightness(1.06); }
-    nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(12px); background: rgba(7,11,20,0.72); }
-    .rounded-2xl { transition: transform .25s ease, box-shadow .25s ease; }
+    a.bg-gold:hover, button.bg-gold:hover { transform: translateY(-2px); filter: brightness(1.06); box-shadow: 0 16px 36px -12px rgba(var(--glow), 0.75); }
+    .gradient-radial {
+      background:
+        radial-gradient(60rem 38rem at 50% -12%, rgba(var(--glow), 0.18), transparent 60%),
+        radial-gradient(42rem 30rem at 88% 6%, rgba(var(--glow), 0.10), transparent 55%),
+        radial-gradient(34rem 30rem at 6% 22%, rgba(255,255,255,0.03), transparent 55%);
+    }
+    nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); background: rgba(7,11,20,0.72); transition: box-shadow .25s ease; }
+    .rounded-2xl { transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
     .rounded-2xl:hover { transform: translateY(-3px); box-shadow: 0 20px 44px -26px rgba(var(--glow), 0.55); }
+    .eyebrow { display: inline-flex; align-items: center; gap: .5rem; padding: .35rem .85rem; border-radius: 999px;
+      font-size: .76rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+      color: var(--accent); background: rgba(var(--glow), 0.10); border: 1px solid rgba(var(--glow), 0.28); }
+    .has-js section { opacity: 0; transform: translateY(18px); }
+    .has-js section.seen { opacity: 1; transform: none; transition: opacity .6s ease, transform .6s ease; }
+    @media (prefers-reduced-motion: reduce) {
+      .has-js section { opacity: 1 !important; transform: none !important; }
+      html { scroll-behavior: auto; }
+    }
   </style>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "SafetyOf.ai", "url": "https://safetyof.ai", "logo": "https://safetyof.ai/favicon.svg", "description": "Transparent pricing for SafetyOf.ai. Instant quotes, flexible tiers and enterprise procurement."}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "url": "https://safetyof.ai/pricing", "name": "Pricing — SafetyOf", "mainEntity": [{"@type": "Question", "name": "🛡 Free posture score", "acceptedAnswer": {"@type": "Answer", "text": "A 5-minute self-assessment scores your AI systems against EU AI Act, ISO 42001 and NIST AI RMF controls."}}, {"@type": "Question", "name": "📊 Gap heatmap", "acceptedAnswer": {"@type": "Answer", "text": "See red/amber/green across risk management, data governance, human oversight and robustness."}}, {"@type": "Question", "name": "🧭 Guided remediation", "acceptedAnswer": {"@type": "Answer", "text": "Each gap comes with a prioritised fix, owner suggestion and evidence template."}}, {"@type": "Question", "name": "🔁 Continuous monitoring", "acceptedAnswer": {"@type": "Answer", "text": "Re-score on every model or policy change and track posture trend over time."}}]}</script>
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased">
-  <nav class="border-b border-slate-800">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="/" class="text-2xl font-extrabold tracking-tight">SafetyOf<span class="text-gold">.ai</span></a>
-      <div class="hidden md:flex items-center gap-6">
-        <a href="/pricing/" class="text-sm font-medium text-slate-300 hover:text-gold">Pricing</a>
-        <a href="/partner/" class="text-sm font-medium text-slate-300 hover:text-gold">Partner</a>
-        <a href="/enterprise/" class="text-sm font-medium text-slate-300 hover:text-gold">Enterprise</a>
-        <a href="/signup/" class="text-sm font-medium text-slate-300 hover:text-gold">Signup</a>
-        <a href="/connect/mcp" class="text-sm font-medium text-slate-300 hover:text-gold">Connect via MCP</a>
-        <a href="https://buy.stripe.com/9B67sNeoIcMObEx56o8k91S" class="bg-gold text-slate-950 px-4 py-2 rounded-lg font-semibold">Get started</a>
-      </div>
-      <a href="https://buy.stripe.com/9B67sNeoIcMObEx56o8k91S" class="md:hidden bg-gold text-slate-950 px-3 py-1.5 rounded-lg font-semibold text-sm">Start</a>
-    </div>
-  </nav>
-
-  <section class="max-w-6xl mx-auto px-6 pt-16 pb-8 text-center">
-    <h1 class="text-4xl md:text-5xl font-extrabold">Simple, transparent pricing</h1>
-    <p class="mt-4 text-lg text-slate-400">AI Safety Posture Score · EU AI Act ready · 30-second checkout</p>
-  </section>
-
-  <section class="max-w-5xl mx-auto px-6 py-10">
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="border-slate-800 bg-slate-900 border rounded-2xl p-8 flex flex-col">
-        <p class="text-sm font-semibold text-gold uppercase tracking-wide">Free</p>
-        <div class="mt-4 flex items-baseline gap-1">
-          <span class="text-4xl font-extrabold">£0</span>
-          <span class="text-slate-400">forever</span>
+  <div class="gradient-radial">
+    <nav class="border-b border-slate-800">
+      <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="/" class="text-2xl font-extrabold tracking-tight">SafetyOf<span class="text-gold">.ai</span></a>
+        <div class="hidden md:flex items-center gap-6">
+          <a href="/pricing/" class="text-sm font-medium text-slate-300 hover:text-gold transition">Pricing</a><a href="/partner/" class="text-sm font-medium text-slate-300 hover:text-gold transition">Partner</a><a href="/enterprise/" class="text-sm font-medium text-slate-300 hover:text-gold transition">Enterprise</a><a href="/signup/" class="text-sm font-medium text-slate-300 hover:text-gold transition">Signup</a>
+          <a href="/signup/" class="bg-gold text-slate-950 px-4 py-2 rounded-lg font-semibold">Get started</a>
         </div>
-        <ul class="mt-6 space-y-3 text-slate-300 flex-1">
-          <li class="flex gap-2"><span class="text-gold">✓</span><span>5-minute AI Safety Posture Score scorecard</span></li>
-          <li class="flex gap-2"><span class="text-gold">✓</span><span>Top-3 gap summary</span></li>
-          <li class="flex gap-2"><span class="text-gold">✓</span><span>Email PDF report</span></li>
-          <li class="flex gap-2"><span class="text-gold">✓</span><span>Public llms.txt + agent card</span></li>
-        </ul>
-        <a href="/signup/?plan=free" class="mt-8 block text-center bg-gold text-slate-950 px-6 py-3 rounded-xl font-bold">Get free score</a>
+        <a href="/signup/" class="md:hidden bg-gold text-slate-950 px-3 py-1.5 rounded-lg font-semibold text-sm">Start</a>
       </div>
-      <div class="border-gold ring-1 ring-gold bg-slate-900 border rounded-2xl p-8 flex flex-col relative">
-        <p class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-slate-950 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Most popular</p>
-        <p class="text-sm font-semibold text-gold uppercase tracking-wide">Pro · Sovereign</p>
-        <div class="mt-4 flex items-baseline gap-1">
-          <span class="text-4xl font-extrabold">£29</span>
-          <span class="text-slate-400">per month</span>
+    </nav>
+
+    
+    <section class="max-w-6xl mx-auto px-6 pt-16 pb-8 text-center">
+      <h1 class="text-4xl md:text-5xl font-extrabold">Simple, transparent pricing</h1>
+      <p class="mt-4 text-lg text-slate-400">Start small, scale as your operation grows.</p>
+    </section>
+    <section class="max-w-5xl mx-auto px-6 py-10">
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="border-slate-800 bg-slate-900 border rounded-2xl p-8 flex flex-col">
+          <p class="text-sm font-semibold text-gold uppercase tracking-wide">Free Score</p>
+          <div class="mt-4 flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold">£0</span>
+            <span class="text-slate-400">forever</span>
+          </div>
+          <ul class="mt-6 space-y-3 text-slate-300 flex-1">
+            <li class="flex gap-2"><span class="text-gold">✓</span><span>5-minute posture scorecard</span></li><li class="flex gap-2"><span class="text-gold">✓</span><span>Top-3 gap summary</span></li><li class="flex gap-2"><span class="text-gold">✓</span><span>Email PDF report</span></li>
+          </ul>
+          <a href="/signup/" class="mt-8 block text-center bg-gold text-slate-950 px-6 py-3 rounded-xl font-bold hover:bg-gold-dark transition">Get free score</a>
+        </div><div class="border-gold ring-1 ring-gold bg-slate-900 border rounded-2xl p-8 flex flex-col">
+          <p class="text-sm font-semibold text-gold uppercase tracking-wide">Pro</p>
+          <div class="mt-4 flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold">£99</span>
+            <span class="text-slate-400">per month</span>
+          </div>
+          <ul class="mt-6 space-y-3 text-slate-300 flex-1">
+            <li class="flex gap-2"><span class="text-gold">✓</span><span>Full control-by-control score</span></li><li class="flex gap-2"><span class="text-gold">✓</span><span>Unlimited re-scans</span></li><li class="flex gap-2"><span class="text-gold">✓</span><span>Remediation playbooks</span></li><li class="flex gap-2"><span class="text-gold">✓</span><span>Evidence vault</span></li>
+          </ul>
+          <a href="/signup/" class="mt-8 block text-center bg-gold text-slate-950 px-6 py-3 rounded-xl font-bold hover:bg-gold-dark transition">Start Pro</a>
+        </div><div class="border-slate-800 bg-slate-900 border rounded-2xl p-8 flex flex-col">
+          <p class="text-sm font-semibold text-gold uppercase tracking-wide">Enterprise</p>
+          <div class="mt-4 flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold">Custom</span>
+            <span class="text-slate-400">POA</span>
+          </div>
+          <ul class="mt-6 space-y-3 text-slate-300 flex-1">
+            <li class="flex gap-2"><span class="text-gold">✓</span><span>Multi-entity scoring</span></li><li class="flex gap-2"><span class="text-gold">✓</span><span>Auditor-ready exports</span></li><li class="flex gap-2"><span class="text-gold">✓</span><span>SSO + SLA</span></li><li class="flex gap-2"><span class="text-gold">✓</span><span>API / MCP access</span></li>
+          </ul>
+          <a href="/signup/" class="mt-8 block text-center bg-gold text-slate-950 px-6 py-3 rounded-xl font-bold hover:bg-gold-dark transition">Talk to sales</a>
         </div>
-        <ul class="mt-6 space-y-3 text-slate-300 flex-1">
-          <li class="flex gap-2"><span class="text-gold">✓</span><span>Full AI Safety Posture Score</span></li>
-          <li class="flex gap-2"><span class="text-gold">✓</span><span>Unlimited re-scans</span></li>
-          <li class="flex gap-2"><span class="text-gold">✓</span><span>Remediation playbooks</span></li>
-          <li class="flex gap-2"><span class="text-gold">✓</span><span>Evidence vault (signed)</span></li>
-          <li class="flex gap-2"><span class="text-gold">✓</span><span>MCP server access</span></li>
-        </ul>
-        <a href="https://buy.stripe.com/9B67sNeoIcMObEx56o8k91S" class="mt-8 block text-center bg-gold text-slate-950 px-6 py-3 rounded-xl font-bold">Start Pro · £29/mo</a>
       </div>
-      <div class="border-slate-800 bg-slate-900 border rounded-2xl p-8 flex flex-col">
-        <p class="text-sm font-semibold text-gold uppercase tracking-wide">Enterprise</p>
-        <div class="mt-4 flex items-baseline gap-1">
-          <span class="text-4xl font-extrabold">£199</span>
-          <span class="text-slate-400">per month</span>
+      <p class="mt-8 text-center text-sm text-slate-500">All prices exclude VAT. Enterprise plans include dedicated onboarding and MCP access.</p>
+    </section>
+    
+    <section class="max-w-4xl mx-auto px-6 py-16 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold">Ready to make SafetyOf work for you?</h2>
+      <p class="mt-4 text-slate-400">Start a free trial, request a demo, or apply to become a partner.</p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/signup/" class="bg-gold text-slate-950 px-8 py-3 rounded-xl font-bold text-lg hover:bg-gold-dark transition">Sign up now</a>
+        <a href="/enterprise/" class="border border-slate-600 text-slate-100 px-8 py-3 rounded-xl font-semibold hover:border-gold hover:text-gold transition">Become a partner</a>
+      </div>
+    </section>
+    
+    
+
+    <footer class="border-t border-slate-800 mt-20">
+      <div class="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-3 gap-8 text-sm text-slate-400">
+        <div>
+          <p class="text-lg font-bold text-slate-100">SafetyOf<span class="text-gold">.ai</span></p>
+          <p class="mt-2">Part of MEOK AI Labs — CSOAI Ltd, UK 16939677.</p>
         </div>
-        <ul class="mt-6 space-y-3 text-slate-300 flex-1">
-          <li class="flex gap-2"><span class="text-gold">✓</span><span>Multi-entity scoring</span></li>
-          <li class="flex gap-2"><span class="text-gold">✓</span><span>Auditor-ready exports (PDF + JSON)</span></li>
-          <li class="flex gap-2"><span class="text-gold">✓</span><span>SSO + 99.9% SLA</span></li>
-          <li class="flex gap-2"><span class="text-gold">✓</span><span>Dedicated MCP + API quotas</span></li>
-          <li class="flex gap-2"><span class="text-gold">✓</span><span>Watchdog Cert eligible</span></li>
-        </ul>
-        <a href="https://buy.stripe.com/eVq14p1BWcMO4c59mE8k91T" class="mt-8 block text-center bg-gold text-slate-950 px-6 py-3 rounded-xl font-bold">Start Enterprise · £199/mo</a>
+        <div class="flex flex-col gap-2">
+          <a href="/pricing/" class="hover:text-gold">Pricing</a>
+          <a href="/partner/" class="hover:text-gold">Partners</a>
+          <a href="/enterprise/" class="hover:text-gold">Enterprise</a>
+          <a href="/signup/" class="hover:text-gold">Sign up</a>
+        </div>
+        <div>
+          <p>hello@meok.ai</p>
+          <p class="mt-2">100% Nick Templeman · Sovereign UK infrastructure.</p>
+        </div>
       </div>
-    </div>
-    <p class="mt-8 text-center text-sm text-slate-500">All prices exclude VAT. One-time Watchdog Cert add-on: <a href="https://buy.stripe.com/9B6dRb2G0eUWcIBaqI8k91Y" class="text-gold underline">£4,950</a> · Article 50 Kit: <a href="https://buy.stripe.com/fZu00l4O8fZ07oh0Q88k91V" class="text-gold underline">£999</a>.</p>
-  </section>
-
-  <section class="max-w-5xl mx-auto px-6 py-12">
-    <h2 class="text-2xl font-bold text-center">Compare features</h2>
-    <div class="mt-8 overflow-x-auto">
-      <table class="w-full text-sm">
-        <thead>
-          <tr class="text-left text-slate-400 border-b border-slate-800">
-            <th class="py-3 px-4">Feature</th>
-            <th class="py-3 px-4 text-center">Free</th>
-            <th class="py-3 px-4 text-center text-gold">Pro £29</th>
-            <th class="py-3 px-4 text-center">Enterprise £199</th>
-          </tr>
-        </thead>
-        <tbody class="text-slate-300">
-          <tr class="border-b border-slate-800"><td class="py-3 px-4">AI Safety Posture Score scorecard</td><td class="py-3 px-4 text-center">5-min</td><td class="py-3 px-4 text-center">Full</td><td class="py-3 px-4 text-center">Multi-entity</td></tr>
-          <tr class="border-b border-slate-800"><td class="py-3 px-4">EU AI Act Article 50 mapping</td><td class="py-3 px-4 text-center">—</td><td class="py-3 px-4 text-center">✓</td><td class="py-3 px-4 text-center">✓</td></tr>
-          <tr class="border-b border-slate-800"><td class="py-3 px-4">Remediation playbooks</td><td class="py-3 px-4 text-center">—</td><td class="py-3 px-4 text-center">✓</td><td class="py-3 px-4 text-center">✓</td></tr>
-          <tr class="border-b border-slate-800"><td class="py-3 px-4">Evidence vault (signed)</td><td class="py-3 px-4 text-center">—</td><td class="py-3 px-4 text-center">✓</td><td class="py-3 px-4 text-center">✓</td></tr>
-          <tr class="border-b border-slate-800"><td class="py-3 px-4">MCP server access</td><td class="py-3 px-4 text-center">Read-only</td><td class="py-3 px-4 text-center">✓</td><td class="py-3 px-4 text-center">✓</td></tr>
-          <tr class="border-b border-slate-800"><td class="py-3 px-4">API quotas (calls/mo)</td><td class="py-3 px-4 text-center">100</td><td class="py-3 px-4 text-center">10,000</td><td class="py-3 px-4 text-center">Unlimited</td></tr>
-          <tr class="border-b border-slate-800"><td class="py-3 px-4">SSO / SAML</td><td class="py-3 px-4 text-center">—</td><td class="py-3 px-4 text-center">—</td><td class="py-3 px-4 text-center">✓</td></tr>
-          <tr class="border-b border-slate-800"><td class="py-3 px-4">Watchdog Cert add-on</td><td class="py-3 px-4 text-center">—</td><td class="py-3 px-4 text-center">Eligible</td><td class="py-3 px-4 text-center">Eligible</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="max-w-4xl mx-auto px-6 py-16 text-center">
-    <h2 class="text-3xl md:text-4xl font-bold">Ready to make SafetyOf work for you?</h2>
-    <p class="mt-4 text-slate-400">Start a 30-second Stripe checkout, request an enterprise demo, or apply to become a partner.</p>
-    <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="https://buy.stripe.com/9B67sNeoIcMObEx56o8k91S" class="bg-gold text-slate-950 px-8 py-3 rounded-xl font-bold text-lg">Sign up · £29/mo</a>
-      <a href="https://buy.stripe.com/eVq14p1BWcMO4c59mE8k91T" class="border border-slate-600 text-slate-100 px-8 py-3 rounded-xl font-semibold hover:border-gold hover:text-gold">Enterprise · £199/mo</a>
-      <a href="/partner/" class="border border-slate-600 text-slate-100 px-8 py-3 rounded-xl font-semibold hover:border-gold hover:text-gold">Become a partner</a>
-    </div>
-  </section>
-
-  <footer class="border-t border-slate-800 mt-20">
-    <div class="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-3 gap-8 text-sm text-slate-400">
-      <div>
-        <p class="text-lg font-bold text-slate-100">SafetyOf<span class="text-gold">.ai</span></p>
-        <p class="mt-2">Part of MEOK AI Labs — CSOAI Ltd, UK 16939677.</p>
+      <div class="max-w-6xl mx-auto px-6 pb-8 text-xs text-slate-500 flex flex-wrap gap-4">
+        <a href="https://meok.ai/privacy" class="hover:text-gold">Privacy</a>
+        <a href="https://meok.ai/terms" class="hover:text-gold">Terms</a>
+        <a href="https://meok.ai/cookies" class="hover:text-gold">Cookies</a>
+        <span>© 2026 SafetyOf.ai</span>
       </div>
-      <div class="flex flex-col gap-2">
-        <a href="/pricing/" class="hover:text-gold">Pricing</a>
-        <a href="/partner/" class="hover:text-gold">Partners</a>
-        <a href="/enterprise/" class="hover:text-gold">Enterprise</a>
-        <a href="/signup/" class="hover:text-gold">Sign up</a>
-        <a href="/connect/mcp" class="hover:text-gold">Connect via MCP</a>
-      </div>
-      <div>
-        <p>hello@meok.ai</p>
-        <p class="mt-2">Sovereign UK infrastructure · 100% Nick Templeman.</p>
-      </div>
-    </div>
-    <div class="max-w-6xl mx-auto px-6 pb-8 text-xs text-slate-500 flex flex-wrap gap-4">
-      <a href="https://meok.ai/privacy" class="hover:text-gold">Privacy</a>
-      <a href="https://meok.ai/terms" class="hover:text-gold">Terms</a>
-      <a href="https://meok.ai/cookies" class="hover:text-gold">Cookies</a>
-      <span>© 2026 SafetyOf.ai</span>
-    </div>
-  </footer>
+    </footer>
+  </div>
+  <script>
+    document.documentElement.classList.add('has-js');
+    (function () {
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('seen'); io.unobserve(e.target); } });
+      }, { threshold: 0.08 });
+      document.querySelectorAll('section').forEach(function (s) { io.observe(s); });
+      var nav = document.querySelector('nav');
+      if (nav) addEventListener('scroll', function () {
+        nav.style.boxShadow = scrollY > 8 ? '0 1px 0 rgba(255,255,255,0.06)' : 'none';
+      }, { passive: true });
+    })();
+  </script>
 </body>
 </html>

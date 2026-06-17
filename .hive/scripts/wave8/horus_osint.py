@@ -8,6 +8,7 @@ available; falls back to polite direct HTTP scraping.
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import os
@@ -44,7 +45,47 @@ def load_watchlist() -> list[dict[str, Any]]:
     return DEFAULT_WATCHLIST
 
 
+def fetch_apify(url: str) -> tuple[str, int]:
+    key = os.environ.get("APIFY_API_TOKEN")
+    if not key:
+        return "", 0
+    try:
+        payload = json.dumps({"startUrls": [{"url": url}], "maxCrawlDepth": 0}).encode()
+        req = urllib.request.Request(
+            f"https://api.apify.com/v2/acts/apify~website-content-crawler/run-sync?token={key}",
+            data=payload, headers={"Content-Type": "application/json"}, method="POST")
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            data = json.loads(resp.read().decode())
+            items = data.get("data", {}).get("items", [])
+            return (items[0].get("text", "") if items else ""), 200
+    except Exception as exc:
+        return f"APIFY ERROR: {exc}", 0
+
+
+def fetch_zyte(url: str) -> tuple[str, int]:
+    key = os.environ.get("ZYTE_API_KEY")
+    if not key:
+        return "", 0
+    try:
+        payload = json.dumps({"url": url, "httpResponseBody": True}).encode()
+        req = urllib.request.Request(
+            "https://api.zyte.com/v1/extract",
+            data=payload, headers={"Content-Type": "application/json", "Authorization": f"Basic {key}"},
+            method="POST")
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            data = json.loads(resp.read().decode())
+            body = data.get("httpResponseBody", "")
+            return body, 200
+    except Exception as exc:
+        return f"ZYTE ERROR: {exc}", 0
+
+
 def fetch(url: str) -> tuple[str, int]:
+    # Prefer Apify / Zyte if configured, else direct polite HTTP.
+    for backend in (fetch_apify, fetch_zyte):
+        html, status = backend(url)
+        if status == 200 and html:
+            return html, status
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html,*/*"})
     try:
         with urllib.request.urlopen(req, timeout=20) as resp:
@@ -108,11 +149,22 @@ def send_pheromone_alarm(target: dict[str, Any]) -> None:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--limit", type=int, help="Scan only first N competitors")
+    args = parser.parse_args()
+
     targets = load_watchlist()
+    if args.limit:
+        targets = targets[:args.limit]
+    # For large watchlists, scan only the homepage to stay within time budget.
+    if len(targets) > 20:
+        for t in targets:
+            t["pages"] = ["/"]
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     intel = []
-    with ThreadPoolExecutor(max_workers=8) as ex:
+    workers = 16 if len(targets) > 20 else 8
+    with ThreadPoolExecutor(max_workers=workers) as ex:
         futures = {ex.submit(monitor_target, t): t for t in targets}
         for fut in as_completed(futures):
             result = fut.result()

@@ -37,6 +37,11 @@ STEPS = [
     ("quorum-sensor", [PYTHON, str(SCRIPT_DIR / "quorum_sensor.py")]),
 ]
 
+# Long-running steps need more than the default 5 minutes.
+STEP_TIMEOUTS: dict[str, int] = {
+    "government-data-downloader": 1800,  # 30 min for multi-GB datasets
+}
+
 
 def log(msg: str) -> None:
     ts = datetime.now(timezone.utc).isoformat()
@@ -50,7 +55,8 @@ def log(msg: str) -> None:
 def run_step(name: str, cmd: list[str]) -> dict[str, Any]:
     log(f"START {name}")
     try:
-        r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=300)
+        timeout = STEP_TIMEOUTS.get(name, 300)
+        r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=timeout)
         ok = r.returncode == 0
         if not ok:
             log(f"FAIL {name}: rc={r.returncode} stderr={r.stderr[:500]}")
