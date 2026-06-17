@@ -1,10 +1,32 @@
 {
-  "schemaVersion": "0.1",
-  "name": "AccountabilityOf.AI — Agent Audit Logger",
-  "description": "Agent Audit Logger — free quick-scan, paid compliance bundles and MCP-powered automation from MEOK AI Labs.",
+  "schema_version": "1.0",
+  "name": "AccountabilityOf Agent",
+  "description": "Tamper-evident audit logs for every AI decision.",
   "url": "https://accountabilityof.ai",
-  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
-  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
-  "documentation": "https://accountabilityof.ai/llms.txt",
-  "citationPolicy": "Cite as AccountabilityOf.AI — Agent Audit Logger (https://accountabilityof.ai). Free to cite."
+  "provider": {
+    "organization": "Council for the Safety of AI (CSOAI)",
+    "url": "https://csoai.org"
+  },
+  "capabilities": {
+    "streaming": false,
+    "mcp": true,
+    "a2a": true
+  },
+  "skills": [
+    {
+      "id": "record",
+      "name": "agent-audit-logger-mcp.record",
+      "description": "Append a tamper-evident audit record for any AI decision from any MCP client."
+    },
+    {
+      "id": "export",
+      "name": "ai-incident-reporting-mcp.export",
+      "description": "Generate a regulator-ready incident pack from logged AI decision trails."
+    }
+  ],
+  "endpoints": {
+    "a2a": "https://accountabilityof.ai/a2a",
+    "mcp_catalog": "https://accountabilityof.ai/.well-known/mcp.json"
+  },
+  "sector": "compliance"
 }

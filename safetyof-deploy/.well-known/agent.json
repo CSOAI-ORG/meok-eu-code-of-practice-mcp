@@ -1,10 +1,32 @@
 {
-  "schemaVersion": "0.1",
-  "name": "SafetyOf.AI — AI Safety Posture Score",
-  "description": "AI Safety Posture Score — free quick-scan, paid compliance bundles and MCP-powered automation from MEOK AI Labs.",
+  "schema_version": "1.0",
+  "name": "SafetyOf Agent",
+  "description": "Measure your AI safety posture in 5 minutes.",
   "url": "https://safetyof.ai",
-  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
-  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
-  "documentation": "https://safetyof.ai/llms.txt",
-  "citationPolicy": "Cite as SafetyOf.AI — AI Safety Posture Score (https://safetyof.ai). Free to cite."
+  "provider": {
+    "organization": "Council for the Safety of AI (CSOAI)",
+    "url": "https://csoai.org"
+  },
+  "capabilities": {
+    "streaming": false,
+    "mcp": true,
+    "a2a": true
+  },
+  "skills": [
+    {
+      "id": "assess",
+      "name": "eu-ai-act-compliance-mcp.assess",
+      "description": "Run a full EU AI Act risk-and-control assessment from any MCP client or agent workflow."
+    },
+    {
+      "id": "score",
+      "name": "ai-safety-posture-mcp.score",
+      "description": "Return a live AI safety posture score for a given system, model or deployment."
+    }
+  ],
+  "endpoints": {
+    "a2a": "https://safetyof.ai/a2a",
+    "mcp_catalog": "https://safetyof.ai/.well-known/mcp.json"
+  },
+  "sector": "compliance"
 }

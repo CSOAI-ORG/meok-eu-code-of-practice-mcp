@@ -1,27 +1,21 @@
-# OpenMoe — openmoe.ai
+# openmoe (openmoe.ai)
 
-> Mixture of Experts
+> Byzantine-fault-tolerant consensus for MoE routing.
+
+openmoe-bft is an open-source library for Byzantine-fault-tolerant Mixture-of-Experts routing — with built-in EU AI Act compliance attestation for production AI infrastructure.
+
+## What this is
+openmoe is a vertical in the CSOAI Hive — EU AI Act / NIS2 / DORA compliant tooling exposed as Model Context Protocol (MCP) servers callable by any AI agent.
+
+## MCP tools
+- openmoe-bft-mcp.route: Make BFT-verified Mixture-of-Experts routing decisions from any agent.
+- openmoe-bft-mcp.attest: Generate signed EU AI Act compliance attestations for routing decisions via MCP.
+
+## Discovery
+- Agent card: https://openmoe.ai/agent.json
+- MCP catalog: https://openmoe.ai/.well-known/mcp.json
+- Sitemap: https://openmoe.ai/sitemap.xml
+- Hive registry: https://csoai.org (271 published MCP servers)
 
 ## Pricing
-- Free: £0/mo (5-min scorecard)
-- Pro: £29/mo (full Mixture of Experts, MCP access)
-- Enterprise: £199/mo (multi-entity, SSO, API quotas)
-- One-time: Article 50 Kit £999, Watchdog Cert £4,950
-
-## Stripe
-- Sovereign £29: https://buy.stripe.com/9B67sNeoIcMObEx56o8k91S
-- Pro £199: https://buy.stripe.com/eVq14p1BWcMO4c59mE8k91T
-
-## MCP server
-- Endpoint: https://openmoe.ai/mcp
-- Tools: openmoe-bft, openMCP
-
-## EU AI Act
-- Article 50 (transparency): 2 Aug 2026 cliff
-- Article 51 (post-market monitoring): ongoing
-- Watchdog Cert add-on: signed Ed25519+HMAC-SHA256 attestation
-
-## Contact
-- https://meok.ai
-- CSOAI Ltd, UK company 16939677
-- MEOK AI Labs sovereign substrate
+See https://openmoe.ai/pricing/

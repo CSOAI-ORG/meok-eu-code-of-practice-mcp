@@ -1,27 +1,21 @@
-# DataPrivacyOf — dataprivacyof.ai
+# DataPrivacyOf (dataprivacyof.ai)
 
-> AI Data Privacy
+> Privacy-grade AI from training to inference.
+
+Automate Data Protection Impact Assessments, map personal-data flows through your AI systems, and prove GDPR and EU AI Act compliance end to end.
+
+## What this is
+DataPrivacyOf is a vertical in the CSOAI Hive — EU AI Act / NIS2 / DORA compliant tooling exposed as Model Context Protocol (MCP) servers callable by any AI agent.
+
+## MCP tools
+- data-privacy-dpia-mcp.assess: Generate or update a GDPR DPIA for an AI use case from any MCP client or workflow.
+- pii-detection-mcp.scan: Detect personal data in prompts, datasets and outputs and suggest minimisation actions.
+
+## Discovery
+- Agent card: https://dataprivacyof.ai/agent.json
+- MCP catalog: https://dataprivacyof.ai/.well-known/mcp.json
+- Sitemap: https://dataprivacyof.ai/sitemap.xml
+- Hive registry: https://csoai.org (271 published MCP servers)
 
 ## Pricing
-- Free: £0/mo (5-min scorecard)
-- Pro: £29/mo (full AI Data Privacy, MCP access)
-- Enterprise: £199/mo (multi-entity, SSO, API quotas)
-- One-time: Article 50 Kit £999, Watchdog Cert £4,950
-
-## Stripe
-- Sovereign £29: https://buy.stripe.com/9B67sNeoIcMObEx56o8k91S
-- Pro £199: https://buy.stripe.com/eVq14p1BWcMO4c59mE8k91T
-
-## MCP server
-- Endpoint: https://dataprivacyof.ai/mcp
-- Tools: dataprivacy-ai-mcp, gdpr-compliance-ai-mcp
-
-## EU AI Act
-- Article 50 (transparency): 2 Aug 2026 cliff
-- Article 51 (post-market monitoring): ongoing
-- Watchdog Cert add-on: signed Ed25519+HMAC-SHA256 attestation
-
-## Contact
-- https://meok.ai
-- CSOAI Ltd, UK company 16939677
-- MEOK AI Labs sovereign substrate
+See https://dataprivacyof.ai/pricing/

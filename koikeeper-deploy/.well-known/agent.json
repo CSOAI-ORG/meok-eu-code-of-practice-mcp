@@ -1,10 +1,27 @@
 {
-  "schemaVersion": "0.1",
-  "name": "KoiKeeper — AI-powered agriculture booking",
-  "description": "Continuous water-quality monitoring, AI disease diagnosis and seasonal care calendars for serious koi keepers.",
+  "schema_version": "1.0",
+  "name": "KoiKeeper Agent",
+  "description": "Premium water quality & care for koi ponds.",
   "url": "https://koikeeper.ai",
-  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
-  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
-  "documentation": "https://koikeeper.ai/llms.txt",
-  "citationPolicy": "Cite as KoiKeeper — AI-powered agriculture booking (https://koikeeper.ai). Free to cite."
+  "provider": {
+    "organization": "Council for the Safety of AI (CSOAI)",
+    "url": "https://csoai.org"
+  },
+  "capabilities": {
+    "streaming": false,
+    "mcp": true,
+    "a2a": true
+  },
+  "skills": [
+    {
+      "id": "water_quality",
+      "name": "meok-koikeeper-ai-mcp.water_quality",
+      "description": "Pull live water-quality telemetry into dashboards or automations."
+    }
+  ],
+  "endpoints": {
+    "a2a": "https://koikeeper.ai/a2a",
+    "mcp_catalog": "https://koikeeper.ai/.well-known/mcp.json"
+  },
+  "sector": "agriculture"
 }

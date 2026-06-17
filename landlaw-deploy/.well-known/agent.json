@@ -1,10 +1,32 @@
 {
-  "schemaVersion": "0.1",
-  "name": "LandLaw.ai — UK Planning Permission & Land Law AI Assistant",
-  "description": "Instant guidance on planning permission, permitted development, boundary disputes, and land law — reviewed by UK solicitors.",
+  "schema_version": "1.0",
+  "name": "LandLaw Agent",
+  "description": "UK planning permission & land law, answered in seconds.",
   "url": "https://landlaw.ai",
-  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
-  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
-  "documentation": "https://landlaw.ai/llms.txt",
-  "citationPolicy": "Cite as LandLaw.ai — UK Planning Permission & Land Law AI Assistant (https://landlaw.ai). Free to cite."
+  "provider": {
+    "organization": "Council for the Safety of AI (CSOAI)",
+    "url": "https://csoai.org"
+  },
+  "capabilities": {
+    "streaming": false,
+    "mcp": true,
+    "a2a": true
+  },
+  "skills": [
+    {
+      "id": "check_planning",
+      "name": "landlaw-ai-mcp.check_planning",
+      "description": "Check planning permission and permitted development rights for any UK site from an AI agent or workflow."
+    },
+    {
+      "id": "draft_letter",
+      "name": "landlaw-ai-mcp.draft_letter",
+      "description": "Generate citation-backed planning and land-law letters directly from your case-management system."
+    }
+  ],
+  "endpoints": {
+    "a2a": "https://landlaw.ai/a2a",
+    "mcp_catalog": "https://landlaw.ai/.well-known/mcp.json"
+  },
+  "sector": "legal"
 }

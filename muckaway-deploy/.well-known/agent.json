@@ -1,10 +1,27 @@
 {
-  "schemaVersion": "0.1",
-  "name": "MuckAway — AI-powered construction booking",
-  "description": "Enter your spoil type, access and volume. We match you to the nearest licensed tipper or grab lorry — and quote in seconds.",
+  "schema_version": "1.0",
+  "name": "MuckAway Agent",
+  "description": "Instant muckaway quotes. Zero phone calls.",
   "url": "https://muckaway.ai",
-  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
-  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
-  "documentation": "https://muckaway.ai/llms.txt",
-  "citationPolicy": "Cite as MuckAway — AI-powered construction booking (https://muckaway.ai). Free to cite."
+  "provider": {
+    "organization": "Council for the Safety of AI (CSOAI)",
+    "url": "https://csoai.org"
+  },
+  "capabilities": {
+    "streaming": false,
+    "mcp": true,
+    "a2a": true
+  },
+  "skills": [
+    {
+      "id": "quote_job",
+      "name": "muckaway-ai-mcp.quote_job",
+      "description": "Embed instant muckaway quotes in CRMs, spreadsheets or AI agents."
+    }
+  ],
+  "endpoints": {
+    "a2a": "https://muckaway.ai/a2a",
+    "mcp_catalog": "https://muckaway.ai/.well-known/mcp.json"
+  },
+  "sector": "construction"
 }

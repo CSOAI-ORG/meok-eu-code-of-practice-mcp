@@ -1,10 +1,32 @@
 {
-  "schemaVersion": "0.1",
-  "name": "COBOL Bridge — Modernise Legacy Systems with AI",
-  "description": "Reverse-engineer, refactor, and migrate COBOL, mainframe JCL, and RPG to cloud-native services. Trusted by banks, insurers, and government agencies.",
+  "schema_version": "1.0",
+  "name": "COBOL Bridge Agent",
+  "description": "Modernise legacy COBOL systems with AI.",
   "url": "https://cobolbridge.ai",
-  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
-  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
-  "documentation": "https://cobolbridge.ai/llms.txt",
-  "citationPolicy": "Cite as COBOL Bridge — Modernise Legacy Systems with AI (https://cobolbridge.ai). Free to cite."
+  "provider": {
+    "organization": "Council for the Safety of AI (CSOAI)",
+    "url": "https://csoai.org"
+  },
+  "capabilities": {
+    "streaming": false,
+    "mcp": true,
+    "a2a": true
+  },
+  "skills": [
+    {
+      "id": "analyze",
+      "name": "cobol-bridge-mcp.analyze",
+      "description": "Analyse a COBOL codebase and extract business logic from any workflow."
+    },
+    {
+      "id": "migrate",
+      "name": "cobol-bridge-mcp.migrate",
+      "description": "Translate COBOL programs to modern languages with equivalence tests via MCP."
+    }
+  ],
+  "endpoints": {
+    "a2a": "https://cobolbridge.ai/a2a",
+    "mcp_catalog": "https://cobolbridge.ai/.well-known/mcp.json"
+  },
+  "sector": "developer"
 }

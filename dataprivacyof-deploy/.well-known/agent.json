@@ -1,10 +1,32 @@
 {
-  "schemaVersion": "0.1",
-  "name": "DataPrivacyOf.AI — GDPR & AI Privacy MCP",
-  "description": "GDPR & AI Privacy MCP — free quick-scan, paid compliance bundles and MCP-powered automation from MEOK AI Labs.",
+  "schema_version": "1.0",
+  "name": "DataPrivacyOf Agent",
+  "description": "Privacy-grade AI from training to inference.",
   "url": "https://dataprivacyof.ai",
-  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
-  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
-  "documentation": "https://dataprivacyof.ai/llms.txt",
-  "citationPolicy": "Cite as DataPrivacyOf.AI — GDPR & AI Privacy MCP (https://dataprivacyof.ai). Free to cite."
+  "provider": {
+    "organization": "Council for the Safety of AI (CSOAI)",
+    "url": "https://csoai.org"
+  },
+  "capabilities": {
+    "streaming": false,
+    "mcp": true,
+    "a2a": true
+  },
+  "skills": [
+    {
+      "id": "assess",
+      "name": "data-privacy-dpia-mcp.assess",
+      "description": "Generate or update a GDPR DPIA for an AI use case from any MCP client or workflow."
+    },
+    {
+      "id": "scan",
+      "name": "pii-detection-mcp.scan",
+      "description": "Detect personal data in prompts, datasets and outputs and suggest minimisation actions."
+    }
+  ],
+  "endpoints": {
+    "a2a": "https://dataprivacyof.ai/a2a",
+    "mcp_catalog": "https://dataprivacyof.ai/.well-known/mcp.json"
+  },
+  "sector": "compliance"
 }
