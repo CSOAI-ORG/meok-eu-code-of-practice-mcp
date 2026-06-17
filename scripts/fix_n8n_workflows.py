@@ -146,7 +146,7 @@ WHERE id = '{{$json.id}}';"""
     },
     "credentials": {
         "postgres": {
-            "id": "REPLACE_WITH_POSTGRES_CRED_ID",
+            "id": """",
             "name": "Templeman DB"
         }
     },

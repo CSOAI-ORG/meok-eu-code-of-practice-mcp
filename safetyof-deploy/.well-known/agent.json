@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "0.1",
+  "name": "SafetyOf.AI — AI Safety Posture Score",
+  "description": "AI Safety Posture Score — free quick-scan, paid compliance bundles and MCP-powered automation from MEOK AI Labs.",
+  "url": "https://safetyof.ai",
+  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
+  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
+  "documentation": "https://safetyof.ai/llms.txt",
+  "citationPolicy": "Cite as SafetyOf.AI — AI Safety Posture Score (https://safetyof.ai). Free to cite."
+}

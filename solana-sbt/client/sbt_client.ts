@@ -25,13 +25,15 @@ export const PROGRAM_ID = new PublicKey(
 // ---------------------------------------------------------------------------
 // SBT Types (must match Rust enum)
 // ---------------------------------------------------------------------------
-export enum SbtType {
-  AgentIdentity = 0,
-  SafetyCertification = 1,
-  VerifierReputation = 2,
-  CharacterGenesis = 3,
-  EnterpriseTrust = 4,
-}
+export const SbtType = {
+  AgentIdentity: 0,
+  SafetyCertification: 1,
+  VerifierReputation: 2,
+  CharacterGenesis: 3,
+  EnterpriseTrust: 4,
+} as const;
+
+export type SbtType = typeof SbtType[keyof typeof SbtType];
 
 export const SBT_TYPE_NAMES: Record<SbtType, string> = {
   [SbtType.AgentIdentity]: "Agent Identity",

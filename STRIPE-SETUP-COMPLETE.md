@@ -2,7 +2,7 @@
 
 **Status:** 🔴 LIVE MODE (Accepting Real Payments)  
 **Date:** April 16, 2026  
-**API Key:** sk_live_51TL... (Last 4: ndA)
+**API Key:** `<REDACTED — stored only in ~/.config/csoai/env (0600)>`
 
 ---
 

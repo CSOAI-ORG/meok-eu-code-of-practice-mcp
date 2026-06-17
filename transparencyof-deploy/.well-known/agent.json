@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "0.1",
+  "name": "TransparencyOf.AI — Agent Content Watermarking",
+  "description": "Agent Content Watermarking — free quick-scan, paid compliance bundles and MCP-powered automation from MEOK AI Labs.",
+  "url": "https://transparencyof.ai",
+  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
+  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
+  "documentation": "https://transparencyof.ai/llms.txt",
+  "citationPolicy": "Cite as TransparencyOf.AI — Agent Content Watermarking (https://transparencyof.ai). Free to cite."
+}

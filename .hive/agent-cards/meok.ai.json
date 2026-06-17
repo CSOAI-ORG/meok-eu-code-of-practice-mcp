@@ -1,0 +1,34 @@
+{
+  "agent_card": {
+    "name": "meok.ai",
+    "version": "1.0.0",
+    "signature_scheme": "ed25519",
+    "public_key": "X1gDHyPRj/6YJSsKuWYxF6uswGVnDTxsPyGO2IchSZI=",
+    "capabilities": [
+      "meok_lookup",
+      "meok_book",
+      "meok_verify"
+    ],
+    "pheromones": [
+      "trail",
+      "mark",
+      "guard"
+    ],
+    "caste": "worker",
+    "payment": {
+      "x402": true,
+      "ap2": true,
+      "ucp": true,
+      "acp": true
+    },
+    "mcp_servers": [
+      "https://meok.ai/mcp/pricing",
+      "https://meok.ai/mcp/availability",
+      "https://meok.ai/mcp/booking"
+    ],
+    "a2a_endpoint": "https://meok.ai/a2a",
+    "issuer": "CSOAI Hive",
+    "issued_at": "2026-06-16T09:45:28.111275+00:00"
+  },
+  "signature": "Uso80cDJSCHLIl1yGo3SXcKj9KAJZBiqaf1iP2sENzS7CdokrOBbu0kUWUJ2VyY5vai+Tyr1wMkpgk3zIN08Ag=="
+}

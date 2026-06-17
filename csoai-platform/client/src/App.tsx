@@ -84,6 +84,8 @@ import NISTAIRMFGuide from "./pages/NISTAIRMFGuide";
 import ISO42001Guide from "./pages/ISO42001Guide";
 import TC260Guide from "./pages/TC260Guide";
 import WhyCSOAI from "./pages/WhyCSOAI";
+import Article50Kit from "./pages/Article50Kit";
+import ComplianceMap from "./pages/ComplianceMap";
 // Legal Pages
 import MembershipAgreement from "./pages/legal/MembershipAgreement";
 import FoundingCouncilAgreement from "./pages/legal/FoundingCouncilAgreement";
@@ -95,6 +97,12 @@ import DataProcessingAgreement from "./pages/legal/DataProcessingAgreement";
 import CookiePolicy from "./pages/legal/CookiePolicy";
 import ServiceLevelAgreement from "./pages/legal/ServiceLevelAgreement";
 import Council from "./pages/Council";
+import CouncilDome from "./pages/CouncilDome";
+import CouncilDomains from "./pages/CouncilDomains";
+import CouncilMaps from "./pages/CouncilMaps";
+import CouncilCompliance from "./pages/CouncilCompliance";
+import CouncilLaw from "./pages/CouncilLaw";
+import CouncilSigil from "./pages/CouncilSigil";
 import { AnalyticsProvider } from "./components/Analytics";
 
 function ScrollToTop() {
@@ -203,6 +211,12 @@ function App() {
                   <Route path="/why-csoai" component={WhyCSOAI} />
                   <Route path="/our-difference" component={WhyCSOAI} />
                   <Route path="/why" component={WhyCSOAI} />
+                  <Route path="/article-50-kit" component={Article50Kit} />
+                  <Route path="/eu-ai-act/article-50" component={Article50Kit} />
+                  <Route path="/kit" component={Article50Kit} />
+                  <Route path="/compliance-map" component={ComplianceMap} />
+                  <Route path="/map/regulations" component={ComplianceMap} />
+                  <Route path="/map/regimes" component={ComplianceMap} />
                   {/* AI Framework Guides */}
                   <Route path="/eu-ai-act" component={EUAIActGuide} />
                   <Route path="/frameworks/eu-ai-act" component={EUAIActGuide} />
@@ -221,7 +235,13 @@ function App() {
                   <Route path="/prosperity-fund" component={ProsperityFund} />
                   <Route path="/founding-members" component={FoundingMembers} />
                   <Route path="/byzantine" component={AgentCouncil} />
-                  <Route path="/council" component={Council} />
+                  <Route path="/council" component={CouncilDome} />
+                  <Route path="/council/overview" component={Council} />
+                  <Route path="/council/dome" component={CouncilDomains} />
+                  <Route path="/council/maps" component={CouncilMaps} />
+                  <Route path="/council/compliance" component={CouncilCompliance} />
+                  <Route path="/council/law" component={CouncilLaw} />
+                  <Route path="/council/sigil" component={CouncilSigil} />
                   <Route path="/public-watchdog" component={PublicWatchdog} />
                   <Route path="/government" component={GovernmentDashboard} />
                   <Route path="/government-dashboard" component={GovernmentDashboard} />

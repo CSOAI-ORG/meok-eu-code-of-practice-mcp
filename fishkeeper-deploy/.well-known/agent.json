@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "0.1",
+  "name": "FishKeeper — AI-powered agriculture booking",
+  "description": "Upload a photo, get an instant disease diagnosis, treatment guide and water-quality action plan.",
+  "url": "https://fishkeeper.ai",
+  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
+  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
+  "documentation": "https://fishkeeper.ai/llms.txt",
+  "citationPolicy": "Cite as FishKeeper — AI-powered agriculture booking (https://fishkeeper.ai). Free to cite."
+}

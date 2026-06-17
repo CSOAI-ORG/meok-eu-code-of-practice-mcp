@@ -1,0 +1,15 @@
+# optimobile.ai
+
+NHS GOS, PVN & domiciliary workflows in one AI-assisted practice platform. Built for independent opticians and small chains.
+
+Part of the MEOK AI Labs sovereign hive: https://meok.ai
+
+## Pages
+- Home: https://optimobile.ai/
+- Pricing: https://optimobile.ai/pricing
+- Signup: https://optimobile.ai/signup
+- Partner: https://optimobile.ai/partner
+- Enterprise: https://optimobile.ai/enterprise
+
+## Contact
+hello@meok.ai

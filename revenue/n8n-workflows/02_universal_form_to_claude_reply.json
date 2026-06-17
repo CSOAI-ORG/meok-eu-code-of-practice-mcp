@@ -41,7 +41,7 @@
       "position": [400, 300],
       "credentials": {
         "anthropicApi": {
-          "id": "REPLACE_WITH_ANTHROPIC_CRED_ID",
+          "id": """",
           "name": "Anthropic Claude"
         }
       }
@@ -61,7 +61,7 @@
       "position": [600, 300],
       "credentials": {
         "smtp": {
-          "id": "REPLACE_WITH_SMTP_CRED_ID",
+          "id": """",
           "name": "Brand SMTP"
         }
       }
@@ -78,7 +78,7 @@
       "position": [800, 300],
       "credentials": {
         "postgres": {
-          "id": "REPLACE_WITH_POCKETBASE_CRED_ID",
+          "id": """",
           "name": "PocketBase shared CRM"
         }
       }
@@ -95,7 +95,7 @@
       "position": [800, 500],
       "credentials": {
         "slackApi": {
-          "id": "REPLACE_WITH_SLACK_CRED_ID",
+          "id": """",
           "name": "Slack — Nick"
         }
       }

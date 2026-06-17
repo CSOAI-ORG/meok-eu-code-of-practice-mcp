@@ -1,0 +1,36 @@
+# MEOK AI Labs
+
+> 340+ Model Context Protocol (MCP) servers for AI compliance. One server per regulation. MIT-licensed, PyPI-installable, MCP-registry registered.
+
+Built by MEOK AI Labs (CSOAI Ltd, UK Companies House 16939677). Solo founder Nick Templeman, Yorkshire UK.
+
+## Links
+
+- [Site](https://meok.ai): main site
+- [Fleet hub](https://meok.ai/fleet/): all 340+ packages
+- [Scorecard](https://proofof.ai/scorecard): 7-surface coverage
+- [Landing pages](https://meok.ai/dist/): one per compliance domain
+- [Practitioner guides](https://meok.ai/guides/): implementation walkthroughs
+- [Full package index](https://meok.ai/llms-full.txt): for LLM crawlers
+
+## Installation
+
+```
+pip install <package-name>
+# or
+uvx <package-name>
+```
+
+## Coverage
+
+- 340+ packages
+- All in the official MCP registry
+- All on PyPI (4 throttled, 24-48h to clear)
+- 7-surface coverage (server.json, A2A agent, ACP, llms.txt, glama, smithery, badge) for 100%
+
+## Featured regulations
+
+- EU AI Act (40+ articles as separate packages)
+- DORA / NIS2 / CRA (financial + cyber resilience)
+- GDPR + ISO 42001 + SOC 2 + PCI DSS + HIPAA
+- FDA SaMD + MDR + Canada AIDA + UK Bribery Act + more

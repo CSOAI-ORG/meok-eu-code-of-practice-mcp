@@ -1,0 +1,14 @@
+# wowmcp.ai
+
+Model Context Protocol server for World of Warcraft data. 10 tools for raid strategy, character analysis, auction house intelligence, M+ routing, and more.
+
+Part of the MEOK AI Labs sovereign hive: https://meok.ai
+
+## Pages
+- Home: https://wowmcp.ai/
+- Pricing: https://wowmcp.ai/pricing
+- Signup: https://wowmcp.ai/signup
+- Partner: https://wowmcp.ai/partner
+
+## Contact
+hello@meok.ai

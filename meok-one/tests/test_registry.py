@@ -36,7 +36,7 @@ def test_unknown_character_raises():
 
 def test_persona_is_system_prompt():
     p = R.persona("marcus")
-    assert "Marcus" in p and "performance" in p.lower()
+    assert "Marcus" in p and "encouragement" in p.lower()
 
 
 def test_voice_has_elevenlabs_params():

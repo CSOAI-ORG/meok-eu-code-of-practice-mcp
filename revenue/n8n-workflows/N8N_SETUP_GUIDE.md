@@ -32,7 +32,7 @@ Go to Settings → Credentials → Add Credential for each:
 - **Type:** Anthropic
 - **API Key:** `sk-ant-api03-...` (already in `~/.hermes/.env`)
 - **Used by:** WF1, WF2, WF3, WF4, WF6
-- **After creating:** Copy the credential ID → replace all `REPLACE_WITH_ANTHROPIC_CRED_ID` in workflow JSONs
+- **After creating:** Copy the credential ID → replace all `""` in workflow JSONs
 
 ### 2. SMTP (Email Sending)
 - **Type:** SMTP
@@ -41,7 +41,7 @@ Go to Settings → Credentials → Add Credential for each:
 - **User:** nicholas@csoai.org
 - **Password:** (PrivateEmail app password)
 - **Used by:** WF1, WF2, WF3, WF5 (x4 nodes), WF6
-- **After creating:** Replace `REPLACE_WITH_SMTP_CRED_ID`
+- **After creating:** Replace `""`
 
 ### 3. Postgres (CRM Database)
 - **Type:** Postgres
@@ -51,7 +51,7 @@ Go to Settings → Credentials → Add Credential for each:
 - **User:** n8n
 - **Password:** (from `.env`)
 - **Used by:** WF1 (x2), WF2, WF4
-- **After creating:** Replace `REPLACE_WITH_POSTGRES_CRED_ID`
+- **After creating:** Replace `""`
 - **Run first:** `psql -f ~/clawd/automation/init-crm.sql`
 
 ### 4. Twilio (SMS for Templeman Opticians)
@@ -59,41 +59,41 @@ Go to Settings → Credentials → Add Credential for each:
 - **Account SID:** (from Twilio dashboard)
 - **Auth Token:** (from Twilio dashboard)
 - **Used by:** WF1
-- **After creating:** Replace `REPLACE_WITH_TWILIO_CRED_ID`
+- **After creating:** Replace `""`
 
 ### 5. Stripe (Live API Key)
 - **Type:** Stripe
 - **API Key:** `sk_live_...` (from `~/.secrets/stripe_live.env`)
 - **Used by:** WF5
-- **After creating:** Replace `REPLACE_WITH_STRIPE_CRED_ID`
+- **After creating:** Replace `""`
 - **⚠️ Requires Stripe LIVE mode activated**
 
 ### 6. Slack Webhook
 - **Type:** Slack API
 - **Token:** Bot token or webhook URL
 - **Used by:** WF2, WF5
-- **After creating:** Replace `REPLACE_WITH_SLACK_CRED_ID`
+- **After creating:** Replace `""`
 
 ### 7. Google OAuth (GBP API)
 - **Type:** Google OAuth2
 - **Client ID / Secret:** (from Google Cloud Console)
 - **Scopes:** `https://www.googleapis.com/auth/business.manage`
 - **Used by:** WF3
-- **After creating:** Replace `REPLACE_WITH_GOOGLE_OAUTH_ID`
+- **After creating:** Replace `""`
 
 ### 8. Apollo.io (Sales Intelligence)
 - **Type:** Header Auth
 - **Name:** X-Api-Key
 - **Value:** (Apollo API key)
 - **Used by:** WF4
-- **After creating:** Replace `REPLACE_WITH_APOLLO_CRED_ID`
+- **After creating:** Replace `""`
 
 ### 9. Smartlead.ai (Cold Email)
 - **Type:** Header Auth
 - **Name:** Authorization
 - **Value:** `Bearer (Smartlead API key)`
 - **Used by:** WF4
-- **After creating:** Replace `REPLACE_WITH_SMARTLEAD_CRED_ID`
+- **After creating:** Replace `""`
 
 ---
 

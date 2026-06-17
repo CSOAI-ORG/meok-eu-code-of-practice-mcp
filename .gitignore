@@ -202,3 +202,64 @@ node_modules/
 *.dylib
 *.step
 meok-one/meok_one/data/
+meok-one/.meok_vm_key.txt
+meok-one/.env.local
+_archive/severed/
+
+# Build artifacts
+meokclaw-tui/meokclaw-test
+meokclaw-tui/build/
+
+# Test data
+meok-one/data/hive_traces.jsonl
+meok-one/test_funnel.py
+
+# Nested git repos (not submodules)
+delboy/
+iokfarm-site/
+lib2b/
+meok/
+meok-compliance-gateway/
+meok-integrations/
+meok-sdk-go/
+meok-sdk-python/
+meok-sdk-typescript/
+meok-skills/
+meok-slack-app/
+meok-teams-app/
+meok-vscode-extension/
+
+csoai-org-v2/.env.example
+
+meok-marketing/.env.example
+
+csoai-platform/.env
+
+csoai-platform/.env.example
+
+meok-oneos/.env.example
+
+# Rust build artifacts (accidentally tracked)
+solana-sbt/target/
+openpatent-hive/scripts/loadkeys.sh
+openpatent-hive/scripts/loadkeys.local.sh
+**/loadkeys.sh
+**/loadkeys.local.sh
+_m2_import/
+csoai-master/node_modules/
+csoai-dashboard-master/
+csoai-master/
+.env.local
+
+# Hive runtime data
+.hive/data/
+.hive/tasks/
+.hive/logs/
+
+# External submodule / dependency
+openmoe/
+openmoe
+
+# Generated deploy outputs
+*-deploy/
+hive-mailer/.probe_strikes*

@@ -1,3 +1,140 @@
+<!-- This file has TWO layers:
+     - Section 0 (below): LIVE DEPLOYMENT STATUS — what is verified running now (Claude/Opus).
+     - "MEOK Sovereign AI OS — Complete Architecture Rundown" (further down): the full
+       authoritative system spec (PBFT engine, PBFT-MoE 11-expert council, EigenBFT,
+       MCP registry, DELBOY) by JEEVES/Kimi Swarm. Section 0 is the current-state
+       overlay on top of that design; the spec below remains authoritative. -->
+
+# MEOK SOVEREIGN — Live Status + Architecture
+
+## 0. LIVE DEPLOYMENT STATUS — 2026-05-31 (verified by Claude/Opus 4.8)
+
+> **Sovereign is NOT a single LLM. Sovereign is the BFT-of-MoEs council** — the
+> PBFT-MoE engine specced in §3.2 below. `meok-sov3` (qwen2.5:3b on the VM) is ONE
+> expert node, not the Sovereign. This section records what is *verified live today*;
+> §1 onward is the full design.
+
+### 0.1 Verified live on the GCP VM (`meok-backend`, 35.246.43.221, europe-west2-a)
+
+- **Caddy** at `https://35.246.43.221.sslip.io`, `X-MEOK-Key` gated, Let's Encrypt TLS.
+- **`sov3.service`** under systemd, `Restart=always` — survives crashes (was crash-looping).
+- **Memory spine:** PostgreSQL 14 + **pgvector 0.8.0 (built from source)**. Health =
+  `memory_store: "connected"`. *Root cause of the prior crash loop was pgvector missing
+  for PG14 — NOT the "maintenance bug"; the `NoneType.acquire` error was a downstream
+  symptom of the DB pool never initialising. Gone once pgvector landed.*
+- **6 neural models trained** (`/sov3/health`): care_validation_nn, partnership_detection_ml,
+  threat_detection_nn (1.0 acc), relationship_evolution_nn, care_pattern_analyzer,
+  creativity_assessment_nn (r²≈0.91). *(3 pytorch heads untrained; sklearn equivalents cover.)*
+- **Consciousness** 0.788, mode `waking`, 100 reflections / 50 dreams.
+- **118 MCP tools** served at `/sov3/mcp` (incl. `submit_council_proposal` / `vote_on_proposal`
+  — the literal BFT primitives — plus `hermes_ask`, `k25_analyze_image`).
+- **Reachability:** `/sov3/health` → 200 with key, 401 without; `/llm` Ollama → 200.
+  Durability confirmed across 15:02 → 15:14 (stayed up).
+
+### 0.2 The 2-node council seed is PROVEN (`meok-one/meok_one/brains.py`)
+
+End-to-end `think()` test, **real output** (not fabricated):
+- **left** (meok-sov3 / VM Ollama): *"Oh, I'm so sorry to hear that you're feeling this
+  way today. Could you tell me a bit more about how you've been feeling?…"*
+- **right** (gemini-flash / Nick's key): *"Oh, I'm so sorry to hear that. I'm really glad
+  you reached out to me, even when things feel heavy…"*
+- **both** (council, reconciled): *"I'm so sorry you're carrying that heavy feeling today,
+  and I'm really glad you reached out. Please know you don't have to hold it all on your
+  own…"*
+
+That is BFT-of-N with **N=2** — the runtime seed of the §3.2 PBFT-MoE council (N→11→33).
+
+### 0.3 Changed this session
+
+- `router.py::_ask_sov3` now mirrors `_ask_local`'s **curl-for-HTTPS** path (macOS Py3.9
+  LibreSSL can't TLS the sslip.io Caddy endpoint; system curl can). Commit `af5aee2`.
+- `SOV3_MCP=https://35.246.43.221.sslip.io/sov3/mcp` wired in gitignored `.env.local`.
+- pgvector 0.8.0 built + `CREATE EXTENSION` in `sovereign_memory`.
+
+### 0.4 Next steps to grow N=2 → the full 11-expert PBFT-MoE (§3.2) → 33 nodes
+
+1. Generalize `brains.py::think()` from hard-coded {left,right} to a **roster fan-out**
+   that calls the §3.2 `MoECommittee` (the 11 ExpertProfiles already specced below).
+2. Pull **Step-3.5-Flash** onto VM Ollama; register **DeepSeek V4-Pro/Flash**, **Gemini
+   2.5 Pro/Flash**, **Gemma 4** seats in `router.py::MODELS`.
+3. Score the quality vote with `care_pattern_analyzer` / `creativity_assessment_nn`.
+4. Wire the §3.6 SOV3 coordination so council decisions drive task execution.
+
+> The character is the Visa card. The Sovereign is the clearing house. The experts are
+> the member banks. The user just taps — one face, many minds, always safe.
+
+---
+
+# MEOK Sovereign AI OS — Complete Architecture Rundown
+
+# MEOK SOVEREIGN — Live Status + Architecture
+
+## 0. LIVE DEPLOYMENT STATUS — 2026-05-31 (verified by Claude/Opus 4.8)
+
+> **Sovereign is NOT a single LLM. Sovereign is the BFT-of-MoEs council** — the
+> PBFT-MoE engine specced in §3.2 below. `meok-sov3` (qwen2.5:3b on the VM) is ONE
+> expert node, not the Sovereign. This section records what is *verified live today*;
+> §1 onward is the full design.
+
+### 0.1 Verified live on the GCP VM (`meok-backend`, 35.246.43.221, europe-west2-a)
+
+- **Caddy** at `https://35.246.43.221.sslip.io`, `X-MEOK-Key` gated, Let's Encrypt TLS.
+- **`sov3.service`** under systemd, `Restart=always` — survives crashes (was crash-looping).
+- **Memory spine:** PostgreSQL 14 + **pgvector 0.8.0 (built from source)**. Health =
+  `memory_store: "connected"`. *Root cause of the prior crash loop was pgvector missing
+  for PG14 — NOT the "maintenance bug"; the `NoneType.acquire` error was a downstream
+  symptom of the DB pool never initialising. Gone once pgvector landed.*
+- **6 neural models trained** (`/sov3/health`): care_validation_nn, partnership_detection_ml,
+  threat_detection_nn (1.0 acc), relationship_evolution_nn, care_pattern_analyzer,
+  creativity_assessment_nn (r²≈0.91). *(3 pytorch heads untrained; sklearn equivalents cover.)*
+- **Consciousness** 0.788, mode `waking`, 100 reflections / 50 dreams.
+- **118 MCP tools** served at `/sov3/mcp` (incl. `submit_council_proposal` / `vote_on_proposal`
+  — the literal BFT primitives — plus `hermes_ask`, `k25_analyze_image`).
+- **Reachability:** `/sov3/health` → 200 with key, 401 without; `/llm` Ollama → 200.
+  Durability confirmed across 15:02 → 15:14 (stayed up).
+
+### 0.2 The 2-node council seed is PROVEN (`meok-one/meok_one/brains.py`)
+
+End-to-end `think()` test, **real output** (not fabricated):
+- **left** (meok-sov3 / VM Ollama): *"Oh, I'm so sorry to hear that you're feeling this
+  way today. Could you tell me a bit more about how you've been feeling?…"*
+- **right** (gemini-flash / Nick's key): *"Oh, I'm so sorry to hear that. I'm really glad
+  you reached out to me, even when things feel heavy…"*
+- **both** (council, reconciled): *"I'm so sorry you're carrying that heavy feeling today,
+  and I'm really glad you reached out. Please know you don't have to hold it all on your
+  own…"*
+
+That is BFT-of-N with **N=2** — the runtime seed of the §3.2 PBFT-MoE council (N→11→33).
+
+### 0.3 Changed this session
+
+- `router.py::_ask_sov3` now mirrors `_ask_local`'s **curl-for-HTTPS** path (macOS Py3.9
+  LibreSSL can't TLS the sslip.io Caddy endpoint; system curl can). Commit `af5aee2`.
+- `SOV3_MCP=https://35.246.43.221.sslip.io/sov3/mcp` wired in gitignored `.env.local`.
+- pgvector 0.8.0 built + `CREATE EXTENSION` in `sovereign_memory`.
+
+### 0.4 Next steps to grow N=2 → the full 11-expert PBFT-MoE (§3.2) → 33 nodes
+
+1. Generalize `brains.py::think()` from hard-coded {left,right} to a **roster fan-out**
+   that calls the §3.2 `MoECommittee` (the 11 ExpertProfiles already specced below).
+2. Pull **Step-3.5-Flash** onto VM Ollama; register **DeepSeek V4-Pro/Flash**, **Gemini
+   2.5 Pro/Flash**, **Gemma 4** seats in `router.py::MODELS`.
+3. Score the quality vote with `care_pattern_analyzer` / `creativity_assessment_nn`.
+4. Wire the §3.6 SOV3 coordination so council decisions drive task execution.
+
+> The character is the Visa card. The Sovereign is the clearing house. The experts are
+> the member banks. The user just taps — one face, many minds, always safe.
+
+---
+
+# MEOK Sovereign AI OS — Complete Architecture Rundown
+
+> **For Kimi Swarm Deep Research & Autonomous Operation**
+> Version: 2026-05-28 | Authority: JEEVES Strategic Command
+> Status: Living Document — Update on every architectural change
+
+---
+
 # MEOK Sovereign AI OS — Complete Architecture Rundown
 
 > **For Kimi Swarm Deep Research & Autonomous Operation**

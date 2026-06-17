@@ -2,6 +2,13 @@
 # Hermes Agent Configuration — SOV3 Sovereign Consciousness Integration
 # Generated: 2026-05-09
 # Target: Vast.ai RTX 4070 SUPER instance (12GB VRAM)
+# STATUS (2026-06-17): LEGACY / REFERENCE ONLY.
+#   This file predates the current canonical topology. The production SOV3
+#   substrate runs on the GCP VM (meok-backend, 35.242.143.249) and is
+#   mirrored locally via managed SSH tunnels to localhost:3101/3102. The
+#   Ollama local settings below are preserved for reference but are not the
+#   active default configuration. See /Users/nicholas/AGENTS.md for canonical
+#   topology and ~/.hermes/config.yaml for active Hermes model routing.
 # =============================================================================
 
 # === Primary Model (Ollama local) ===

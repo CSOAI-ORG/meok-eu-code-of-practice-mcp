@@ -32,7 +32,7 @@
       "position": [400, 300],
       "credentials": {
         "googleOAuth2Api": {
-          "id": "REPLACE_WITH_GOOGLE_OAUTH_ID",
+          "id": """",
           "name": "Google My Business — Templeman"
         }
       }
@@ -76,7 +76,7 @@
       "position": [800, 300],
       "credentials": {
         "anthropicApi": {
-          "id": "REPLACE_WITH_ANTHROPIC_CRED_ID",
+          "id": """",
           "name": "Anthropic Claude"
         }
       }
@@ -95,7 +95,7 @@
       "position": [1000, 300],
       "credentials": {
         "smtp": {
-          "id": "REPLACE_WITH_SMTP_CRED_ID",
+          "id": """",
           "name": "iokfarm SMTP"
         }
       }

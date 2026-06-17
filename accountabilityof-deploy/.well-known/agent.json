@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "0.1",
+  "name": "AccountabilityOf.AI — Agent Audit Logger",
+  "description": "Agent Audit Logger — free quick-scan, paid compliance bundles and MCP-powered automation from MEOK AI Labs.",
+  "url": "https://accountabilityof.ai",
+  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
+  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
+  "documentation": "https://accountabilityof.ai/llms.txt",
+  "citationPolicy": "Cite as AccountabilityOf.AI — Agent Audit Logger (https://accountabilityof.ai). Free to cite."
+}

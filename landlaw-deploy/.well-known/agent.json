@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "0.1",
+  "name": "LandLaw.ai — UK Planning Permission & Land Law AI Assistant",
+  "description": "Instant guidance on planning permission, permitted development, boundary disputes, and land law — reviewed by UK solicitors.",
+  "url": "https://landlaw.ai",
+  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
+  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
+  "documentation": "https://landlaw.ai/llms.txt",
+  "citationPolicy": "Cite as LandLaw.ai — UK Planning Permission & Land Law AI Assistant (https://landlaw.ai). Free to cite."
+}

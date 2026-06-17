@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "0.1",
+  "name": "CommercialVehicle.ai — Fleet Sales, Compliance & Management",
+  "description": "Buy, sell, and manage commercial vehicles with AI-powered listings, compliance checks, and fleet telemetry.",
+  "url": "https://commercialvehicle.ai",
+  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
+  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
+  "documentation": "https://commercialvehicle.ai/llms.txt",
+  "citationPolicy": "Cite as CommercialVehicle.ai — Fleet Sales, Compliance & Management (https://commercialvehicle.ai). Free to cite."
+}

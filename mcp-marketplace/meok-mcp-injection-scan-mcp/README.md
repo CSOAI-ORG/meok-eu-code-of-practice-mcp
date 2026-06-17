@@ -1,3 +1,5 @@
+[![MCP Scorecard: 90/100](https://img.shields.io/badge/proofof.ai-90%2F100-5b21b6)](https://proofof.ai/scorecard/meok-mcp-injection-scan-mcp.html)
+
 # meok-mcp-injection-scan-mcp
 
 [![PyPI](https://img.shields.io/pypi/v/meok-mcp-injection-scan-mcp)](https://pypi.org/project/meok-mcp-injection-scan-mcp/) [![Python](https://img.shields.io/pypi/pyversions/meok-mcp-injection-scan-mcp)](https://pypi.org/project/meok-mcp-injection-scan-mcp/)
@@ -57,9 +59,9 @@ Coverage maps to: OWASP LLM Top 10, GenAI Red Team v1, the April 2026 Anthropic 
 | Tier | Price | What you get |
 |---|---|---|
 | Free | £0 | 5 scans / day, no signed reports |
-| Starter | [£29/mo](https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K) | Unlimited scans + signed reports |
-| Pro | [£79/mo](https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K) | + scheduled rescans + 48h support |
-| Enterprise | [£1,499/mo](https://buy.stripe.com/00wfZjcgAeUW4c5cyQ8k90K) | + custom rule packs + 4h SLA |
+| Starter | [£29/mo](https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t) | Unlimited scans + signed reports |
+| Pro | [£79/mo](https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t) | + scheduled rescans + 48h support |
+| Enterprise | [£1,499/mo](https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t) | + custom rule packs + 4h SLA |
 
 Every signed cert lives at `https://meok-attestation-api.vercel.app/verify/<cert_id>` — auditors and procurement teams confirm without an account.
 
@@ -107,12 +109,37 @@ Free tier: 10 calls/day per MCP. Pro tier (£79/mo): unlimited + cryptographical
 
 | Tier | Price | What you get | Stripe |
 |---|---|---|---|
-| Smoke test | **£1** | Signed sample MCP-Hardening report + Article 50 PDF | <https://buy.stripe.com/dRmcN75ScdQS7oh1Uc8k90U> |
-| Quick Kit | **£9** | EU AI Act Article 50 implementation guide (C2PA + EU-Icon) | <https://buy.stripe.com/cNi00la8s1460ZT0Q88k90V> |
-| Founder Call | **£29** | 30-min 1-on-1 with the founder | <https://buy.stripe.com/8x228ta8s6oqbExaqI8k90W> |
+| Smoke test | **£1** | Signed sample MCP-Hardening report + Article 50 PDF | <https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t> |
+| Quick Kit | **£9** | EU AI Act Article 50 implementation guide (C2PA + EU-Icon) | <https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t> |
+| Founder Call | **£29** | 30-min 1-on-1 with the founder | <https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t> |
 
 > Refundable. UK Stripe — VAT-clean. Builds on the 81-MCP MEOK fleet.
 > Verify any signed report at <https://meok.ai/verify>.
 
 <!-- BUY-LADDER:END -->
 
+
+
+## Configuration
+
+Add to your `claude_desktop_config.json` (Claude Desktop) or your MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "meok-mcp-injection-scan-mcp": {
+      "command": "uvx",
+      "args": ["meok-mcp-injection-scan-mcp"]
+    }
+  }
+}
+```
+
+Or: `pip install meok-mcp-injection-scan-mcp` then run the `meok-mcp-injection-scan-mcp` command (stdio transport).
+
+## Examples
+
+Once configured, ask your assistant, for example:
+- "Use `scan_mcp_url` to …"
+- "Use `audit_tool_descriptions` to …"
+- "Use `signed_safety_report` to …"

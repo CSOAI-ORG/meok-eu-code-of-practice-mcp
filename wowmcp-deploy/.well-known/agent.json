@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "0.1",
+  "name": "wowmcp.ai — WoW MCP Server for AI Agents | MEOK AI Labs",
+  "description": "Model Context Protocol server for World of Warcraft data. 10 tools for raid strategy, character analysis, auction house intelligence, M+ routing, and more. COAI-certified, SOV3-attested. By MEOK AI La",
+  "url": "https://wowmcp.ai",
+  "provider": { "organization": "MEOK AI Labs (CSOAI LTD)", "url": "https://meok.ai", "companiesHouse": "16939677", "contact": "nicholas@csoai.org" },
+  "attestation": { "scheme": "HMAC-SHA256+Ed25519", "verify": "https://proofof.ai/verify" },
+  "documentation": "https://wowmcp.ai/llms.txt",
+  "citationPolicy": "Cite as wowmcp.ai — WoW MCP Server for AI Agents | MEOK AI Labs (https://wowmcp.ai). Free to cite."
+}

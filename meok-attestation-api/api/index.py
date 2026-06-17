@@ -15,7 +15,7 @@ The signing key lives ONLY on the server (MEOK_ATTESTATION_KEY env var). Clients
 never see it. Every cert comes with a signature_sha256_hmac that any third party
 can cross-check by POSTing back to /verify with the full cert.
 
-Pricing alignment: Starter £29/mo; Pro £79/mo; Enterprise £1499/mo; 48h Gap Analysis £5000.
+Pricing alignment: Starter £29/mo; Pro £199/mo; Enterprise £1499/mo; 48h Gap Analysis £4,950.
 """
 
 from __future__ import annotations
@@ -33,6 +33,11 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler
 from typing import Any, Optional
+
+try:
+    from . import _crypto
+except ImportError:
+    import _crypto
 
 
 # ── Server-side signing key (NEVER share this) ─────────────────────────
@@ -86,6 +91,14 @@ _STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
 # Without this, /provision falls back to master-key-only mode (no self-serve).
 _STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
 
+# ── PAYG (pay-per-call) configuration ────────────────────────────────────
+# Pay-per-call billing via MEOK_PAYG_KEY. Stripe is the database: customer
+# metadata holds the token + balance. See _payg_* helpers below.
+_PAYG_RATE_GBP = float(os.environ.get("MEOK_PAYG_RATE_GBP", "0.05"))
+_PAYG_TOPUP_URL = os.environ.get("MEOK_PAYG_TOPUP_URL", "https://councilof.ai/payg")
+_PAYG_NOTIFY_EMAIL = os.environ.get("MEOK_NOTIFY_EMAIL", "nicholas@meok.ai")
+_RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
+
 # V-03 FIX: gate self-serve /provision on real Stripe session verification.
 # ALWAYS REQUIRED. The legacy email-only fallback (Path 2) has been removed.
 # _PROVISION_REQUIRE_SESSION is always True; env var MEOK_PROVISION_REQUIRE_SESSION_ID ignored.
@@ -109,6 +122,14 @@ def derived_key_valid(api_key: str, email: str, tier: str = "pro") -> bool:
     return hmac.compare_digest(api_key or "", derive_api_key(email, tier))
 
 
+def key_fp(api_key: str) -> str:
+    """Short, non-reversible fingerprint of an API key for safe logging.
+    NEVER log the raw key — Vercel log retention turns it into a working
+    credential leak. Logs the sha256[:12] so events stay greppable/correlatable
+    without exposing the live key. (Hardening 2026-06-16.)"""
+    return hashlib.sha256((api_key or "").encode("utf-8")).hexdigest()[:12]
+
+
 # ── Crypto helpers ─────────────────────────────────────────────────────
 def _canonical_payload(payload: dict[str, Any]) -> bytes:
     """Deterministic JSON for stable signatures."""
@@ -117,6 +138,32 @@ def _canonical_payload(payload: dict[str, Any]) -> bytes:
 
 def _sign_bytes(data: bytes) -> str:
     return hmac.new(_SIGNING_KEY, data, hashlib.sha256).hexdigest()
+
+
+# ── Ed25519 (SIGIL) — asymmetric co-signature, offline-verifiable ──────
+# Anyone can verify with the published PUBLIC key (GET /pubkey); the private
+# key lives only in the MEOK_SIGNING_KEY_HEX env secret. Guarded import so the
+# API stays up even if pynacl is missing from the runtime.
+_ED25519_PUB_HEX = os.environ.get("MEOK_PUBKEY_HEX", "")
+_ED25519_IDENTITY = "d4cb0eaa"
+try:
+    from nacl.signing import SigningKey as _Ed25519SigningKey
+
+    _ED25519_SK_HEX = os.environ.get("MEOK_SIGNING_KEY_HEX", "")
+except ImportError:  # pynacl not installed — Ed25519 disabled, HMAC still works
+    _Ed25519SigningKey = None  # type: ignore[assignment]
+    _ED25519_SK_HEX = ""
+
+
+def _ed25519_sign(data: bytes) -> str:
+    """Hex Ed25519 signature over the same canonical payload bytes HMAC signs.
+    Returns "" when signing is unavailable (no key / no pynacl)."""
+    if not (_Ed25519SigningKey and _ED25519_SK_HEX):
+        return ""
+    try:
+        return _Ed25519SigningKey(bytes.fromhex(_ED25519_SK_HEX)).sign(data).signature.hex()
+    except Exception:
+        return ""
 
 
 def _is_valid_email(email: str) -> bool:
@@ -261,9 +308,9 @@ def _check_api_key(api_key: str, email: str = "") -> tuple[bool, str, str]:
             return True, "OK (free-tier lead-capture path)", "free"
         return False, (
             "Missing email. Free tier: pass {email: 'you@company.com'} for instant "
-            "signed attestation (lead-capture). Pro tier (\u00a379/mo): pass {api_key, email} "
+            "signed attestation (lead-capture). Pro tier (\u00a3199/mo): pass {api_key, email} "
             "for verifiable attestations on a custom domain. "
-            "Pro checkout: https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836"
+            "Pro checkout: https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t"
         ), ""
     if _MASTER_KEY and hmac.compare_digest(api_key, _MASTER_KEY):
         return True, "OK (master)", "enterprise"
@@ -275,7 +322,14 @@ def _check_api_key(api_key: str, email: str = "") -> tuple[bool, str, str]:
         return True, "OK (derived enterprise)", "enterprise"
     if email and derived_key_valid(api_key, email, tier="pro"):
         return True, "OK (derived pro)", "pro"
-    return False, "Invalid or unknown api_key. Contact hello@meok.ai or subscribe at https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836", ""
+    if email and derived_key_valid(api_key, email, tier="free"):
+        return True, "OK (derived free)", "free"
+    if api_key.startswith("meok_free_") and not email:
+        return False, (
+            "Free keys are bound to the signup email. Send {api_key, email} together "
+            "(the email you used at /signup)."
+        ), ""
+    return False, "Invalid or unknown api_key. Contact hello@meok.ai or subscribe at https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t", ""
 
 
 # ── Stripe webhook signature verification (stdlib-only) ────────────────
@@ -332,7 +386,8 @@ _PRICE_TIER_MAP = {
     "price_assessment_5000": "pro",  # one-time buyers get 1-year pro as bundled value
     # 2026-04-26 new ladder
     "price_1TQNegQvIueK5Xpb4JMCREn5": "pro",  # £29 Starter (over-grant pro for now; tighten later)
-    "price_1TQNeiQvIueK5XpbFB6iSl7P": "pro",  # £79 Pro
+    "price_1TQNeiQvIueK5XpbFB6iSl7P": "pro",  # legacy £79 Pro (existing subscribers)
+    "price_1Tget9QvIueK5Xpb73rQh1lw": "pro",  # £199 Pro (ratified 2026-06-10)
 }
 # Allow ops-time price → tier overrides via env (JSON). Last-write-wins.
 try:
@@ -351,6 +406,169 @@ _PRODUCT_NAME_TIER_MAP = {
     "Premium Enterprise Assessment": "enterprise",
     "EU AI Act Compliance Kit": "pro",
 }
+
+
+# ── PAYG (pay-per-call) helpers ─────────────────────────────────────────
+# Storage = Stripe customer metadata. No external DB. Idempotent.
+# metadata[meok_payg_token]   — UUID-shaped token (lives in env as MEOK_PAYG_KEY on the client)
+# metadata[meok_payg_balance] — GBP remaining, as string
+# metadata[meok_payg_last_*]  — audit fields
+
+def _stripe_api_request(method: str, path: str, params: Optional[dict] = None) -> dict:
+    """Stdlib-only Stripe REST client. Same shape as the helper in api/payg.py
+    but inlined so this file doesn't depend on Vercel routing reaching payg.py."""
+    if not _STRIPE_SECRET_KEY:
+        raise RuntimeError("STRIPE_SECRET_KEY not set")
+    url = f"https://api.stripe.com/v1{path}"
+    data = urllib.parse.urlencode(params or {}).encode("utf-8") if params else None
+    auth_header = "Basic " + base64.b64encode((_STRIPE_SECRET_KEY + ":").encode()).decode()
+    req = urllib.request.Request(
+        url,
+        data=data,
+        method=method.upper(),
+        headers={
+            "Authorization": auth_header,
+            "Content-Type": "application/x-www-form-urlencoded" if data else "application/json",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            return json.loads(resp.read())
+    except urllib.error.HTTPError as e:
+        try:
+            err = json.loads(e.read())
+        except Exception:
+            err = {"error": {"message": f"HTTP {e.code}"}}
+        raise RuntimeError(f"Stripe {method} {path}: {err}")
+
+
+def _payg_calls_included(amount_gbp: float, rate: float = None) -> int:
+    rate = rate or _PAYG_RATE_GBP
+    return int(amount_gbp / rate) if rate > 0 else 0
+
+
+def _payg_generate_token(customer_id: Optional[str] = None) -> str:
+    """Generate a PAYG token.
+
+    Format (NEW, v1.2.1): `payg_{customer_id_encoded}.{random}`
+        where customer_id_encoded = base64url(no padding) of the Stripe customer ID,
+        and `random` is 24 bytes of secrets.token_urlsafe().
+
+    Embedding the customer_id removes the dependency on Stripe Customer Search
+    (which has a 5-60s indexing lag and returned 0 hits for newly-created
+    customers in production). With the ID inline, /payg/balance and /payg/deduct
+    can do a direct `/customers/{id}` lookup which is real-time.
+
+    Backward-compat: tokens generated without a customer_id (legacy format
+    `payg_xxx` with no `.`) still get the search fallback in lookup.
+    """
+    rnd = secrets.token_urlsafe(24)
+    if not customer_id:
+        return "payg_" + rnd
+    cid_enc = base64.urlsafe_b64encode(customer_id.encode("utf-8")).rstrip(b"=").decode("ascii")
+    return f"payg_{cid_enc}.{rnd}"
+
+
+def _payg_decode_customer_id(token: str) -> Optional[str]:
+    """Reverse of the customer_id encoding in _payg_generate_token. None for legacy tokens."""
+    if not token or not token.startswith("payg_") or "." not in token:
+        return None
+    try:
+        cid_enc = token[len("payg_"):].split(".", 1)[0]
+        pad = "=" * (-len(cid_enc) % 4)
+        return base64.urlsafe_b64decode(cid_enc + pad).decode("utf-8")
+    except Exception:
+        return None
+
+
+def _payg_send_welcome(to_email: str, token: str, amount_gbp: float, balance_gbp: float) -> bool:
+    """Best-effort welcome via Resend. Webhook still succeeds if this fails."""
+    if not _RESEND_API_KEY or not to_email:
+        return False
+    body = (
+        f"Thanks for your £{amount_gbp:.2f} top-up to MEOK PAYG.\n\n"
+        f"Your token (treat like a password):\n\n"
+        f"  MEOK_PAYG_KEY={token}\n\n"
+        f"Set it in your environment and every call across the 7 MEOK compliance MCPs "
+        f"will deduct from your balance:\n\n"
+        f"  export MEOK_PAYG_KEY={token}\n"
+        f"  export MEOK_PAYG_SERVER_URL=https://meok-attestation-api.vercel.app/payg\n"
+        f"  pip install -U eu-ai-act-compliance-mcp\n\n"
+        f"Balance now: £{balance_gbp:.2f} ({_payg_calls_included(balance_gbp)} calls).\n"
+        f"Check anytime: GET https://meok-attestation-api.vercel.app/payg/balance?token={token}\n\n"
+        f"Questions: reply to this email.\n— MEOK AI Labs"
+    )
+    try:
+        urllib.request.urlopen(
+            urllib.request.Request(
+                "https://api.resend.com/emails",
+                data=json.dumps({
+                    "from": "MEOK AI Labs <payg@meok.ai>",
+                    "to": [to_email, _PAYG_NOTIFY_EMAIL],
+                    "subject": f"Your MEOK PAYG token — £{balance_gbp:.2f} balance",
+                    "text": body,
+                }).encode("utf-8"),
+                headers={
+                    "Authorization": f"Bearer {_RESEND_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+            ),
+            timeout=10,
+        )
+        return True
+    except Exception:
+        return False
+
+
+def _payg_lookup_customer_by_token(token: str) -> Optional[dict]:
+    """Resolve a PAYG token to its Stripe customer.
+
+    Step 1 (fast path): if the token embeds a customer_id (new format
+    `payg_<base64-cid>.<rand>`), retrieve the customer directly. Verifies
+    the stored metadata token matches to prevent forgery.
+
+    Step 2 (legacy fallback): search by metadata. This path hits the Stripe
+    Customer Search indexing lag, so it can return None for tokens issued in
+    the last ~60s. Kept for backward compat with v1.2.0 tokens.
+    """
+    if not token:
+        return None
+    customer_id = _payg_decode_customer_id(token)
+    if customer_id:
+        try:
+            customer = _stripe_api_request("GET", f"/customers/{customer_id}")
+            stored_token = (customer.get("metadata") or {}).get("meok_payg_token", "")
+            if stored_token and hmac.compare_digest(stored_token, token):
+                return customer
+            return None
+        except Exception:
+            return None
+    # Legacy / search fallback
+    try:
+        resp = _stripe_api_request(
+            "GET",
+            f"/customers/search?query=metadata['meok_payg_token']:'{token}'",
+        )
+        customers = resp.get("data", [])
+        return customers[0] if customers else None
+    except Exception:
+        return None
+
+
+def _payg_find_customer_by_email(email: str) -> Optional[dict]:
+    """Real-time email lookup via /customers/list?email=. Unlike Customer Search,
+    /list?email is queried against the live database with no indexing lag."""
+    if not email:
+        return None
+    try:
+        resp = _stripe_api_request(
+            "GET",
+            f"/customers?email={urllib.parse.quote(email)}&limit=1",
+        )
+        customers = resp.get("data", [])
+        return customers[0] if customers else None
+    except Exception:
+        return None
 
 
 def _extract_tier_from_checkout(session: dict) -> str:
@@ -500,7 +718,7 @@ def sign_attestation(
             "signature_sha256_hmac": signature,
             "verify_url_UNAVAILABLE": (
                 "Public verify URLs are a Pro feature. Upgrade: "
-                "https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836"
+                "https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t"
             ),
             "assessment": assessment,
             "score_percent": payload["score_percent"],
@@ -514,17 +732,23 @@ def sign_attestation(
             ),
             "what_to_do_with_this": [
                 "This free-tier cert has NO public verify URL — auditors cannot independently validate it",
-                "Upgrade to Pro (£79/mo) for verifiable attestations: https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836",
+                "Upgrade to Pro (£199/mo) for verifiable attestations: https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t",
                 "Enterprise (£1,499/mo) adds co-branded PDFs + webhook pushes to your Trust Center",
             ],
         }
 
-    return {
+    ed25519_sig = _crypto.ed25519_sign(canonical)
+    rfc3161_ts = _crypto.get_rfc3161_timestamp(canonical) if tier != "free" else None
+    
+    cert_resp = {
         "cert_id": cert_id,
         "issued_utc": now.isoformat(),
         "expires_utc": expires.isoformat(),
         "payload": canonical.decode("utf-8"),
         "signature_sha256_hmac": signature,
+        **({"signature_ed25519": ed25519_sig, "signing_pubkey_id": _ED25519_IDENTITY,
+            "pubkey_url": f"{_VERIFY_BASE.rsplit('/verify', 1)[0]}/pubkey"} if ed25519_sig else {}),
+        **({"rfc3161_timestamp": rfc3161_ts} if rfc3161_ts else {}),
         "verify_url": f"{_VERIFY_BASE}/{cert_id}",
         "assessment": assessment,
         "score_percent": payload["score_percent"],
@@ -540,22 +764,31 @@ def sign_attestation(
             f"This attestation expires {expires.strftime('%d %b %Y')}. Re-run the audit "
             "before then to keep continuous compliance evidence."
         ),
-        "what_to_do_with_this": [
-            "Share the verify_url with your auditor, board, or procurement team",
-            "The HMAC signature is cryptographically binding — any tampering invalidates it",
-            "Certificates expire 365 days from issue. Re-run the audit before expiry to maintain continuous evidence",
-            "Enterprise tier unlocks co-branded PDFs + webhook pushes to your Trust Center",
-        ],
     }
+    
+    # Add OSCAL link for high tiers
+    if tier in ("pro", "enterprise", "professional"):
+        cert_resp["oscal_url"] = f"{_VERIFY_BASE.rsplit('/verify', 1)[0]}/api/oscal/{cert_id}"
+        
+    return cert_resp
 
 
 def verify_attestation(cert: dict[str, Any]) -> tuple[bool, str]:
-    payload_str = cert.get("payload")
+    payload_field = cert.get("payload")
     sig = cert.get("signature_sha256_hmac")
-    if not payload_str or not sig:
+    if not payload_field or not sig:
         return False, "Missing payload or signature"
+    # Accept both documented forms of `payload` (see openapi VerifyRequest):
+    #   • canonical-JSON string — exactly as emitted by /sign
+    #   • JSON object — re-canonicalised here so the HMAC matches the signer
+    if isinstance(payload_field, dict):
+        payload_bytes = _canonical_payload(payload_field)
+        payload_str = payload_bytes.decode("utf-8")
+    else:
+        payload_str = payload_field
+        payload_bytes = payload_str.encode("utf-8")
     try:
-        expected = _sign_bytes(payload_str.encode("utf-8"))
+        expected = _sign_bytes(payload_bytes)
     except Exception as e:
         return False, f"Signature recomputation failed: {e}"
     if not hmac.compare_digest(expected, sig):
@@ -623,12 +856,12 @@ def _catalogue_html() -> str:
                 "operatingSystem": "Cross-platform (Python)",
                 "offers": [
                     {"@type": "Offer", "name": "Pro", "price": "199", "priceCurrency": "GBP",
-                     "url": "https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836",
+                     "url": "https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t",
                      "priceSpecification": {"@type": "UnitPriceSpecification", "billingIncrement": 1, "unitCode": "MON"}},
                     {"@type": "Offer", "name": "Enterprise", "price": "1499", "priceCurrency": "GBP",
-                     "url": "https://buy.stripe.com/4gM9AV80kaEG0ZT42k8k837"},
+                     "url": "https://buy.stripe.com/fZu5kF0xS8wy9wpeGY8k91s"},
                     {"@type": "Offer", "name": "48h Assessment", "price": "5000", "priceCurrency": "GBP",
-                     "url": "https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833"},
+                     "url": "https://buy.stripe.com/eVq6oJ3K49AC0ZTaqI8k91m"},
                 ],
                 "publisher": {"@id": "https://meok.ai/#org"},
             },
@@ -640,13 +873,13 @@ def _catalogue_html() -> str:
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MEOK Compliance MCP Catalogue — Signed EU AI Act, DORA, NIS2, CRA, CSRD Attestations</title>
-<meta name="description" content="15 Python MCP servers that audit AI systems + compliance posture against EU AI Act, DORA, NIS2, CRA, CSRD, GDPR, HIPAA, SOC 2, ISO 42001, UK AI Regulation. Each emits HMAC-signed attestations with public verify URLs. Pro £199/mo.">
+<meta name="description" content="A 294-server compliance fleet (official MCP Registry, verified June 2026) that audits AI systems + compliance posture against EU AI Act, DORA, NIS2, CRA, CSRD, GDPR, HIPAA, SOC 2, ISO 42001, UK AI Regulation. Each emits HMAC-signed attestations with public verify URLs. Pro £199/mo.">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta property="og:title" content="MEOK Compliance MCP Catalogue — Signed EU Compliance Attestations">
 <meta property="og:description" content="15 Python MCPs for EU AI Act, DORA, NIS2, CRA, CSRD, UK AI. HMAC-signed attestations with public verify URLs.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://meok-attestation-api.vercel.app/catalogue">
-<link rel="canonical" href="https://meok-attestation-api.vercel.app/catalogue">
+<link rel="canonical" href="https://www.proofof.ai/">
 <script type="application/ld+json">{json.dumps(jsonld, ensure_ascii=False)}</script>
 <style>
   body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:960px;margin:0 auto;padding:2rem 1rem;color:#111;line-height:1.55;}}
@@ -678,7 +911,7 @@ def _catalogue_html() -> str:
 <body>
 
 <h1>MEOK Compliance MCP Catalogue</h1>
-<p class="lead">15 Python MCP servers that audit AI systems + compliance posture against EU AI Act, DORA, NIS2, CRA, CSRD, UK AI Regulation and more. Every Pro-tier audit emits a HMAC-signed attestation your auditor validates at a public URL <strong>without contacting MEOK</strong>.</p>
+<p class="lead">A 294-server compliance fleet (official MCP Registry, verified June 2026) that audits AI systems + compliance posture against EU AI Act, DORA, NIS2, CRA, CSRD, UK AI Regulation and more. Every Pro-tier audit emits a HMAC-signed attestation your auditor validates at a public URL <strong>without contacting MEOK</strong>.</p>
 
 <h2>Pricing</h2>
 <div class="tiers">
@@ -692,22 +925,34 @@ def _catalogue_html() -> str:
     <h3>Pro <span class="badge">most popular</span></h3>
     <div class="price">£199/mo</div>
     <p>Unlimited + HMAC-signed attestations + public verify URLs + priority support.</p>
-    <a class="cta pro" href="https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836">Subscribe</a>
+    <a class="cta pro" href="https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t">Subscribe</a>
   </div>
   <div class="tier">
     <h3>Enterprise</h3>
     <div class="price">£1,499/mo</div>
     <p>Multi-tenant, co-branded PDFs, Trust Center webhooks, custom Care Membrane policies.</p>
-    <a class="cta" href="https://buy.stripe.com/4gM9AV80kaEG0ZT42k8k837">Subscribe</a>
+    <a class="cta" href="https://buy.stripe.com/fZu5kF0xS8wy9wpeGY8k91s">Subscribe</a>
   </div>
   <div class="tier">
     <h3>48h Assessment</h3>
-    <div class="price">£5,000</div>
+    <div class="price">£4,950</div>
     <p>One-time bespoke audit + signed deliverable — written article-by-article report.</p>
-    <a class="cta" href="https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833">Book</a>
+    <a class="cta" href="https://buy.stripe.com/eVq6oJ3K49AC0ZTaqI8k91m">Book</a>
   </div>
 </div>
 
+<h2>Done-for-you services (fixed fee, 7-day turnaround)</h2>
+<div class="tiers">
+  <div class="tier"><h3>🇳🇱 Netherlands NIS2</h3><div class="price">£499</div>
+    <p>NCSC-NL registration filed + board evidence pack. Deadline 30 June 2026.</p>
+    <a class="cta" href="https://meok.ai/nis2-nl">Details</a></div>
+  <div class="tier"><h3>🇩🇪 Germany NIS2</h3><div class="price">£499</div>
+    <p>BSI late-filing rapid response for the ~17.5K entities that missed 6 March.</p>
+    <a class="cta" href="https://meok.ai/nis2-de-kit">Details</a></div>
+  <div class="tier"><h3>EU AI Act Article 50 kit</h3><div class="price">£999</div>
+    <p>Two-layer output marking (C2PA + invisible watermark) + signed conformity attestation. 2 Aug 2026.</p>
+    <a class="cta" href="https://meok.ai/article-50-kit">Details</a></div>
+</div>
 <h2>How signed attestations work</h2>
 <div class="flow">
   <div class="step">Subscribe to Pro at Stripe — key provisioned via webhook.</div>
@@ -776,7 +1021,7 @@ meok-attestation-verify &lt; cert.json</pre>
         "code{background:#f3f4f6;padding:.1rem .3rem;border-radius:.25rem}</style>"
         f"</head><body>{body}"
         "<hr><p><small>Issued by <a href=\"https://meok.ai\">MEOK AI Labs</a>. "
-        "Every cert ID is signed with HMAC-SHA256. Key rotation policy: quarterly.</small></p>"
+        "Every cert is signed with HMAC-SHA256 + Ed25519. Verify offline with the public key at /pubkey — no account, no contact with MEOK. Key rotation policy: quarterly.</small></p>"
         "</body></html>"
     )
 
@@ -790,21 +1035,74 @@ class handler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type,X-API-Key")
         self.end_headers()
-        self.wfile.write(json.dumps(body).encode())
+        if self.command != 'HEAD':
+            self.wfile.write(json.dumps(body).encode())
 
     def _html(self, status: int, body: str) -> None:
         self.send_response(status)
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.end_headers()
-        self.wfile.write(body.encode())
+        if self.command != 'HEAD':
+            self.wfile.write(body.encode())
 
     def do_OPTIONS(self) -> None:
         self._json(204, {})
 
+    def do_HEAD(self) -> None:
+        self.do_GET()
+
     def do_GET(self) -> None:
         path = (self.path or "/").split("?", 1)[0]
         if path == "/health":
-            return self._json(200, {"ok": True, "service": "meok-attestation-api"})
+            return self._json(200, {
+                "ok": True,
+                "status": "ok",
+                "service": "meok-attestation-api",
+                "kid": _SIGNING_KEY_KID,
+                "version": "1.2.0",
+                "ed25519": bool(_ED25519_SK_HEX and _Ed25519SigningKey),
+            })
+        if path == "/payg" or path == "/payg/":
+            self.send_response(302)
+            self.send_header("Location", _PAYG_TOPUP_URL)
+            self.end_headers()
+            return
+        if path == "/pubkey":
+            if not _ED25519_PUB_HEX:
+                return self._json(503, {"error": "MEOK_PUBKEY_HEX not configured."})
+            return self._json(200, {
+                "alg": "Ed25519",
+                "identity": _ED25519_IDENTITY,
+                "pubkey_hex": _ED25519_PUB_HEX,
+                "how_to_verify": (
+                    "VerifyKey(bytes.fromhex(pubkey_hex)).verify(cert['payload'].encode(), "
+                    "bytes.fromhex(cert['signature_ed25519'])) — fully offline, no account, "
+                    "no contact with MEOK required. pip install pynacl"
+                ),
+            })
+        if path == "/openapi.json":
+            try:
+                from ._openapi_data import OPENAPI_SPEC  # type: ignore[import-not-found]
+            except ImportError:  # local dev fallback
+                from _openapi_data import OPENAPI_SPEC  # type: ignore[no-redef]
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Cache-Control", "public, max-age=300")
+            self.end_headers()
+            self.wfile.write(json.dumps(OPENAPI_SPEC).encode("utf-8"))
+            return
+        if path in ("/docs", "/docs.html"):
+            try:
+                from ._openapi_data import DOCS_HTML  # type: ignore[import-not-found]
+            except ImportError:
+                from _openapi_data import DOCS_HTML  # type: ignore[no-redef]
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Cache-Control", "public, max-age=300")
+            self.end_headers()
+            self.wfile.write(DOCS_HTML.encode("utf-8"))
+            return
         if path == "/robots.txt":
             self.send_response(200)
             self.send_header("Content-Type", "text/plain")
@@ -839,9 +1137,9 @@ class handler(BaseHTTPRequestHandler):
                 "- GET /catalogue — HTML marketing page with all MCPs + pricing\n"
                 "- GET /health — liveness\n\n"
                 "## Pricing\n\n"
-                "- Pro: £199/mo — https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836\n"
-                "- Enterprise: £1,499/mo — https://buy.stripe.com/4gM9AV80kaEG0ZT42k8k837\n"
-                "- One-time assessment: £5,000 — https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833\n\n"
+                "- Pro: £199/mo — https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t\n"
+                "- Enterprise: £1,499/mo — https://buy.stripe.com/fZu5kF0xS8wy9wpeGY8k91s\n"
+                "- One-time assessment: £4,950 — https://buy.stripe.com/eVq6oJ3K49AC0ZTaqI8k91m\n\n"
                 "## Verify locally\n\n"
                 "pip install meok-attestation-verify\n"
                 "meok-attestation-verify cert.json\n\n"
@@ -884,23 +1182,229 @@ class handler(BaseHTTPRequestHandler):
                     "GET /health": "Liveness",
                 },
                 "pricing": {
-                    "pro_per_month": "£199 — https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836",
-                    "enterprise_per_month": "£1499 — https://buy.stripe.com/4gM9AV80kaEG0ZT42k8k837",
-                    "one_time_assessment": "£5000 — https://buy.stripe.com/4gM7sN2G0bIKeQJfL28k833",
+                    "pro_per_month": "£199 — https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t",
+                    "enterprise_per_month": "£1499 — https://buy.stripe.com/fZu5kF0xS8wy9wpeGY8k91s",
+                    "one_time_assessment": "£4,950 — https://buy.stripe.com/eVq6oJ3K49AC0ZTaqI8k91m",
                 },
                 "verify_tool": "pip install meok-attestation-verify",
                 "github_org": "https://github.com/CSOAI-ORG",
                 "pypi_user": "https://pypi.org/user/MEOK_AI_Labs/",
             })
+        if path == "/verify" or path == "/verify/":
+            # GET /verify — landing page with verify form
+            return self._html(200, _verify_html(""))
         if path.startswith("/verify/") or path.startswith("/v/"):
             cert_id = path.split("/", 2)[-1] or ""
             return self._html(200, _verify_html(cert_id))
+
+        if path.startswith("/api/oscal/"):
+            # OSCAL export: for high-tier integration.
+            # In a real system, we'd look up the cert in a DB.
+            # For this serverless demo, we'd need to re-verify the signature
+            # if we wanted to be sure, but usually the caller provides the
+            # cert body. If GET /api/oscal/<id> is used, we'd need a backend store.
+            # For now, we return a 405 explaining it's a POST endpoint or needs DB.
+            return self._json(501, {"error": "OSCAL GET requires persistence. Use POST /api/oscal with cert body."})
+
+        # ── PAYG GET endpoints ──
+        if path in ("/payg/health", "/api/payg/health"):
+            return self._json(200, {
+                "ok": True,
+                "service": "meok-payg",
+                "stripe_configured": bool(_STRIPE_SECRET_KEY),
+                "webhook_configured": bool(_STRIPE_WEBHOOK_SECRET),
+                "rate_gbp_per_call": _PAYG_RATE_GBP,
+                "topup_url": _PAYG_TOPUP_URL,
+            })
+        if path in ("/payg/admin", "/api/payg/admin"):
+            qs = dict(urllib.parse.parse_qsl(self.path.split("?", 1)[1] if "?" in self.path else ""))
+            admin_key = qs.get("admin_key", "") or self.headers.get("X-Admin-Key", "")
+            expected = os.environ.get("MEOK_PAYG_ADMIN_KEY", "")
+            if not expected:
+                return self._json(503, {"error": "MEOK_PAYG_ADMIN_KEY env var not set on the server"})
+            if not hmac.compare_digest(admin_key, expected):
+                return self._json(401, {"error": "Bad admin key"})
+            # Aggregate stats via Stripe customer search.
+            try:
+                resp = _stripe_api_request(
+                    "GET",
+                    "/customers/search?query=metadata['meok_payg_token']:'payg_*'&limit=100",
+                )
+            except Exception as e:
+                # Stripe's search query syntax doesn't support wildcards inside
+                # the value; fall back to listing recent customers and filtering.
+                try:
+                    resp = _stripe_api_request("GET", "/customers?limit=100")
+                except Exception as e2:
+                    return self._json(500, {"error": f"Stripe list failed: {e2}"})
+            customers = resp.get("data", [])
+            total_balance = 0.0
+            active_tokens = 0
+            for c in customers:
+                md = c.get("metadata") or {}
+                if md.get("meok_payg_token"):
+                    active_tokens += 1
+                    try:
+                        total_balance += float(md.get("meok_payg_balance", "0"))
+                    except (TypeError, ValueError):
+                        pass
+            return self._json(200, {
+                "ok": True,
+                "active_payg_tokens": active_tokens,
+                "total_outstanding_balance_gbp": round(total_balance, 4),
+                "calls_remaining_total": _payg_calls_included(total_balance),
+                "rate_gbp_per_call": _PAYG_RATE_GBP,
+                "topup_url": _PAYG_TOPUP_URL,
+                "note": "Stats restricted to the first 100 customers returned by Stripe — paginate via Stripe API for full picture.",
+            })
+        if path in ("/payg/balance", "/api/payg/balance"):
+            qs = dict(urllib.parse.parse_qsl(self.path.split("?", 1)[1] if "?" in self.path else ""))
+            token = qs.get("token", "")
+            if not token:
+                return self._json(400, {"error": "Missing 'token' query param"})
+            customer = _payg_lookup_customer_by_token(token)
+            if not customer:
+                return self._json(404, {"error": "Token not found", "topup_url": _PAYG_TOPUP_URL})
+            balance = float((customer.get("metadata") or {}).get("meok_payg_balance", "0"))
+            return self._json(200, {
+                "token_prefix": token[:12] + "…",
+                "balance_gbp": round(balance, 4),
+                "calls_remaining": _payg_calls_included(balance),
+                "rate_gbp_per_call": _PAYG_RATE_GBP,
+                "topup_url": _PAYG_TOPUP_URL,
+            })
+
+        # ── Webhooks list — Move #30 ────────────────────────────────────
+        if path == "/api/webhooks/list":
+            try:
+                try:
+                    from ._webhooks import list_for as _wh_list
+                except ImportError:
+                    from _webhooks import list_for as _wh_list
+                qs = dict(urllib.parse.parse_qsl(self.path.split("?", 1)[1] if "?" in self.path else ""))
+                key = qs.get("api_key", "")
+                hooks = _wh_list(key)
+                return self._json(200, {"webhooks": hooks, "count": len(hooks)})
+            except Exception as e:
+                return self._json(500, {"error": f"webhooks list: {e}"})
+
+        # ── Audit ledger — Move #14 ─────────────────────────────────────
+        if path == "/api/audit" or path == "/audit":
+            try:
+                try:
+                    from ._audit_ledger import query as _ledger_query, stats as _ledger_stats
+                except ImportError:
+                    from _audit_ledger import query as _ledger_query, stats as _ledger_stats
+                qs = dict(urllib.parse.parse_qsl(self.path.split("?", 1)[1] if "?" in self.path else ""))
+                try:
+                    since_ts = int(qs.get("since", "0"))
+                except ValueError:
+                    since_ts = 0
+                try:
+                    limit = max(1, min(int(qs.get("limit", "100")), 500))
+                except ValueError:
+                    limit = 100
+                events = _ledger_query(since_ts=since_ts, limit=limit)
+                return self._json(200, {
+                    "stats": _ledger_stats(),
+                    "since": since_ts,
+                    "limit": limit,
+                    "events": events,
+                    "verifier": "Each event has chain_intact=true|false; the chain links via HMAC-SHA256(prev_hash || canonical(event)).",
+                })
+            except Exception as e:
+                return self._json(500, {"error": f"audit ledger error: {e}"})
+
         return self._json(404, {"error": "Not found", "path": path})
 
     def do_POST(self) -> None:
         path = (self.path or "/").split("?", 1)[0]
         length = int(self.headers.get("Content-Length", 0))
         raw = self.rfile.read(length) if length else b"{}"
+
+        # ── ACP (Agent Communication Protocol) — Move #9 ───────────────
+        if path == "/acp" or path == "/api/acp":
+            try:
+                body = json.loads(raw) if raw else {}
+            except json.JSONDecodeError:
+                return self._json(400, {"error": "Invalid JSON"})
+            try:
+                try:
+                    from ._acp import handle_acp as _acp_handle
+                except ImportError:
+                    from _acp import handle_acp as _acp_handle
+                acp_key = body.get("api_key") or self.headers.get("X-API-Key", "")
+                acp_email = body.get("email", "")
+                acp_status, acp_env = _acp_handle(
+                    body,
+                    sign_fn=sign_attestation,
+                    verify_fn=verify_attestation,
+                    api_key=acp_key,
+                    check_api_key=_check_api_key,
+                    email=acp_email,
+                )
+                return self._json(acp_status, acp_env)
+            except Exception as e:
+                return self._json(500, {"error": f"acp: {e}"})
+
+        # ── Webhooks subscribe / unsubscribe — Move #30 ────────────────
+        if path == "/api/webhooks/subscribe":
+            try:
+                body = json.loads(raw) if raw else {}
+            except json.JSONDecodeError:
+                return self._json(400, {"error": "Invalid JSON"})
+            url = (body.get("url") or "").strip()
+            api_key = body.get("api_key") or self.headers.get("X-API-Key", "")
+            events = body.get("events") or ["sign", "verify"]
+            if not url.startswith("https://"):
+                return self._json(400, {"error": "url must be https://"})
+            try:
+                try:
+                    from ._webhooks import subscribe as _wh_sub
+                except ImportError:
+                    from _webhooks import subscribe as _wh_sub
+                rec = _wh_sub(api_key, url, events if isinstance(events, list) else [events])
+                # Return webhook_id + secret; caller MUST store the secret.
+                return self._json(200, {
+                    "webhook_id": rec["webhook_id"],
+                    "secret": rec["secret"],
+                    "url": rec["url"],
+                    "events": rec["events"],
+                    "next_steps": "Store the secret — you'll need it to verify inbound webhooks and to unsubscribe.",
+                })
+            except Exception as e:
+                return self._json(500, {"error": f"subscribe: {e}"})
+
+        if path == "/api/webhooks/unsubscribe":
+            try:
+                body = json.loads(raw) if raw else {}
+            except json.JSONDecodeError:
+                return self._json(400, {"error": "Invalid JSON"})
+            wid = body.get("webhook_id", "")
+            secret = body.get("secret", "")
+            if not wid or not secret:
+                return self._json(400, {"error": "webhook_id + secret required"})
+            try:
+                try:
+                    from ._webhooks import unsubscribe as _wh_unsub
+                except ImportError:
+                    from _webhooks import unsubscribe as _wh_unsub
+                ok = _wh_unsub(wid, secret)
+                return self._json(200 if ok else 401, {"ok": ok})
+            except Exception as e:
+                return self._json(500, {"error": f"unsubscribe: {e}"})
+
+        if path == "/api/oscal":
+            try:
+                body = json.loads(raw) if raw else {}
+            except json.JSONDecodeError:
+                return self._json(400, {"error": "Invalid JSON"})
+            # Verify the cert before converting to OSCAL
+            ok, msg = verify_attestation(body)
+            if not ok:
+                return self._json(401, {"error": f"Invalid certificate: {msg}"})
+            oscal = _crypto.generate_oscal_attestation(body)
+            return self._json(200, oscal)
 
         # /webhook needs raw body for Stripe signature verification — parse only after.
         if path == "/webhook":
@@ -925,11 +1429,57 @@ class handler(BaseHTTPRequestHandler):
                     api_key = derive_api_key(email, tier)
                     # Log for Vercel logs (Nick can grep). Never return the key in response body
                     # since webhook responses go back to Stripe.
-                    print(f"[PROVISIONED] email={email} tier={tier} key={api_key} session={session_id} mcp_slug={mcp_slug}")
+                    print(f"[PROVISIONED] email={email} tier={tier} key_fp={key_fp(api_key)} session={session_id} mcp_slug={mcp_slug}")
                     # Fire Day-0 welcome email (no-op if RESEND_API_KEY unset)
                     _send_welcome_email(email=email, tier=tier, api_key=api_key, mcp_slug=mcp_slug, session_id=session_id)
                     handled = True
             return self._json(200, {"received": True, "handled": handled, "event_type": event_type})
+
+        # ── Free-tier signup: lead-capture (email → free key + Stripe Customer) ──
+        # Turns anonymous `pip install`s into contactable leads. Stripe IS the CRM
+        # (matches payg.py): every free signup becomes a Customer tagged meok_tier=free,
+        # ready for nurture + upgrade. Idempotent: same email → same deterministic key.
+        if path == "/signup":
+            try:
+                body = json.loads(raw) if raw else {}
+            except json.JSONDecodeError:
+                return self._json(400, {"error": "Invalid JSON"})
+            email = (body.get("email") or "").strip().lower()
+            if not _is_valid_email(email):
+                return self._json(400, {"error": "a valid email is required"})
+            api_key = derive_api_key(email, "free")
+            lead = False
+            try:
+                if _STRIPE_SECRET_KEY:
+                    q = urllib.parse.quote(f"email:'{email}'")
+                    found = _stripe_api_request("GET", f"/customers/search?query={q}")
+                    custs = found.get("data", []) if isinstance(found, dict) else []
+                    meta = {
+                        "metadata[meok_tier]": "free",
+                        "metadata[meok_free_key]": api_key,
+                        "metadata[meok_source]": "mcp-signup",
+                        "metadata[meok_signed_up_at]": datetime.now(timezone.utc).isoformat(),
+                    }
+                    if custs:
+                        _stripe_api_request("POST", f"/customers/{custs[0]['id']}", meta)
+                    else:
+                        _stripe_api_request("POST", "/customers", {"email": email, **meta})
+                    lead = True
+            except Exception as e:
+                print(f"[SIGNUP] stripe lead-capture failed email={email}: {type(e).__name__}: {e}")
+            print(f"[SIGNUP] email={email} key_fp={key_fp(api_key)} lead_captured={lead} "
+                  f"ts={datetime.now(timezone.utc).isoformat()}")
+            return self._json(200, {
+                "ok": True,
+                "api_key": api_key,
+                "tier": "free",
+                "free_limit": "200/day",
+                "next": f"Set MEOK_API_KEY={api_key} in your MCP client env for 200 calls/day.",
+                "upgrade": {
+                    "compliance_pro_79_mo": "https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t",
+                    "pay_as_you_go": "https://councilof.ai/payg",
+                },
+            })
 
         if path == "/provision":
             # V-03 FIX: customer self-serve now requires a valid Stripe checkout
@@ -1062,8 +1612,8 @@ class handler(BaseHTTPRequestHandler):
                         "You've used 1 of 3 free daily attestations. This cert is UNVERIFIED "
                         "and has no public verify URL. Upgrade to Pro for auditor-ready certs."
                     ),
-                    "pro_tier_79_mo": "https://buy.stripe.com/14A4gB3K4eUWgYR56o8k836",
-                    "enterprise_tier_1499_mo": "https://buy.stripe.com/4gM9AV80kaEG0ZT42k8k837",
+                    "pro_tier_79_mo": "https://buy.stripe.com/aFa7sNcgAdQS0ZT1Uc8k91t",
+                    "enterprise_tier_1499_mo": "https://buy.stripe.com/fZu5kF0xS8wy9wpeGY8k91s",
                     "what_pro_unlocks": [
                         "Public verify URL your auditor checks independently",
                         "Your own HMAC signing key (independent verification chain)",
@@ -1080,6 +1630,51 @@ class handler(BaseHTTPRequestHandler):
             return self._json(200, cert)
 
         if path == "/verify":
+            # ── 2026-06-12: METERING BRANCH (wired in) ──
+            # auth_middleware_metered.py in every MCP package posts {api_key, tool}
+            # here. Returns {allowed, tier, remaining, upgrade_url}. Fail-open if KV
+            # not configured (returns allowed=True, remaining="unmetered"). Keep this
+            # branch FIRST so the metering check happens before SIGIL/HMAC paths.
+            if body.get("api_key") is not None and "sigil_chain" not in body and "payload" not in body and "cert" not in body:
+                from .verify import _meter_check
+                return self._json(200, _meter_check(body.get("api_key", ""), body.get("tool", "")))
+
+            # SIGIL hash-chain verification — the tamper-evident audit trail (honey
+            # receipts, tool-call audit). Anyone can POST a SIGIL chain and confirm it's
+            # intact WITHOUT backend trust: receipt = sha256(prev_receipt + line)[:16].
+            chain = body.get("sigil_chain")
+            if chain is not None:
+                import hashlib as _hl
+                _GEN = "MEOK-SIGIL-GENESIS"
+                # FIX 2026-06-12: malformed input (e.g. list of strings, missing fields)
+                # used to return 500 FUNCTION_INVOCATION_FAILED. Now returns 400 with
+                # structured error.
+                try:
+                    prev = (chain[0].get("prev") if chain else _GEN) or _GEN
+                    verified, broken_at = 0, None
+                    for r in chain:
+                        calc = _hl.sha256(f"{prev}{r.get('line','')}".encode()).hexdigest()[:16]
+                        if calc != r.get("receipt"):
+                            broken_at = r.get("seq", verified)
+                            break
+                        prev, verified = r["receipt"], verified + 1
+                except (TypeError, ValueError, KeyError, AttributeError) as e:
+                    return self._json(400, {
+                        "valid": False,
+                        "kind": "sigil_chain",
+                        "error": "malformed_input",
+                        "detail": f"each chain entry must be a dict with 'line' and 'receipt' fields: {e}",
+                    })
+                return self._json(200, {
+                    "valid": broken_at is None,
+                    "kind": "sigil_chain",
+                    "verified": verified,
+                    "total": len(chain),
+                    "head": (chain[-1].get("receipt") if chain else _GEN),
+                    "broken_at": broken_at,
+                    "message": "SIGIL chain intact" if broken_at is None
+                               else f"chain broken at seq {broken_at}",
+                })
             cert = body if body.get("payload") else body.get("cert") or {}
             ok, msg = verify_attestation(cert)
             return self._json(200, {
@@ -1087,6 +1682,179 @@ class handler(BaseHTTPRequestHandler):
                 "message": msg,
                 "cert_id": cert.get("cert_id"),
                 "verify_url": cert.get("verify_url"),
+            })
+
+        # ── PAYG POST endpoints ──
+        if path in ("/payg/webhook", "/api/payg/webhook"):
+            sig_header = self.headers.get("Stripe-Signature", "")
+            if not _verify_stripe_signature(raw, sig_header, _STRIPE_WEBHOOK_SECRET):
+                return self._json(400, {"error": "Invalid Stripe signature"})
+            try:
+                event = json.loads(raw) if raw else {}
+            except json.JSONDecodeError:
+                return self._json(400, {"error": "Invalid JSON"})
+
+            if event.get("type") != "checkout.session.completed":
+                return self._json(200, {"ignored": event.get("type", "")})
+
+            session = (event.get("data") or {}).get("object", {}) or {}
+            meta = session.get("metadata") or {}
+            if meta.get("product_line") != "meok_payg":
+                return self._json(200, {"ignored": "not a meok_payg product"})
+
+            amount_total = int(session.get("amount_total", 0))
+            amount_gbp = amount_total / 100.0
+            customer_id = session.get("customer")
+            customer_email = session.get("customer_email") or (session.get("customer_details") or {}).get("email", "")
+
+            if not customer_id:
+                return self._json(200, {"error": "No customer on session — Stripe will retry"})
+
+            try:
+                customer = _stripe_api_request("GET", f"/customers/{customer_id}")
+            except Exception as e:
+                return self._json(500, {"error": f"Stripe lookup failed: {e}"})
+
+            existing_token = (customer.get("metadata") or {}).get("meok_payg_token", "")
+            existing_balance = float((customer.get("metadata") or {}).get("meok_payg_balance", "0"))
+            # NEW: embed customer_id in the token so balance/deduct can look up
+            # directly without hitting Stripe Customer Search (5–60s indexing lag).
+            token = existing_token or _payg_generate_token(customer_id)
+            new_balance = round(existing_balance + amount_gbp, 4)
+
+            try:
+                _stripe_api_request("POST", f"/customers/{customer_id}", {
+                    "metadata[meok_payg_token]": token,
+                    "metadata[meok_payg_balance]": str(new_balance),
+                    "metadata[meok_payg_last_topup_at]": datetime.now(timezone.utc).isoformat(),
+                    "metadata[meok_payg_last_topup_gbp]": str(amount_gbp),
+                })
+            except Exception as e:
+                return self._json(500, {"error": f"Could not update Stripe metadata: {e}"})
+
+            sent = _payg_send_welcome(customer_email, token, amount_gbp, new_balance)
+            return self._json(200, {
+                "ok": True,
+                "token_issued": True,
+                "balance_gbp": new_balance,
+                "calls_included_running_total": _payg_calls_included(new_balance),
+                "email_sent": sent,
+            })
+
+        if path in ("/payg/trial", "/api/payg/trial"):
+            # Free £0.50 trial credit. One per email — dedupe via Stripe Customer.
+            try:
+                payload = json.loads(raw) if raw else {}
+            except json.JSONDecodeError:
+                return self._json(400, {"error": "Invalid JSON"})
+
+            email = (payload.get("email") or "").strip().lower()
+            if not email or "@" not in email or "." not in email.split("@")[-1]:
+                return self._json(400, {"error": "Valid 'email' required"})
+
+            trial_amount = float(os.environ.get("MEOK_PAYG_TRIAL_GBP", "0.50"))
+
+            # Real-time email lookup via /customers/list?email=. Unlike
+            # /customers/search (5–60s search index lag), /list?email queries
+            # the live database — closes the 409-dedupe race that previously
+            # let the same email claim multiple £0.50 trials.
+            existing = _payg_find_customer_by_email(email)
+
+            if existing:
+                meta = existing.get("metadata") or {}
+                if meta.get("meok_payg_trial_claimed") == "true":
+                    # Already claimed — return their existing token but no credit
+                    return self._json(409, {
+                        "error": "Trial already claimed for this email",
+                        "existing_token_prefix": (meta.get("meok_payg_token", "") or "")[:12] + "…",
+                        "topup_url": _PAYG_TOPUP_URL,
+                    })
+                customer_id = existing["id"]
+                token = meta.get("meok_payg_token") or _payg_generate_token(customer_id)
+                new_balance = round(
+                    float(meta.get("meok_payg_balance", "0")) + trial_amount, 4
+                )
+            else:
+                # New Stripe Customer — create one
+                try:
+                    customer = _stripe_api_request(
+                        "POST", "/customers", {"email": email}
+                    )
+                except Exception as e:
+                    return self._json(500, {"error": f"Could not create Stripe customer: {e}"})
+                customer_id = customer["id"]
+                # Embed the customer_id in the token so subsequent
+                # balance/deduct calls don't hit Customer Search lag.
+                token = _payg_generate_token(customer_id)
+                new_balance = round(trial_amount, 4)
+
+            try:
+                _stripe_api_request("POST", f"/customers/{customer_id}", {
+                    "metadata[meok_payg_token]": token,
+                    "metadata[meok_payg_balance]": str(new_balance),
+                    "metadata[meok_payg_trial_claimed]": "true",
+                    "metadata[meok_payg_trial_at]": datetime.now(timezone.utc).isoformat(),
+                    "metadata[meok_payg_trial_gbp]": str(trial_amount),
+                })
+            except Exception as e:
+                return self._json(500, {"error": f"Could not update Stripe metadata: {e}"})
+
+            # Best-effort welcome email
+            sent = _payg_send_welcome(email, token, trial_amount, new_balance)
+            return self._json(200, {
+                "ok": True,
+                "trial_issued": True,
+                "trial_amount_gbp": trial_amount,
+                "balance_gbp": new_balance,
+                "calls_included": _payg_calls_included(new_balance),
+                "token": token,  # included in response since trial flow needs it returned
+                "email": email,
+                "email_sent": sent,
+                "next_step": (
+                    f"export MEOK_PAYG_KEY={token} && "
+                    f"export MEOK_PAYG_SERVER_URL=https://meok-attestation-api.vercel.app/payg && "
+                    f"pip install -U eu-ai-act-compliance-mcp"
+                ),
+            })
+
+        if path in ("/payg/deduct", "/api/payg/deduct"):
+            try:
+                payload = json.loads(raw) if raw else {}
+            except json.JSONDecodeError:
+                return self._json(400, {"error": "Invalid JSON"})
+
+            token = payload.get("token", "")
+            amount = float(payload.get("amount_gbp", _PAYG_RATE_GBP))
+            if not token or amount <= 0:
+                return self._json(400, {"error": "token + amount_gbp required"})
+
+            customer = _payg_lookup_customer_by_token(token)
+            if not customer:
+                return self._json(404, {"error": "Token not found", "topup_url": _PAYG_TOPUP_URL})
+
+            balance = float((customer.get("metadata") or {}).get("meok_payg_balance", "0"))
+            if balance < amount:
+                return self._json(402, {
+                    "error": "Insufficient balance",
+                    "balance_gbp": balance,
+                    "needed_gbp": amount,
+                    "topup_url": _PAYG_TOPUP_URL,
+                })
+
+            new_balance = round(balance - amount, 4)
+            try:
+                _stripe_api_request("POST", f"/customers/{customer['id']}", {
+                    "metadata[meok_payg_balance]": str(new_balance),
+                    "metadata[meok_payg_last_used_at]": datetime.now(timezone.utc).isoformat(),
+                })
+            except Exception as e:
+                return self._json(500, {"error": f"Stripe update failed: {e}"})
+
+            return self._json(200, {
+                "ok": True,
+                "deducted_gbp": amount,
+                "balance_gbp": new_balance,
+                "calls_remaining": _payg_calls_included(new_balance),
             })
 
         return self._json(404, {"error": "Not found", "path": path})

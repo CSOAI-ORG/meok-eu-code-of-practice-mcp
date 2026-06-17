@@ -65,6 +65,7 @@ class Registry:
             "archetype": c["archetype"], "care_style": c["care_style"],
             "tier": c.get("tier", "free"), "emoji": c["visual"]["emoji"],
             "unlock": c.get("emergence_stage_unlock", "egg"),
+            "pack": c.get("pack"),   # e.g. "faith" → hidden from the default roster (opt-in)
         } for c in self._d["characters"]]
 
     def get(self, char_id: str) -> dict:

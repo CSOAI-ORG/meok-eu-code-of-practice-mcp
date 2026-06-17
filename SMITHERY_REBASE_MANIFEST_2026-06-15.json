@@ -1,0 +1,28 @@
+{
+  "generated_at": "2026-06-15T13:03:41.818164Z",
+  "scope": "feat/* + fix/* branches ahead of origin/main (Smithery pre-flight)",
+  "count": 3,
+  "repos": [
+    {
+      "path": "/Users/nicholas/clawd/sovereign-temple",
+      "name": "sovereign-temple",
+      "branch": "fix/silent-noop-metrics-comparison",
+      "ahead_of_main": 35,
+      "dirty": true
+    },
+    {
+      "path": "/Users/nicholas/clawd/meok",
+      "name": "meok",
+      "branch": "meok-e2e-polish-jun15",
+      "ahead_of_main": 8,
+      "dirty": true
+    },
+    {
+      "path": "/Users/nicholas/clawd/meok-agent-zero",
+      "name": "meok-agent-zero",
+      "branch": "meok-main",
+      "ahead_of_main": 1,
+      "dirty": false
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "agent_card": {
+    "name": "careshield.ai",
+    "version": "1.0.0",
+    "signature_scheme": "ed25519",
+    "public_key": "X1gDHyPRj/6YJSsKuWYxF6uswGVnDTxsPyGO2IchSZI=",
+    "capabilities": [
+      "careshield_lookup",
+      "careshield_book",
+      "careshield_verify"
+    ],
+    "pheromones": [
+      "trail",
+      "mark",
+      "guard"
+    ],
+    "caste": "worker",
+    "payment": {
+      "x402": true,
+      "ap2": true,
+      "ucp": true,
+      "acp": true
+    },
+    "mcp_servers": [
+      "https://careshield.ai/mcp/pricing",
+      "https://careshield.ai/mcp/availability",
+      "https://careshield.ai/mcp/booking"
+    ],
+    "a2a_endpoint": "https://careshield.ai/a2a",
+    "issuer": "CSOAI Hive",
+    "issued_at": "2026-06-16T09:45:28.122027+00:00"
+  },
+  "signature": "tQ3yCV5XQmY/sw0sCU/mSunH4rqacfOdCQ9KtmatnKOj0mWKZcPvfVgAbY7Ir+IkcNr13sa2W/GV64Glc2ZPAQ=="
+}

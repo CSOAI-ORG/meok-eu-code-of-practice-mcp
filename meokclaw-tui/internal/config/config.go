@@ -20,7 +20,7 @@ type Config struct {
 // Default returns a default configuration.
 func Default() Config {
 	return Config{
-		MCPBridgeURL: "http://localhost:3102/mcp",
+		MCPBridgeURL: "http://localhost:3101/mcp",
 		ActiveModel:  "claude",
 		AgentMode:    "ask",
 		Models: []string{

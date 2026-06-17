@@ -101,7 +101,7 @@ clawd-workspace/                    ← GitHub source of truth
 
 ## GITHUB CREDENTIALS
 
-- **Token:** `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`
+- **Token:** `<REDACTED-ROTATE-2026-06-07>`
 - **User:** CSOAI-ORG
 - **Email:** nicholas@meok.ai
 - **300+ repos**, 50 public, 250+ private
@@ -157,7 +157,7 @@ ssh nicholas@192.168.50.105 'df -h /'
 ssh nicholas@192.168.50.105 'rm -f ~/Desktop/*.zip ~/*.docx; docker system prune -af'
 
 # GitHub workflow
-export GH_TOKEN="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"
+export GH_TOKEN="<REDACTED-ROTATE-2026-06-07>"
 curl -s -H "Authorization: token $GH_TOKEN" "https://api.github.com/users/CSOAI-ORG/repos"
 
 # Lovable MCP (via Python)
@@ -207,3 +207,11 @@ cd ~/workspace_for_ai/clawd-workspace && git add -A && git commit -m "Agent: mes
 
 *This is the LIVING TOPOLOGY. Every agent updates this as the ecosystem evolves.*
 *commit: `git add -A && git commit -m "Agent: <what changed>" && git push`*
+
+## LIVE CHECKOUT (ACCEPTING PAYMENTS)
+
+**Main checkout:** https://www.csoai.org/checkout — £79/mo Pro, £299/mo Enterprise
+**Backup URL:** https://checkout-deploy-three.vercel.app
+**Stripe:** LIVE, verified, ready to charge
+
+**Revenue:** £0. First sale = £79/mo. Send traffic to the checkout URL.

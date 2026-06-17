@@ -1,0 +1,86 @@
+{
+  "snapshot_at": "2026-06-16T11:40:00+01:00",
+  "source": "MCP Health Check — scripts/mcp_health_check.py --report",
+  "sov3_state": {
+    "mcp_fleet_health": {
+      "scan_timestamp": "2026-06-16T11:39:55.501395",
+      "total_servers": 406,
+      "healthy": 237,
+      "degraded": 99,
+      "warning": 67,
+      "critical": 3,
+      "critical_servers_flagged": [
+        {
+          "name": "meok-soil-assoc-organic-aqua-mcp",
+          "path": "/Users/nicholas/clawd/mcp-marketplace/meok-soil-assoc-organic-aqua-mcp",
+          "source": "marketplace",
+          "status": "critical",
+          "health_score": 45,
+          "checks": {
+            "has_server_py": true,
+            "has_package_json": false,
+            "has_pyproject_toml": false,
+            "has_readme": true,
+            "has_tests": true,
+            "has_dockerfile": false,
+            "has_smithery": false
+          },
+          "errors": [],
+          "timestamp": "2026-06-16T11:39:57.064767",
+          "content_hash": "b4d219bc74614fb2",
+          "bft_review_required": true,
+          "bft_priority": "P1"
+        },
+        {
+          "name": "eu-ai-act-checklist",
+          "path": "/Users/nicholas/clawd/mcp-marketplace/eu-ai-act-checklist",
+          "source": "marketplace",
+          "status": "critical",
+          "health_score": 45,
+          "checks": {
+            "has_server_py": true,
+            "has_package_json": false,
+            "has_pyproject_toml": false,
+            "has_readme": true,
+            "has_tests": true,
+            "has_dockerfile": false,
+            "has_smithery": false
+          },
+          "errors": [],
+          "timestamp": "2026-06-16T11:39:58.552872",
+          "content_hash": "c82a338ce3eed9c5",
+          "bft_review_required": true,
+          "bft_priority": "P1"
+        },
+        {
+          "name": "_TEMPLATE_QUALITY",
+          "path": "/Users/nicholas/clawd/mcp-marketplace/_TEMPLATE_QUALITY",
+          "source": "marketplace",
+          "status": "critical",
+          "health_score": 45,
+          "checks": {
+            "has_server_py": true,
+            "has_package_json": false,
+            "has_pyproject_toml": false,
+            "has_readme": true,
+            "has_tests": true,
+            "has_dockerfile": false,
+            "has_smithery": false
+          },
+          "errors": [],
+          "timestamp": "2026-06-16T11:39:59.546832",
+          "content_hash": "8c02b1cea1c8d7e3",
+          "bft_review_required": true,
+          "bft_priority": "P1"
+        }
+      ]
+    },
+    "bft_recommendation": {
+      "recommended": true,
+      "reason": "3 critical MCP servers flagged below health threshold (score < 50). Missing package.json, pyproject.toml, Dockerfile, and smithery metadata across all three.",
+      "council_action": "Review server structure, add missing package manifests, validate entry points, and approve or eject from fleet.",
+      "priority": "P1",
+      "deadline": "2026-06-17T11:40:00+01:00"
+    }
+  }
+}

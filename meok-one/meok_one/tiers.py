@@ -62,12 +62,19 @@ TIERS = {
         who="consumers trying it",
         notes="One hatched care-director, free-tier characters, 50 msgs/day. The on-ramp."),
     "pro": Tier(
-        id="pro", label="Pro", price_gbp_month=9.0,
+        id="pro", label="Compliance Pro", price_gbp_month=79.0,
         per_interaction_gbp=None, hosting="meok", characters="all",
-        memory_cross_platform=True, daily_interaction_cap=2000, attestation=True,
-        audit_trail=False, reggeoint=False, open_source=False,
-        who="engaged consumers",
-        notes="All 27 characters, full cross-platform memory, signed attestation on export."),
+        memory_cross_platform=True, daily_interaction_cap=10000, attestation=True,
+        audit_trail=True, reggeoint=False, open_source=False,
+        who="SMEs, compliance teams",
+        notes="Unlimited interactions across 28 hives, signed attestations, Article 50 ready."),
+    "professional": Tier(
+        id="professional", label="Professional", price_gbp_month=199.0,
+        per_interaction_gbp=None, hosting="meok", characters="all",
+        memory_cross_platform=True, daily_interaction_cap=50000, attestation=True,
+        audit_trail=True, reggeoint=True, open_source=False,
+        who="Consultants, mid-market",
+        notes="Advanced transparency + bias detection, 12-framework crosswalk, custom verify domain."),
     "usage": Tier(
         id="usage", label="Usage (platform embed)", price_gbp_month=None,
         per_interaction_gbp=0.002, hosting="meok", characters="all+custom",
@@ -140,7 +147,7 @@ def entitlements(tier_id: str) -> dict:
 
 def ladder() -> list:
     """The whole ladder, for a pricing page or a partner deck."""
-    order = ["local", "free", "pro", "usage", "enterprise"]
+    order = ["local", "free", "pro", "professional", "usage", "enterprise"]
     out = []
     for tid in order:
         t = TIERS[tid]

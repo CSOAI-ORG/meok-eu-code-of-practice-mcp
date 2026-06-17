@@ -1,0 +1,34 @@
+{
+  "agent_card": {
+    "name": "fishkeeper.ai",
+    "version": "1.0.0",
+    "signature_scheme": "ed25519",
+    "public_key": "X1gDHyPRj/6YJSsKuWYxF6uswGVnDTxsPyGO2IchSZI=",
+    "capabilities": [
+      "fishkeeper_lookup",
+      "fishkeeper_book",
+      "fishkeeper_verify"
+    ],
+    "pheromones": [
+      "trail",
+      "mark",
+      "guard"
+    ],
+    "caste": "worker",
+    "payment": {
+      "x402": true,
+      "ap2": true,
+      "ucp": true,
+      "acp": true
+    },
+    "mcp_servers": [
+      "https://fishkeeper.ai/mcp/pricing",
+      "https://fishkeeper.ai/mcp/availability",
+      "https://fishkeeper.ai/mcp/booking"
+    ],
+    "a2a_endpoint": "https://fishkeeper.ai/a2a",
+    "issuer": "CSOAI Hive",
+    "issued_at": "2026-06-16T09:45:28.124325+00:00"
+  },
+  "signature": "dsV1SKl51mfJTsx/VK6ckaJ2C26elkE8sEhm5+yiTnktm/PIhPMgUgF3YHCfJMZjXq4TdSEcTeq4TtmNMGA7AQ=="
+}
