@@ -254,10 +254,17 @@ SHELL_TEMPLATE = """<!doctype html>
   <meta property="og:description" content="%%DESC%%">
   <meta property="og:url" content="https://%%DOMAIN%%/%%PAGE%%">
   <meta property="og:site_name" content="%%NAME%%.ai">
+  <meta property="og:image" content="https://%%DOMAIN%%/og-image.svg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="%%TITLE%%">
   <meta name="twitter:description" content="%%DESC%%">
+  <meta name="twitter:image" content="https://%%DOMAIN%%/og-image.svg">
   <link rel="icon" href="data:image/svg+xml,%%FAVICON%%">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.svg">
+  <link rel="alternate" type="application/json" href="/agent.json">
+  <link rel="alternate" type="application/json" href="/.well-known/mcp.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -761,6 +768,100 @@ VERCEL_JSON = """{
 
 ROBOTS_TXT = "User-agent: *\nAllow: /\nSitemap: https://placeholder/sitemap.xml\n"
 
+_PAGES = ["", "pricing", "signup", "partner", "enterprise"]
+
+
+def og_image_svg(cfg: dict) -> str:
+    """1200x630 branded social card (SVG; rasterise to PNG when a converter exists)."""
+    accent, accent2, _ = theme_for(cfg)
+    name, hero = cfg["name"], cfg["sub"][:90]
+    return (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">'
+        '<rect width="1200" height="630" fill="#070b14"/>'
+        f'<rect width="1200" height="10" fill="{accent}"/>'
+        f'<text x="80" y="250" font-family="Inter,Arial,sans-serif" font-size="84" font-weight="900" fill="{accent}">{name}.ai</text>'
+        f'<text x="80" y="330" font-family="Inter,Arial,sans-serif" font-size="34" font-weight="600" fill="#e2e8f0">{cfg["hero"][:60]}</text>'
+        f'<text x="80" y="400" font-family="Inter,Arial,sans-serif" font-size="24" fill="#94a3b8">{hero}</text>'
+        '<text x="80" y="560" font-family="Inter,Arial,sans-serif" font-size="22" font-weight="700" fill="#64748b">Part of the CSOAI Hive — EU AI Act compliant MCP tools</text>'
+        "</svg>"
+    )
+
+
+def apple_icon_svg(cfg: dict) -> str:
+    accent, _, _ = theme_for(cfg)
+    return (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">'
+        f'<rect width="180" height="180" rx="38" fill="{accent}"/>'
+        f'<text x="90" y="126" font-family="Inter,Arial,sans-serif" font-size="104" font-weight="800" '
+        f'text-anchor="middle" fill="#070b14">{cfg["name"][0]}</text></svg>'
+    )
+
+
+def llms_txt(cfg: dict) -> str:
+    d, name = cfg["domain"], cfg["name"]
+    tools = "\n".join(f"- {t}: {desc}" for t, desc in cfg.get("mcps", []))
+    return (
+        f"# {name} ({d})\n\n> {cfg['hero']}\n\n{cfg['sub']}\n\n"
+        f"## What this is\n{name} is a vertical in the CSOAI Hive — EU AI Act / NIS2 / DORA "
+        f"compliant tooling exposed as Model Context Protocol (MCP) servers callable by any AI agent.\n\n"
+        f"## MCP tools\n{tools or '- See https://csoai.org/.well-known/mcp.json'}\n\n"
+        f"## Discovery\n- Agent card: https://{d}/agent.json\n- MCP catalog: https://{d}/.well-known/mcp.json\n"
+        f"- Sitemap: https://{d}/sitemap.xml\n- Hive registry: https://csoai.org (271 published MCP servers)\n\n"
+        f"## Pricing\nSee https://{d}/pricing/\n"
+    )
+
+
+def agent_json(cfg: dict) -> dict:
+    d, name = cfg["domain"], cfg["name"]
+    return {
+        "schema_version": "1.0",
+        "name": f"{name} Agent",
+        "description": cfg["hero"],
+        "url": f"https://{d}",
+        "provider": {"organization": "Council for the Safety of AI (CSOAI)", "url": "https://csoai.org"},
+        "capabilities": {"streaming": False, "mcp": True, "a2a": True},
+        "skills": [{"id": t.split(".")[-1], "name": t, "description": desc} for t, desc in cfg.get("mcps", [])],
+        "endpoints": {
+            "a2a": f"https://{d}/a2a",
+            "mcp_catalog": f"https://{d}/.well-known/mcp.json",
+        },
+        "sector": cfg.get("sector", ""),
+    }
+
+
+def mcp_json(cfg: dict) -> dict:
+    d, name = cfg["domain"], cfg["name"]
+    return {
+        "schema_version": "2025-06",
+        "publisher": {"name": "CSOAI Hive", "legal_entity": "MEOK AI LTD", "url": "https://csoai.org"},
+        "site": {"name": name, "domain": d, "sector": cfg.get("sector", "")},
+        "registry": "https://csoai.org/.well-known/mcp.json",
+        "published_mcp_servers_total": 271,
+        "servers": [
+            {
+                "name": t.split(".")[0],
+                "tool": t,
+                "description": desc,
+                "endpoint": f"https://{d}/mcp/{t.split('.')[0]}",
+                "tier": "vertical",
+            }
+            for t, desc in cfg.get("mcps", [])
+        ],
+    }
+
+
+def sitemap_xml(cfg: dict) -> str:
+    d = cfg["domain"]
+    urls = "".join(
+        f"  <url><loc>https://{d}/{p}{'/' if p else ''}</loc><changefreq>weekly</changefreq></url>\n"
+        for p in _PAGES
+    )
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemap.org/schemas/sitemap/0.9">\n'
+        f"{urls}</urlset>\n"
+    )
+
 
 def write_site(key: str):
     cfg = DOMAINS[key]
@@ -778,9 +879,19 @@ def write_site(key: str):
         target.parent.mkdir(exist_ok=True)
         target.write_text(html, encoding="utf-8")
     (base / "vercel.json").write_text(VERCEL_JSON, encoding="utf-8")
-    robots = ROBOTS_TXT.replace("placeholder", cfg["domain"])
-    (base / "robots.txt").write_text(robots, encoding="utf-8")
-    print(f"Wrote {base} ({len(pages)} pages)")
+    (base / "robots.txt").write_text(ROBOTS_TXT.replace("placeholder", cfg["domain"]), encoding="utf-8")
+    # --- Layer-0 / AEO-GEO machine-discovery surface ---
+    (base / "sitemap.xml").write_text(sitemap_xml(cfg), encoding="utf-8")
+    (base / "llms.txt").write_text(llms_txt(cfg), encoding="utf-8")
+    (base / "og-image.svg").write_text(og_image_svg(cfg), encoding="utf-8")
+    (base / "apple-touch-icon.svg").write_text(apple_icon_svg(cfg), encoding="utf-8")
+    wk = base / ".well-known"
+    wk.mkdir(exist_ok=True)
+    ac = json.dumps(agent_json(cfg), indent=2)
+    (base / "agent.json").write_text(ac, encoding="utf-8")          # root mirror (fixes /agent.json 404)
+    (wk / "agent.json").write_text(ac, encoding="utf-8")
+    (wk / "mcp.json").write_text(json.dumps(mcp_json(cfg), indent=2), encoding="utf-8")
+    print(f"Wrote {base} ({len(pages)} pages + Layer-0: sitemap/llms/agent.json/mcp.json/og-image)")
 
 
 # Merge in extra hive clusters (compliance / governance / verticals) authored
